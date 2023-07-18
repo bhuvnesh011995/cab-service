@@ -1,0 +1,7 @@
+.inputField{
+    display: flex;
+width: 100%;
+justify-content: space-evenly;
+align-items: center;
+flex-wrap: wrap;
+}
