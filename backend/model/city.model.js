@@ -12,6 +12,15 @@ const schema = new Schema({
         enum:["ACTIVE","INACTIVE"],
         default:"INACTIVE"
     },
+    utcOffset:{
+        type:String,
+        require:true,
+    },
+    createdAt:{
+        type:Date,
+        immutable:true,
+        default:Date.now()
+    },
     country:{type:Schema.Types.ObjectId,ref:"Country"},
     state:{type:Schema.Types.ObjectId,ref:"State"},
     cityService:[{

@@ -11,7 +11,7 @@ const schema = new Schema({
         type:String,
         require:true
     },
-    createAt:{
+    createdAt:{
         type:Date,
         require:true,
         immutable:true,

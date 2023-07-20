@@ -15,6 +15,8 @@ import CountryManagement from './Component/Managment/CountryManagement/CountryMa
 import Addcountry from './Component/Managment/CountryManagement/AddCountry';
 import AddState from './Component/Managment/StateManagement/AddState';
 import StateManagement from './Component/Managment/StateManagement/StateManagement';
+import AddCity from './Component/Managment/CityManagement/AddCity';
+import CityManagement from './Component/Managment/CityManagement/CityManageMent';
 
 function App() {
   let list = dashboardrows.map((ele, i) => {
@@ -57,6 +59,8 @@ function App() {
       <Route path='/addCountry' element={<Addcountry/>}/>
       <Route path='/stateManagement' element={<StateManagement/>}/>
       <Route path='/addState' element={<AddState/>}/>
+      <Route path='/cityManagement' element={<CityManagement/>}/>
+      <Route path='/addCity' element={<AddCity/>}/>
 
 
 

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Filter_Option from "../../Common/Filter_option";
 import Management_container from "../../Common/Management_container";
@@ -17,6 +17,30 @@ export default function StateManagement (){
     const navigate = useNavigate();
     const url = "http://localhost:8080/test/api/v1/state/filter/";
 
+    useEffect(() => {
+        fetch(url, {
+          method: "GET",
+        })
+          .then((res) => res.json())
+          .then((data) =>
+            setList(
+              data.stateList.map((ele, i) => {
+                return (
+                  <tr key={i}>
+                    <td>{i + 1}</td>
+                    <td>{ele.name}</td>
+                    <td>{ele.stateCode}</td>
+                    <td>{ele.country}</td>
+                    <td>{ele.status}</td>
+                    <td>{ele.createdAt}</td>
+                    <td>""</td>
+                  </tr>
+                );
+              })
+            )
+          );
+      }, []);
+
 
 
     function handleClick(){
@@ -24,7 +48,26 @@ export default function StateManagement (){
     }
 
     function handleSubmit(){
-        return
+        fetch(`${url}?name=${filter.name}&country=${filter.country}&status=${filter.status}`,{
+            method:"GET"
+        }).then((res) => res.json())
+        .then((data) =>
+          setList(
+            data?.stateList?.map((ele, i) => {
+              return (
+                <tr key={i}>
+                  <td>{i + 1}</td>
+                  <td>{ele.name}</td>
+                    <td>{ele.stateCode}</td>
+                    <td>{ele.country}</td>
+                    <td>{ele.status}</td>
+                    <td>{ele.createdAt}</td>
+                  <td>""</td>
+                </tr>
+              );
+            })
+          )
+        );
     }
     function handleClick2(){
             setFilter(initialFilter)
@@ -40,7 +83,7 @@ export default function StateManagement (){
           margin: "10px",
         }}
         >
-            <BtnDark handleClick={handleClick} title={"Add Country"} />
+            <BtnDark handleClick={handleClick} title={"Add State"} />
         </div>
         <Filter_Option 
             input={filter}

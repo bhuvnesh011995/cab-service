@@ -25,7 +25,7 @@ export default [
     },
     {
             name:"City Management",
-            to:"/"
+            to:"/cityManagement"
     },
     {
             name:"Vehicle Type Management",
