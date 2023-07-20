@@ -1,0 +1,20 @@
+.addCityContainar{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+.allService{
+    width: 40%;
+    display: flex;
+    flex-direction: column;
+}
+.vehicleService{
+    display: flex;
+    justify-content: space-between;
+}
+.runMode{
+    display: flex;
+    justify-content: space-evenly;
+}

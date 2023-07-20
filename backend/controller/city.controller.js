@@ -99,7 +99,7 @@ exports.filterCity= async function(req,res,next){
     const {text} = req.query
     let cities = []
     if(!text){
-      cities = await db.city.find({}).select({name:1,_id:0,status:1,createdAt:1}).populate([{
+      var city = await db.city.find({}).select({name:1,status:1,createdAt:1}).populate([{
         path:"state",
         model:"State",
         select:{name:1,_id:0}
@@ -116,7 +116,7 @@ exports.filterCity= async function(req,res,next){
         populate:{
           path:"city",
           model:"City",
-          select:{name:1,_id:0,status:1,createdAt:1},
+          select:{name:1,status:1,createdAt:1},
           populate:[
             {
               path:"country",
@@ -134,7 +134,7 @@ exports.filterCity= async function(req,res,next){
       var state = await db.state.find({name:text}).populate([{
         path:"city",
         model:"City",
-        select:{name:1,_id:0,status:1,createdAt:1},
+        select:{name:1,status:1,createdAt:1},
         populate:[
           {
             path:"country",
@@ -148,7 +148,7 @@ exports.filterCity= async function(req,res,next){
       ]
       }])
 
-    var city = await db.city.find({name:text}).select({name:1,_id:0,status:1,createdAt:1}).populate([{
+     city = await db.city.find({name:text}).select({name:1,status:1,createdAt:1}).populate([{
       path:"state",
       model:"State",
       select:{name:1,_id:0}
@@ -160,11 +160,68 @@ exports.filterCity= async function(req,res,next){
   }])
     }
 
+    let set = new Set();
+    if(country?.length){
+      for(i=0;i<country.length;i++){
+        if(country[i].state.length){
+          for(j=0;j<country[i].state.length;j++){
+            if(country[i].state[j].city.length){
+              for(k=0;k<country[i].state[j].city.length;k++){
+                if(set.has(country[i].state[j].city[k]._id)) continue
+                let obj = {}
+                obj.name = country[i].state[j].city[k].name
+                obj.status = country[i].state[j].city[k].status
+                obj.createdAt = country[i].state[j].city[k].createdAt
+                obj.country = country[i].state[j].city[k].country.name
+                obj.state = country[i].state[j].city[k].state.name
+                cities.push(obj)
+                set.add(country[i].state[j].city[k]._id)
+
+              }
+            }
+          }
+        }
+
+      }
+    }
+
+
+    if(state?.length){
+      for(j=0;j<state.length;j++){
+            if(state[j].city.length){
+              for(k=0;k<state[j].city.length;k++){
+                if(set.has(state[j].city[k]._id)) continue
+                let obj = {}
+                obj.name = state[j].city[k].name
+                obj.status = state[j].city[k].status
+                obj.createdAt = state[j].city[k].createdAt
+                obj.country = state[j].city[k].country.name
+                obj.state = state[j].city[k].state.name
+                cities.push(obj)
+                set.add(state[j].city[k]._id)
+
+              }
+            }
+          }
+    }
+    console.log(city)
+    if(city?.length){
+      for(k=0;k<city.length;k++){
+        if(set.has(city[k]._id)) continue
+        let obj = {}
+        obj.name = city[k].name
+        obj.status = city[k].status
+        obj.createdAt = city[k].createdAt
+        obj.country = city[k].country.name
+        obj.state = city[k].state.name
+        cities.push(obj)
+        set.add(city[k]._id)
+
+      }
+    }
     res.status(200).json({
       success:true,
-      country:country,
-      state:state,
-      city:city
+      cities:cities
     })
   
   }

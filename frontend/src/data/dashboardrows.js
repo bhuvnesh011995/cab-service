@@ -29,7 +29,7 @@ export default [
     },
     {
             name:"Vehicle Type Management",
-            to:"/"
+            to:"/vehicleManagement"
     },
     {
             name:"Fare Management",

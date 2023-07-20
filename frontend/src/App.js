@@ -17,6 +17,8 @@ import AddState from './Component/Managment/StateManagement/AddState';
 import StateManagement from './Component/Managment/StateManagement/StateManagement';
 import AddCity from './Component/Managment/CityManagement/AddCity';
 import CityManagement from './Component/Managment/CityManagement/CityManageMent';
+import VehicleManagement from './Component/Managment/VehicleManagement.js/VehicleManagement';
+import AddVehicleType from './Component/Managment/VehicleManagement.js/AddVehicleType';
 
 function App() {
   let list = dashboardrows.map((ele, i) => {
@@ -54,16 +56,16 @@ function App() {
       <Route path='/addMake' element={<AddMake/>}/>
       <Route path='/modelManagement' element={<ModelManagement/>}/>
       <Route path='/addModel' element={<AddModel/>}/>
-      <Route path='/addCity' element={<div>add city</div>}/>
       <Route path='/countryManagement' element={<CountryManagement/>}/>
       <Route path='/addCountry' element={<Addcountry/>}/>
       <Route path='/stateManagement' element={<StateManagement/>}/>
       <Route path='/addState' element={<AddState/>}/>
       <Route path='/cityManagement' element={<CityManagement/>}/>
       <Route path='/addCity' element={<AddCity/>}/>
+      <Route path='/vehicleManagement' element={<VehicleManagement/>}/>
+      <Route path='/addVehicleType' element={<AddVehicleType/>}/>
 
-
-
+      
 
     </Routes>
     </div>

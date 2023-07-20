@@ -2,8 +2,7 @@ import { useNavigate } from "react-router-dom";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Management_container from "../../Common/Management_container";
 import map from "../../img/map.png"
-import Filter_Option from "../../Common/Filter_option";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Table from "../../Common/Table";
 
 const initialFilter ={
@@ -14,14 +13,61 @@ export default function CityManagement(){
     const navigate = useNavigate();
     const [filter,setFilter] = useState(initialFilter);
     const [list,setList] = useState();
+  let url = "http://localhost:8080/test/api/v1/city/"
+    useEffect(()=>{
+      fetch(url,{
+        method:"GET"
+      }).then(res=>res.json())
+      .then(data=>{
+        if(data.success){
+          setList(
+            data.cities.map((ele, i) => {
+              return (
+                <tr key={i}>
+                  <td>{i + 1}</td>
+                  <td>{ele.name}</td>
+                  <td>{ele.state}</td>
+                  <td>{ele.country}</td>
+                  <td>{ele.status}</td>
+                  <td>{ele.createdAt}</td>
+                  <td>""</td>
+                </tr>
+              );
+            })
+          )
+        }
+      })
+    },[])
 
     function handleClick(e){
-        navigate("/addCity")
+      e.preventDefault();
+        navigate('/addCity')
     }
 
     function handleSubmit(e){
         e.preventDefault();
-        return
+        fetch(url+"?text="+filter.text,{
+          method:"GET"
+        }).then(res=>res.json())
+        .then(data=>{
+          if(data.success){
+            setList(
+              data.cities.map((ele, i) => {
+                return (
+                  <tr key={i}>
+                    <td>{i + 1}</td>
+                    <td>{ele.name}</td>
+                    <td>{ele.state}</td>
+                    <td>{ele.country}</td>
+                    <td>{ele.status}</td>
+                    <td>{ele.createdAt}</td>
+                    <td>""</td>
+                  </tr>
+                );
+              })
+            )
+          }
+        })
     }
     return(
         <Management_container title={"City Management"}>
