@@ -7,7 +7,11 @@ module.exports ={
     service : require("./services.model"),
     admin : require("./admin.model"),
     city : require("./city.model"),
-    vehicalType:require("./vehicalType.model"),
+    vehicleType:require("./vehicleType.model"),
     runMode:require("./runMode.model"),
-    cityService:require("./cityService.model")
+    cityService:require("./cityService.model"),
+    indiFareCountry:require("./individualFare/individualFare.country.model"),
+    indiFareCity:require("./individualFare/individualFare.city.model"),
+    indiFareState:require("./individualFare/individualFare.state.model"),
+    perKMCharge:require("./perKMCharge.model"),
 }

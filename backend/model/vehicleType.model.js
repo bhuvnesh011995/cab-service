@@ -26,8 +26,8 @@ let schema = new Schema({
     },
     runMode:[{type:Schema.Types.ObjectId,ref:"RunMode"}]
 },{
-    collection:"VehicalType"
+    collection:"VehicleType"
 })
 
 
-module.exports = model("VehicalType",schema);
+module.exports = model("VehicleType",schema);

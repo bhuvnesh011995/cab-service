@@ -1,7 +1,7 @@
 const db = require("../model/index");
 
 exports.addCity = async function (req, res, next) {
-  const { name, state, country, status,vehicalService,utcOffset} = req.body;
+  const { name, state, country, status,vehicleService,utcOffset} = req.body;
 
   const countryDoc = await db.country
     .findOne({
@@ -12,25 +12,24 @@ exports.addCity = async function (req, res, next) {
     res.status(501).json({
       success: false,
       message: "no state found",
-    });
+    }); return;
   }
   let stateId = countryDoc.state[0]._id
-  console.log(countryDoc.state)
 
   const serviceArr =  [];
   
-  for(let i = 0;i<vehicalService.length;i++){
-        const vehicalTypeName = Object.keys(vehicalService[i])
-        const vehicalTypeDoc = await db.vehicalType.findOne({name:vehicalTypeName[0]})
-        const vehicalTypeId = vehicalTypeDoc._id
-        const runModes = vehicalService[i][vehicalTypeName[0]]
+  for(let i = 0;i<vehicleService.length;i++){
+        const vehicleTypeName = Object.keys(vehicleService[i])
+        const vehicleTypeDoc = await db.vehicleType.findOne({name:vehicleTypeName[0]})
+        const vehicleTypeId = vehicleTypeDoc._id
+        const runModes = vehicleService[i][vehicleTypeName[0]]
         let runMode = []
         for(j=0;j<runModes.length;j++){
             let runmode = await db.runMode.findOne({name:runModes[j]})
             runMode.push(runmode._id)
         }
         serviceArr.push({
-            vehicalType:vehicalTypeId,
+            vehicleType:vehicleTypeId,
             runMode:runMode
         })
   }
@@ -65,8 +64,8 @@ exports.getcityByName = async function (req, res, next) {
     // const city = await db.city.findOne({name:name}).populate([{
     //     path:"cityService",
     //     populate:{
-    //         path:"vehicalType",
-    //         model:"VehicalType",
+    //         path:"vehicleType",
+    //         model:"vehicleType",
     //         select:"name"
     // },
     //     populate:{
@@ -79,8 +78,8 @@ exports.getcityByName = async function (req, res, next) {
     const city = await db.city.findOne({name:name}).populate([{
       path:"cityService",
       populate:[{
-      path:"vehicalType",
-      model:"VehicalType",
+      path:"vehicleType",
+      model:"vehicleType",
       select:{name:1,_id:0}
     },
     {

@@ -4,6 +4,7 @@ import Management_container from "../../Common/Management_container";
 import "./addCity.css";
 import Text_Input from "../../Common/Inputs/Text_Input";
 import BtnDark from "../../Common/Buttons/BtnDark";
+import VehicletypeCheckbox from "./VehicleTypeCheckbox";
 
 let initialInput = {
   name: "",
@@ -11,7 +12,7 @@ let initialInput = {
   state: "",
   status: "",
   utcOffset: "",
-  vehicalService: [],
+  vehicleService: [],
 };
 export default function AddCity() {
   const [options, setOptions] = useState([]);
@@ -29,7 +30,7 @@ export default function AddCity() {
         setOptions(arr);
       });
 
-      fetch("http://localhost:8080/test/api/v1/vehicaltype/",{
+      fetch("http://localhost:8080/test/api/v1/vehicletype/",{
         method:"GET"
       }).then(res=>res.json())
       .then(data=>{
@@ -46,19 +47,7 @@ export default function AddCity() {
                     )
                 })
                 return(
-                    <div className="vehicleService" key={i}>
-                        <div>
-                  <div class="form-check form-check-primary mb-3">
-                    <input class="form-check-input" type="checkbox" />
-                    <label class="form-check-label">
-                      {ele.name}
-                    </label>
-                  </div>
-                </div>
-                <div className="runMode">
-                    {runMode}
-                </div>
-                    </div>
+                  <VehicletypeCheckbox setCity={setCity} city={city} ele={ele} i = {i} runMode ={runMode}/>
                 )
             })
             setVehicleService(arr)

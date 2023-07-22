@@ -24,7 +24,7 @@ const schema = new Schema({
     country:{type:Schema.Types.ObjectId,ref:"Country"},
     state:{type:Schema.Types.ObjectId,ref:"State"},
     cityService:[{
-        vehicalType:{type:Schema.Types.ObjectId,ref:"VehicalType"},
+        vehicleType:{type:Schema.Types.ObjectId,ref:"VehicleType"},
         runMode:[{type:Schema.Types.ObjectId,ref:"runMode"}]            
     }]
 },{

@@ -17,7 +17,7 @@ let schema = new Schema({
         enum:["ACTIVE","INACTIVE"],
         default:"INACTIVE"
     },
-    vehicalType:{
+    vehicleType:{
         type:String,
         emun:["MINI","SUV","SEDAN","SUZUKI"]
     },

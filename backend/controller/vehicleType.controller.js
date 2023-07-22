@@ -1,6 +1,6 @@
 const db = require("../model/index");
 
-exports.addVehicalType = async function (req, res, next) {
+exports.addVehicleType = async function (req, res, next) {
   const { img, name, runModes, seatingCapacity, seatingCapacityName, status } =
     req.body;
 
@@ -11,7 +11,7 @@ exports.addVehicalType = async function (req, res, next) {
     runModeIds.push(runMode._id);
   }
 
-  await db.vehicalType.create({
+  await db.vehicleType.create({
     name: name,
     img: img,
     seatingCapacityName: seatingCapacityName,
@@ -22,12 +22,12 @@ exports.addVehicalType = async function (req, res, next) {
 
   res.status(200).json({
     success: true,
-    message: "vehical type added with runmodes",
+    message: "vehicle type added with runmodes",
   });
 };
 
 exports.getAllVehicle = async function (req, res, next) {
-  let vehicleTypes = await db.vehicalType
+  let vehicleTypes = await db.vehicleType
     .find({})
     .select({ name: 1, _id: 0 })
     .populate({ path: "runMode", select: { name: 1, _id: 0 } });
@@ -41,7 +41,7 @@ exports.filterVehicleType = async function (req, res, next) {
   let { name, runMode } = req.query;
 
   if (!name && !runMode) {
-    var vehicleType = await db.vehicalType
+    var vehicleType = await db.vehicleType
       .find({})
       .select({ name: 1, _id: 0, seatingCapacity: 1, img: 1, status:1})
       .populate({path:"runMode", select:{name:1,_id:0}});
@@ -53,7 +53,7 @@ exports.filterVehicleType = async function (req, res, next) {
   }else runMode = null;
 
   console.log(runMode)
-  vehicleType= await db.vehicalType.find({
+  vehicleType= await db.vehicleType.find({
     $or:[
         {name:name},
         {runMode:runMode}

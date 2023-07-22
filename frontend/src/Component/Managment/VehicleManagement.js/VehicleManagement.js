@@ -6,7 +6,7 @@ import Table from "../../Common/Table";
 import Text_Input from "../../Common/Inputs/Text_Input";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 
-let url = "http://localhost:8080/test/api/v1/vehicaltype/filter/"
+let url = "http://localhost:8080/test/api/v1/vehicletype/filter/"
 
 export default function VehicleManagement(){
     const [filter,setFilter] = useState();

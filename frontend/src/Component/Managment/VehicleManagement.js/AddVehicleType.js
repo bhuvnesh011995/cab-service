@@ -13,7 +13,7 @@ let initialInput = {
     status:""
 }
 
-let url = "http://localhost:8080/test/api/v1/vehicaltype/"
+let url = "http://localhost:8080/test/api/v1/vehicletype/"
 export default function AddVehicleType() {
 
     const [vehicletype,setVehicleType] = useState(initialInput)
