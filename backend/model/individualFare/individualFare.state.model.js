@@ -8,23 +8,23 @@ let schema = new Schema({
     vehicleType:{type:Schema.Types.ObjectId, ref:"VehicleType"},
 
     baseFare:{
-        type:Number,
+        type:Schema.Types.Decimal128,
         require:true,
     },
     minCharge:{
-        type:Number,
+        type:Schema.Types.Decimal128,
         require:true,
     },
     perMinCharge:{
-        type:Number,
+        type:Schema.Types.Decimal128,
         require:true,
     },
     cancelCharge:{
-        type:Number,
+        type:Schema.Types.Decimal128,
         require:true,
     },
     bookingFee:{
-        type:Number,
+        type:Schema.Types.Decimal128,
         require:true,
     },
     adminCommissionType:{
@@ -32,10 +32,15 @@ let schema = new Schema({
         require:true,
     },
     adminCommission:{
-        type:Number,
+        type:Schema.Types.Decimal128,
         require:true,
     },
-    perKMCharge:{type:Schema.Types.ObjectId,ref:"PerKMCharge"}
+    status:{
+        type:String,
+        enum:["ACTIVE","INACTIVE"],
+        default:"INACTIVE"
+    },
+    perKMCharge:[{type:Schema.Types.ObjectId,ref:"PerKMCharge"}]
 },{
     collection:"IndiFareState"
 })

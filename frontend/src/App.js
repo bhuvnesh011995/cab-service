@@ -6,7 +6,6 @@ import ResetPass from './Component/Auth/ResetPass.js/ResetPass';
 import AdminManagement from './Component/Managment/Admin.management';
 import AddMake from './Component/Managment/MakeManagement/AddMake';
 import Header from './Component/Common/Header';
-import dashboardrows from './data/dashboardrows';
 import Footer from './Component/Common/Footer';
 import MakeManagement from './Component/Managment/MakeManagement/Makemanagement';
 import ModelManagement from './Component/Managment/ModelManagement/ModelManagement';
@@ -21,31 +20,10 @@ import VehicleManagement from './Component/Managment/VehicleManagement.js/Vehicl
 import AddVehicleType from './Component/Managment/VehicleManagement.js/AddVehicleType';
 
 function App() {
-  let list = dashboardrows.map((ele, i) => {
-    return (
-      <li key={i} style={{ color: "white" }}>
-        <Link to={ele.to} className="waves-effect">
-          <span key="t-layouts">{ele.name}</span>
-        </Link>
-      </li>
-    );
-  });
+  
   return (
     <BrowserRouter >
-    <div id="layout-wrapper">
-      <Header/>
-      <div className="vertical-menu">
-        <div data-simplebar className="h-100">
-          {/* <!--- Sidemenu --> */}
-          <div id="sidebar-menu">
-            {/* <!-- Left Menu Start --> */}
-            <ul className="metismenu" id="side-menu">
-              {list}
-            </ul>
-          </div>
-          {/* <!-- Sidebar --> */}
-        </div>
-      </div>
+      <Header>
     <Routes>
       <Route path="/" element={<Home/>} />
       <Route path='/signIn' element={<SignIn/>}/>
@@ -64,12 +42,10 @@ function App() {
       <Route path='/addCity' element={<AddCity/>}/>
       <Route path='/vehicleManagement' element={<VehicleManagement/>}/>
       <Route path='/addVehicleType' element={<AddVehicleType/>}/>
-
-      
-
     </Routes>
-    </div>
-    <Footer/>
+    
+    </Header>
+    {/* <Footer/> */}
     </BrowserRouter>
     
   );

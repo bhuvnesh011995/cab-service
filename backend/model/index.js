@@ -14,4 +14,8 @@ module.exports ={
     indiFareCity:require("./individualFare/individualFare.city.model"),
     indiFareState:require("./individualFare/individualFare.state.model"),
     perKMCharge:require("./perKMCharge.model"),
+    rentalFareCountry:require('./rentalFare/rentalFare.country.model'),
+    rentalFareState:require("./rentalFare/rentalFare.state.model"),
+    rentalFareCity:require('./rentalFare/rentalFare.city.model'),
+    rentalPackage:require("./rentalFare/rentalPackage.model")
 }

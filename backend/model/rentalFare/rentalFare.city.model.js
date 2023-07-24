@@ -1,10 +1,13 @@
 const {Schema,model} = require("mongoose");
 
 let schema = new Schema({
-    package:{
-        type:String,
+    package:[{
+        packageId:{type:Schema.Types.ObjectId,ref:"RentalPackage"},
+        packageFare:{
+        type:Schema.Types.Decimal128,
         require:true,
-    },
+        },
+    }],
     country:{type:Schema.Types.ObjectId,ref:"Country"},
 
     state:{type:Schema.Types.ObjectId,ref:"State"},
@@ -12,10 +15,7 @@ let schema = new Schema({
 
     vehicleType:{type:Schema.Types.ObjectId, ref:"VehicleType"},
 
-    packageFare:{
-        type:Schema.Types.Decimal128,
-        require:true,
-    },
+    
     minCharge:{
         type:Schema.Types.Decimal128,
         require:true,

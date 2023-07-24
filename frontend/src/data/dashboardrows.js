@@ -1,27 +1,40 @@
+import * as AiIcons from 'react-icons/ai';
+import AdminIcon from '@rsuite/icons/Admin';
+import * as SiIcon from "react-icons/si"
+import * as BsIcon from "react-icons/bs"
+
+
+
 export default [
     {
             name:"Dashboard",
-            to:"/"
+            to:"/",
+            icon:<AiIcons.AiFillHome/>
     },
     {
             name:"Admin User management",
-            to:"/adminManagement"
+            to:"/adminManagement",
+            icon:<AdminIcon/>
     },
     {
             name:"Make Management",
-            to:"/makeManagement"
+            to:"/makeManagement",
+            icon:<SiIcon.SiMakerbot/>
     },
     {
             name:"Model Menagement",
-            to:"/modelManagement"
+            to:"/modelManagement",
+            icon:<AiIcons.AiOutlineCar/>
     },
     {
             name:"Country Management",
-            to:"/countryManagement"
+            to:"/countryManagement",
+            icon:<BsIcon.BsMap/>
     },
     {
             name:"State Management",
-            to:"/stateManagement"
+            to:"/stateManagement",
+            
     },
     {
             name:"City Management",

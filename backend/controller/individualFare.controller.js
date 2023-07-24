@@ -7,7 +7,7 @@ exports.addFare = async function (req, res, next) {
     state,
     city,
     baseFare,
-    minchare,
+    minCharge,
     perMinCharge,
     cancelCharge,
     bookingFee,
@@ -15,6 +15,7 @@ exports.addFare = async function (req, res, next) {
     adminCommission,
     vehicleType,
     perKMCharge,
+    status
   } = req.body;
    let vehicleTypeDoc = await db.vehicleType.findOne({name:vehicleType})
 
@@ -25,12 +26,13 @@ exports.addFare = async function (req, res, next) {
       country: countryDoc._id,
       vehicleType:vehicleTypeDoc._id,
       baseFare: baseFare,
-      minchare: minchare,
+      minCharge: minCharge,
       perMinCharge: perMinCharge,
       cancelCharge: cancelCharge,
       bookingFee: bookingFee,
       adminCommissionType: adminCommissionType,
       adminCommission: adminCommission,
+      status:status
     });
 
     const allExtraCharge = await getId(perKMCharge)
@@ -40,7 +42,8 @@ exports.addFare = async function (req, res, next) {
   })
 
   fare = await db.indiFareCountry.findOne({_id:fare._id})
-  } else if (!city) {
+  } 
+  else if (!city) {
      countryDoc = await db.country
       .findOne({ name: country })
       .populate({ path: "state", match: { name: state } });
@@ -48,7 +51,7 @@ exports.addFare = async function (req, res, next) {
       res.status(501).json({
         success: false,
         message: "no state found",
-      });
+      }); return
     }
     let stateId = countryDoc.state[0]._id;
     
@@ -57,12 +60,14 @@ exports.addFare = async function (req, res, next) {
       vehicleType:vehicleTypeDoc._id,
       state: stateId,
       baseFare: baseFare,
-      minchare: minchare,
+      minCharge: minCharge,
       perMinCharge: perMinCharge,
       cancelCharge: cancelCharge,
       bookingFee: bookingFee,
       adminCommissionType: adminCommissionType,
       adminCommission: adminCommission,
+      status:status
+
     });
 
     const allExtraCharge = await getId(perKMCharge)
@@ -105,12 +110,13 @@ exports.addFare = async function (req, res, next) {
             state: stateId,
             city:cityId,
             baseFare: baseFare,
-            minchare: minchare,
+            minCharge: minCharge,
             perMinCharge: perMinCharge,
             cancelCharge: cancelCharge,
             bookingFee: bookingFee,
             adminCommissionType: adminCommissionType,
             adminCommission: adminCommission,
+            status:status
           });
 
    const allExtraCharge = await getId(perKMCharge)
@@ -174,4 +180,66 @@ exports.getAllIndiFare = async function(req,res,next){
         data:allFare
     })
 
+}
+
+exports.filterIndiFare = async function(req,res,next){
+  let {country,state,city,vehicleType,status} = req.query;
+  if(vehicleType){
+    var vehicleTypeDoc = db.vehicleType.findOne({name:vehicleType})
+    vehicleType = vehicleDoc._id
+  }
+
+  if(country){
+      let countryDoc = await db.country.findOne({name:country})
+      country = countryDoc._id
+  }else country = null
+  if(state){
+    let stateDoc = await db.state.findOne({
+      name:state
+    })
+    state = stateDoc._id
+  }else state = null
+  
+  if(city){
+    let cityDoc = await db.city.findOne({name:city})
+    city = cityDoc._id
+  }else city = null
+
+
+  let countryFare = db.indiFareCountry.find({
+    $or:[
+      {country:country,},
+      {status:status,},
+      {vehicleType:vehicleType}
+    ]
+    })
+
+    let stateFare = db.indiFareState.find({
+      $or:[
+        {country:country,},
+        {state:state,},
+        {status:status,},
+        {vehicleType:vehicleType}
+      ]
+    })
+
+    let cityFare = await db.indiFareCity.find({
+      $or:[
+        {country:country},
+        {stateLstate},
+        {city:city},
+        {status:status},
+        {vehicleType:vehicleType}
+      ]
+    })
+
+
+
+    let allFare = [...countryFare,...stateFare,...cityFare]
+
+
+    res.status(200).json({
+      success:true,
+      allIndividueFare:allFare
+    })
 }

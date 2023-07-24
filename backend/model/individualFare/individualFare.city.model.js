@@ -36,6 +36,11 @@ let schema = new Schema({
         type:Number,
         require:true,
     },
+    status:{
+        type:String,
+        enum:["ACTIVE","INACTIVE"],
+        default:"INACTIVE"
+    },
     perKMCharge:[{type:Schema.Types.ObjectId,ref:"PerKMCharge"}]
 },{
     collection:"IndiFareCity"
