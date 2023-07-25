@@ -32,7 +32,6 @@ exports.addRentalFare = async function (req, res, next) {
     var fare = await db.rentalFareCountry.create({
         country:countryDoc._id,
         vehicleType:vehicleTypeDoc._id,
-        baseFare: baseFare,
         minCharge: minCharge,
         perMinCharge: perMinCharge,
         cancelCharge: cancelCharge,
@@ -42,13 +41,16 @@ exports.addRentalFare = async function (req, res, next) {
         status:status
     })
 
+    console.log(fare)
+
     const allExtraCharge = await getId(perKMCharge)
 
   allExtraCharge.forEach(async (ele)=>{
-    await db.indiFareState.updateOne({_id:fare._id},{$push:{perKMCharge:ele,package:packageObj}})
+    await db.rentalFareCountry.updateOne({_id:fare._id},{$push:{perKMCharge:ele}})
   })
+  await db.rentalFareCountry.updateOne({_id:fare._id},{$push:{package:packageObj}})
 
-  fare = await db.indiFareState.findOne({_id:fare._id})
+  fare = await db.rentalFareCountry.findOne({_id:fare._id})
 
 
   }else if (!city) {
@@ -63,11 +65,10 @@ exports.addRentalFare = async function (req, res, next) {
   }
   let stateId = countryDoc.state[0]._id;
 
-  fare = await db.indiFareState.create({
+  fare = await db.rentalFareState.create({
     country: countryDoc._id,
     vehicleType:vehicleTypeDoc._id,
     state: stateId,
-    baseFare: baseFare,
     minCharge: minCharge,
     perMinCharge: perMinCharge,
     cancelCharge: cancelCharge,
@@ -80,14 +81,14 @@ exports.addRentalFare = async function (req, res, next) {
   const allExtraCharge = await getId(perKMCharge)
 
   allExtraCharge.forEach(async (ele)=>{
-    await db.indiFareState.updateOne({_id:fare._id},{
+    await db.rentalFareState.updateOne({_id:fare._id},{
         $push:{
             perKMCharge:ele,
             package:packageObj
     }})
   })
 
-  fare = await db.indiFareState.findOne({_id:fare._id})
+  fare = await db.rentalFareState.findOne({_id:fare._id})
 
   } else{
     countryDoc = await db.country
@@ -116,12 +117,11 @@ exports.addRentalFare = async function (req, res, next) {
           const stateId = countryDoc.state[0]._id;
           const cityId = countryDoc.state[0].city[0]._id;
 
-           fare = await db.indiFareCity.create({
+           fare = await db.rentalFareCity.create({
             country: countryDoc._id,
             vehicleType:vehicleTypeDoc._id,
             state: stateId,
             city:cityId,
-            baseFare: baseFare,
             minCharge: minCharge,
             perMinCharge: perMinCharge,
             cancelCharge: cancelCharge,
@@ -134,10 +134,10 @@ exports.addRentalFare = async function (req, res, next) {
           const allExtraCharge = await getId(perKMCharge)
 
          allExtraCharge.forEach(async (ele)=>{
-            await db.indiFareCity.updateOne({_id:fare._id},{$push:{perKMCharge:ele,package:packageObj}})
+            await db.rentalFareCity.updateOne({_id:fare._id},{$push:{perKMCharge:ele,package:packageObj}})
         })
 
-        fare = await db.indiFareCity.findOne({_id:fare._id})
+        fare = await db.rentalFareCity.findOne({_id:fare._id})
   }
   async function getId(obj) {
     let arr = await Promise.all(obj.map(async (ele)=>{
@@ -155,7 +155,6 @@ exports.addRentalFare = async function (req, res, next) {
         }
         return perkmcharge._id
         }))
-        console.log("arr2",arr)
     
         return arr
       }
@@ -167,3 +166,38 @@ exports.addRentalFare = async function (req, res, next) {
 };
 
 
+exports.filterRentalFare = async function (req,res,next){
+  let countryFare = await db.rentalFareCountry.find({}).populate([
+    {path:"package",populate:{
+    path:"packageId",model:"RentalPackage",select:"name"
+  }},
+  {path:"country",select:"name"},
+  {path:"vehicleType",select:"name"}])
+
+  let stateFare = await db.rentalFareState.find({}).populate([
+      {path:"package",populate:{
+        path:"packageId",model:"RentalPackage",select:"name"
+      }},
+      {path:"country",select:"name"},
+      {path:"state",select:"name"},
+      {path:"vehicleType",select:"name"}
+  ])
+
+  let cityFare = await db.rentalFareCity.find({}).populate([
+    {path:"package",populate:{
+      path:"packageId",model:"RentalPackage",select:"name"
+    }},
+      {path:"country",select:"name"},
+      {path:"state",select:"name"},
+      {path:"vehicleType",select:"name"},
+      {path:"city",select:"name"},
+  ])
+
+  let allFare = [...countryFare,...stateFare,...cityFare]
+
+  res.status(200).json({
+      success:true,
+      allIndiFare:allFare
+  }); 
+  return
+}

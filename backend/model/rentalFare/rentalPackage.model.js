@@ -11,10 +11,15 @@ const schema = new Schema({
         type:String,
         require:true
     },
-    MaxDistance:{
+    maxDistance:{
         type:Schema.Types.Decimal128,
         require:true
-    }
+    },
+    createdAt:{
+        type:Date,
+        immutable:true,
+        default: Date.now()
+    },
 },{
     collection:"RentalPackage"
 })

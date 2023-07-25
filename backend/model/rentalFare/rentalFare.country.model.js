@@ -1,23 +1,18 @@
 const {Schema,model} = require("mongoose");
 
 let schema = new Schema({
-    package:{
-        type:String,
+    package:[{
+        packageId:{type:Schema.Types.ObjectId,ref:"RentalPackage"},
+        packageFare:{
+        type:Schema.Types.Decimal128,
         require:true,
-    },
+        },
+    }],
 
     country:{type:Schema.Types.ObjectId,ref:"Country"},
 
     vehicleType:{type:Schema.Types.ObjectId, ref:"VehicleType"},
 
-    packageFare:{
-        type:Schema.Types.Decimal128,
-        require:true,
-    },
-    baseFare:{
-        type:Schema.Types.Decimal128,
-        require:true,
-    },
     minCharge:{
         type:Schema.Types.Decimal128,
         require:true,
@@ -47,7 +42,12 @@ let schema = new Schema({
         enum:["ACTIVE","INACTIVE"],
         default:"INACTIVE"
     },
-    perKMCharge:{type:Schema.Types.ObjectId,ref:"PerKMCharge"}
+    createdAt:{
+        type:Date,
+        immutable:true,
+        default: Date.now()
+    },
+    perKMCharge:[{type:Schema.Types.ObjectId,ref:"PerKMCharge"}]
 },{
     collection:"RentalFareCountry"
 })

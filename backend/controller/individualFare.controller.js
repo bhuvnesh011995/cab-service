@@ -184,9 +184,37 @@ exports.getAllIndiFare = async function(req,res,next){
 
 exports.filterIndiFare = async function(req,res,next){
   let {country,state,city,vehicleType,status} = req.query;
-  if(vehicleType){
-    var vehicleTypeDoc = db.vehicleType.findOne({name:vehicleType})
-    vehicleType = vehicleDoc._id
+
+  console.log(vehicleType)
+
+  if(!country &&!state&&!city&&!vehicleType&&!status){
+    let countryFare = await db.indiFareCountry.find({}).populate([{path:"country",select:"name"},{path:"vehicleType",select:"name"}])
+
+    let stateFare = await db.indiFareState.find({}).populate([
+        {path:"country",select:"name"},
+        {path:"state",select:"name"},
+        {path:"vehicleType",select:"name"}
+    ])
+
+    let cityFare = await db.indiFareCity.find({}).populate([
+        {path:"country",select:"name"},
+        {path:"state",select:"name"},
+        {path:"vehicleType",select:"name"},
+        {path:"city",select:"name"},
+    ])
+
+    let allFare = [...countryFare,...stateFare,...cityFare]
+
+    res.status(200).json({
+        success:true,
+        allIndiFare:allFare
+    }); 
+    return
+  }else{
+    if(vehicleType){
+    var vehicleTypeDoc =await db.vehicleType.findOne({name:vehicleType})
+    console.log(vehicleTypeDoc)
+    vehicleType = vehicleTypeDoc._id
   }
 
   if(country){
@@ -205,35 +233,42 @@ exports.filterIndiFare = async function(req,res,next){
     city = cityDoc._id
   }else city = null
 
-
-  let countryFare = db.indiFareCountry.find({
+console.log(vehicleType)
+  let countryFare = await db.indiFareCountry.find({
     $or:[
       {country:country,},
       {status:status,},
-      {vehicleType:vehicleType}
+      {vehicleType:vehicleType},
     ]
-    })
+    }).populate([{path:"country",select:"name"},{path:"vehicleType",select:"name"}])
 
-    let stateFare = db.indiFareState.find({
+    let stateFare = await db.indiFareState.find({
       $or:[
         {country:country,},
         {state:state,},
         {status:status,},
         {vehicleType:vehicleType}
       ]
-    })
+    }).populate([
+      {path:"country",select:"name"},
+      {path:"state",select:"name"},
+      {path:"vehicleType",select:"name"}
+  ])
 
     let cityFare = await db.indiFareCity.find({
       $or:[
         {country:country},
-        {stateLstate},
+        {state:state},
         {city:city},
         {status:status},
         {vehicleType:vehicleType}
       ]
-    })
-
-
+    }).populate([
+      {path:"country",select:"name"},
+      {path:"state",select:"name"},
+      {path:"vehicleType",select:"name"},
+      {path:"city",select:"name"},
+  ])
 
     let allFare = [...countryFare,...stateFare,...cityFare]
 
@@ -242,4 +277,6 @@ exports.filterIndiFare = async function(req,res,next){
       success:true,
       allIndividueFare:allFare
     })
+  }
+  
 }

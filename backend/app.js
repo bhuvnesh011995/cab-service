@@ -87,4 +87,6 @@ async function init(){
     require("./routes/vehicleType.route")(app)
     require("./routes/runMode.route")(app)
     require("./routes/individualFare.route")(app)
+    require("./routes/rentalPackage.route")(app)
+    require("./routes/rentalFare.route")(app)
 module.exports = app;

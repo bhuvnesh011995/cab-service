@@ -40,6 +40,11 @@ let schema = new Schema({
         enum:["ACTIVE","INACTIVE"],
         default:"INACTIVE"
     },
+    createdAt:{
+        type:Date,
+        immutable:true,
+        default: Date.now()
+    },
     perKMCharge:[{type:Schema.Types.ObjectId,ref:"PerKMCharge"}]
 },{
     collection:"IndiFareState"
