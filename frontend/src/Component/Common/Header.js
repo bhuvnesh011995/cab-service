@@ -11,13 +11,11 @@ import * as BsIcons from "react-icons/bs"
 
 
 export default function Header({children}) {
-  const [sidebar, SetSidebar] = useState(false);
+  const [sidebar, SetSidebar] = useState(true);
 
   function showSidebar() {
-    console.log(sidebar)
     SetSidebar(!sidebar);
   }
-
 
   return (
     <div className="header">
@@ -33,8 +31,9 @@ export default function Header({children}) {
                 <p>admin</p>
                 </div>
             </div>
-            <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
-            <ul className='nav-menu-items' onClick={showSidebar}>
+            
+              <nav className={sidebar ? 'nav-menu active' : 'nav-menu'}>
+            <ul className='nav-menu-items'>
                 <li className='navbar-toggle'>
               <Link to='#' className='menu-bars'>
                 <AiIcons.AiOutlineClose />
@@ -52,9 +51,9 @@ export default function Header({children}) {
             })}
             </ul>
             </nav>
+            {children}
         </IconContext.Provider>
         
-        {children}
     </div>
   );
 }

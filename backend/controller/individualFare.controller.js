@@ -2,7 +2,7 @@ const { default: areIntervalsOverlapping } = require("date-fns/fp/areIntervalsOv
 const db = require("../model/index");
 
 exports.addFare = async function (req, res, next) {
-  const {
+  let {
     country,
     state,
     city,
@@ -17,9 +17,12 @@ exports.addFare = async function (req, res, next) {
     perKMCharge,
     status
   } = req.body;
+  console.log(req.body)
    let vehicleTypeDoc = await db.vehicleType.findOne({name:vehicleType})
 
+   if(!status.length) status = undefined
   if (!state) {
+    console.log(country)
     var countryDoc = await db.country.findOne({ name: country });
     
     var fare = await db.indiFareCountry.create({
@@ -152,6 +155,7 @@ var perkmcharge = await db.perKMCharge.findOne({
 
   res.status(200).json({
     success:true,
+    message:"fare added",
     data:fare
   })
 };
@@ -185,8 +189,6 @@ exports.getAllIndiFare = async function(req,res,next){
 exports.filterIndiFare = async function(req,res,next){
   let {country,state,city,vehicleType,status} = req.query;
 
-  console.log(vehicleType)
-
   if(!country &&!state&&!city&&!vehicleType&&!status){
     let countryFare = await db.indiFareCountry.find({}).populate([{path:"country",select:"name"},{path:"vehicleType",select:"name"}])
 
@@ -211,29 +213,29 @@ exports.filterIndiFare = async function(req,res,next){
     }); 
     return
   }else{
-    if(vehicleType){
+    if(vehicleType.length){
     var vehicleTypeDoc =await db.vehicleType.findOne({name:vehicleType})
-    console.log(vehicleTypeDoc)
-    vehicleType = vehicleTypeDoc._id
-  }
+    vehicleType = vehicleTypeDoc?._id
+  }else vehicleType = null
 
-  if(country){
+  if(country.length){
+    console.log(country.length)
       let countryDoc = await db.country.findOne({name:country})
+      console.log(countryDoc)
       country = countryDoc._id
   }else country = null
-  if(state){
+  if(state.length){
     let stateDoc = await db.state.findOne({
       name:state
     })
     state = stateDoc._id
   }else state = null
   
-  if(city){
+  if(city.length){
     let cityDoc = await db.city.findOne({name:city})
     city = cityDoc._id
   }else city = null
 
-console.log(vehicleType)
   let countryFare = await db.indiFareCountry.find({
     $or:[
       {country:country,},
@@ -275,7 +277,7 @@ console.log(vehicleType)
 
     res.status(200).json({
       success:true,
-      allIndividueFare:allFare
+      allIndiFare:allFare
     })
   }
   

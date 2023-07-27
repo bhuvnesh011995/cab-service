@@ -28,7 +28,7 @@ exports.getallStateByCountry = async function(req,res,next){
 
     let states = await Country.findOne({name:country}).populate({path:"state",select:{name:1,_id:0}})
 
-    res.status(200).json(states.state)
+    res.status(200).json(states?.state || [])
 
 }
 

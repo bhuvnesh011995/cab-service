@@ -1,6 +1,7 @@
 import "../common.css";
 
 export default function Selection_Input({
+  reset,
   options,
   input,
   lebel_text,
@@ -18,9 +19,14 @@ export default function Selection_Input({
       <label className="form-label">{lebel_text}</label>
       <select
         name="selectedStatus"
-        defaultValue={input?.setKey}
+        key={`my_unique_select_key__${input[setKey]}`}
+        value={input[setKey] || ''}
         onChange={(e) => {
-          setInput((preVal) => ({ ...preVal, [setKey]: e.target.value }));
+          let obj = {[setKey]:e.target.value}
+          if(reset){
+            reset.forEach(ele=>obj[ele]= "")
+          }
+          setInput((preVal) => ({ ...preVal, ...obj }));
         }}
         className="select2"
       >

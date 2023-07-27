@@ -6,9 +6,9 @@ import Table from "../Common/Table";
 export default function Home() {
   
   return (
-      <div >
-        <div >
-          <div>
+    <div className="main-content">
+    <div className="page-content">
+      <div className="container-fluid">
             <Title title={"DASHBOARD"} />
             <div>
               <div className="row">

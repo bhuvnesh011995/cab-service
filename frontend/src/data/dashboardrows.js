@@ -46,15 +46,15 @@ export default [
     },
     {
             name:"Fare Management",
-            to:"/"
+            to:"/individualFareManagement"
     },
     {
             name:"Rental Fare Management",
-            to:"/"
+            to:"/rentalFareManagement"
     },
     {
             name:"Rental Package Management",
-            to:"/"
+            to:"/rentalPackage"
     },
     {
             name:"Outstation Fare Management",

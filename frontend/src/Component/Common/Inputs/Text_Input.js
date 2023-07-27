@@ -1,4 +1,4 @@
-export default function Text_Input({input, lebel_text, setKey, setInput }) {
+export default function Text_Input({input,type, lebel_text, setKey, setInput }) {
   
   return (
     <div className="m-3">
@@ -6,7 +6,7 @@ export default function Text_Input({input, lebel_text, setKey, setInput }) {
         {lebel_text}
       </label>
         <input onChange={e=>setInput(preVal=>({...preVal,[setKey]:e.target.value}))}
-          type="text"
+          type={type|| "text"}
           placeholder={setKey}
           // value={input[setKey]}
         />

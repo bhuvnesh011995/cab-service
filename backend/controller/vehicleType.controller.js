@@ -27,6 +27,7 @@ exports.addVehicleType = async function (req, res, next) {
 };
 
 exports.getAllVehicle = async function (req, res, next) {
+  console.log("hiiiiiii")
   let vehicleTypes = await db.vehicleType
     .find({})
     .select({ name: 1, _id: 0 })

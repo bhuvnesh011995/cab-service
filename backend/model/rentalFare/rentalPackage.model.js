@@ -15,6 +15,11 @@ const schema = new Schema({
         type:Schema.Types.Decimal128,
         require:true
     },
+    status:{
+        type:String,
+        enum:["ACTIVE","INACTIVE"],
+        default:"INACTIVE"
+    },
     createdAt:{
         type:Date,
         immutable:true,

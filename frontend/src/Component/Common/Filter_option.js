@@ -21,6 +21,8 @@ export default function Filter_Option({
 {
   let [countryOption,setCountryOption] = useState([]);
   let [stateOption,setStateOption] = useState([]);
+  let [cityOption,setCityOption] = useState([]);
+  const [vehicleTypeOption,setVehicleTypeOption] = useState([]);
 
   useEffect(()=>{
       if(options.includes("country")){
@@ -31,6 +33,18 @@ export default function Filter_Option({
         let arr = [];
         data.forEach(ele=>arr.push(ele.name))
         setCountryOption(arr)
+      }
+      )
+    }
+
+    if(options.includes("vehicleType")){
+      fetch("http://localhost:8080/test/api/v1/vehicletype/",{
+        method:"GET"
+      }).then(res=>res.json())
+      .then(data=>{
+        let arr = [];
+        data.data.forEach(ele=>arr.push(ele.name))
+        setVehicleTypeOption(arr)
       }
       )
     }
@@ -51,6 +65,21 @@ export default function Filter_Option({
     }
   },[input?.country])
 
+  useEffect(()=>{
+    if(options.includes("city")&&input.country&&input.state){
+      fetch(`http://localhost:8080/test/api/v1/city/${input.country}/${input.state}`,{
+        method:"GET"
+      }).then(res=>res.json())
+      .then(data=>
+       { 
+        let arr = [];
+        data.cities.forEach(ele=>arr.push(ele.name))
+        setCityOption(arr)
+      }
+      )
+    }else setCityOption([])
+  },[input?.country,input?.state])
+
 
 
   return (
@@ -66,6 +95,7 @@ export default function Filter_Option({
               setInput={setInput}
               lebel_text={"Country : "}
               setKey={"country"}
+              reset={["state","city"]}
             />
           )}
           {options.includes("state")&&(
@@ -75,6 +105,25 @@ export default function Filter_Option({
               setInput={setInput}
               lebel_text={"State : "}
               setKey={"state"}
+              reset={["city"]}
+            />
+          )}
+          {options.includes("city")&&(
+            <Selection_Input 
+            options = {cityOption}
+            input={input}
+            setInput={setInput}
+            lebel_text={"City : "}
+            setKey={"city"}
+            />
+          )}
+          {options.includes("vehicleType")&&(
+            <Selection_Input 
+            options = {vehicleTypeOption}
+            input={input}
+            setInput={setInput}
+            lebel_text={"VehicleType : "}
+            setKey={"vehicleType"}
             />
           )}
           {options.includes("name") && (

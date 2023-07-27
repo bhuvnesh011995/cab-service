@@ -203,7 +203,6 @@ exports.filterCity= async function(req,res,next){
             }
           }
     }
-    console.log(city)
     if(city?.length){
       for(k=0;k<city.length;k++){
         if(set.has(city[k]._id)) continue
@@ -224,3 +223,23 @@ exports.filterCity= async function(req,res,next){
     })
   
   }
+
+exports.getcityBystateAndCountry = async function(req,res,next){
+  const country = req.params.country
+  const state = req.params.state
+
+  let countryDoc = await db.country.findOne({name:country}).populate([{
+    path:"state",
+    model:"State",
+    match:{name:state},
+    populate:{
+      path:"city",
+      model:"City",
+      select:{name:1,_id:0}
+    }
+  }
+])
+        res.status(200).json({
+          cities:countryDoc.state[0]?.city
+        })
+}

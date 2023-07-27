@@ -83,10 +83,11 @@ exports.addRentalFare = async function (req, res, next) {
   allExtraCharge.forEach(async (ele)=>{
     await db.rentalFareState.updateOne({_id:fare._id},{
         $push:{
-            perKMCharge:ele,
-            package:packageObj
+            perKMCharge:ele
     }})
   })
+  await db.rentalFareState.updateOne({_id:fare._id},{$push:{package:packageObj}})
+
 
   fare = await db.rentalFareState.findOne({_id:fare._id})
 
@@ -134,8 +135,10 @@ exports.addRentalFare = async function (req, res, next) {
           const allExtraCharge = await getId(perKMCharge)
 
          allExtraCharge.forEach(async (ele)=>{
-            await db.rentalFareCity.updateOne({_id:fare._id},{$push:{perKMCharge:ele,package:packageObj}})
+            await db.rentalFareCity.updateOne({_id:fare._id},{$push:{perKMCharge:ele}})
         })
+        await db.rentalFareCity.updateOne({_id:fare._id},{$push:{package:packageObj}})
+
 
         fare = await db.rentalFareCity.findOne({_id:fare._id})
   }
@@ -167,7 +170,9 @@ exports.addRentalFare = async function (req, res, next) {
 
 
 exports.filterRentalFare = async function (req,res,next){
-  let countryFare = await db.rentalFareCountry.find({}).populate([
+  let {country,state,city,status,vehicleType,package} = req.query;
+  if(!country &&!state&&!city&&!status&&!vehicleType&&!package){
+    let countryFare = await db.rentalFareCountry.find({}).populate([
     {path:"package",populate:{
     path:"packageId",model:"RentalPackage",select:"name"
   }},
@@ -197,7 +202,83 @@ exports.filterRentalFare = async function (req,res,next){
 
   res.status(200).json({
       success:true,
-      allIndiFare:allFare
+      allRentalFare:allFare
   }); 
   return
+  }else{
+    if(vehicleType){
+      var vehicleTypeDoc =await db.vehicleType.findOne({name:vehicleType})
+      console.log(vehicleTypeDoc)
+      vehicleType = vehicleTypeDoc._id
+    }
+  
+    if(country){
+        let countryDoc = await db.country.findOne({name:country})
+        country = countryDoc._id
+    }else country = null
+    if(state){
+      let stateDoc = await db.state.findOne({
+        name:state
+      })
+      state = stateDoc._id
+    }else state = null
+    
+    if(city){
+      let cityDoc = await db.city.findOne({name:city})
+      city = cityDoc._id
+    }else city = null
+
+    if(package){
+      let packageDoc = await db.rentalPackage.findOne({name:package});
+        package = packageDoc._id
+    }else package = null
+
+    let countryFare = await db.rentalFareCountry.find({
+      $or:[
+        {"package.packageId":package},
+        {country:country},
+        {status:status},
+        {vehicleType:vehicleType},
+      ]
+    }).populate([{path:"country",select:"name"},{path:"vehicleType",select:"name"}])
+
+    let stateFare = await db.rentalFareState.find({
+      $or:[
+        {"package.packageId":package},
+        {country:country,},
+        {state:state,},
+        {status:status,},
+        {vehicleType:vehicleType}
+      ]
+    }).populate([
+      {path:"country",select:"name"},
+      {path:"state",select:"name"},
+      {path:"vehicleType",select:"name"}
+  ])
+
+  let cityFare = await db.rentalFareCity.find({
+    $or:[
+      {"package.packageId":package},
+      {country:country},
+      {state:state},
+      {city:city},
+      {status:status},
+      {vehicleType:vehicleType}
+    ]
+  }).populate([
+    {path:"country",select:"name"},
+    {path:"state",select:"name"},
+    {path:"vehicleType",select:"name"},
+    {path:"city",select:"name"},
+])
+
+let allFare = [...countryFare,...stateFare,...cityFare]
+
+
+    res.status(200).json({
+      success:true,
+      allRentalFare:allFare
+    })
+  }
+  
 }
