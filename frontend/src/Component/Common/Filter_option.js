@@ -80,7 +80,7 @@ export default function Filter_Option({
     }else setCityOption([])
   },[input?.country,input?.state])
 
-
+console.log(input)
 
   return (
     <form style={{margin:"50px"}}>

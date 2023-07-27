@@ -1,56 +1,55 @@
-import * as AiIcons from 'react-icons/ai';
-import AdminIcon from '@rsuite/icons/Admin';
-import * as SiIcon from "react-icons/si"
-import * as BsIcon from "react-icons/bs"
-
-
 
 export default [
     {
             name:"Dashboard",
             to:"/",
-            icon:<AiIcons.AiFillHome/>
+            icon:"bx bx-home-circle"
     },
     {
             name:"Admin User management",
             to:"/adminManagement",
-            icon:<AdminIcon/>
+            icon:"bi bi-person"
     },
     {
             name:"Make Management",
             to:"/makeManagement",
-            icon:<SiIcon.SiMakerbot/>
+            icon:"bi bi-ev-front"
     },
     {
             name:"Model Menagement",
             to:"/modelManagement",
-            icon:<AiIcons.AiOutlineCar/>
+            icon:"bi bi-car-front"
     },
     {
             name:"Country Management",
             to:"/countryManagement",
-            icon:<BsIcon.BsMap/>
+            icon:"bi bi-globe-central-south-asia"
     },
     {
             name:"State Management",
             to:"/stateManagement",
+            icon:"bi bi-map"
             
     },
     {
             name:"City Management",
-            to:"/cityManagement"
+            to:"/cityManagement",
+            icon:"bi bi-pin-map"
     },
     {
             name:"Vehicle Type Management",
-            to:"/vehicleManagement"
+            to:"/vehicleManagement",
+            icon:"bi bi-truck-front-fill"
     },
     {
             name:"Fare Management",
-            to:"/individualFareManagement"
+            to:"/individualFareManagement",
+            icon:"bi bi-cash"
     },
     {
             name:"Rental Fare Management",
-            to:"/rentalFareManagement"
+            to:"/rentalFareManagement",
+            icon:"bi bi-cash-stack"
     },
     {
             name:"Rental Package Management",

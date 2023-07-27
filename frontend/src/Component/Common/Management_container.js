@@ -3,9 +3,9 @@ import "./common.css";
 
 export default function Management_container({ children,title }) {
   return (
-    <div className="main-content">
-      <div className="page-content">
-        <div className="container-fluid">
+    <div class="main-content">
+      <div class="page-content">
+          <div class="container-fluid">
           <Title title={title} />
           {children}
         </div>

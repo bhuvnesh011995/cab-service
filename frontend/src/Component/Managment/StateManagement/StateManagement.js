@@ -12,7 +12,7 @@ const initialFilter = {
 }
 
 export default function StateManagement (){
-    const [filter,setFilter]  = useState();
+    const [filter,setFilter]  = useState(initialFilter);
     const [list,setList] = useState();
     const navigate = useNavigate();
     const url = "http://localhost:8080/test/api/v1/state/filter/";

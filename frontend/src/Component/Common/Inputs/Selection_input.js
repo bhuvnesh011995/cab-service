@@ -14,6 +14,8 @@ export default function Selection_Input({
     )
   })
 
+  console.log(input)
+
   return (
     <div className="m-3">
       <label className="form-label">{lebel_text}</label>

@@ -8,8 +8,13 @@ import Selection_Input from "../../Common/Inputs/Selection_input";
 
 let url = "http://localhost:8080/test/api/v1/vehicletype/filter/"
 
+const initialFilter = {
+  name:"",
+  runMode:""
+}
+
 export default function VehicleManagement(){
-    const [filter,setFilter] = useState();
+    const [filter,setFilter] = useState(initialFilter);
     const [options,setOptions] = useState([]);
     const [list, setList] = useState();
     const navigate = useNavigate()
