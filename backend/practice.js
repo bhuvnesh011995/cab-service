@@ -1,35 +1,45 @@
-// const statofday = require("date-fns/startOfDay")
-// const endofday = require("date-fns/endOfDay")
+// // const statofday = require("date-fns/startOfDay")
+// // const endofday = require("date-fns/endOfDay")
 
 
 
-// console.log(statofday(new Date(2012,7,14)))
-// console.log(endofday(new Date(2012,7,14)))
+// // console.log(statofday(new Date(2012,7,14)))
+// // console.log(endofday(new Date(2012,7,14)))
 
-let states = [
-    { name: 'rajasthan' },
-    { name: 'west bangal' },
-    { name: 'gujrat' },
-    {
-      name: 'maharastra',
-      country: {  name: 'india' }
-    },
-    {
-      name: 'panjab',
-      country: { name: 'pakistan' }
-    }
-  ]
-  let stateList = [];
-  let count = 0;
-  for(i=0;i<states.length;i++){
+// let states = [
+//     { name: 'rajasthan' },
+//     { name: 'west bangal' },
+//     { name: 'gujrat' },
+//     {
+//       name: 'maharastra',
+//       country: {  name: 'india' }
+//     },
+//     {
+//       name: 'panjab',
+//       country: { name: 'pakistan' }
+//     }
+//   ]
+//   let stateList = [];
+//   let count = 0;
+//   for(i=0;i<states.length;i++){
       
-      stateList.push({name:states[i].name})
-      if(states[i].country){
-          while(count<=i){
-              stateList[count].country=states[i].country.name;
-              count++
-          }
-      }
-  }
+//       stateList.push({name:states[i].name})
+//       if(states[i].country){
+//           while(count<=i){
+//               stateList[count].country=states[i].country.name;
+//               count++
+//           }
+//       }
+//   }
   
-  console.log(stateList)
+//   console.log(stateList)
+
+
+
+let express = require("express")
+
+let app = express()
+
+app.listen(8081,()=>{
+  console.log("server is up at 8081")
+})
