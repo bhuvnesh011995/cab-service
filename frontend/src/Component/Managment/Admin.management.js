@@ -88,7 +88,11 @@ export default function AdminManagement() {
   return (
     <Management_container
     title={"Admin Users"}>
-    <div style={{position:"relative",left:"80%",zIndex:"2",margin:"10px"}}>
+<div class="row">
+    <div class="col-lg-13">
+      <div class="card">
+        <div class="card-body">
+    <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
       <BtnDark handleClick={handleClick}
       title={"Add Admin"}
       />
@@ -103,7 +107,8 @@ export default function AdminManagement() {
         btn2_title={"reset"}
         options={["name","username","status","from","to"]}
       />
-      
+      </div></div></div></div>
+      <div class="row">
       <Table
         heading={[
           "Sr no",
@@ -115,6 +120,7 @@ export default function AdminManagement() {
         ]}
         list={list}
       />
+      </div>
     </Management_container>
   );
 }

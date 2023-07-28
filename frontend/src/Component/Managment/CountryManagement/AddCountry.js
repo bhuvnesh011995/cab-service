@@ -35,7 +35,10 @@ export default function Addcountry(){
     return(
         <Management_container
         title={"Add Country"}>
-            <div className="ml-5 mt-3">
+            <div class="row" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
 
             <form>
             <Text_Input 
@@ -68,7 +71,7 @@ export default function Addcountry(){
                 handleClick={handleSubmit}
                 />
                 {successMsg}
-            </form>
+            </form></div></div></div>
             </div>
 
         </Management_container>

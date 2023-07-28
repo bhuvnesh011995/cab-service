@@ -93,14 +93,12 @@ export default function VehicleManagement(){
 
     return(
         <Management_container title={"Vehicle Management"}>
-            <div
-        style={{
-          position: "relative",
-          left: "80%",
-          zIndex: "2",
-          margin: "10px",
-        }}
-      ><BtnDark handleClick={handleClick} title={"Add New"} /></div>
+            <div class="row">
+    <div class="col-lg-13">
+      <div class="card">
+        <div class="card-body">
+    <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
+      <BtnDark handleClick={handleClick} title={"Add New"} /></div>
       <form style={{margin:"50px"}}>
       <div className="row">
         <div className="col-lg-2 inputField" >
@@ -123,7 +121,7 @@ export default function VehicleManagement(){
             </div>
         </div>
       </div>
-    </form>
+    </form></div></div></div></div>
       <Table
         heading={["Sr no", "Name","Run Mode","Seating Capacity","Image selected", "Status", "Action"]}
         list={list}

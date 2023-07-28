@@ -68,14 +68,11 @@ export default function CountryManagement(){
         <Management_container
         title={"Country Management"}
         >
-        <div
-        style={{
-          position: "relative",
-          left: "80%",
-          zIndex: "2",
-          margin: "10px",
-        }}
-        >
+           <div class="row">
+        <div class="col-lg-13">
+          <div class="card">
+            <div class="card-body">
+        <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
             <BtnDark handleClick={handleClick} title={"Add Country"} />
         </div>
         <Filter_Option 
@@ -87,7 +84,7 @@ export default function CountryManagement(){
             handleClick2={handleClick2}
             btn2_title={"reset"}
             options={["name","status"]}
-            />
+            /></div></div></div></div>
 
         <Table
             heading={["Sr no", "Name","Country Code","Dial Code", "Status", "Created At", "Action"]}

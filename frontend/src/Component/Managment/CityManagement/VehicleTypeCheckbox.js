@@ -19,7 +19,7 @@ export default function VehicletypeCheckbox({city,setCity, ele, i }) {
         setCity(preVal=>({...preVal,vehicleService:[...preVal.vehicleService,{[ele.name]:service}]}))
         
     }else{
-        console.log(city.vehicleService)
+        console.log(city)
         let arr = city.vehicleService?.filter((ele)=>{
             
             console.log(Object.keys(ele)[0])
@@ -31,7 +31,7 @@ export default function VehicletypeCheckbox({city,setCity, ele, i }) {
   }
 
   return (
-    <div className="vehicleService" key={i}>
+    <div style={{margin:"20px" }} key={i}>
       <div>
         <div className="form-check form-check-primary mb-3">
           <input
@@ -42,7 +42,7 @@ export default function VehicletypeCheckbox({city,setCity, ele, i }) {
           <label className="form-check-label">{ele.name}</label>
         </div>
       </div>
-      <div className="runMode">{runMode}</div>
+      <div style={{margin:"20px", display:"flex"}}>{runMode}</div>
     </div>
   );
 }

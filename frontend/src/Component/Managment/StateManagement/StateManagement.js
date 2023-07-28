@@ -75,14 +75,11 @@ export default function StateManagement (){
 
     return(
         <Management_container title={"STATE MANAGEMENT"}>
-            <div
-        style={{
-          position: "relative",
-          left: "80%",
-          zIndex: "2",
-          margin: "10px",
-        }}
-        >
+         <div class="row">
+    <div class="col-lg-13">
+      <div class="card">
+        <div class="card-body">
+    <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
             <BtnDark handleClick={handleClick} title={"Add State"} />
         </div>
         <Filter_Option 
@@ -94,7 +91,7 @@ export default function StateManagement (){
             handleClick2={handleClick2}
             btn2_title={"reset"}
             options={["name","status","country"]}
-            />
+            /></div></div></div></div>
             <Table
             heading={["Sr no", "Name","State Code","Country", "Status", "Created At", "Action"]}
             list={list}

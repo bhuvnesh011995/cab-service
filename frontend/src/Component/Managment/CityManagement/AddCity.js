@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import Management_container from "../../Common/Management_container";
-import "./addCity.css";
 import Text_Input from "../../Common/Inputs/Text_Input";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import VehicletypeCheckbox from "./VehicleTypeCheckbox";
@@ -80,10 +79,13 @@ export default function AddCity() {
   }
   return (
     <Management_container title={"Add City"}>
-      <div className="addCityContainar">
-        <div className="ml-5 mt-3">
+     <div class="row" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+    <div class="col-lg-10">
+      <div class="card">
+        <div class="card-body">
           <form>
-            <Selection_Input
+            <div class="row">
+              <Selection_Input
               options={options}
               setInput={setCity}
               input={city}
@@ -97,6 +99,8 @@ export default function AddCity() {
               lebel_text={"State : "}
               setKey={"state"}
             />
+            </div>
+            
             <Text_Input
               input={city}
               lebel_text={"Name :"}
@@ -116,12 +120,12 @@ export default function AddCity() {
               lebel_text={"Status : "}
               setKey={"status"}
             /></form>
-        </div>
-            <div className="allService">
+        
+            <div> <label>Vehicle Service</label>
                 {vehicleService}
             </div>
             <BtnDark handleClick={handleSubmit} title={"Add City"} />
-      </div>
+      </div></div></div></div>
     </Management_container>
   );
 }

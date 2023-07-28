@@ -47,7 +47,10 @@ export default function AddModel (){
     return(
         <Management_container
         title={"New Model"}>
-            <div className="ml-5 mt-3">
+            <div class="row" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
             <forn>
                 <Selection_Input 
                 options={options}
@@ -74,7 +77,7 @@ export default function AddModel (){
                 handleClick={handleSubmit}
                 />
                 {succMsg}
-            </forn>
+            </forn></div></div></div>
             </div>
 
         </Management_container>

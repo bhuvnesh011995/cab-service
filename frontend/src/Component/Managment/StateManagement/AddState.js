@@ -6,11 +6,16 @@ import BtnDark from "../../Common/Buttons/BtnDark";
 import { useNavigate } from "react-router-dom";
 
 
-
+let initialState = {
+    country:"",
+    name:"",
+    status:"",
+    stateCode:"",
+}
 const url = "http://localhost:8080/test/api/v1/state/"
 
 export default function AddState(){
-    const [state,setState] = useState();
+    const [state,setState] = useState(initialState);
     const [options,setOptions] = useState();
     const [successMsg,setSuccessMsg] = useState("")
     const navigate = useNavigate();
@@ -50,7 +55,10 @@ export default function AddState(){
     }
     return(
         <Management_container title={"Add State"}>
-            <div className="ml-5 mt-3">
+            <div class="row" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
             <form>
                 <Selection_Input
                 options={options}
@@ -60,11 +68,13 @@ export default function AddState(){
                 setKey={"country"}
                 />
                 <Text_Input 
+                input={state}
                 lebel_text={"Name : "}
                 setKey={"name"}
                 setInput={setState}
                 />
                 <Text_Input 
+                input={state}
                 lebel_text={"State Code : "}
                 setKey={"stateCode"}
                 setInput={setState}
@@ -84,7 +94,7 @@ export default function AddState(){
                 {successMsg} 
                 </div>
                 
-            </form>
+            </form></div></div></div>
             </div>
         </Management_container>
     )

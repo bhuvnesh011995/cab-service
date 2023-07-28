@@ -72,13 +72,11 @@ export default function CityManagement(){
     return(
         <Management_container title={"City Management"}>
            <img src={map} alt="map img" style={{width:"90%", marginLeft:"5%",height:'400px'}}/>
-           <div
-        style={{
-          position: "relative",
-          left: "80%",
-          zIndex: "2",
-          margin: "10px",
-        }}>
+           <div class="row">
+    <div class="col-lg-13">
+      <div class="card">
+        <div class="card-body">
+    <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
            
             <BtnDark handleClick={handleClick} title={"Add City"} />
       </div>
@@ -89,7 +87,7 @@ export default function CityManagement(){
           value={filter.text}
         />
         <BtnDark handleClick={handleSubmit} title={"Search"}/>
-    </div>
+    </div></div></div></div></div>
     <Table
         heading={["Sr no", "Name","State","Country", "Status", "Created At", "Action"]}
         list={list}

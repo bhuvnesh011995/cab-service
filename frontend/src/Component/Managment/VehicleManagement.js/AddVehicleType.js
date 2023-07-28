@@ -78,7 +78,10 @@ export default function AddVehicleType() {
 
   return (
     <Management_container title={"Add Vehicle Type"}>
-        <div className="ml-5 mt-3">
+         <div class="row" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-body">
             <form>
       <div className="col-sm-6">
         <div className="mt-4">
@@ -130,7 +133,7 @@ export default function AddVehicleType() {
                 handleClick={handleSubmit}
                 />
                 {successMsg}
-                </form>
+                </form></div></div></div>
     </div>
     </Management_container>
   );
