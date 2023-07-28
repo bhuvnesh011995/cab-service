@@ -208,9 +208,8 @@ exports.filterRentalFare = async function (req,res,next){
   }else{
     if(vehicleType){
       var vehicleTypeDoc =await db.vehicleType.findOne({name:vehicleType})
-      console.log(vehicleTypeDoc)
       vehicleType = vehicleTypeDoc._id
-    }
+    }else vehicleType=null
   
     if(country){
         let countryDoc = await db.country.findOne({name:country})
