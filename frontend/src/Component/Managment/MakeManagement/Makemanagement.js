@@ -4,6 +4,7 @@ import Management_container from "../../Common/Management_container";
 import Table from "../../Common/Table";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "../../../config/config";
 let initialFilter = {
   name: "",
   status: "",
@@ -12,7 +13,7 @@ export default function MakeManagement() {
   const [filter, setFilter] = useState(initialFilter);
   const [list, setList] = useState();
   const navigate = useNavigate();
-  const url = "http://localhost:8080/test/api/v1/make/filter/";
+  const url = BASE_URL+"/make/filter/";
   useEffect(() => {
     fetch(url, {
       method: "GET",

@@ -2,14 +2,14 @@ import { useState } from "react";
 import Wraper from "../common/wrapper";
 import Header from "../common/Header";
 import { useNavigate } from "react-router-dom";
-
+import BASE_URL from "../../../config/config";
 let initialData = {
   username: null,
   currentPassword: null,
   newPass: null,
   confirmpass: null,
 };
-let url = "http://localhost:8080/test/api/v1/auth/reset/";
+let url = BASE_URL+"/auth/reset/";
 
 export default function ResetPass() {
   const [userData, setUserData] = useState(initialData);

@@ -4,9 +4,10 @@ import Text_Input from "../../Common/Inputs/Text_Input";
 import { useNavigate } from "react-router-dom";
 import Management_container from "../../Common/Management_container";
 import BtnDark from "../../Common/Buttons/BtnDark";
+import BASE_URL from "../../../config/config";
 
 
-const url = 'http://localhost:8080/test/api/v1/make/'
+const url = BASE_URL+'/make/'
 export default function AddMake(){
     const [make,setMake] = useState({
 

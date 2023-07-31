@@ -4,6 +4,7 @@ import Management_container from "../../Common/Management_container";
 import Table from "../../Common/Table";
 import { useEffect, useState } from "react";
 import Filter_Option from "../../Common/Filter_option";
+import BASE_URL from "../../../config/config";
 
 const initialFilter = {
   country:"",
@@ -12,7 +13,7 @@ const initialFilter = {
   vehicleType:"",
   status:""
 }
-const url = "http://localhost:8080/test/api/v1/individualFare/"
+const url = BASE_URL+"/individualFare/"
 export default function IndividualFareManagement(){
     const [list,setList] = useState();
     const navigate = useNavigate();
@@ -52,7 +53,6 @@ export default function IndividualFareManagement(){
     function handleSubmit(e){
      
       e.preventDefault();
-       console.log("hiiii")
       fetch(`${url}?country=${
         filter.country+"&state="+
         filter.state+"&city="+
@@ -63,7 +63,6 @@ export default function IndividualFareManagement(){
         method:"GET"
       }).then(res=>res.json())
       .then(data=>{
-        console.log(data.allIndiFare)
         if(data.success){
           setList(
             data?.allIndiFare?.map((ele, index) => {

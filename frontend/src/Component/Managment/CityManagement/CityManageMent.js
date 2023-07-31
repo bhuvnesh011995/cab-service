@@ -4,6 +4,7 @@ import Management_container from "../../Common/Management_container";
 import map from "../../img/map.png"
 import { useEffect, useState } from "react";
 import Table from "../../Common/Table";
+import BASE_URL from "../../../config/config";
 
 const initialFilter ={
     text:""
@@ -13,7 +14,7 @@ export default function CityManagement(){
     const navigate = useNavigate();
     const [filter,setFilter] = useState(initialFilter);
     const [list,setList] = useState();
-  let url = "http://localhost:8080/test/api/v1/city/"
+  let url = BASE_URL+"/city/"
     useEffect(()=>{
       fetch(url,{
         method:"GET"

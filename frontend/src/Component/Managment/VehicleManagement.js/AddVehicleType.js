@@ -3,6 +3,7 @@ import Text_Input from "../../Common/Inputs/Text_Input";
 import Management_container from "../../Common/Management_container";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import BtnDark from "../../Common/Buttons/BtnDark";
+import BASE_URL from "../../../config/config";
 
 let initialInput = {
     img:"http://img.url.com",
@@ -13,7 +14,7 @@ let initialInput = {
     status:""
 }
 
-let url = "http://localhost:8080/test/api/v1/vehicletype/"
+let url = BASE_URL+"/vehicletype/"
 export default function AddVehicleType() {
 
     const [vehicletype,setVehicleType] = useState(initialInput)
@@ -21,13 +22,12 @@ export default function AddVehicleType() {
     const [successMsg,setSuccessMsg]= useState();
 
     useEffect(()=>{
-        fetch("http://localhost:8080/test/api/v1/runMode/",{
+        fetch(BASE_URL+"/runMode/",{
             method:"GET",
         }).then(res=>res.json())
         .then(data=>{
             if (data.success){
                 let arr = []
-                console.log(data)
                 data.data?.map(ele=>arr.push(ele.name))
                 setOptions(arr)
             }
@@ -42,7 +42,6 @@ export default function AddVehicleType() {
 
       function handleChange(e){
         e.preventDefault();
-        console.log(e.target.options)
         let value = [];
         for(let i=0;i<e.target.options.length;i++){
             if(e.target.options[i].selected){

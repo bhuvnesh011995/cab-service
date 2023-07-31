@@ -10,7 +10,7 @@ const runmodeConstant = require("./constant/runmode.constant")
 
 //database connection with confirmation
 
-mongoose.connect(dbConfig.URI+dbConfig.db)
+mongoose.connect(dbConfig.URI+dbConfig.DB)
 const db = mongoose.connection;
 db.on("error",()=>{
   console.log("Error while connecting to db")

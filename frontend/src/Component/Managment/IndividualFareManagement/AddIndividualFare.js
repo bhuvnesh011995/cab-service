@@ -7,7 +7,7 @@ import "./AddIndividualFare.css"
 import BtnDark from "../../Common/Buttons/BtnDark";
 import * as RiIcons from "react-icons/ri"
 import { IconContext } from "react-icons";
-
+import BASE_URL from "../../../config/config"
 
 const initialState = {
     country:"",
@@ -26,7 +26,7 @@ const initialState = {
 
 }
 
-const url = "http://localhost:8080/test/api/v1/individualFare/"
+const url = BASE_URL+"/individualFare/"
 export default function AddIndividualFare(){
     const [individualFare,setIndividualFare] =useState(initialState);
     const [succMsg,setSuccMsg]=useState("");
@@ -82,7 +82,7 @@ export default function AddIndividualFare(){
     function handleSubmit(e){
         e.preventDefault();
         console.log(individualFare)
-        fetch(url,{
+        fetch(BASE_URL+"individualFare/",{
             method:"POST",
             body:JSON.stringify(individualFare),
             headers: {
@@ -103,13 +103,15 @@ export default function AddIndividualFare(){
 
     function handleClick(e){
         e.preventDefault();
-        console.log("hii")
         setIndividualFare(preVal=>({...preVal,perKMCharge:[...preVal.perKMCharge,{minKM:null,maxKM:null,fare:null}]}))
     }
     return(
         
         <Management_container title={"Add New Individual Fare"}>
-            <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+            <div class="row" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
+    <div class="col-lg-10">
+      <div class="card">
+        <div class="card-body">
                 <form>
                     <Filter_Option 
                     input={individualFare}
@@ -178,7 +180,7 @@ export default function AddIndividualFare(){
                 handleClick={handleSubmit}
                 />
                 {succMsg}
-            </div>
+            </div></div></div></div>
             
         </Management_container>
     )

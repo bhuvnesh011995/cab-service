@@ -1,9 +1,10 @@
 import { useState } from "react";
 import Header from "../common/Header";
 import Wraper from "../common/wrapper";
-import { json, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
+import BASE_URL from "../../../config/config";
 
-let url = "http://localhost:8080/test/api/v1/auth/signIn";
+let url = BASE_URL+"/auth/signIn";
 
 export default function SignIn() {
   const [userData, setUserData] = useState({

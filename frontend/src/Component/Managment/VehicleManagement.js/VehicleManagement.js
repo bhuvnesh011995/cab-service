@@ -5,8 +5,9 @@ import BtnDark from "../../Common/Buttons/BtnDark";
 import Table from "../../Common/Table";
 import Text_Input from "../../Common/Inputs/Text_Input";
 import Selection_Input from "../../Common/Inputs/Selection_input";
+import BASE_URL from "../../../config/config";
 
-let url = "http://localhost:8080/test/api/v1/vehicletype/filter/"
+let url = BASE_URL+"/vehicletype/filter/"
 
 const initialFilter = {
   name:"",
@@ -20,7 +21,7 @@ export default function VehicleManagement(){
     const navigate = useNavigate()
 
     useEffect(()=>{
-        fetch("http://localhost:8080/test/api/v1/runMode/",{
+        fetch(BASE_URL+"/runMode/",{
             method:"GET",
         }).then(res=>res.json())
         .then(data=>{

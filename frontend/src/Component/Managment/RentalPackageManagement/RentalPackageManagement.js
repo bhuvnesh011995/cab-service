@@ -4,14 +4,15 @@ import Management_container from "../../Common/Management_container";
 import { useNavigate } from "react-router-dom";
 import Table from "../../Common/Table";
 import Filter_Option from "../../Common/Filter_option";
+import BASE_URL from "../../../config/config";
 
 
 const initialFilter = {
     name:"",
     status:""
 }
-const url = "http://localhost:8080/test/api/v1/rentalPackage/filter/"
-export default function RentalFareManagement(){
+const url = BASE_URL+"/rentalPackage/filter/"
+export default function RentalPackageManagement(){
     const [filter,setFilter] = useState(initialFilter);
     const navigate = useNavigate();
     const [list,setList] = useState();
@@ -22,7 +23,6 @@ export default function RentalFareManagement(){
         .then((data) =>{
         
         if(data.success){
-            console.log(data)
           setList(
             data?.packages?.map((ele, index) => {
               return (

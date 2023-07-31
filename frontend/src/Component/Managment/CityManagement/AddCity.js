@@ -4,6 +4,7 @@ import Management_container from "../../Common/Management_container";
 import Text_Input from "../../Common/Inputs/Text_Input";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import VehicletypeCheckbox from "./VehicleTypeCheckbox";
+import BASE_URL from "../../../config/config";
 
 let initialInput = {
   name: "",
@@ -19,7 +20,7 @@ export default function AddCity() {
   const [state, setState] = useState();
   const[vehicleService,setVehicleService] = useState();
   useEffect(() => {
-    fetch("http://localhost:8080/test/api/v1/country/", {
+    fetch(BASE_URL+"/country/", {
       method: "GET",
     })
       .then((res) => res.json())
@@ -29,7 +30,7 @@ export default function AddCity() {
         setOptions(arr);
       });
 
-      fetch("http://localhost:8080/test/api/v1/vehicletype/",{
+      fetch(BASE_URL+"/vehicletype/",{
         method:"GET"
       }).then(res=>res.json())
       .then(data=>{
@@ -57,7 +58,7 @@ export default function AddCity() {
   useEffect(() => {
     if (city.country) {
       fetch(
-        "http://localhost:8080/test/api/v1/state/?country=" + city.country,
+        BASE_URL+"/state/?country=" + city.country,
         {
           method: "GET",
         }

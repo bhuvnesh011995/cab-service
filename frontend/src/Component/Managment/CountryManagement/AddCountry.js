@@ -3,6 +3,7 @@ import Management_container from "../../Common/Management_container";
 import Text_Input from "../../Common/Inputs/Text_Input";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import BtnDark from "../../Common/Buttons/BtnDark";
+import BASE_URL from "../../../config/config";
 
 const initialState = {
     name:"",
@@ -14,7 +15,7 @@ export default function Addcountry(){
     const [country,setCountry] = useState(initialState)
     const [successMsg,setSuccessMsg] = useState();
 
-    const url ="http://localhost:8080/test/api/v1/country/"
+    const url =BASE_URL+"/country/"
     function handleSubmit(){
         fetch(url,{
             method:"POST",

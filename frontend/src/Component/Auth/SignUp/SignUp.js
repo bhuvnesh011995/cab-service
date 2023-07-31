@@ -2,8 +2,9 @@ import { useState } from "react";
 import Header from "../common/Header";
 import Wraper from "../common/wrapper";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "../../../config/config";
 
-let url = "http://localhost:8080/test/api/v1/auth/signUp";
+let url = BASE_URL+"/auth/signUp";
 let initState = {
   name: null,
   username: null,

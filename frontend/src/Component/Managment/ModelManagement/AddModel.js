@@ -3,6 +3,7 @@ import Text_Input from "../../Common/Inputs/Text_Input";
 import Management_container from "../../Common/Management_container";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import BtnDark from "../../Common/Buttons/BtnDark";
+import BASE_URL from "../../../config/config";
 
 export default function AddModel (){
     const [model,setModel] = useState({
@@ -14,7 +15,7 @@ export default function AddModel (){
     const [succMsg,setSuccMsg]=useState("");
 
     useEffect(()=>{
-        fetch("http://localhost:8080/test/api/v1/make/",{
+        fetch(BASE_URL+"/make/",{
             method:"GET"
         }
     ).then(res=>res.json())
@@ -26,7 +27,7 @@ export default function AddModel (){
         setOptions(arr)
     })
     },[])
-    const url = "http://localhost:8080/test/api/v1/model/"
+    const url = BASE_URL+"/model/"
     function handleSubmit(e){
         fetch(url,{
             method:"POST",

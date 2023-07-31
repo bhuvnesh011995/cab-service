@@ -21,9 +21,10 @@ import VehicleManagement from './Component/Managment/VehicleManagement.js/Vehicl
 import AddVehicleType from './Component/Managment/VehicleManagement.js/AddVehicleType';
 import IndividualFareManagement from './Component/Managment/IndividualFareManagement/IndividualFareManagement';
 import AddIndividualFare from './Component/Managment/IndividualFareManagement/AddIndividualFare';
-import RentalFareManagement from './Component/Managment/RentalPackageManagement/RentalPackageManagement';
-import RentalPackageManagement from './Component/Managment/RentalFareManagement/RentalFareManagement';
+import RentalPackageManagement from './Component/Managment/RentalPackageManagement/RentalPackageManagement';
+import RentalFareManagement from './Component/Managment/RentalFareManagement/RentalFareManagement';
 import AddRentalPackage from './Component/Managment/RentalPackageManagement/AddRentalPackage';
+import AddRentalFare from './Component/Managment/RentalFareManagement/AddRentalFare';
 
 const router = createBrowserRouter([
   {
@@ -47,7 +48,7 @@ const router = createBrowserRouter([
     {path:"individualFareManagement",element:< IndividualFareManagement/>},
     {path:"addIndividualFare",element:< AddIndividualFare/>},
     {path:"rentalFareManagement",element:< RentalFareManagement/>},
-    {path:"addRentalFare",element:<div>rental fare management</div>},
+    {path:"addRentalFare",element:<AddRentalFare/>},
     {path:"rentalPackage",element:<RentalPackageManagement />},
     {path:"addPackage",element:<AddRentalPackage />},
     ]

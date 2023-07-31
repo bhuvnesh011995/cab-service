@@ -4,6 +4,7 @@ import Selection_Input from "../../Common/Inputs/Selection_input";
 import Text_Input from "../../Common/Inputs/Text_Input";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import { useNavigate } from "react-router-dom";
+import BASE_URL from "../../../config/config";
 
 
 let initialState = {
@@ -12,7 +13,7 @@ let initialState = {
     status:"",
     stateCode:"",
 }
-const url = "http://localhost:8080/test/api/v1/state/"
+const url = BASE_URL+"/state/"
 
 export default function AddState(){
     const [state,setState] = useState(initialState);
@@ -22,7 +23,7 @@ export default function AddState(){
 
 
     useEffect(()=>{
-        fetch("http://localhost:8080/test/api/v1/country/",{
+        fetch(BASE_URL+"/country/",{
         method:"GET"
       }).then(res=>res.json())
       .then(data=>{

@@ -5,6 +5,7 @@ import Date_input from "./Inputs/Date_input";
 import BtnDark from "./Buttons/BtnDark";
 import Date_range from "./Inputs/Date_range";
 import { useEffect, useState } from "react";
+import BASE_URL from "../../config/config";
 
 export default function Filter_Option({
  
@@ -23,10 +24,11 @@ export default function Filter_Option({
   let [stateOption,setStateOption] = useState([]);
   let [cityOption,setCityOption] = useState([]);
   const [vehicleTypeOption,setVehicleTypeOption] = useState([]);
+  const [packages,setPackages] = useState([]);
 
   useEffect(()=>{
       if(options.includes("country")){
-      fetch("http://localhost:8080/test/api/v1/country/",{
+      fetch(BASE_URL+"/country/",{
         method:"GET"
       }).then(res=>res.json())
       .then(data=>{
@@ -38,7 +40,7 @@ export default function Filter_Option({
     }
 
     if(options.includes("vehicleType")){
-      fetch("http://localhost:8080/test/api/v1/vehicletype/",{
+      fetch(BASE_URL+"/vehicletype/",{
         method:"GET"
       }).then(res=>res.json())
       .then(data=>{
@@ -48,11 +50,21 @@ export default function Filter_Option({
       }
       )
     }
+
+    if(options.includes("package")){
+      fetch(BASE_URL+"/rentalPackage/",{
+        method:"GET"
+    }).then(res=>res.json())
+    .then(data=>{
+        let arr = data.packages.map(ele=>ele.name)
+        setPackages(arr)
+    })
+    }
   },[])
 
   useEffect(()=>{
     if(options.includes("state")){
-      fetch("http://localhost:8080/test/api/v1/state/?country="+input?.country,{
+      fetch(BASE_URL+"/state/?country="+input?.country,{
         method:"GET"
       }).then(res=>res.json())
       .then(data=>
@@ -67,7 +79,7 @@ export default function Filter_Option({
 
   useEffect(()=>{
     if(options.includes("city")&&input.country&&input.state){
-      fetch(`http://localhost:8080/test/api/v1/city/${input.country}/${input.state}`,{
+      fetch(BASE_URL+`/city/${input.country}/${input.state}`,{
         method:"GET"
       }).then(res=>res.json())
       .then(data=>
@@ -80,13 +92,19 @@ export default function Filter_Option({
     }else setCityOption([])
   },[input?.country,input?.state])
 
-console.log(input)
-
   return (
     <form style={{margin:"50px"}}>
       <div className="row">
         <div className="col-lg-2 inputField" >
-
+        {options.includes("package")&&(
+            <Selection_Input
+            options={packages}
+              input={input}
+              setInput={setInput}
+              lebel_text={"Package : "}
+              setKey={"package"}
+            />
+          )}
 
           {options.includes("country")&&(
             <Selection_Input

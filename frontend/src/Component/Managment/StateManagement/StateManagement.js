@@ -4,6 +4,7 @@ import Filter_Option from "../../Common/Filter_option";
 import Management_container from "../../Common/Management_container";
 import { useNavigate } from "react-router-dom";
 import Table from "../../Common/Table";
+import BASE_URL from "../../../config/config";
 
 const initialFilter = {
     name:"",
@@ -15,7 +16,7 @@ export default function StateManagement (){
     const [filter,setFilter]  = useState(initialFilter);
     const [list,setList] = useState();
     const navigate = useNavigate();
-    const url = "http://localhost:8080/test/api/v1/state/filter/";
+    const url = BASE_URL+"/state/filter/";
 
     useEffect(() => {
         fetch(url, {

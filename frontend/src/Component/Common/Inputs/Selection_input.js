@@ -14,7 +14,6 @@ export default function Selection_Input({
     )
   })
 
-  console.log(input)
 
   return (
       <div className="mb-3">

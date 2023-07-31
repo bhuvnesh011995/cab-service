@@ -16,6 +16,7 @@ export default function VehicletypeCheckbox({city,setCity, ele, i }) {
   function handleChange(e) {
     setChecked(!checked)
     if(e.target.checked){
+      console.log(city)
         setCity(preVal=>({...preVal,vehicleService:[...preVal.vehicleService,{[ele.name]:service}]}))
         
     }else{

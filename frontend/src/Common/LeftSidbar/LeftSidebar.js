@@ -1,15 +1,17 @@
-import { Link } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import dashboardrows from "../../data/dashboardrows";
 
 export default function LeftSidebar(){
+    let {pathname} = useLocation();
     let list = dashboardrows.map((ele,i)=>{
         return(
-            <li>
-            <Link to={ele.to} className="waves-effect">
+            <NavLink to={ele.to}>
+            <li className={pathname === ele.to ? "mm-active" : "waves-effect"}>
+            <a className={pathname === ele.to ? "waves-effect active" : "waves-effect"}>
                 <i className={ele.icon}></i>
                 <span key="t-dashboards">{ele.name}</span>
-            </Link>
-            </li>
+            </a>
+            </li></NavLink>
         )
     })
     return(

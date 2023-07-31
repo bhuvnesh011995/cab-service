@@ -1,4 +1,6 @@
+const dotenv = require("dotenv")
+dotenv.config();
 module.exports = {
-    db:"testdb",
-    URI: "mongodb://"
+    DB:process.env.DB_NAME,
+    URI:process.env.DB_URI
 }
