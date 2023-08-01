@@ -34,12 +34,75 @@
   
 //   console.log(stateList)
 
+const mongoose = require("mongoose")
+const {Schema,model} = mongoose;
 
+mongoose.connect("mongodb://0.0.0.0/practice")
 
-let express = require("express")
+const db = mongoose.connection
+db.on("error",()=>console.log("error while connection"))
+db.once("open",()=>console.log("connectied to db"))
 
-let app = express()
-
-app.listen(8081,()=>{
-  console.log("server is up at 8081")
+const schema = new Schema({
+  file:{
+    data:Buffer,
+    contentType:String
+  },
+  name:String
+},{
+  collection:"NEW"
 })
+
+let NEW = model("NEW",schema)
+
+
+
+const multer = require("multer")
+
+const express = require("express");
+const bodyParser = require("body-parser")
+
+const app = express();
+
+app.use(
+  bodyParser.urlencoded({
+    extended: true,
+  })
+)
+
+app.listen(8081,()=>console.log("connection started"))
+
+const storage = multer.diskStorage({
+  destination:(req,file,cb)=>{
+    cb(null,"upload")
+  },
+  filename:(req,file,cb)=>{
+    cb(null,Date.now()+"-"+file.originalname)
+  }
+})
+
+const upload = multer({storage:storage})
+
+app.get("/",async (req,res)=>{
+ const data = await NEW.findOne({})
+ res.json(data.file.data)
+})
+
+app.post("/",upload.single("image"),async (req,res,next)=>{
+  const data = req.file.buffer;
+  const base64data = data.toString("base64");
+  let obj = {
+    file:{
+      data:base64data,
+      contentType: req.file.mimetype
+    },
+    name:req.file.orignalname
+  }
+ const img =  await NEW.create(obj)
+
+ res.status(200).json({
+  success:true,
+  data:img
+ })
+})
+

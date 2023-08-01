@@ -40,9 +40,6 @@ exports.addRentalFare = async function (req, res, next) {
         adminCommission: adminCommission,
         status:status
     })
-
-    console.log(fare)
-
     const allExtraCharge = await getId(perKMCharge)
 
   allExtraCharge.forEach(async (ele)=>{
@@ -164,6 +161,7 @@ exports.addRentalFare = async function (req, res, next) {
 
       res.status(200).json({
         success:true,
+        message:"Fare Added",
         data:fare
       })
 };

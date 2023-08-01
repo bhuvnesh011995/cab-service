@@ -25,6 +25,7 @@ import RentalPackageManagement from './Component/Managment/RentalPackageManageme
 import RentalFareManagement from './Component/Managment/RentalFareManagement/RentalFareManagement';
 import AddRentalPackage from './Component/Managment/RentalPackageManagement/AddRentalPackage';
 import AddRentalFare from './Component/Managment/RentalFareManagement/AddRentalFare';
+import Practice from './practice';
 
 const router = createBrowserRouter([
   {
@@ -51,11 +52,9 @@ const router = createBrowserRouter([
     {path:"addRentalFare",element:<AddRentalFare/>},
     {path:"rentalPackage",element:<RentalPackageManagement />},
     {path:"addPackage",element:<AddRentalPackage />},
+    {path:"practice",element:<Practice/>}
     ]
   },
-    
-    
-    
 ])
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

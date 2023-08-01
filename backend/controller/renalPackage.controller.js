@@ -3,7 +3,6 @@ const db = require("../model/index")
 
 exports.addPackage = async function(req,res,next){
     const {name,maxDuration,maxDistance,status} = req.body;
-    console.log(maxDistance)
     const package = await db.rentalPackage.create({
         name:name,
         maxDuration:maxDuration,
@@ -13,6 +12,7 @@ exports.addPackage = async function(req,res,next){
 
     res.status(200).json({
         success:true,
+        message:"package Added",
         package:package
     })
 }

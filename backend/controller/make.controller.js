@@ -4,8 +4,6 @@ exports.addMake = async function (req, res, next) {
   let { name, status } = req.body;
 
   try {
-    console.log(name)
-    console.log(status)
     const make = await Make.create({
       name: name,
       status: status,

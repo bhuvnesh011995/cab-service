@@ -81,8 +81,7 @@ export default function AddIndividualFare(){
     }
     function handleSubmit(e){
         e.preventDefault();
-        console.log(individualFare)
-        fetch(BASE_URL+"individualFare/",{
+        fetch(BASE_URL+"/individualFare/",{
             method:"POST",
             body:JSON.stringify(individualFare),
             headers: {

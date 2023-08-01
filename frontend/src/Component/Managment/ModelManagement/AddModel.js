@@ -52,7 +52,7 @@ export default function AddModel (){
     <div class="col-lg-6">
       <div class="card">
         <div class="card-body">
-            <forn>
+            <form>
                 <Selection_Input 
                 options={options}
                 setInput={setModel}
@@ -78,7 +78,7 @@ export default function AddModel (){
                 handleClick={handleSubmit}
                 />
                 {succMsg}
-            </forn></div></div></div>
+            </form></div></div></div>
             </div>
 
         </Management_container>

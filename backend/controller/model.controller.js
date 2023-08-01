@@ -6,11 +6,9 @@ const Make= require("../model/make.model")
 exports.addModel = async function(req,res,next){
     const {name,make,status,year} = req.body
 
-    console.log(make)
 try{ 
     const makeDoc = await Make.findOne({name:make})
 
-    console.log(makeDoc)
     const model = await Model.create({
         name:name,
         status:status,

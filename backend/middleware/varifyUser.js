@@ -12,8 +12,6 @@ let varifyUser = async function(req,res,next){
     let userDetails = await admin.findOne({
         username: username,
       });
-      console.log(userDetails)
-      console.log(password) 
         let isValid = bcrypt.compareSync(password,userDetails.password)
 
         if(!isValid) res.status(404).json({

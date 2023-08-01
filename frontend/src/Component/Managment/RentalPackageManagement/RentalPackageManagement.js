@@ -46,10 +46,34 @@ export default function RentalPackageManagement(){
 
     function handleClick(e){
         e.preventDefault();
+        navigate("/addPackage")
     }
 
     function handleSubmit(e){
         e.preventDefault();
+
+        fetch(`${url}?name=${filter.name}&status=${filter.status}`,{
+          method:"GET"
+        }).then(res=>res.json())
+        .then(data=>{
+          if(data.success){
+            setList(
+              data?.packages?.map((ele, index) => {
+                return (
+                  <tr key={index}>
+                    <td>{index + 1}</td>
+                    <td>{ele.name}</td>
+                    <td>{ele.maxDuration || "NA"}</td>
+                    <td>{ele.maxDistance.$numberDecimal || "NA"}</td>
+                    <td>{ele.status}</td>
+                    <td>{ele.createdAt || "NA"}</td>
+                    <td>""</td>
+                  </tr>
+                );
+              })
+            )
+          }
+        })
     }
 
     function handleClick2(e){

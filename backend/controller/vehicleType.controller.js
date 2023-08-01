@@ -27,7 +27,6 @@ exports.addVehicleType = async function (req, res, next) {
 };
 
 exports.getAllVehicle = async function (req, res, next) {
-  console.log("hiiiiiii")
   let vehicleTypes = await db.vehicleType
     .find({})
     .select({ name: 1, _id: 0 })
@@ -49,11 +48,9 @@ exports.filterVehicleType = async function (req, res, next) {
   }else{
     if (runMode) {
         const runModeDoc = await db.runMode.findOne({name:runMode})
-        console.log(runModeDoc)
         runMode= runModeDoc._id;
   }else runMode = null;
 
-  console.log(runMode)
   vehicleType= await db.vehicleType.find({
     $or:[
         {name:name},

@@ -17,12 +17,10 @@ exports.addFare = async function (req, res, next) {
     perKMCharge,
     status
   } = req.body;
-  console.log(req.body)
    let vehicleTypeDoc = await db.vehicleType.findOne({name:vehicleType})
 
    if(!status.length) status = undefined
   if (!state) {
-    console.log(country)
     var countryDoc = await db.country.findOne({ name: country });
     
     var fare = await db.indiFareCountry.create({
@@ -148,7 +146,6 @@ var perkmcharge = await db.perKMCharge.findOne({
     }
     return perkmcharge._id
     }))
-    console.log("arr2",arr)
 
     return arr
   }
@@ -219,9 +216,7 @@ exports.filterIndiFare = async function(req,res,next){
   }else vehicleType = null
 
   if(country.length){
-    console.log(country.length)
       let countryDoc = await db.country.findOne({name:country})
-      console.log(countryDoc)
       country = countryDoc._id
   }else country = null
   if(state.length){

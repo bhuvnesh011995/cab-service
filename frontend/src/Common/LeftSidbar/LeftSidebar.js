@@ -5,13 +5,12 @@ export default function LeftSidebar(){
     let {pathname} = useLocation();
     let list = dashboardrows.map((ele,i)=>{
         return(
-            <NavLink to={ele.to}>
             <li className={pathname === ele.to ? "mm-active" : "waves-effect"}>
-            <a className={pathname === ele.to ? "waves-effect active" : "waves-effect"}>
+            <Link to={ele.to} className={pathname === ele.to ? "waves-effect active" : "waves-effect"}>
                 <i className={ele.icon}></i>
                 <span key="t-dashboards">{ele.name}</span>
-            </a>
-            </li></NavLink>
+            </Link>
+            </li>
         )
     })
     return(
