@@ -1,12 +1,11 @@
 const app =  require("express")();
-const admin = require("./model/admin.model")
-const services = require("./model/services.model")
+const {admin,service,setting} = require("./model/index")
 const dbConfig = require("./config/db.config")
 const mongoose = require("mongoose")
 const bodyparser = require("body-parser")
 const bcrypt = require("bcrypt")
 const RunMode = require("./model/runMode.model")
-const runmodeConstant = require("./constant/runmode.constant")
+const runmodeConstant = require("./constant/runmode.constant");
 
 //database connection with confirmation
 
@@ -31,7 +30,7 @@ async function init(){
     //   },
     // {name:"C"},{name:"D"}])
     
-    let service  = await services.find()
+    let services  = await service.find()
     
     
       let user = await admin.findOne({status:"ACTIVE"});
@@ -48,7 +47,7 @@ async function init(){
       }
       else{
         console.log("admin already present")
-        // service.forEach(async (ele)=>{
+        // services.forEach(async (ele)=>{
         //   console.log(ele)
         //   // await admin.updateOne({username:admin},{$push:{service:ele._id}})
         // })
@@ -57,8 +56,18 @@ async function init(){
         // await services.updateMany({},{$push:{admin:adminUser._id}})
     
       }
-    }
 
+
+      // checking if setting page exist if not create one
+      let settingPage = await setting.findOne({})
+
+      if(!settingPage){
+        await setting.create({})
+        console.log("empty setting page created")
+      }else{
+        console.log("setting page already exist")
+      }
+    }
 
 
     // add run mode
@@ -89,4 +98,6 @@ async function init(){
     require("./routes/individualFare.route")(app)
     require("./routes/rentalPackage.route")(app)
     require("./routes/rentalFare.route")(app)
+    require('./routes/setting.route')(app)
+    require('./routes/page.route')(app)
 module.exports = app;

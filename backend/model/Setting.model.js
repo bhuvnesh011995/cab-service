@@ -1,71 +1,203 @@
 const {Schema,model} = require("mongoose")
 
 const schema = new Schema({
-    fromEmail:String,
+    fromEmail:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    siteTitle:String,
+    siteTitle:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    copyRightText:String,
+    copyRightText:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    fackbookURL:String,
+    fackbookURL:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    twitterURL:String,
+    twitterURL:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    contactAddress:String,
+    contactAddress:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    phone:String,
+    phone:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    googglePlusURL:String,
+    googglePlusURL:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    youtubeURL:String,
+    youtubeURL:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    fromName:String,
+    fromName:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    bccEmail:String,
+    bccEmail:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    minDistance:String,
+    minDistance:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    maxNoOfDriver:String,
+    maxNoOfDriver:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    cancelTimeDuration:String,
+    cancelTimeDuration:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    minWalletAmountIndiBooking:String,
+    minWalletAmountIndiBooking:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    minWallatAmountSharingBooking:String,
+    minWallatAmountSharingBooking:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    forgetPasswordEmail:String,
+    forgetPasswordEmail:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    driverMaxGoHome:String,
+    driverMaxGoHome:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    driverGoHomeExpireTime:String,
+    driverGoHomeExpireTime:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    driverGoHomeSearchingDistance:String,
+    driverGoHomeSearchingDistance:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    outstationDriverAllowanceOneway:String,
+    outstationDriverAllowanceOneway:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    outstationDriverAllowanceRoundTrip:String,
+    outstationDriverAllowanceRoundTrip:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    outstationNightChargeOneway:String,
+    outstationNightChargeOneway:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    outstationNightChargesRoundTrip:String,
+    outstationNightChargesRoundTrip:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    outstaionNightFromTime:String,
+    outstaionNightFromTime:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    outstaionNightToTime:String,
+    outstaionNightToTime:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    outstationDriverAllowanceOnewayTime:String,
+    outstationDriverAllowanceOnewayTime:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    outstationDriverAllowanceRoundTripTime:String,
+    outstationDriverAllowanceRoundTripTime:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    outstationOnewayTripBaseKMPH:String,
+    outstationOnewayTripBaseKMPH:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    outstationOnewayTripBaseTime:String,
+    outstationOnewayTripBaseTime:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    outstationRoundTripBaseKMPH:String,
+    outstationRoundTripBaseKMPH:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    outstationRoundTripBaseTime:String,
+    outstationRoundTripBaseTime:{
+        type:String,
+        require:true,
+        default:""
+    },
 
-    outstaionIncreaseKM:String,
+    outstaionIncreaseKM:{
+        type:String,
+        require:true,
+        default:""
+    },
 
 },{
     collection:"Setting"

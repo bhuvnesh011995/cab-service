@@ -17,5 +17,10 @@ module.exports ={
     rentalFareCountry:require('./rentalFare/rentalFare.country.model'),
     rentalFareState:require("./rentalFare/rentalFare.state.model"),
     rentalFareCity:require('./rentalFare/rentalFare.city.model'),
-    rentalPackage:require("./rentalFare/rentalPackage.model")
+    rentalPackage:require("./rentalFare/rentalPackage.model"),
+    setting:require("./Setting.model"),
+    page:require("./pageManagement.model"),
+    rider:require("./rider.model"),
+    wallet:require("./wallet.model")
 }
+

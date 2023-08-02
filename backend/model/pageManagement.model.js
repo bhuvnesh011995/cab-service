@@ -23,4 +23,14 @@ const schema = new Schema({
     collection:"Page"
 })
 
+
+  schema.index({
+    name:"text",
+    metaDescription:"text",
+    metaKey:"text"
+})
+
+
+
+
 module.exports = model("Page",schema)

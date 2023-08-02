@@ -13,16 +13,6 @@ const schema = new Schema({
         type:String,
         require:true
     },
-    id:[{
-        idName:{
-            type:String,
-            require:true
-        },
-        idNumber:{
-            type:String,
-            require:true
-        }
-    }],
     email:{
         type:String
     },
@@ -40,6 +30,8 @@ const schema = new Schema({
     state:{type:Schema.Types.ObjectId,ref:"State"},
 
     city:{type:Schema.Types.ObjectId,ref:"City"},
+
+    wallet:{tye:Schema.Types.ObjectId,ref:"Wallet"},
 
     address:{
         type:String,
@@ -66,7 +58,15 @@ const schema = new Schema({
     }
 
 },{
+    timestamps: true,
     collection:"Rider"
+})
+
+schema.index({
+    firstName:"text",
+    lastName:"text",
+    email:"text",
+    phone:"text"
 })
 
 
