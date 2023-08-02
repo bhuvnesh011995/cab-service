@@ -6,7 +6,7 @@ export default function LeftSidebar(){
     let list = dashboardrows.map((ele,i)=>{
         return(
             <li className={pathname === ele.to ? "mm-active" : "waves-effect"}>
-            <Link to={ele.to} className={pathname === ele.to ? "waves-effect active" : "waves-effect"}>
+            <Link to={ele.to} className="waves-effect">
                 <i className={ele.icon}></i>
                 <span key="t-dashboards">{ele.name}</span>
             </Link>
@@ -22,7 +22,6 @@ export default function LeftSidebar(){
                     <div id="sidebar-menu">
                         {/* <!-- Left Menu Start --> */}
                         <ul className="metismenu list-unstyled" id="side-menu">
-                            <li className="menu-title" key="t-menu">Menu</li>
 
                             {/* <li>
                                 <Link to="/dashboard" className="waves-effect">

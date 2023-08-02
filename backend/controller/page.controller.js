@@ -29,7 +29,15 @@ exports.addPage = async function(req,res,next){
 exports.filterPage = async function (req,res,next){
     const {search} = req.query
 
-    let pages = await db.page.find({
+    if(!search){
+        let allPages = await db.page.find({})
+
+    res.status(200).json({
+        success:true,
+        pages:allPages
+    })
+    }else{
+         let pages = await db.page.find({
         $text:{
             $search:search
         }
@@ -39,6 +47,9 @@ exports.filterPage = async function (req,res,next){
         success:true,
         pages:pages
     })
+    }
+
+   
 }
 
 

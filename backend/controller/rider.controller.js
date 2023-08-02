@@ -69,7 +69,7 @@ exports.addRider = async function (req, res, next) {
 
 exports.getAllRider = async function(req,res,next){
     let riders = await db.rider.find({}).populate([
-        "country","state","city"
+        "country","state","city","wallet"
     ])
 
     res.status(200).json({

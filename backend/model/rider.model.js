@@ -31,7 +31,7 @@ const schema = new Schema({
 
     city:{type:Schema.Types.ObjectId,ref:"City"},
 
-    wallet:{tye:Schema.Types.ObjectId,ref:"Wallet"},
+    wallet:{type:Schema.Types.ObjectId,ref:"Wallet"},
 
     address:{
         type:String,

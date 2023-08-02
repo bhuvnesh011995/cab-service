@@ -26,6 +26,11 @@ import RentalFareManagement from './Component/Managment/RentalFareManagement/Ren
 import AddRentalPackage from './Component/Managment/RentalPackageManagement/AddRentalPackage';
 import AddRentalFare from './Component/Managment/RentalFareManagement/AddRentalFare';
 import Practice from './practice';
+import Setting from './Component/Setting/Setting';
+import AddPage from './Component/Managment/PageManagement/AddPage';
+import PageManagement from './Component/Managment/PageManagement/PageManagement';
+import RiderManagement from './Component/Managment/RiderManagement/RiderManagement';
+import AddRider from './Component/Managment/RiderManagement/AddRider';
 
 const router = createBrowserRouter([
   {
@@ -52,7 +57,12 @@ const router = createBrowserRouter([
     {path:"addRentalFare",element:<AddRentalFare/>},
     {path:"rentalPackage",element:<RentalPackageManagement />},
     {path:"addPackage",element:<AddRentalPackage />},
-    {path:"practice",element:<Practice/>}
+    {path:"practice",element:<Practice/>},
+    {path:"setting",element:<Setting/>},
+    {path:"pageManagement", element:<PageManagement/>},
+    {path:"addPage",element:<AddPage/>},
+    {path:"riderManagement",element:<RiderManagement/>},
+    {path:"addRider",element:<AddRider/>}
     ]
   },
 ])

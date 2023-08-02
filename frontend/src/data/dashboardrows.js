@@ -55,29 +55,33 @@ export default [
             name:"Rental Package Management",
             to:"/rentalPackage"
     },
-    {
-            name:"Outstation Fare Management",
-            to:"/"
-    },
-    {
-            name:"Outstation Oneway Management",
-            to:"/"
-    },
+//     {
+//             name:"Outstation Fare Management",
+//             to:"/"
+//     },
+//     {
+//             name:"Outstation Oneway Management",
+//             to:"/"
+//     },
     {
             name:"Setting Management",
-            to:"/"
+            to:"/setting",
+            icon:"bi bi-gear"
     },
     {
             name:"Page Management",
-            to:"/"
+            to:"/pageManagement",
+            icon:"bi bi-file-earmark"
     },
     {
             name:"Rider Management",
-            to:"/"
+            to:"/riderManagement",
+            icon:"bi bi-people"
     },
     {
             name:"Driver Management",
-            to:"/"
+            to:"/",
+            icon:"bi bi-person-rolodex"
     },
     {
             name:"Booking Management",
