@@ -1,7 +1,7 @@
 export default function Text_Input({input,type, lebel_text, setKey, setInput }) {
   
   return (
-    <div class="mb-3">
+    <div class="m-3">
       <label class="form-label">
         {lebel_text}
       </label>

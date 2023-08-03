@@ -2,14 +2,17 @@ const app =  require("express")();
 const {admin,service,setting} = require("./model/index")
 const dbConfig = require("./config/db.config")
 const mongoose = require("mongoose")
-const bodyparser = require("body-parser")
+const bodyParser = require("body-parser")
 const bcrypt = require("bcrypt")
 const RunMode = require("./model/runMode.model")
 const runmodeConstant = require("./constant/runmode.constant");
+const cors = require("cors")
 
 //database connection with confirmation
 
-mongoose.connect(dbConfig.URI+dbConfig.DB)
+mongoose.connect(dbConfig.URI+dbConfig.DB,{
+  serverSelectionTimeoutMS: 5000
+})
 const db = mongoose.connection;
 db.on("error",()=>{
   console.log("Error while connecting to db")
@@ -84,8 +87,12 @@ async function init(){
     // addRunMode(runmodeConstant)
 
 
+    app.use(bodyParser.urlencoded({extended: false}))
 
-    app.use(bodyparser.json())
+    app.use(bodyParser.json())
+
+    app.use(cors());
+
     require("./routes/auth.route")(app)
     require("./routes/admin.route")(app)
     require("./routes/make.route")(app)
@@ -100,4 +107,5 @@ async function init(){
     require("./routes/rentalFare.route")(app)
     require('./routes/setting.route')(app)
     require('./routes/page.route')(app)
+    require("./routes/rider.route")(app)
 module.exports = app;

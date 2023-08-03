@@ -12,9 +12,10 @@ exports.addRider = async function (req, res, next) {
     country,
     state,
     city,
-    address,
+    place,
     pincode,
     gender,
+    status,
   } = req.body;
 
   let wallet = await db.wallet.create({})
@@ -47,12 +48,14 @@ exports.addRider = async function (req, res, next) {
     mobile: mobile,
     password: bcrypt.hashSync(password, 8),
     DOB: DOB,
-    country:countryId,
-    state:stateId,
-    city:cityId,
-    address:address,
-    pincode:pincode,
-    gender:gender
+    "address.country":countryId,
+    "address.state":stateId,
+    "address.city":cityId,
+    "address.place":place,
+    "address.pincode":pincode,
+    gender:gender,
+    status:status,
+    updatePasswordDate:Date.now()
   });
 
   await db.wallet.updateOne({_id:wallet._id},{
@@ -69,11 +72,82 @@ exports.addRider = async function (req, res, next) {
 
 exports.getAllRider = async function(req,res,next){
     let riders = await db.rider.find({}).populate([
-        "country","state","city","wallet"
+        "address.country","address.state","address.city","wallet"
     ])
 
     res.status(200).json({
         success:true,
         rider:riders
     })
+}
+
+
+exports.filterRider = async function(req,res,next){
+  let {name,email,mobile,status} = req.query;
+
+  if(!name && ! email && !mobile && !status){
+      let riders = await db.rider.find({}).select({
+        firstName:1,
+        lastName:1,
+        email:1,
+        mobile:1,
+        password:1,
+        DOB:1,
+        gender:1,
+        status:1,
+        "address.pincode":1,
+        "address.place":1,
+        loginDevice:1,
+        lastLoginActivity:1,
+        updatePasswordDate:1,
+        remark:1,
+        verified:1
+      }).populate([
+        {path:'address.country',model:"Country",select:{name:1,_id:0}},
+        {path:'address.state',model:"State",select:{name:1,_id:0}},
+        {path:'address.city',model:"City",select:{name:1,_id:0}},
+        {path:'wallet',model:"Wallet",select:{balance:1,_id:0}}
+      ])
+
+      res.status(200).json({
+        success:true,
+        riders:riders
+      })
+  }else{
+    let riders = await db.rider.find({
+      $or:[
+        {firstName:name},
+        {lastName:name},
+        {mobile:mobile},
+        {email:email},
+        {status:status}
+      ]
+    }).select({
+      firstName:1,
+      lastName:1,
+      email:1,
+      mobile:1,
+      password:1,
+      DOB:1,
+      gender:1,
+      status:1,
+      "address.pincode":1,
+      "address.place":1,
+      loginDevice:1,
+      lastLoginActivity:1,
+      updatePasswordDate:1,
+      remark:1,
+      verified:1
+    }).populate([
+      {path:'address.country',model:"Country",select:{name:1,_id:0}},
+      {path:'address.state',model:"State",select:{name:1,_id:0}},
+      {path:'address.city',model:"City",select:{name:1,_id:0}},
+      {path:'wallet',model:"Wallet",select:{balance:1,_id:0}}
+    ])
+
+    res.status(200).json({
+      success:true,
+      riders:riders
+    })
+  }
 }

@@ -1,73 +1,82 @@
-const {Schema,model} = require("mongoose")
+const { Schema, model, trusted } = require("mongoose");
 
-const schema = new Schema({
-    profilePhoto:{
-        data:Buffer,
-        contentType: String
+const schema = new Schema(
+  {
+    profilePhoto: {
+      data: Buffer,
+      contentType: String,
     },
-    firstName:{
+    firstName: {
+      type: String,
+      require: true,
+    },
+    lastName: {
+      type: String,
+      require: true,
+    },
+    email: {
+      type: String,
+    },
+    mobile: {
+      type: String,
+    },
+    password: {
+      type: String,
+      require:true
+    },
+    DOB: {
+      type: Date,
+    },
+
+    status:{
         type:String,
         require:true,
-    },
-    lastName:{
-        type:String,
-        require:true
-    },
-    email:{
-        type:String
-    },
-    mobile:{
-        type:String
-    },
-    password:{
-        type:String,
-    },
-    DOB:{
-        type:Date,
-    },
-    country:{type:Schema.Types.ObjectId,ref:"Country"},
-
-    state:{type:Schema.Types.ObjectId,ref:"State"},
-
-    city:{type:Schema.Types.ObjectId,ref:"City"},
-
-    wallet:{type:Schema.Types.ObjectId,ref:"Wallet"},
-
-    address:{
-        type:String,
-        require:true
+        default:"INACTIVE",
+        enum:["ACTIVE","INACTIVE"]
     },
 
-    pincode:{type:Number,require:true},
+    wallet: { type: Schema.Types.ObjectId, ref: "Wallet" },
 
-    gender:{type:String,require:true,enum:["MALE","FEMALE"]},
+    address: {
+        place:{ type: String, require: true },
 
-    loginDevice:String,
+        country: { type: Schema.Types.ObjectId, ref: "Country", require:true },
 
-    lastLoginActivity:String,
+        state: { type: Schema.Types.ObjectId, ref: "State", require:true },
+    
+        city: { type: Schema.Types.ObjectId, ref: "City", require: true },
 
-    updatePasswordDate:Date,
+        pincode: { type: Number, require: true },
+    },
 
-    remark:String,
+    gender: { type: String, require: true, enum: ["MALE", "FEMALE"] },
 
-    RideHistory:[{type:Schema.Types.ObjectId,ref:"RiderBooking"}],
+    loginDevice: String,
 
-    verified:{
-        type:Boolean,
-        default:false
-    }
+    lastLoginActivity: String,
 
-},{
+    updatePasswordDate: Date,
+
+    remark: String,
+
+    riderHistory: [{ type: Schema.Types.ObjectId, ref: "RiderBooking" }],
+
+    verified: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  {
     timestamps: true,
-    collection:"Rider"
-})
+    collection: "Rider",
+  }
+);
 
 schema.index({
-    firstName:"text",
-    lastName:"text",
-    email:"text",
-    phone:"text"
-})
+  firstName: "text",
+  lastName: "text",
+  email: "text",
+  phone: "text",
+});
 
-
-module.exports = model("Rider",schema)
+module.exports = model("Rider", schema);

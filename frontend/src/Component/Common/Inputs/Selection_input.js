@@ -16,9 +16,10 @@ export default function Selection_Input({
 
 
   return (
-      <div className="mb-3">
+      <div className="mb-3 m-2">
       <label className="form-label">{lebel_text}</label>
       <select
+      style={{width:"200px"}}
         name="selectedStatus"
         key={`my_unique_select_key__${input[setKey]}`}
         value={input[setKey] || ''}
