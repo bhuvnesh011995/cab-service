@@ -1,16 +1,12 @@
 import { Link, NavLink, useLocation } from "react-router-dom";
 import dashboardrows from "../../data/dashboardrows";
+import SideBarDropDown from "./SideBarDropDown";
 
 export default function LeftSidebar(){
-    let {pathname} = useLocation();
+    
     let list = dashboardrows.map((ele,i)=>{
         return(
-            <li className={pathname === ele.to ? "mm-active" : "waves-effect"}>
-            <Link to={ele.to} className="waves-effect">
-                <i className={ele.icon}></i>
-                <span key="t-dashboards">{ele.name}</span>
-            </Link>
-            </li>
+            <SideBarDropDown ele={ele} i={i} />
         )
     })
     return(

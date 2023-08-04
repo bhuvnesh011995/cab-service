@@ -21,6 +21,9 @@ module.exports ={
     setting:require("./Setting.model"),
     page:require("./pageManagement.model"),
     rider:require("./rider.model"),
-    wallet:require("./wallet.model")
+    wallet:require("./wallet.model"),
+    driver:require("./driver.model"),
+    vehicle:require("./vehicle.model"),
+    booing:require("./booking.model")
 }
 

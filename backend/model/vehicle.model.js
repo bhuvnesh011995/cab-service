@@ -1,9 +1,9 @@
 const { Schema, model } = require("mongoose");
 
 const schema = new Schema({
-    driver:{type:Schema.Types.ObjectId,ref:"Driver"},
+  driver:{type:Schema.Types.ObjectId,ref:"Driver"},
     photo:{
-        type:Buffer,
+        data:Buffer,
         contentType:String
     },
   vehicleType: { type: Schema.Types.ObjectId, ref: "VehicleType" },
@@ -38,30 +38,48 @@ const schema = new Schema({
     number:String,
     expiryDate:Date,
     photo:{
-        type:Buffer,
+        data:Buffer,
         contentType:String
     }
   },
   insurance:{
     expiryDate:Date,
     photo:{
-        type:Buffer,
+        data:Buffer,
         contentType:String
-    }
+    },
+    verified:{
+      type:Boolean,
+      require:true,
+      default: false
+    },
+    varifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
   },
   permit:{
     expiryDate:Date,
     photo:{
-        type:Buffer,
-        contentType:String,
-    }
+        data:Buffer,
+        contentType:String
+    },
+    verified:{
+      type:Boolean,
+      require:true,
+      default: false
+    },
+    varifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
   },
   pollutionCertificate:{
     expiryDate:Date,
     photo:{
-        type:Buffer,
+        data:Buffer,
         contentType:String
-    }
+    },
+    verified:{
+      type:Boolean,
+      require:true,
+      default: false
+    },
+    varifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
   },
   plateNo:String,
   status:{
@@ -73,7 +91,8 @@ const schema = new Schema({
   verified:{
     type:Boolean,
     default:false
-  }
+  },
+  varifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
 },{
     collection:"Vehicle",
     timestamps:true

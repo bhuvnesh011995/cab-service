@@ -1,6 +1,7 @@
 const {Schema,model} = require("mongoose");
 
 const schema = new Schema({
+    wallet:{type:Schema.Types.ObjectId,ref:"Wallet"},
     profilePhoto:{
         type:Buffer,
         contentType: String,
@@ -15,11 +16,15 @@ const schema = new Schema({
     email:{
         type:String
     },
+    password:{
+        type:String,
+        require:true
+    },
     mobile:{
         type:String
     },
     DOB:{
-        type:String
+        type:Date
     },
     address:{
         country:{type:Schema.Types.ObjectId,ref:"Country"},
@@ -34,39 +39,67 @@ const schema = new Schema({
     },
     license:{
         number:String,
-        expireyDate:Date,
+        expiryDate:Date,
         photo:{
-            type:Buffer,
+            data:Buffer,
             contentType:String
-        }
+        },
+        verified:{
+          type:Boolean,
+          require:true,
+          default: false
+        },
+        verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
     },
     aadhar:{
         number:Number,
         photo:{
-            type:Buffer,
+            data:Buffer,
             contentType:String
-        }
+        },
+        verified:{
+          type:Boolean,
+          require:true,
+          default: false
+        },
+        verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
     },
     pan:{
         number:String,
         photo:{
-            type:Buffer,
+            data:Buffer,
             contentType:String
-        }
+        },
+        verified:{
+          type:Boolean,
+          require:true,
+          default: false
+        },
+        verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
     },
-    verifyed:{
+
+    verified:{
         type:Boolean,
         default: false,
     },
+
+    verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"},
+
     status:{
         type:String,
         require:true,
         default:"INACTIVE",
         enum:["ACTIVE","INACTIVE"]
     },
+
+
     createdBy:{type:Schema.Types.ObjectId,ref:"Admin"},
+
     updatedBy:{type:Schema.Types.ObjectId,ref:"Admin"},
-    vehicles:[{type:Schema.Types.ObjectId,ref:"Vehicle"}]
+
+    vehicle:[{type:Schema.Types.ObjectId,ref:"Vehicle"}],
+
+    driverHistory:[{type:Schema.Types.ObjectId,ref:"Booking"}]
 },
 {
     timestamps:true,
@@ -86,7 +119,7 @@ function generateReferralCode() {
   }
 
   schema.pre('save', async function (next) {
-    if (!this.referralCode) {
+    if (this.isNew && !this.referralCode) {
       let isUnique = false;
       while (!isUnique) {
         const referralCode = generateReferralCode();

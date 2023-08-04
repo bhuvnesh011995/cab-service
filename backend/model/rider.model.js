@@ -59,12 +59,13 @@ const schema = new Schema(
 
     remark: String,
 
-    riderHistory: [{ type: Schema.Types.ObjectId, ref: "RiderBooking" }],
+    riderHistory: [{ type: Schema.Types.ObjectId, ref: "Booking" }],
 
     verified: {
       type: Boolean,
       default: false,
     },
+    varifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
   },
   {
     timestamps: true,
