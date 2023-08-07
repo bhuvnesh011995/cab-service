@@ -11,14 +11,14 @@ const schema = new Schema({
   fuelType: {
     type: String,
     enum: [
-      "Petrol",
-      "Diesel",
-      "Electric Vehicles",
-      "CNG",
-      "Ethanol or Methanol",
-      "Gasoline",
-      "Bio-Diesel",
-      "LPG",
+      "petrol",
+      "diesel",
+      "electric vehicles",
+      "cng",
+      "ethanol or methanol",
+      "gasoline",
+      "bio-diesel",
+      "lpg",
     ],
   },
   seatingCapacityName:{
@@ -40,7 +40,13 @@ const schema = new Schema({
     photo:{
         data:Buffer,
         contentType:String
-    }
+    },
+    verified:{
+      type:Boolean,
+      require:true,
+      default: false
+    },
+    verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
   },
   insurance:{
     expiryDate:Date,
@@ -53,7 +59,7 @@ const schema = new Schema({
       require:true,
       default: false
     },
-    varifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
+    verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
   },
   permit:{
     expiryDate:Date,
@@ -66,7 +72,7 @@ const schema = new Schema({
       require:true,
       default: false
     },
-    varifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
+    verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
   },
   pollutionCertificate:{
     expiryDate:Date,
@@ -79,7 +85,7 @@ const schema = new Schema({
       require:true,
       default: false
     },
-    varifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
+    verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
   },
   plateNo:String,
   status:{
@@ -92,7 +98,7 @@ const schema = new Schema({
     type:Boolean,
     default:false
   },
-  varifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
+  verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
 },{
     collection:"Vehicle",
     timestamps:true

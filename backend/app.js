@@ -109,4 +109,5 @@ async function init(){
     require('./routes/page.route')(app)
     require("./routes/rider.route")(app)
     require("./routes/driver.route")(app)
+    require("./routes/vehicle.route")(app)
 module.exports = app;
