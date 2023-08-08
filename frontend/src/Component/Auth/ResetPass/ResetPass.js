@@ -1,8 +1,8 @@
 import { useState } from "react";
 import Wraper from "../common/wrapper";
-import Header from "../common/Header";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../config/config";
+import logo from "../../../assets/image/logo-2.png"
 let initialData = {
   username: null,
   currentPassword: null,
@@ -77,40 +77,12 @@ export default function ResetPass() {
 
   return (
     <Wraper>
-      <Header
-        heading={{
-          title: "Change Password With Ease",
-          dec: "enjoying with skote service ? rate us now",
-        }}
-      />
-      <div class="card-body pt-0">
-        <div class="auth-logo">
-          <a href="index.html" class="auth-logo-light">
-            <div class="avatar-md profile-user-wid mb-4">
-              <span class="avatar-title rounded-circle bg-light">
+      <div className="card-body m-3 pt-0">
                 <img
-                  src="assets/images/logo-light.svg"
-                  alt=""
-                  class="rounded-circle"
+                  src={logo}
+                  alt="logo"
                   height="34"
                 />
-              </span>
-            </div>
-          </a>
-
-          <a href="index.html" class="auth-logo-dark">
-            <div class="avatar-md profile-user-wid mb-4">
-              <span class="avatar-title rounded-circle bg-light">
-                <img
-                  src="assets/images/logo.svg"
-                  alt=""
-                  class="rounded-circle"
-                  height="34"
-                />
-              </span>
-            </div>
-          </a>
-        </div>
         <div class="p-2">
           <form class="form-horizontal" onSubmit={(e) => handleSubmit(e)}>
             <div class="mb-3">
@@ -211,16 +183,6 @@ export default function ResetPass() {
               </div>
             </div>
             <span style={{ color: "red" }}>{passMisMatchMsg}</span>
-            <div class="form-check">
-              <input
-                class="form-check-input"
-                type="checkbox"
-                id="remember-check"
-              />
-              <label class="form-check-label" for="remember-check">
-                Remember me
-              </label>
-            </div>
 
             <div class="mt-3 d-grid">
               <button
@@ -230,37 +192,6 @@ export default function ResetPass() {
                 Change Password
               </button>
               {successMsg}
-            </div>
-
-            <div class="mt-4 text-center">
-              <h5 class="font-size-14 mb-3">Sign in with</h5>
-
-              <ul class="list-inline">
-                <li class="list-inline-item">
-                  <a
-                    href="javascript::void()"
-                    class="social-list-item bg-primary text-white border-primary"
-                  >
-                    <i class="mdi mdi-facebook"></i>
-                  </a>
-                </li>
-                <li class="list-inline-item">
-                  <a
-                    href="javascript::void()"
-                    class="social-list-item bg-info text-white border-info"
-                  >
-                    <i class="mdi mdi-twitter"></i>
-                  </a>
-                </li>
-                <li class="list-inline-item">
-                  <a
-                    href="javascript::void()"
-                    class="social-list-item bg-danger text-white border-danger"
-                  >
-                    <i class="mdi mdi-google"></i>
-                  </a>
-                </li>
-              </ul>
             </div>
           </form>
         </div>

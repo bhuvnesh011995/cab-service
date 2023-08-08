@@ -4,6 +4,8 @@ import Graph1 from "../Common/Grapth1";
 import Table from "../Common/Table";
 
 export default function Home() {
+
+
   
   return (
     <div className="main-content">

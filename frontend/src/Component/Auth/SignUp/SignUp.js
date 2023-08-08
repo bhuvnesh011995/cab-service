@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Header from "../common/Header";
 import Wraper from "../common/wrapper";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../config/config";
+import logo from "../../../assets/image/logo-2.png"
 
 let url = BASE_URL+"/auth/signUp";
 let initState = {
@@ -68,27 +68,12 @@ export default function SignUp() {
 
   return (
     <Wraper loginpage={true}>
-      <Header
-        heading={{
-          title: "Welcome Back !",
-          dec: "Sign in to continue to Skote.",
-        }}
-      />
-      <div className="card-body pt-0">
-        <div className="auth-logo">
-          <a href="index.html" className="auth-logo-light">
-            <div className="avatar-md profile-user-wid mb-4">
-              <span className="avatar-title rounded-circle bg-light">
+      <div className="card-body m-3 pt-0">
                 <img
-                  src="assets/images/logo-light.svg"
-                  alt=""
-                  className="rounded-circle"
+                  src={logo}
+                  alt="logo"
                   height="34"
                 />
-              </span>
-            </div>
-          </a>
-        </div>
         <div className="p-2">
           <form className="needs-validation" onSubmit={(e) => handleSubmit(e)}>
             <div className="mb-3">
@@ -180,46 +165,6 @@ export default function SignUp() {
                Add Admin
               </button>
               {successMsg}
-            </div>
-
-            <div className="mt-4 text-center">
-              <h5 className="font-size-14 mb-3">Sign up using</h5>
-
-              <ul className="list-inline">
-                <li className="list-inline-item">
-                  <a
-                    href="javascript::void()"
-                    className="social-list-item bg-primary text-white border-primary"
-                  >
-                    <i className="mdi mdi-facebook"></i>
-                  </a>
-                </li>
-                <li className="list-inline-item">
-                  <a
-                    href="javascript::void()"
-                    className="social-list-item bg-info text-white border-info"
-                  >
-                    <i className="mdi mdi-twitter"></i>
-                  </a>
-                </li>
-                <li className="list-inline-item">
-                  <a
-                    href="javascript::void()"
-                    className="social-list-item bg-danger text-white border-danger"
-                  >
-                    <i className="mdi mdi-google"></i>
-                  </a>
-                </li>
-              </ul>
-            </div>
-
-            <div className="mt-4 text-center">
-              <p className="mb-0">
-                By registering you agree to the Skote{" "}
-                <a href="#" className="text-primary">
-                  Terms of Use
-                </a>
-              </p>
             </div>
           </form>
         </div>

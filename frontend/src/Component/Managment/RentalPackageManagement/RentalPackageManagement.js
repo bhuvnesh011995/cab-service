@@ -1,11 +1,18 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Management_container from "../../Common/Management_container";
 import { useNavigate } from "react-router-dom";
 import Table from "../../Common/Table";
 import Filter_Option from "../../Common/Filter_option";
 import BASE_URL from "../../../config/config";
-
+import { MaterialReactTable } from "material-react-table";
+import {
+  RemoveRedEye,
+  Lock,
+  ModeEditOutline,
+  DeleteForever,
+} from "@mui/icons-material/";
+import { Box, IconButton } from "@mui/material";
 
 const initialFilter = {
     name:"",
@@ -21,28 +28,75 @@ export default function RentalPackageManagement(){
         fetch(url, { method: "GET" })
         .then((res) => res.json())
         .then((data) =>{
-        
         if(data.success){
-          setList(
-            data?.packages?.map((ele, index) => {
-              return (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{ele.name}</td>
-                  <td>{ele.maxDuration || "NA"}</td>
-                  <td>{ele.maxDistance.$numberDecimal || "NA"}</td>
-                  <td>{ele.status}</td>
-                  <td>{ele.createdAt || "NA"}</td>
-                  <td>""</td>
-                </tr>
-              );
-            })
-          )
+        
+          let arr = [];
+        data?.packages?.map((ele, i) => {
+          arr.push({
+            index: i + 1,
+            name: ele.name,
+            maxDuration: ele.maxDuration,
+            maxDistance: ele.maxDistance.$numberDecimal ,
+            status: ele.status,
+            createdAt: ele.createdAt || "",
+          });
+        });
+        setList(arr);
+          // setList(
+          //   data?.packages?.map((ele, index) => {
+          //     return (
+          //       <tr key={index}>
+          //         <td>{index + 1}</td>
+          //         <td>{ele.name}</td>
+          //         <td>{ele.maxDuration || "NA"}</td>
+          //         <td>{ele.maxDistance.$numberDecimal || "NA"}</td>
+          //         <td>{ele.status}</td>
+          //         <td>{ele.createdAt || "NA"}</td>
+          //         <td>""</td>
+          //       </tr>
+          //     );
+          //   })
+          // )
         }
           
       }
         );
     },[])
+
+    const columns = useMemo(
+      () => [
+        {
+          accessorKey: "index",
+          header: "Sr No",
+          size: 50,
+        },
+        {
+          accessorKey: "name",
+          header: "Name",
+        },
+        {
+          accessorKey: "maxDuration",
+          header: "Max Duration",
+          size: 100,
+        },
+        {
+          accessorKey: "maxDistance",
+          header: "Max Distance",
+          size: 100,
+        },
+        {
+          accessorKey: "status",
+          header: "status",
+          size: 80,
+        },
+        {
+          accessorFn: (row) => row.createdAt.slice(0, 10),
+          id: "createdAt",
+          header: "Created At",
+        },
+      ],
+      []
+    );
 
     function handleClick(e){
         e.preventDefault();
@@ -57,21 +111,18 @@ export default function RentalPackageManagement(){
         }).then(res=>res.json())
         .then(data=>{
           if(data.success){
-            setList(
-              data?.packages?.map((ele, index) => {
-                return (
-                  <tr key={index}>
-                    <td>{index + 1}</td>
-                    <td>{ele.name}</td>
-                    <td>{ele.maxDuration || "NA"}</td>
-                    <td>{ele.maxDistance.$numberDecimal || "NA"}</td>
-                    <td>{ele.status}</td>
-                    <td>{ele.createdAt || "NA"}</td>
-                    <td>""</td>
-                  </tr>
-                );
-              })
-            )
+            let arr = [];
+        data?.packages?.map((ele, i) => {
+          arr.push({
+            index: i + 1,
+            name: ele.name,
+            maxDuration: ele.maxDuration,
+            maxDistance: ele.maxDistance.$numberDecimal ,
+            status: ele.status,
+            createdAt: ele.createdAt || "",
+          });
+        });
+        setList(arr);
           }
         })
     }
@@ -103,18 +154,28 @@ export default function RentalPackageManagement(){
         options={["name","status"]}
         /></div></div></div></div>
 
-        <Table 
-        heading={[
-            "Sr no",
-            "Name",
-            "Max Duration(in hr)",
-            "Max Distance(in KM)",
-            "status",
-            "created At",
-            "Action",
-          ]}
-          list={list}
-          />
+<MaterialReactTable
+      columns={columns}
+      data={list || []}
+      enableRowActions
+      positionActionsColumn={'last'}
+      renderRowActions={({row,table})=>(
+        <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '1px' }}>
+          <IconButton>
+            <RemoveRedEye />
+          </IconButton>
+          <IconButton>
+            <Lock />
+          </IconButton>
+          <IconButton>
+            <ModeEditOutline />
+          </IconButton>
+          <IconButton>
+            <DeleteForever />
+          </IconButton>
+        </Box>
+      )}
+      />
 
         </Management_container>
     )

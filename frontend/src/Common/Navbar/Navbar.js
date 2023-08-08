@@ -1,4 +1,6 @@
-import { useEffect } from "react"
+import { useContext, useEffect } from "react"
+import { authContext } from "../../Context/AuthContext"
+import { useNavigate } from "react-router-dom"
 
 export default function Navbar({inactive,setInactive}){
 
@@ -11,6 +13,13 @@ export default function Navbar({inactive,setInactive}){
         
     },[inactive])
 
+    const navigate = useNavigate()
+
+    const {admin,setAdmin,initialAdmin} = useContext(authContext)
+
+    useEffect(()=>{
+        if(!admin.token) navigate("/login")
+    },[admin])
 
     return(
         <header id="page-topbar">
@@ -32,38 +41,15 @@ export default function Navbar({inactive,setInactive}){
                             <i className="fa fa-fw fa-bars"></i>
                         </button>
 
-                        {/* <!-- App Search--> */}
                     </div>
 
                     <div className="d-flex">
-
-                        <div className="dropdown d-inline-block d-lg-none ms-2">
-                            <button type="button" className="btn header-item noti-icon waves-effect" id="page-header-search-dropdown"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i className="mdi mdi-magnify"></i>
-                            </button>
-                            <div className="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                                aria-labelledby="page-header-search-dropdown">
-        
-                                <form className="p-3">
-                                    <div className="form-group m-0">
-                                        <div className="input-group">
-                                            <input type="text" className="form-control" placeholder="Search ..." aria-label="Recipient's username"/>
-                                            <div className="input-group-append">
-                                                <button className="btn btn-primary" type="submit"><i className="mdi mdi-magnify"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </form>
-                            </div>
-                        </div>
-
                         <div className="dropdown d-inline-block">
                             <button type="button" className="btn header-item waves-effect" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <img className="rounded-circle header-profile-user" src="assets/images/users/avatar-1.jpg"
                                     alt="Header Avatar"/>
-                                <span className="d-none d-xl-inline-block ms-1" key="t-henry">Henry</span>
+                                <span className="d-none d-xl-inline-block ms-1" key="t-henry">{admin.name}</span>
                                 <i className="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
                             </button>
                             <div className="dropdown-menu dropdown-menu-end">
@@ -73,7 +59,7 @@ export default function Navbar({inactive,setInactive}){
                                 <a className="dropdown-item d-block" href="#"><span className="badge bg-success float-end">11</span><i className="bx bx-wrench font-size-16 align-middle me-1"></i> <span key="t-settings">Settings</span></a>
                                 <a className="dropdown-item" href="#"><i className="bx bx-lock-open font-size-16 align-middle me-1"></i> <span key="t-lock-screen">Lock screen</span></a>
                                 <div className="dropdown-divider"></div>
-                                <a className="dropdown-item text-danger" href="#"><i className="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span key="t-logout">Logout</span></a>
+                                <a onClick={()=>setAdmin(initialAdmin)} className="dropdown-item text-danger" href="#"><i className="bx bx-power-off font-size-16 align-middle me-1 text-danger"></i> <span key="t-logout">Logout</span></a>
                             </div>
                         </div>
                     </div>

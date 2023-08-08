@@ -2,9 +2,13 @@ import { useNavigate } from "react-router-dom";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Management_container from "../../Common/Management_container";
 import Table from "../../Common/Table";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Filter_Option from "../../Common/Filter_option";
 import BASE_URL from "../../../config/config";
+import { MaterialReactTable } from 'material-react-table';
+import { Box, IconButton } from '@mui/material';
+import {RemoveRedEye,Lock,ModeEditOutline ,DeleteForever } from '@mui/icons-material/';
+
 
 const initialFilter = {
   country:"",
@@ -25,27 +29,65 @@ export default function IndividualFareManagement(){
       .then((data) =>{
       
       if(data.success){
-        setList(
-          data?.allIndiFare?.map((ele, index) => {
-            return (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{ele.country.name}</td>
-                <td>{ele.state?.name || "NA"}</td>
-                <td>{ele.city?.name || "NA"}</td>
-                <td>{ele.vehicleType?.name || "NA"}</td>
-                <td>{ele.status}</td>
-                <td>{ele.createdAt || "NA"}</td>
-                <td>""</td>
-              </tr>
-            );
-          })
-        )
+        let arr = [];
+            data?.allIndiFare?.map((ele, i) => {
+              arr.push({
+                index: i + 1,
+                country: ele.country.name,
+                state: ele.state?.name || "NA",
+                city:ele.city?.name || "NA",
+                vehicleType:ele.vehicleType?.name || "NA",
+                status: ele.status,
+                createdAt: ele.createdAt || "NA",
+              });
+            });
+            setList(arr);
       }
         
     }
       );
     },[])
+
+    const columns = useMemo(
+      () => [
+        {
+          accessorKey: "index",
+          header: "Sr No",
+          size: 50,
+        },
+        {
+          accessorKey: "country",
+          header: "Country",
+          size: 100,
+        },
+        {
+          accessorKey: "state",
+          header: "State",
+          size: 100,
+        },
+        {
+          accessorKey:"city",
+          header:"City"
+        },
+        {
+          accessorKey:"vehicleType",
+          header:"Vehicle Type"
+        },
+        {
+          accessorKey: "status",
+          header: "status",
+          size: 80,
+        },
+        {
+          accessorFn: (row) => row.createdAt.slice(0, 10),
+          id: "createdAt",
+          header: "Created At",
+        },
+      ],
+      []
+    );
+
+
     function handleClick(){
         navigate("/addIndividualFare")
     }
@@ -64,22 +106,19 @@ export default function IndividualFareManagement(){
       }).then(res=>res.json())
       .then(data=>{
         if(data.success){
-          setList(
-            data?.allIndiFare?.map((ele, index) => {
-              return (
-                <tr key={index}>
-                  <td>{index + 1}</td>
-                  <td>{ele.country.name}</td>
-                  <td>{ele.state?.name || "NA"}</td>
-                  <td>{ele.city?.name || "NA"}</td>
-                  <td>{ele.vehicleType?.name || "NA"}</td>
-                  <td>{ele.status}</td>
-                  <td>{ele.createdAt || "NA"}</td>
-                  <td>""</td>
-                </tr>
-              );
-            })
-          )
+          let arr = [];
+            data?.allIndiFare?.map((ele, i) => {
+              arr.push({
+                index: i + 1,
+                country: ele.country.name,
+                state: ele.state?.name || "NA",
+                city:ele.city?.name || "NA",
+                vehicleType:ele.vehicleType?.name || "NA",
+                status: ele.status,
+                createdAt: ele.createdAt || "NA",
+              });
+            });
+            setList(arr);
         }
       })
 
@@ -111,7 +150,7 @@ export default function IndividualFareManagement(){
         /></div></div></div></div>
 
 
-        <Table
+        {/* <Table
         heading={[
           "Sr no",
           "Country",
@@ -123,6 +162,28 @@ export default function IndividualFareManagement(){
           "Action",
         ]}
         list={list}
+      /> */}
+      <MaterialReactTable
+      columns={columns}
+      data={list || []}
+      enableRowActions
+      positionActionsColumn={'last'}
+      renderRowActions={({row,table})=>(
+        <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '1px' }}>
+          <IconButton>
+            <RemoveRedEye />
+          </IconButton>
+          <IconButton>
+            <Lock />
+          </IconButton>
+          <IconButton>
+            <ModeEditOutline />
+          </IconButton>
+          <IconButton>
+            <DeleteForever />
+          </IconButton>
+        </Box>
+      )}
       />
         </Management_container>
     )

@@ -1,11 +1,14 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./AdminManagement.css";
 import Table from "../Common/Table";
 import Management_container from "../Common/Management_container";
 import Filter_Option from "../Common/Filter_option";
 import BtnDark from "../Common/Buttons/BtnDark";
 import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../config/config"
+import BASE_URL from "../../config/config";
+import { MaterialReactTable } from 'material-react-table';
+import { Box, IconButton } from '@mui/material';
+import {RemoveRedEye,Lock,ModeEditOutline ,DeleteForever } from '@mui/icons-material/';
 const initialFilter = {
   name: "",
   username: "",
@@ -16,29 +19,94 @@ const initialFilter = {
 let url = BASE_URL + "/admin/filter/";
 export default function AdminManagement() {
   const [filter, setFilter] = useState(initialFilter);
-  const [list, setList] = useState(null);
+  const [list, setList] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
     fetch(url, { method: "GET" })
       .then((res) => res.json())
-      .then((data) =>
-        setList(
-          data?.map((ele, index) => {
-            return (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{ele.name}</td>
-                <td>{ele.username}</td>
-                <td>{ele.status}</td>
-                <td>{ele.createdAt}</td>
-                <td>""</td>
-              </tr>
-            );
+      .then((data) =>{
+        let arr = []
+        data.map((ele,i)=>{
+          arr.push({
+            index:i+1,
+            name:ele.name,
+            username:ele.username,
+            status:ele.status,
+            createdAt:ele.createdAt
           })
-        )
+        })
+        setList(arr)
+      }
+      //   setList(
+      //     data?.map((ele, index) => {
+      //       return (
+      //         <tr key={index}>
+      //           <td>{index + 1}</td>
+      //           <td>{ele.name}</td>
+      //           <td>{ele.username}</td>
+      //           <td>{ele.status}</td>
+      //           <td>{ele.createdAt}</td>
+      //           <td>""</td>
+      //         </tr>
+      //       );
+      //     })
+      //   )
       );
   }, []);
+
+
+  const columns = useMemo(
+
+    () => [
+
+      {
+
+        accessorKey: 'index', //access nested data with dot notation
+
+        header: 'Sr No',
+        size:50
+
+      },
+
+      {
+        accessorKey: 'name',
+
+        header: 'Name',
+
+      },
+
+      {
+
+        accessorKey: 'username', //normal accessorKey
+
+        header: 'Username',
+
+      },
+
+      {
+
+        accessorKey: 'status',
+
+        header: 'Status',
+        size:100
+
+      },
+
+      {
+
+        accessorFn: (row)=>row.createdAt.slice(0,10),
+        id:"createdAt",
+        header: 'Created At',
+        size:100
+
+      },
+
+    ],
+
+    [],
+
+  );
 
  
 
@@ -67,21 +135,19 @@ export default function AdminManagement() {
       }`
     )
       .then((res) => res.json())
-      .then((data) =>
-        setList(
-          data?.map((ele, index) => {
-            return (
-              <tr key={index}>
-                <td>{index + 1}</td>
-                <td>{ele.name}</td>
-                <td>{ele.username}</td>
-                <td>{ele.status}</td>
-                <td>{ele.createdAt}</td>
-                <td>""</td>
-              </tr>
-            );
+      .then((data) =>{
+        let arr = []
+        data.map((ele,i)=>{
+          arr.push({
+            index:i+1,
+            name:ele.name,
+            username:ele.username,
+            status:ele.status,
+            createdAt:ele.createdAt
           })
-        )
+        })
+        setList(arr)
+      }
       );
   }
 
@@ -108,7 +174,7 @@ export default function AdminManagement() {
         options={["name","username","status","from","to"]}
       />
       </div></div></div></div>
-      <div class="row">
+      {/* <div class="row">
       <Table
         heading={[
           "Sr no",
@@ -120,7 +186,29 @@ export default function AdminManagement() {
         ]}
         list={list}
       />
-      </div>
+      </div> */}
+      <MaterialReactTable
+      columns={columns}
+      data={list}
+      enableRowActions
+      positionActionsColumn={'last'}
+      renderRowActions={({row,table})=>(
+        <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '1px' }}>
+          <IconButton>
+            <RemoveRedEye />
+          </IconButton>
+          <IconButton>
+            <Lock />
+          </IconButton>
+          <IconButton>
+            <ModeEditOutline />
+          </IconButton>
+          <IconButton>
+            <DeleteForever />
+          </IconButton>
+        </Box>
+      )}
+       />
     </Management_container>
   );
 }

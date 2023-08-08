@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useMemo } from "react";
 import Management_container from "../../Common/Management_container";
 import { useNavigate } from "react-router-dom";
 import BtnDark from "../../Common/Buttons/BtnDark";
@@ -6,6 +6,10 @@ import Table from "../../Common/Table";
 import Text_Input from "../../Common/Inputs/Text_Input";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import BASE_URL from "../../../config/config";
+import { MaterialReactTable } from 'material-react-table';
+import { Box, IconButton } from '@mui/material';
+import {RemoveRedEye,Lock,ModeEditOutline ,DeleteForever } from '@mui/icons-material/';
+
 
 let url = BASE_URL+"/vehicletype/filter/"
 
@@ -37,26 +41,58 @@ export default function VehicleManagement(){
         .then(res=>res.json())
         .then(data=>{
             if(data.success){
-                setList(
-                    data.data.map((ele, i) => {
-                        let mode = [];
-                        ele.runMode?.map(ele=>mode.push(ele.name))
-                      return (
-                        <tr key={i}>
-                          <td>{i + 1}</td>
-                          <td>{ele.name}</td>
-                          <td>{mode.join()}</td>
-                          <td>{ele.seatingCapacity}</td>
-                          <td>{ele.img}</td>
-                          <td>{ele.status}</td>
-                          <td>""</td>
-                        </tr>
-                      );
-                    })
-                  )
+              let arr = [];
+              data?.data?.map((ele, i) => {
+                let mode = [];
+                ele.runMode?.map(ele=>mode.push(ele.name))
+                arr.push({
+                  index: i + 1,
+                  name: ele.name,
+                  runMode: mode.join(),
+                  seatingCapacity:ele.seatingCapacity,
+                  img:ele.img,
+                  status: ele.status,
+                });
+              });
+              setList(arr);
             }
         })
     },[])
+
+    const columns = useMemo(
+      () => [
+        {
+          accessorKey: "index",
+          header: "Sr No",
+          size: 50,
+        },
+        {
+          accessorKey: "name",
+          header: "Name",
+          size: 100,
+        },
+        {
+          accessorKey: "runMode",
+          header: "Run Mode",
+          size: 100,
+        },
+        {
+          accessorKey:"seatingCapacity",
+          header:"Seating Capacity",
+          size:40
+        },
+        {
+          accessorKey:"img",
+          header: "Image Selected"
+        },
+        {
+          accessorKey: "status",
+          header: "status",
+          size: 80,
+        },
+      ],
+      []
+    );
 
     function handleClick(e){
         navigate("/addVehicleType")
@@ -123,9 +159,31 @@ export default function VehicleManagement(){
         </div>
       </div>
     </form></div></div></div></div>
-      <Table
+      {/* <Table
         heading={["Sr no", "Name","Run Mode","Seating Capacity","Image selected", "Status", "Action"]}
         list={list}
+      /> */}
+       <MaterialReactTable
+      columns={columns}
+      data={list || []}
+      enableRowActions
+      positionActionsColumn={'last'}
+      renderRowActions={({row,table})=>(
+        <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '1px' }}>
+          <IconButton>
+            <RemoveRedEye />
+          </IconButton>
+          <IconButton>
+            <Lock />
+          </IconButton>
+          <IconButton>
+            <ModeEditOutline />
+          </IconButton>
+          <IconButton>
+            <DeleteForever />
+          </IconButton>
+        </Box>
+      )}
       />
         </Management_container>
     )

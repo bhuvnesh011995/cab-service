@@ -31,13 +31,17 @@ import AddPage from './Component/Managment/PageManagement/AddPage';
 import PageManagement from './Component/Managment/PageManagement/PageManagement';
 import RiderManagement from './Component/Managment/RiderManagement/RiderManagement';
 import AddRider from './Component/Managment/RiderManagement/AddRider';
+import SignIn from './Component/Auth/SignIn/SignIn';
+import AuthProvider from './Context/AuthContext';
+import SignUp from './Component/Auth/SignUp/SignUp';
+import ResetPass from './Component/Auth/ResetPass/ResetPass';
 
 const router = createBrowserRouter([
   {
     element:<App />,
     // errorElement:<ErrorPage/>,
     children:[
-    {path:"/",element:<Home/>,},
+    {path:"/",element:<Home/>},
     {path:"adminManagement",element:<AdminManagement />},
     {path:"makeManagement",element:< MakeManagement/>},
     {path:"addMake",element:<AddMake />},
@@ -64,13 +68,24 @@ const router = createBrowserRouter([
     {path:"riderManagement",element:<RiderManagement/>},
     {path:"addRider",element:<AddRider/>}
     ]
+  },{
+    path:"/login", element:<SignIn/>
   },
+  {
+    path:"/signUp", element:<SignUp/>
+  },
+  {
+    path:"/reset",element:<ResetPass/>
+  }
 ])
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
-  <RouterProvider router={router} />
+  <AuthProvider>
+    <RouterProvider router={router} />
+  </AuthProvider>
+  
 
   // </React.StrictMode>
 );

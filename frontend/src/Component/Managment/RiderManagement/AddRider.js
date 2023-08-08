@@ -19,6 +19,7 @@ const initialState = {
   place: "",
   pincode: "",
   gender: "",
+  verified:false
 };
 
 export default function AddRider() {
@@ -164,7 +165,7 @@ export default function AddRider() {
                   input={rider}
                   lebel_text={"Date Of Birth : "}
                   setInput={setRider}
-                  setKey={"email"}
+                  setKey={"DOB"}
                 />
                 <Selection_Input
                   options={countryOption}
@@ -215,6 +216,14 @@ export default function AddRider() {
                   lebel_text={"Status : "}
                   setKey={"status"}
                 />
+                <div class="m-3">
+                  
+                  <input
+                  onChange={e=>setRider(preVal=>({...preVal,verified:e.target.checked}))}
+                    class="form-check-input"
+                    type="checkbox"
+                  /><label class="form-check-label">Verify</label>
+                </div>
                 <div class="m-3">
                   <label class="form-label">Login Device</label>
                   <input class="form-control" disabled="true" type={"text"} />

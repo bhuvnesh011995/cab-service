@@ -2,8 +2,16 @@ import { useNavigate } from "react-router-dom";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Management_container from "../../Common/Management_container";
 import Table from "../../Common/Table";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import BASE_URL from "../../../config/config";
+import { MaterialReactTable } from "material-react-table";
+import {
+  RemoveRedEye,
+  Lock,
+  ModeEditOutline,
+  DeleteForever,
+} from "@mui/icons-material/";
+import { Box, IconButton } from "@mui/material";
 
 
 const initialFilter ={
@@ -19,23 +27,50 @@ export default function PageManagement() {
         }).then(res=>res.json())
         .then(data=>{
             if(data.success){
-                setList(
-                  data.pages.map((ele, i) => {
-                    return (
-                      <tr key={i}>
-                        <td>{i + 1}</td>
-                        <td>{ele.name}</td>
-                        <td>{ele.metaDescription}</td>
-                        <td>{ele.metaKey}</td>
-                        <td>{ele.createdAt}</td>
-                        <td>""</td>
-                      </tr>
-                    );
-                  })
-                )
+              let arr = [];
+              data?.pages?.map((ele, i) => {
+                arr.push({
+                  index: i + 1,
+                  name: ele.name,
+                  metaDescription: ele.metaDescription,
+                  metaKey: ele.metaKey,
+                  createdAt: ele.createdAt || "",
+                });
+              });
+              setList(arr);
               }
         })
     },[])
+
+    const columns = useMemo(
+      () => [
+        {
+          accessorKey: "index",
+          header: "Sr No",
+          size: 50,
+        },
+        {
+          accessorKey: "name",
+          header: "Name",
+          size: 100,
+        },
+        {
+          accessorKey: "metaDescription",
+          header: "Meta Description",
+        },
+        {
+          accessorKey: "metaKey",
+          header: "Meta Key",
+          size: 80,
+        },
+        {
+          accessorFn: (row) => row.createdAt.slice(0, 10),
+          id: "createdAt",
+          header: "Created At",
+        },
+      ],
+      []
+    );
 
     function handleClick(){
         navigate("/addPage")
@@ -47,20 +82,31 @@ export default function PageManagement() {
         }).then(res=>res.json())
         .then(data=>{
             if(data.success){
-                setList(
-                  data.pages.map((ele, i) => {
-                    return (
-                      <tr key={i}>
-                        <td>{i + 1}</td>
-                        <td>{ele.name}</td>
-                        <td>{ele.metaDescription}</td>
-                        <td>{ele.metaKey}</td>
-                        <td>{ele.createdAt}</td>
-                        <td>""</td>
-                      </tr>
-                    );
-                  })
-                )
+              let arr = [];
+              data?.pages?.map((ele, i) => {
+                arr.push({
+                  index: i + 1,
+                  name: ele.name,
+                  metaDescription: ele.metaDescription,
+                  metaKey: ele.metaKey,
+                  createdAt: ele.createdAt || "",
+                });
+              });
+              setList(arr);
+                // setList(
+                //   data.pages.map((ele, i) => {
+                //     return (
+                //       <tr key={i}>
+                //         <td>{i + 1}</td>
+                //         <td>{ele.name}</td>
+                //         <td>{ele.metaDescription}</td>
+                //         <td>{ele.metaKey}</td>
+                //         <td>{ele.createdAt}</td>
+                //         <td>""</td>
+                //       </tr>
+                //     );
+                //   })
+                // )
               }
         })
     }
@@ -92,9 +138,27 @@ export default function PageManagement() {
           </div>
         </div>
       </div>
-       <Table
-                heading={["Sr no", "Name","Meta Description","Meta Key", "Created At", "Action"]}
-                list={list}
+      <MaterialReactTable
+      columns={columns}
+      data={list || []}
+      enableRowActions
+      positionActionsColumn={'last'}
+      renderRowActions={({row,table})=>(
+        <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '1px' }}>
+          <IconButton>
+            <RemoveRedEye />
+          </IconButton>
+          <IconButton>
+            <Lock />
+          </IconButton>
+          <IconButton>
+            <ModeEditOutline />
+          </IconButton>
+          <IconButton>
+            <DeleteForever />
+          </IconButton>
+        </Box>
+      )}
       />
     </Management_container>
   );

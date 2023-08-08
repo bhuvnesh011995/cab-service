@@ -5,6 +5,14 @@ const jwt = require("jsonwebtoken");
 const signIn = async function (req, res, next) {
   const { username, password } = req.body;
 
+  if(!username || !password){
+    res.status(404).json({
+      success: false,
+      message: "enter username or password",
+    });
+    return
+  }
+
 //   try {
     let user = await admin.findOne({
       username: username,

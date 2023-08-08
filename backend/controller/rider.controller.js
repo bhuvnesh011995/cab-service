@@ -16,7 +16,9 @@ exports.addRider = async function (req, res, next) {
     pincode,
     gender,
     status,
+    verified
   } = req.body;
+
 
   let wallet = await db.wallet.create({})
 
@@ -55,6 +57,7 @@ exports.addRider = async function (req, res, next) {
     "address.pincode":pincode,
     gender:gender,
     status:status,
+    verified:verified,
     updatePasswordDate:Date.now()
   });
 
