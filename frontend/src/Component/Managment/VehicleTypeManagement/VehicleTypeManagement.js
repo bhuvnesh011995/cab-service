@@ -18,7 +18,7 @@ const initialFilter = {
   runMode:""
 }
 
-export default function VehicleManagement(){
+export default function VehicleTypeManagement(){
     const [filter,setFilter] = useState(initialFilter);
     const [options,setOptions] = useState([]);
     const [list, setList] = useState();

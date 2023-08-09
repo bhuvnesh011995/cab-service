@@ -37,11 +37,6 @@ export default [
             icon:"bi bi-pin-map"
     },
     {
-            name:"Vehicle Type Management",
-            to:"/vehicleManagement",
-            icon:"bi bi-truck-front-fill"
-    },
-    {
             name:"Fare Management",
             to:"/individualFareManagement",
             icon:"bi bi-cash"
@@ -80,8 +75,13 @@ export default [
     },
     {
             name:"Driver Management",
-            to:"/",
+            to:"/driverManagement",
             icon:"bi bi-person-rolodex"
+    },
+    {
+            name:"Vehicle Management",
+            to:"/vehicleManagement",
+            icon:""
     },
     {
             name:"Booking Management",

@@ -110,7 +110,7 @@ exports.filterDriver = async function (req, res, next) {
 
     if(licExp===true || licExp === "true"){
         let drivers = await db.driver.find({"license.expiryDate":{$lt:Date.now()}}).select({
-            firstName:1,lastName:1,email:1,mobile:1,license:1,aadhar:1,pan:1,status:1,verified:1,createdAt:1,_id:0
+            firstName:1,lastName:1,email:1,mobile:1,license:1,aadhar:1,pan:1,status:1,verified:1,createdAt:1
         }).populate({path:"wallet",select:{balance:1,_id:0}}).lean()
 
         res.status(200).json({
@@ -125,7 +125,7 @@ exports.filterDriver = async function (req, res, next) {
                 {"aadhar.verified":false},
             ]
         }).select({
-            firstName:1,lastName:1,email:1,mobile:1,license:1,aadhar:1,pan:1,status:1,verified:1,createdAt:1,_id:0
+            firstName:1,lastName:1,email:1,mobile:1,license:1,aadhar:1,pan:1,status:1,verified:1,createdAt:1
         }).populate({path:"wallet",select:{balance:1,_id:0}}).lean()
 
         res.status(200).json({
@@ -136,7 +136,7 @@ exports.filterDriver = async function (req, res, next) {
         let drivers = await db.driver.find({
             verified:false
         }).select({
-            firstName:1,lastName:1,email:1,mobile:1,license:1,aadhar:1,pan:1,status:1,verified:1,createdAt:1,_id:0
+            firstName:1,lastName:1,email:1,mobile:1,license:1,aadhar:1,pan:1,status:1,verified:1,createdAt:1
         }).populate({path:"wallet",select:{balance:1,_id:0}}).lean()
 
         res.status(200).json({
@@ -147,7 +147,7 @@ exports.filterDriver = async function (req, res, next) {
         let drivers = await db.driver.find({
             verified:true
         }).select({
-            firstName:1,lastName:1,email:1,mobile:1,license:1,aadhar:1,pan:1,status:1,verified:1,createdAt:1,_id:0
+            firstName:1,lastName:1,email:1,mobile:1,license:1,aadhar:1,pan:1,status:1,verified:1,createdAt:1
         }).populate({path:"wallet",select:{balance:1,_id:0}}).lean()
 
         res.status(200).json({
@@ -165,7 +165,7 @@ exports.filterDriver = async function (req, res, next) {
                 {status:status},
             ]
         }).select({
-            firstName:1,lastName:1,email:1,mobile:1,license:1,aadhar:1,pan:1,status:1,verified:1,createdAt:1,_id:0
+            firstName:1,lastName:1,email:1,mobile:1,license:1,aadhar:1,pan:1,status:1,verified:1,createdAt:1
         }).populate({path:"wallet",select:{balance:1,_id:0}}).lean()
 
         res.status(200).json({
@@ -174,7 +174,7 @@ exports.filterDriver = async function (req, res, next) {
         })
     }else{
         let drivers = await db.driver.find({}).select({
-            firstName:1,lastName:1,email:1,mobile:1,license:1,aadhar:1,pan:1,status:1,verified:1,createdAt:1,_id:0
+            firstName:1,lastName:1,email:1,mobile:1,license:1,aadhar:1,pan:1,status:1,verified:1,createdAt:1
         }).populate({path:"wallet",select:{balance:1,_id:0}}).lean()
 
 

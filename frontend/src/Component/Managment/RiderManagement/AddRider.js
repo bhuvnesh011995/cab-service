@@ -13,6 +13,7 @@ const initialState = {
   mobile: "",
   DOB: "",
   password: "",
+  referralCode:null,
   country: "",
   state: "",
   city: "",

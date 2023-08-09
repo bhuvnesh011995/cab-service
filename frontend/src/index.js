@@ -17,8 +17,6 @@ import StateManagement from './Component/Managment/StateManagement/StateManageme
 import AddState from './Component/Managment/StateManagement/AddState';
 import CityManagement from './Component/Managment/CityManagement/CityManageMent';
 import AddCity from './Component/Managment/CityManagement/AddCity';
-import VehicleManagement from './Component/Managment/VehicleManagement.js/VehicleManagement';
-import AddVehicleType from './Component/Managment/VehicleManagement.js/AddVehicleType';
 import IndividualFareManagement from './Component/Managment/IndividualFareManagement/IndividualFareManagement';
 import AddIndividualFare from './Component/Managment/IndividualFareManagement/AddIndividualFare';
 import RentalPackageManagement from './Component/Managment/RentalPackageManagement/RentalPackageManagement';
@@ -35,6 +33,12 @@ import SignIn from './Component/Auth/SignIn/SignIn';
 import AuthProvider from './Context/AuthContext';
 import SignUp from './Component/Auth/SignUp/SignUp';
 import ResetPass from './Component/Auth/ResetPass/ResetPass';
+import DriverManagement from './Component/Managment/DriverManagement/DriverManagement';
+import AddDriver from './Component/Managment/DriverManagement/AddDriver';
+import AddVehicle from './Component/Managment/VehicleManagement/AddVehicle';
+import VehicleManagement from './Component/Managment/VehicleManagement/VehicleManagement';
+import VehicleTypeManagement from './Component/Managment/VehicleTypeManagement/VehicleTypeManagement';
+import AddVehicleType from './Component/Managment/VehicleTypeManagement/AddVehicleType';
 
 const router = createBrowserRouter([
   {
@@ -53,7 +57,7 @@ const router = createBrowserRouter([
     {path:"addState",element:<AddState />},
     {path:"cityManagement",element:<CityManagement />},
     {path:"addCity",element:<AddCity />},
-    {path:"vehicleManagement",element:< VehicleManagement/>},
+    {path:"vehicleTypeManagement",element:< VehicleTypeManagement/>},
     {path:"addVehicleType",element:<AddVehicleType />},
     {path:"individualFareManagement",element:< IndividualFareManagement/>},
     {path:"addIndividualFare",element:< AddIndividualFare/>},
@@ -66,7 +70,11 @@ const router = createBrowserRouter([
     {path:"pageManagement", element:<PageManagement/>},
     {path:"addPage",element:<AddPage/>},
     {path:"riderManagement",element:<RiderManagement/>},
-    {path:"addRider",element:<AddRider/>}
+    {path:"addRider",element:<AddRider/>},
+    {path:"driverManagement", element:<DriverManagement/>},
+    {path:"addDriver",element:<AddDriver/>},
+    {path:"vehicleManagement", element:<VehicleManagement/>},
+    {path:"addVehicle",element:<AddVehicle/>},
     ]
   },{
     path:"/login", element:<SignIn/>

@@ -85,7 +85,10 @@ exports.getVehicleByDriver = async function (req,res,next){
 
     let driver = await db.driver.findById(req.params.driverId)
 
-    let vehicles = await db.vehicle.find({driver:driver._id})
+    let vehicles = await db.vehicle.find({driver:driver._id}).populate([
+        {path:"vehicleType", select:"name"},
+        {path:"make",select:"name"}
+    ])
 
 res.status(200).json({
     success:true,

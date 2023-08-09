@@ -16,7 +16,7 @@ export default function Selection_Input({
 
 
   return (
-      <div className="mb-3 m-2">
+      <div className="m-3">
       <label className="form-label">{lebel_text}</label>
       <select
       style={{width:"200px"}}
