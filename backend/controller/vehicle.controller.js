@@ -21,8 +21,9 @@ exports.addVehicle = async function (req,res,next){
     } = req.body
 
     let admin =await db.admin.findOne({username:"admin"})
-
+    
     let driver = await db.driver.findOne({email:driverEmail})
+
 
     let vehicletype = await db.vehicleType.findOne({name:vehicleType})
 
@@ -101,5 +102,15 @@ res.status(200).json({
 exports.getVehicleDetails = async function (req,res,next){
     let vehicleId  = req.params.vehicleId
 
+    let vehicle = await db.vehicle.findById(vehicleId).populate([
+        {path:"vehicleType", select:{name:1}},
+        {path:"make",select:{name:1}},
+        {path:"verifiedBy",select:{name:1}}
+    ])
+
+    res.status(200).json({
+        success:true,
+        vehicle
+    })
     
 }

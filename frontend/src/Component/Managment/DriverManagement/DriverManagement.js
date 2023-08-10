@@ -16,7 +16,6 @@ import {
 import { Box, IconButton } from "@mui/material";
 import * as tiIcons from "react-icons/ti";
 import * as rsIcons from "react-icons/rx";
-import Title from "../../Common/Title";
 import DriverDetails from "./DriverDetails";
 
 
@@ -32,6 +31,7 @@ export default function DriverManagement(){
     const [filter,setFilter] = useState(initialFilter);
     const [list,setList] = useState([])
     const [isOpen,setIsOpen] = useState(false);
+    const [driver,setDriver] = useState(null);
 
     useEffect(()=>{
       fetch(BASE_URL+"/driver/filter",{
@@ -40,6 +40,7 @@ export default function DriverManagement(){
       .then(data=>{
         if(data.success){
           let arr = [];
+          console.log(data.drivers[0])
           data.drivers.map((ele,i)=>{
             let obj = {
               index:i+1,
@@ -51,7 +52,16 @@ export default function DriverManagement(){
               wallet:ele.wallet.balance,
               verified:ele.verified ? <tiIcons.TiTick /> : <rsIcons.RxCross2 />,
               createdAt:ele.createdAt,
-              id:ele._id
+              id:ele._id,
+              country:ele.address?.country?.name,
+              state:ele.address?.state?.name,
+              city:ele.address?.city?.name,
+              pincode:ele.address.pincode,
+              place:ele.address?.place,
+              createdBy:ele.createdBy?.name,
+              updatedBy:ele.updatedBy?.name,
+              updatedAt:ele.updatedAt,
+              DOB:ele.DOB
             };
             if(!ele.aadhar?.verified || !ele.license?.verified || !ele.pan?.verified) obj.documentStatus = <rsIcons.RxCross2 />
             else obj.documentStatus = <tiIcons.TiTick />
@@ -376,7 +386,7 @@ export default function DriverManagement(){
     return(
         <Management_container title={"Driver Management"}>
 
-          {isOpen && <DriverDetails show={isOpen} setIsOpen={setIsOpen} />}
+          {isOpen && <DriverDetails driver={driver} setDriver={setDriver} show={isOpen} setIsOpen={setIsOpen} />}
           
             <div class="row">
     <div class="col-lg-13">
@@ -454,7 +464,7 @@ export default function DriverManagement(){
       positionActionsColumn={'last'}
       renderRowActions={({row,table})=>(
         <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '1px' }}>
-          <IconButton onClick={()=>setIsOpen(!isOpen)}>
+          <IconButton onClick={()=>{setIsOpen(!isOpen); setDriver({...row.original})}}>
             <RemoveRedEye />
           </IconButton>
           <IconButton>
@@ -463,7 +473,7 @@ export default function DriverManagement(){
           <IconButton>
             <ModeEditOutline />
           </IconButton>
-          <IconButton onClick={(e)=>{navigate("/vehicleManagement",{state:{id:row.original.id}})}}>
+          <IconButton onClick={(e)=>{navigate("/vehicleManagement",{state:{id:row.original.id,email:row.original.email}})}}>
             <DriveEta />
           </IconButton>
           <IconButton>

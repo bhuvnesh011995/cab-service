@@ -6,8 +6,7 @@ import {
   RemoveRedEye,
   Lock,
   ModeEditOutline,
-  DeleteForever,
-  DriveEta
+  DeleteForever
 } from "@mui/icons-material/";
 import { Box, IconButton } from "@mui/material";
 import * as tiIcons from "react-icons/ti";
@@ -31,6 +30,7 @@ export default function VehicleManagement() {
         let arr = [];
         data.vehicles.map((ele,i)=>{
           let obj = {
+            id:ele._id,
             plateNo:ele.plateNo,
             vehicleType:ele.vehicleType?.name,
             make:ele.make?.name,
@@ -282,7 +282,7 @@ export default function VehicleManagement() {
                   zIndex: "2",
                 }}
               >
-                <BtnDark handleClick={()=>navigate("/addVehicle")} title={"Add New"} />
+                <BtnDark handleClick={()=>navigate("/addVehicle",{state:{email:state.email}})} title={"Add New"} />
               </div>
 
               <MaterialReactTable
@@ -308,7 +308,7 @@ export default function VehicleManagement() {
       positionActionsColumn={'last'}
       renderRowActions={({row,table})=>(
         <Box sx={{ display: 'flex', flexWrap: 'nowrap'}}>
-          <IconButton>
+          <IconButton onClick={()=>navigate("/vehicleDetails",{state:{id:row.original.id}})}>
             <RemoveRedEye />
           </IconButton>
           <IconButton>

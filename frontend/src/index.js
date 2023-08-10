@@ -39,6 +39,7 @@ import AddVehicle from './Component/Managment/VehicleManagement/AddVehicle';
 import VehicleManagement from './Component/Managment/VehicleManagement/VehicleManagement';
 import VehicleTypeManagement from './Component/Managment/VehicleTypeManagement/VehicleTypeManagement';
 import AddVehicleType from './Component/Managment/VehicleTypeManagement/AddVehicleType';
+import VehicleDetails from './Component/Managment/VehicleManagement/VehicleDetails';
 
 const router = createBrowserRouter([
   {
@@ -75,6 +76,7 @@ const router = createBrowserRouter([
     {path:"addDriver",element:<AddDriver/>},
     {path:"vehicleManagement", element:<VehicleManagement/>},
     {path:"addVehicle",element:<AddVehicle/>},
+    {path:"vehicleDetails",element:<VehicleDetails/>}
     ]
   },{
     path:"/login", element:<SignIn/>
