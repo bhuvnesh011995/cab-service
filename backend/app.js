@@ -11,7 +11,9 @@ const cors = require("cors")
 //database connection with confirmation
 
 mongoose.connect(dbConfig.URI+dbConfig.DB,{
-  serverSelectionTimeoutMS: 5000
+  serverSelectionTimeoutMS: 5000,
+  useNewUrlParser: true,
+  useUnifiedTopology: true
 })
 const db = mongoose.connection;
 db.on("error",()=>{

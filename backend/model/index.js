@@ -24,6 +24,7 @@ module.exports ={
     wallet:require("./wallet.model"),
     driver:require("./driver.model"),
     vehicle:require("./vehicle.model"),
-    booing:require("./booking.model")
+    booing:require("./booking.model"),
+    
 }
 
