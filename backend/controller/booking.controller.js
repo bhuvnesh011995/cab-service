@@ -79,7 +79,7 @@ exports.addBooking = async function (req, res, next) {
 
 
   let booking = await db.booking.create({
-        bookingDate:Date.now()
+        bookingDate:Date.now(),
         runMode:runModeDoc._id,
         
 
