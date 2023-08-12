@@ -10,7 +10,7 @@ const cors = require("cors")
 
 //database connection with confirmation
 
-mongoose.connect(dbConfig.URI+dbConfig.DB,{
+mongoose.connect(dbConfig.URI,{
   serverSelectionTimeoutMS: 5000,
   useNewUrlParser: true,
   useUnifiedTopology: true
@@ -112,4 +112,5 @@ async function init(){
     require("./routes/rider.route")(app)
     require("./routes/driver.route")(app)
     require("./routes/vehicle.route")(app)
+    require("./routes/booking.route")(app)
 module.exports = app;

@@ -1,0 +1,30 @@
+
+module.exports ={
+    make : require("./make.model"),
+    model : require("./model.model"),
+    state : require("./state.model"),
+    country : require("./country.model"),
+    service : require("./services.model"),
+    admin : require("./admin.model"),
+    city : require("./city.model"),
+    vehicleType:require("./vehicleType.model"),
+    runMode:require("./runMode.model"),
+    cityService:require("./cityService.model"),
+    indiFareCountry:require("./individualFare/individualFare.country.model"),
+    indiFareCity:require("./individualFare/individualFare.city.model"),
+    indiFareState:require("./individualFare/individualFare.state.model"),
+    perKMCharge:require("./perKMCharge.model"),
+    rentalFareCountry:require('./rentalFare/rentalFare.country.model'),
+    rentalFareState:require("./rentalFare/rentalFare.state.model"),
+    rentalFareCity:require('./rentalFare/rentalFare.city.model'),
+    rentalPackage:require("./rentalFare/rentalPackage.model"),
+    setting:require("./Setting.model"),
+    page:require("./pageManagement.model"),
+    rider:require("./rider.model"),
+    wallet:require("./wallet.model"),
+    driver:require("./driver.model"),
+    vehicle:require("./vehicle.model"),
+    booing:require("./booking.model"),
+    
+}
+

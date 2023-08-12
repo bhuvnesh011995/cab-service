@@ -1,73 +1,53 @@
 const {Schema,model} = require("mongoose")
 
 const schema = new Schema ({
-    bookingDate:Date,
     runMode:{type:Schema.Types.ObjectId,ref:"RunMode"},
     bookingType:String,
-    pickUp:{
-        address:{
-            place:String,
-            city:{type:Schema.Types.ObjectId,ref:"City"},
-            state:{type:Schema.Types.ObjectId,ref:"State"},
-            country:{type:Schema.Types.ObjectId,ref:"Country"},
+    booingInfo:{
+        country:{type:Schema.Types.ObjectId,ref:"Country"},
+        state:{type:Schema.Types.ObjectId,ref:"State"},
+        city:{type:Schema.Types.ObjectId,ref:"City"},
+        pickUp:{
+            address:{
+                type:String,
+                required:true,
+                lowercase:true
+            },
+            location:{
+                latitude:String,
+                longitude:String
+            }
+        },
+        drop:{
+            address:{
+                type:String,
+                required:true,
+                lowercase:true
+            },
+            location:{
+                latitude:String,
+                longitude:String
+            }
+        },
+        bookingDate:Date,
+    },
+    rideInfo:{
+        start:{
             location:{
                 longitude:String,
                 latitude:String
-            }
+            },
+            date:Date
         },
-
-    },
-    drop:{
-        address:{
-            place:String,
-            city:{type:Schema.Types.ObjectId,ref:"City"},
-            state:{type:Schema.Types.ObjectId,ref:"State"},
-            country:{type:Schema.Types.ObjectId,ref:"Country"},
+        end:{
             location:{
-                longitude:String,
-                latitude:String
-            }
-        },
+                    longitude:String,
+                    latitude:String
+            },
+            date:Date
     },
-    start:{
-        address:{
-            place:String,
-            city:{type:Schema.Types.ObjectId,ref:"City"},
-            state:{type:Schema.Types.ObjectId,ref:"State"},
-            country:{type:Schema.Types.ObjectId,ref:"Country"},
-            location:{
-                longitude:String,
-                latitude:String
-            }
-        },
-        date:Date
     },
-    end:{
-        address:{
-            place:String,
-            city:{type:Schema.Types.ObjectId,ref:"City"},
-            state:{type:Schema.Types.ObjectId,ref:"State"},
-            country:{type:Schema.Types.ObjectId,ref:"Country"},
-            location:{
-                longitude:String,
-                latitude:String
-            }
-        },
-        date:Date
-    },
-    arrivedInfo:{
-        address:{
-            place:String,
-            city:{type:Schema.Types.ObjectId,ref:"City"},
-            state:{type:Schema.Types.ObjectId,ref:"State"},
-            country:{type:Schema.Types.ObjectId,ref:"Country"},
-            location:{
-                longitude:String,
-                latitude:String
-            }
-        },
-        date:Date
-    },
+    
     package:{type:Schema.Types.ObjectId,ref:"RentalPackage"},
 
     applicableCharges:{
@@ -116,7 +96,7 @@ const schema = new Schema ({
     success:{
         type:String,
         require:true,
-        enum:["COMPLETED","CANCELLED"]
+        enum:["COMPLETED","CANCELLED","PENDING"]
     },
     createdBy:{},
     rider:{type:Schema.Types.ObjectId,ref:"Rider"},

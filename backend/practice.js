@@ -113,6 +113,8 @@ app.listen(8081,()=>console.log("connection started"))
 const sch1 = new Schema({
   data:{type:Date,default:Date.now},
   name:String,
+  name2:String,
+  name3:String,
   linkType:String
 },{collection:"Sch1"})
 
@@ -131,17 +133,26 @@ const sch3 = new Schema({
 const Sch3 = Sch1.discriminator("Sch3",sch3)
 
 async function init (){
-  await Sch2.create({
-    name:"safdsdf",
-    value1:"ram"
+  await Sch1.create({
+    name:"ram",
+    name2:"kjjsdajf",
+    name3:"hjsafkdsa",
   })
+  console.log("data added")
 }
 
 // init();
 
 async function findOne(){
-  let data = await Sch1.find({})
+  let data = await Sch1.find({value1:"ram"})
   console.log(data)
 }
 
 // findOne();
+
+async function find(){
+  let data = await Sch1.find({}).select({"name":-1,"name2":1})
+  console.log(data)
+}
+
+find()
