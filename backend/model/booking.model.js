@@ -3,7 +3,7 @@ const {Schema,model} = require("mongoose")
 const schema = new Schema ({
     runMode:{type:Schema.Types.ObjectId,ref:"RunMode"},
     bookingType:String,
-    booingInfo:{
+    bookingInfo:{
         country:{type:Schema.Types.ObjectId,ref:"Country"},
         state:{type:Schema.Types.ObjectId,ref:"State"},
         city:{type:Schema.Types.ObjectId,ref:"City"},
@@ -96,9 +96,9 @@ const schema = new Schema ({
     success:{
         type:String,
         require:true,
+        default:"PENDING",
         enum:["COMPLETED","CANCELLED","PENDING"]
     },
-    createdBy:{},
     rider:{type:Schema.Types.ObjectId,ref:"Rider"},
     driver:{type:Schema.Types.ObjectId,ref:"Driver"},
     vehicle:{type:Schema.Types.ObjectId,ref:"Vehicle"}

@@ -210,23 +210,23 @@ exports.filterIndiFare = async function(req,res,next){
     }); 
     return
   }else{
-    if(vehicleType.length){
+    if(vehicleType?.length){
     var vehicleTypeDoc =await db.vehicleType.findOne({name:vehicleType})
     vehicleType = vehicleTypeDoc?._id
   }else vehicleType = null
 
-  if(country.length){
+  if(country?.length){
       let countryDoc = await db.country.findOne({name:country})
       country = countryDoc._id
   }else country = null
-  if(state.length){
+  if(state?.length){
     let stateDoc = await db.state.findOne({
       name:state
     })
     state = stateDoc._id
   }else state = null
   
-  if(city.length){
+  if(city?.length){
     let cityDoc = await db.city.findOne({name:city})
     city = cityDoc._id
   }else city = null

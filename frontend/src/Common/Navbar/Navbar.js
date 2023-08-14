@@ -17,9 +17,9 @@ export default function Navbar({inactive,setInactive}){
 
     const {admin,setAdmin,initialAdmin} = useContext(authContext)
 
-    useEffect(()=>{
-        if(!admin.token) navigate("/login")
-    },[admin])
+    // useEffect(()=>{
+    //     if(!admin.token) navigate("/login")
+    // },[admin])
 
     return(
         <header id="page-topbar">

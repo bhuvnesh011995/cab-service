@@ -40,7 +40,6 @@ export default function DriverManagement(){
       .then(data=>{
         if(data.success){
           let arr = [];
-          console.log(data.drivers[0])
           data.drivers.map((ele,i)=>{
             let obj = {
               index:i+1,

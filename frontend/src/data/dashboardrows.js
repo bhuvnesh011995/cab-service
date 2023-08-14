@@ -85,58 +85,58 @@ export default [
     },
     {
             name:"Booking Management",
-            to:"/"
+            to:"/bookingManagement"
     },
     {
             name:"Email template Management",
-            to:"/"
+            to:"/emailManagement"
     },
     {
             name:"SMS Template Management",
-            to:"/"
+            to:"/smsManagement"
     },
     {
             name:"Promotion Management",
-            to:"/"
+            to:"/promotionManagement"
     },
     {
             name:"Referral Discount Management",
-            to:"/"
+            to:"/referralManagement"
     },
     {
             name:"Notification to Rider",
-            to:"/"
+            to:"/notificationToRiderManagement"
     },
     {
             name:"Notification to Driver",
-            to:"/"
+            to:"/notificationToDriverManagement"
     },
     {
             name:"Tax Management",
-            to:"/"
+            to:"/taxManagement"
     },
     {
             name:"Tolls Management",
-            to:"/"
+            to:"/tollManagement"
     },
     {
             name:"Driver Payout Management",
-            to:"/"
+            to:"/driverPayoutManagement"
     },
     {
             name:"Admin Transaction Management",
-            to:"/"
+            to:"/adminTransactionManagement"
     },
     {
             name:"Promocode management",
-            to:"/"
+            to:"/promocodeManagement"
     },
     {
             name:"Rental promocode management",
-            to:"/"
+            to:"/rentalPromocodeManagement"
     },
     {
             name:"SOS Management",
-            to:"/"
+            to:"/sosService"
     }
 ];

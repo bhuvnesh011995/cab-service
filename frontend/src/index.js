@@ -40,6 +40,8 @@ import VehicleManagement from './Component/Managment/VehicleManagement/VehicleMa
 import VehicleTypeManagement from './Component/Managment/VehicleTypeManagement/VehicleTypeManagement';
 import AddVehicleType from './Component/Managment/VehicleTypeManagement/AddVehicleType';
 import VehicleDetails from './Component/Managment/VehicleManagement/VehicleDetails';
+import BookingManagement from './Component/Managment/BookingManagement/BookingManagement';
+import AddBooking from './Component/Managment/BookingManagement/AddBooking';
 
 const router = createBrowserRouter([
   {
@@ -76,7 +78,9 @@ const router = createBrowserRouter([
     {path:"addDriver",element:<AddDriver/>},
     {path:"vehicleManagement", element:<VehicleManagement/>},
     {path:"addVehicle",element:<AddVehicle/>},
-    {path:"vehicleDetails",element:<VehicleDetails/>}
+    {path:"vehicleDetails",element:<VehicleDetails/>},
+    {path:"bookingManagement", element:<BookingManagement />},
+    {path:"addBooking", element:<AddBooking/>}
     ]
   },{
     path:"/login", element:<SignIn/>
