@@ -88,7 +88,7 @@ exports.addBooking = async function (req, res, next) {
         "bookingInfo.drop.address":bookingInfo.drop.address,
         "bookingInfo.drop.location.latitude":bookingInfo.drop.location.latitude,
         "bookingInfo.drop.location.longitude":bookingInfo.drop.location.longitude,
-        "bookingIngi.bookingDate":Date.now(),
+        "bookingInfo.bookingDate":Date.now(),
         "rideInfo.start.location.latitude":rideInfo.start.location.latitude,
         "rideInfo.start.location.longitude":rideInfo.start.location.longitude,
         "rideInfo.start.date":rideInfo.start.date,
