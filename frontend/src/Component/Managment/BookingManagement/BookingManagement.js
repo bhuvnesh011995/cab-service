@@ -3,10 +3,10 @@ import Management_container from "../../Common/Management_container";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../config/config";
-import Filter_Option from "../../Common/Filter_option";
 import Text_Input from "../../Common/Inputs/Text_Input";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import { MaterialReactTable } from "material-react-table";
+import BookingService from './BookingService';
 import {
   RemoveRedEye,
   Lock,
@@ -30,6 +30,7 @@ export default function BookingManagement() {
   const [list, setList] = useState([]);
   const [filter, setFilter] = useState(initialFilter);
   const navigate = useNavigate();
+  const [isOpen,setIsOpen] = useState(false);
 
   useEffect(() => {
     fetch(BASE_URL + "/booking/filter", {
@@ -105,7 +106,7 @@ export default function BookingManagement() {
     return;
   }
   function handleClick() {
-    navigate("/addBooking");
+    setIsOpen(true);
   }
 
   const columns = useMemo(
@@ -337,8 +338,9 @@ export default function BookingManagement() {
                   zIndex: "2",
                 }}
               >
-                <BtnDark handleClick={handleClick} title={"Add Make"} />
+                <BtnDark handleClick={handleClick} title={"New Booking"} />
               </div>
+              {isOpen && <BookingService show={isOpen} setIsOpen={setIsOpen}/>}
               <form style={{ margin: "50px" }}>
                 <div className="row">
                   <div className="col-lg-2 inputField">

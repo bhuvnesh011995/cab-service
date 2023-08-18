@@ -41,8 +41,7 @@ import VehicleTypeManagement from './Component/Managment/VehicleTypeManagement/V
 import AddVehicleType from './Component/Managment/VehicleTypeManagement/AddVehicleType';
 import VehicleDetails from './Component/Managment/VehicleManagement/VehicleDetails';
 import BookingManagement from './Component/Managment/BookingManagement/BookingManagement';
-import AddBooking from './Component/Managment/BookingManagement/AddBooking';
-
+import BookingDetail from "./Component/Managment/BookingManagement/BooingDetails.js"
 const router = createBrowserRouter([
   {
     element:<App />,
@@ -80,7 +79,7 @@ const router = createBrowserRouter([
     {path:"addVehicle",element:<AddVehicle/>},
     {path:"vehicleDetails",element:<VehicleDetails/>},
     {path:"bookingManagement", element:<BookingManagement />},
-    {path:"addBooking", element:<AddBooking/>}
+    {path:"bookingSummery", element:<BookingDetail/>}
     ]
   },{
     path:"/login", element:<SignIn/>
@@ -97,7 +96,7 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   // <React.StrictMode>
   <AuthProvider>
-    <RouterProvider router={router} />
+      <RouterProvider router={router} />
   </AuthProvider>
   
 
