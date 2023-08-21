@@ -114,3 +114,31 @@ exports.getVehicleDetails = async function (req,res,next){
     })
     
 }
+
+
+exports.getActiveVehicleOfDriver = async function (req,res,next){
+let vehicles = await db.vehicle.find({
+    driver:req.params.driverId,
+    "registration.expiryDate":{$gt:Date.now()},
+    "registration.verified":true,
+    "insurance.expiryDate":{$gt:Date.now()},
+    "insurance.verified":true,
+    "permit.verified":true,
+    "permit.expiryDate":{$gt:Date.now()},
+    "pollutionCertificate.expiryDate":{$gt:Date.now()},
+    "pollutionCertificate.verified":true,
+    status:"ACTIVE",
+    verified:true
+}).select({
+    fuelType:1,
+    model:1,
+    year:1,
+    color:1,
+    plateNo:1
+}).populate({path:"make",select:{name:1,_id:0}})
+
+res.status(200).json({
+    success:true,
+    vehicles
+})
+}

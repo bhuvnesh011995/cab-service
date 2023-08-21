@@ -106,7 +106,7 @@ export default function BookingManagement() {
     return;
   }
   function handleClick() {
-    setIsOpen(true);
+    window.open("http://localhost:3000/newBooking",'_blank', 'noreferrer')
   }
 
   const columns = useMemo(

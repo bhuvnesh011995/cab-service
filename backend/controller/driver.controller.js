@@ -337,3 +337,22 @@ exports.updateDriver = async function (req, res, next) {
     driver: driver,
   });
 };
+
+
+
+exports.getActiveDriver = async function (req,res,next){
+  let drivers = await db.driver.find({
+    "license.verified":true,
+    "license.expiryDate":{$gt:Date.now()},
+    "aadhar.verified":true,
+    "pan.verified":true,
+    verified:true,
+    status:"ACTIVE"
+  }).select({firstName:1,lastName:1,email:1,mobile:1})
+
+
+  res.status(200).json({
+    success:true,
+    drivers
+  })
+}

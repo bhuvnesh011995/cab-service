@@ -21,7 +21,7 @@ export default function Selection_Input({
       <select
       style={{width:"200px"}}
         name="selectedStatus"
-        key={`my_unique_select_key__${input[setKey]}`}
+        key={`my_unique_select_key_${input[setKey]}`}
         value={input[setKey] || ''}
         onChange={(e) => {
           let obj = {[setKey]:e.target.value}

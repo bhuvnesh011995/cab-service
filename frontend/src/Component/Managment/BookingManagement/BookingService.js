@@ -20,6 +20,9 @@ import {
   DirectionsRenderer,
 } from '@react-google-maps/api'
 import { useRef, useState } from 'react'
+import Management_container from '../../Common/Management_container';
+import Selection_Input from '../../Common/Inputs/Selection_input';
+import BookingInputs from './BookingInputs';
 
 const initialCenter = { lat: 0, lng: 0 }
 const bookingState ={
@@ -65,7 +68,7 @@ export default function BookingService({show,setIsOpen}) {
     libraries: ['places'],
     nonce:"nonce-691d29db-ab00-4bf6-94fa-168373d2fb7e"
   })
-  const [booking,seetBooking] = useState();
+  const [booking,setBooking] = useState(bookingState);
   const [map, setMap] = useState(/** @type google.maps.Map */ (null))
   const [directionsResponse, setDirectionsResponse] = useState(null)
   const [distance, setDistance] = useState('')
@@ -123,12 +126,13 @@ export default function BookingService({show,setIsOpen}) {
 
   return (
     <ChakraProvider theme={theme}>
-    <Modal
-        show={show}
-        onHide={()=>setIsOpen(false)}
-        size="lg"><div style={{height:"90vh"}}>
+    <Management_container title={"New Booking"}>
+    <div class="row">
+        <div class="col-lg-13">
+          <div class="card">
+            <div class="card-body">
         {isLoaded &&
-          <div style={{height:"40%", width:"100%"}}>
+          <div style={{height:"40vh", width:"100%"}}>
           <Box position='relative' left={0} top={0} h="100%" w='100%'>
         {/* Google Map Box */}
         <GoogleMap
@@ -151,8 +155,8 @@ export default function BookingService({show,setIsOpen}) {
       </Box>
       <Box
       position="absolute"
-      top="0"
-      left="0"
+      top="5px"
+      left="5px"
         p={4}
         borderRadius='lg'
         m={4}
@@ -182,7 +186,7 @@ export default function BookingService({show,setIsOpen}) {
         </HStack>
         
       </Box>
-      <div style={{position:"absolute", right:"5px", top:"28%"}}>
+      <div style={{position:"absolute", right:"15px", top:"28%"}}>
       <IconButton
             aria-label='center back'
             icon={<FaLocationArrow />}
@@ -196,10 +200,10 @@ export default function BookingService({show,setIsOpen}) {
           </div>
         }
         <div>
-
-        </div>
-       </div>
-      </Modal>
+        <BookingInputs booking={booking} setBooking={setBooking} />
+        
+        </div></div></div></div></div>
+    </Management_container>
     </ChakraProvider>
     
   )

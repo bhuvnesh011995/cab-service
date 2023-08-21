@@ -154,3 +154,17 @@ exports.filterRider = async function(req,res,next){
     })
   }
 }
+
+
+
+exports.getActiveRider = async function (req,res,next){
+  let riders = await db.rider.find({
+    status:"ACTIVE",
+    verified:true,
+  }).select({firstName:1,lastName:1,email:1,mobile:1,gender:1,})
+
+  res.status(200).json({
+    success:true,
+    riders
+  })
+}

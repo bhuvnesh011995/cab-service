@@ -25,6 +25,7 @@ module.exports ={
     driver:require("./driver.model"),
     vehicle:require("./vehicle.model"),
     booking:require("./booking.model"),
+    transaction:require("./transaction.model"),
     
 }
 
