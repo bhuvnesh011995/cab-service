@@ -1,17 +1,17 @@
 const {Schema,model} = require("mongoose");
 
 let schema = new Schema({
-    package:[{
+    package:{
         packageId:{type:Schema.Types.ObjectId,ref:"RentalPackage"},
         packageFare:{
         type:Schema.Types.Decimal128,
         require:true,
         },
-    }],
+    },
     country:{type:Schema.Types.ObjectId,ref:"Country"},
 
     state:{type:Schema.Types.ObjectId,ref:"State"},
-    city:[{type:Schema.Types.ObjectId,ref:"City"}],
+    city:{type:Schema.Types.ObjectId,ref:"City"},
 
     vehicleType:{type:Schema.Types.ObjectId, ref:"VehicleType"},
 

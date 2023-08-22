@@ -38,14 +38,14 @@ exports.addRentalFare = async function (req, res, next) {
         bookingFee: bookingFee,
         adminCommissionType: adminCommissionType,
         adminCommission: adminCommission,
-        status:status
+        status:status,
+        package:packageObj
     })
     const allExtraCharge = await getId(perKMCharge)
 
   allExtraCharge.forEach(async (ele)=>{
     await db.rentalFareCountry.updateOne({_id:fare._id},{$push:{perKMCharge:ele}})
   })
-  await db.rentalFareCountry.updateOne({_id:fare._id},{$push:{package:packageObj}})
 
   fare = await db.rentalFareCountry.findOne({_id:fare._id})
 
@@ -72,7 +72,8 @@ exports.addRentalFare = async function (req, res, next) {
     bookingFee: bookingFee,
     adminCommissionType: adminCommissionType,
     adminCommission: adminCommission,
-    status:status
+    status:status,
+    package:packageObj
   });
 
   const allExtraCharge = await getId(perKMCharge)
@@ -83,7 +84,6 @@ exports.addRentalFare = async function (req, res, next) {
             perKMCharge:ele
     }})
   })
-  await db.rentalFareState.updateOne({_id:fare._id},{$push:{package:packageObj}})
 
 
   fare = await db.rentalFareState.findOne({_id:fare._id})
@@ -126,7 +126,8 @@ exports.addRentalFare = async function (req, res, next) {
             bookingFee: bookingFee,
             adminCommissionType: adminCommissionType,
             adminCommission: adminCommission,
-            status:status
+            status:status,
+            package:packageObj
           });
 
           const allExtraCharge = await getId(perKMCharge)
@@ -134,7 +135,6 @@ exports.addRentalFare = async function (req, res, next) {
          allExtraCharge.forEach(async (ele)=>{
             await db.rentalFareCity.updateOne({_id:fare._id},{$push:{perKMCharge:ele}})
         })
-        await db.rentalFareCity.updateOne({_id:fare._id},{$push:{package:packageObj}})
 
 
         fare = await db.rentalFareCity.findOne({_id:fare._id})

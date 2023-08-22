@@ -71,6 +71,7 @@ exports.getFares = async function (req, res, next) {
         adminCommission: 1,
       })
       .populate([
+        { path: "vehicleType", select: { name: 1 } },
         { path: "package.packageId" },
         { path: "perKMCharge" },
         { path: "country", select: { name: 1 } },
@@ -91,6 +92,7 @@ exports.getFares = async function (req, res, next) {
         adminCommission: 1,
       })
       .populate([
+        { path: "vehicleType", select: { name: 1 } },
         { path: "package.packageId" },
         { path: "perKMCharge" },
         { path: "country", select: { name: 1 } },
@@ -110,6 +112,7 @@ exports.getFares = async function (req, res, next) {
         adminCommission: 1,
       })
       .populate([
+        { path: "vehicleType", select: { name: 1 } },
         { path: "package.packageId" },
         { path: "perKMCharge" },
         { path: "country", select: { name: 1 } },

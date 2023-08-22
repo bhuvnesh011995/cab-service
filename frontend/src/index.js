@@ -43,6 +43,7 @@ import VehicleDetails from './Component/Managment/VehicleManagement/VehicleDetai
 import BookingManagement from './Component/Managment/BookingManagement/BookingManagement';
 import BookingDetail from "./Component/Managment/BookingManagement/BooingDetails.js"
 import BookingService from './Component/Managment/BookingManagement/BookingService';
+import BookingDetails from './Component/Managment/BookingManagement/BookingDetails';
 const router = createBrowserRouter([
   {
     element:<App />,
@@ -81,7 +82,8 @@ const router = createBrowserRouter([
     {path:"vehicleDetails",element:<VehicleDetails/>},
     {path:"bookingManagement", element:<BookingManagement />},
     {path:"bookingSummery", element:<BookingDetail/>},
-    {path:"newBooking",element:<BookingService/>}
+    {path:"newBooking",element:<BookingService/>},
+    {path:"bookingDetails",element:<BookingDetails />}
     ]
   },{
     path:"/login", element:<SignIn/>

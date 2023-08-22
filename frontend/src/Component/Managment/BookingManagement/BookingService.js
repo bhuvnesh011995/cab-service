@@ -1,14 +1,11 @@
 import {
   Box,
   Button,
-  ButtonGroup,
-  Flex,
   HStack,
   IconButton,
   Input,
   Text,
 } from '@chakra-ui/react'
-import { Button as button2, Modal } from "react-bootstrap";
 import { FaLocationArrow, FaTimes } from 'react-icons/fa';
 import { ChakraProvider, theme } from '@chakra-ui/react'
 
@@ -21,7 +18,6 @@ import {
 } from '@react-google-maps/api'
 import { useRef, useState } from 'react'
 import Management_container from '../../Common/Management_container';
-import Selection_Input from '../../Common/Inputs/Selection_input';
 import BookingInputs from './BookingInputs';
 
 const initialCenter = { lat: 0, lng: 0 }
@@ -62,11 +58,12 @@ const bookingState ={
   status:"",
   vehicleId:""
 }
+
+const libraries = ['places']
 export default function BookingService({show,setIsOpen}) {
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey:"AIzaSyAbiy9gnHWRMfzMFt_r1mz7Nc2YTwV7C2k",
-    libraries: ['places'],
-    nonce:"nonce-691d29db-ab00-4bf6-94fa-168373d2fb7e"
+    libraries
   })
   const [booking,setBooking] = useState(bookingState);
   const [map, setMap] = useState(/** @type google.maps.Map */ (null))
@@ -186,7 +183,7 @@ export default function BookingService({show,setIsOpen}) {
         </HStack>
         
       </Box>
-      <div style={{position:"absolute", right:"15px", top:"28%"}}>
+      <div style={{position:"relative",left:"92%",top:"-55px"}}>
       <IconButton
             aria-label='center back'
             icon={<FaLocationArrow />}

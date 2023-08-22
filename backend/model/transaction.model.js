@@ -1,5 +1,5 @@
 const {Schema,model} = require("mongoose")
-
+const Wallet = require("./wallet.model")
 
 const schema = new Schema({
     amount:{
@@ -21,10 +21,6 @@ const schema = new Schema({
     collection:"Transaction"
 })
 
-module.exports = model("Transaction",schema)
-
-
-const Wallet = require("./wallet.model")
 
 
 schema.post("save",async function (doc){
@@ -39,3 +35,12 @@ schema.post("save",async function (doc){
         console.error("error occoured", error)
     }
 })
+
+
+
+module.exports = model("Transaction",schema)
+
+
+
+
+

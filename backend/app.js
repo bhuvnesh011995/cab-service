@@ -114,4 +114,5 @@ async function init(){
     require("./routes/vehicle.route")(app)
     require("./routes/booking.route")(app)
     require("./routes/fare.route")(app)
+    require("./routes/transaction.route")(app)
 module.exports = app;

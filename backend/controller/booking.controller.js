@@ -1,4 +1,5 @@
 const db = require("../model/index");
+const mongoose = require('mongoose')
 
 exports.addBooking = async function (req, res, next) {
   let {
@@ -197,3 +198,27 @@ exports.filterBooking = async function (req, res, next) {
     bookings,
   });
 };
+
+
+
+exports.getBookingDetailsById = async function (req,res,next){
+  let id = req.params.bookingId
+
+  let booking = await db.booking.findOne({_id:id}).populate([
+    {path:"runMode",model:"RunMode"},
+    {path:"bookingInfo.country",model:"Country",select:{name:1}},
+    {path:"bookingInfo.state",model:"State",select:{name:1}},
+    {path:"bookingInfo.city",model:"City",select:{name:1}},
+    {path:"package",model:"RentalPackage"},
+    {path:"applicableCharges.baseFare",populate:{path:"perKMCharge"}},
+    {path:"rider",model:"Rider"},
+    {path:"driver",model:"Driver"},
+    {path:"vehicle", model:"Vehicle"}
+
+  ])
+
+  res.status(200).json({
+    success:true,
+    booking
+  })
+}

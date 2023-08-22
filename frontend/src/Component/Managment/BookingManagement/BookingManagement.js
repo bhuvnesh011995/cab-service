@@ -409,7 +409,7 @@ export default function BookingManagement() {
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
                   <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-                    <IconButton>
+                    <IconButton onClick={()=>{navigate("/bookingDetails",{state:{bookingId:row.original.bookingId}})}}>
                       <RemoveRedEye />
                     </IconButton>
                     <IconButton>
