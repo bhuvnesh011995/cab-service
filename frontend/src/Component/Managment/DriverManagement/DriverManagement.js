@@ -39,6 +39,7 @@ export default function DriverManagement(){
       }).then(res=>res.json())
       .then(data=>{
         if(data.success){
+          console.log(data.drivers)
           let arr = [];
           data.drivers.map((ele,i)=>{
             let obj = {
@@ -48,7 +49,7 @@ export default function DriverManagement(){
               mobile:ele.mobile,
               email:ele.email,
               status:ele.status,
-              wallet:ele.wallet.balance,
+              wallet:ele?.wallet?.balance,
               verified:ele.verified ? <tiIcons.TiTick /> : <rsIcons.RxCross2 />,
               createdAt:ele.createdAt,
               id:ele._id,
@@ -268,7 +269,7 @@ export default function DriverManagement(){
             mobile:ele.mobile,
             email:ele.email,
             status:ele.status,
-            wallet:ele.wallet.balance,
+            wallet:ele?.wallet?.balance,
             verified:ele.verified ? <tiIcons.TiTick /> : <rsIcons.RxCross2 />,
             createdAt:ele.createdAt,
             id:ele._id

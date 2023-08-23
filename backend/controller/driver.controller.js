@@ -79,6 +79,10 @@ exports.addDriver = async function (req, res, next) {
     password: bcrypt.hashSync(password, 8),
   });
 
+  await db.wallet.updateOne({_id:wallet._id},{
+    user:driver._id
+  })
+
   res.status(200).json({
     success: true,
     message: "driver created successfully",

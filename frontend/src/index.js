@@ -44,6 +44,8 @@ import BookingManagement from './Component/Managment/BookingManagement/BookingMa
 import BookingDetail from "./Component/Managment/BookingManagement/BooingDetails.js"
 import BookingService from './Component/Managment/BookingManagement/BookingService';
 import BookingDetails from './Component/Managment/BookingManagement/BookingDetails';
+import EmailTemplateManagement from './Component/Managment/TemplateManagement.js/Email.TemplateManagement';
+import AddEmailTemplate from './Component/Managment/TemplateManagement.js/AddEmailTemplate';
 const router = createBrowserRouter([
   {
     element:<App />,
@@ -83,7 +85,9 @@ const router = createBrowserRouter([
     {path:"bookingManagement", element:<BookingManagement />},
     {path:"bookingSummery", element:<BookingDetail/>},
     {path:"newBooking",element:<BookingService/>},
-    {path:"bookingDetails",element:<BookingDetails />}
+    {path:"bookingDetails",element:<BookingDetails />},
+    {path:"emailTemplate",element:<EmailTemplateManagement />},
+    {path:"addEmailTemplate",element:<AddEmailTemplate/>}
     ]
   },{
     path:"/login", element:<SignIn/>

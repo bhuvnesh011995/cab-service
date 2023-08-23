@@ -213,7 +213,7 @@ exports.getBookingDetailsById = async function (req,res,next){
     {path:"applicableCharges.baseFare",populate:{path:"perKMCharge"}},
     {path:"rider",model:"Rider"},
     {path:"driver",model:"Driver"},
-    {path:"vehicle", model:"Vehicle"}
+    {path:"vehicle", model:"Vehicle",populate:[{path:"vehicleType",model:"VehicleType"},{path:"make",model:"Make"}]}
 
   ])
 

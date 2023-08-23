@@ -23,6 +23,7 @@
     "react-leaflet-draw": "^0.20.4",
     "react-leaflet-google-layer": "^2.2.0",
     "react-places-autocomplete": "^7.3.0",
+    "react-quill": "^2.0.0",
     "react-router-dom": "^6.14.1",
     "react-scripts": "5.0.1",
     "rsuite": "^5.37.1",

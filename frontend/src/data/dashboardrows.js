@@ -89,7 +89,7 @@ export default [
     },
     {
             name:"Email template Management",
-            to:"/emailManagement"
+            to:"/emailTemplate"
     },
     {
             name:"SMS Template Management",

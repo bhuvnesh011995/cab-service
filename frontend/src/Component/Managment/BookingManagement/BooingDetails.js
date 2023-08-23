@@ -10,18 +10,18 @@ const BookingDetail = () => {
         <Management_container title={"Add Booking"}>
 
         <div
-        class="row"
+        className="row"
         style={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <div class="col-lg-10">
-          <div class="card">
-            <div class="card-body">
+        <div className="col-lg-10">
+          <div className="card">
+            <div className="card-body">
               <form>
-                <div className="d-flex justify-content-space-around flex-wrap">
+                <div classNameName="d-flex justify-content-space-around flex-wrap">
                 <p ></p>
                 
                 
