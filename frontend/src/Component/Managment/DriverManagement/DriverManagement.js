@@ -39,7 +39,6 @@ export default function DriverManagement(){
       }).then(res=>res.json())
       .then(data=>{
         if(data.success){
-          console.log(data.drivers)
           let arr = [];
           data.drivers.map((ele,i)=>{
             let obj = {

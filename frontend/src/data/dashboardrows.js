@@ -48,7 +48,8 @@ export default [
     },
     {
             name:"Rental Package Management",
-            to:"/rentalPackage"
+            to:"/rentalPackage",
+            icon:"bi bi-basket2"
     },
 //     {
 //             name:"Outstation Fare Management",
@@ -81,62 +82,66 @@ export default [
     {
             name:"Vehicle Management",
             to:"/vehicleManagement",
-            icon:""
+            icon:"bi bi-bicycle"
     },
     {
             name:"Booking Management",
-            to:"/bookingManagement"
+            to:"/bookingManagement",
+            icon:"bi bi-cursor"
     },
     {
-            name:"Email template Management",
-            to:"/emailTemplate"
+            name:"Email Management",
+            to:"/emailTemplate",
+            icon:"bi bi-envelope-at"
     },
     {
-            name:"SMS Template Management",
-            to:"/smsManagement"
+            name:"SMS Management",
+            to:"/smsTemplate",
+            icon:"bi bi-chat-fill"
     },
     {
             name:"Promotion Management",
-            to:"/promotionManagement"
+            to:"/promotionManagement",
+            icon:"bi bi-megaphone"
     },
     {
-            name:"Referral Discount Management",
-            to:"/referralManagement"
+            name:"Referral Management",
+            to:"/referralManagement",
+            icon:"bi bi-share"
     },
     {
             name:"Notification to Rider",
-            to:"/notificationToRiderManagement"
+            to:"/notificationToRiderManagement",
+            icon:"bi bi-bell"
     },
     {
             name:"Notification to Driver",
-            to:"/notificationToDriverManagement"
+            to:"/notificationToDriverManagement",
+            icon:"bi bi-bell"
     },
     {
             name:"Tax Management",
-            to:"/taxManagement"
+            to:"/taxManagement",
+            icon:"bi bi-currency-dollar"
     },
     {
             name:"Tolls Management",
-            to:"/tollManagement"
+            to:"/tollManagement",
+            icon:"bi bi-sign-stop"
     },
     {
             name:"Driver Payout Management",
-            to:"/driverPayoutManagement"
+            to:"/driverPayoutManagement",
+            icon:"bi bi-cash-coin"
     },
     {
-            name:"Admin Transaction Management",
-            to:"/adminTransactionManagement"
-    },
-    {
-            name:"Promocode management",
-            to:"/promocodeManagement"
-    },
-    {
-            name:"Rental promocode management",
-            to:"/rentalPromocodeManagement"
+            name:"Transaction Management",
+            to:"/adminTransactionManagement",
+            icon:"bi bi-cash-coin"
     },
     {
             name:"SOS Management",
-            to:"/sosService"
+            to:"/sosService",
+            icon:"bi bi-hospital-fill"
     }
 ];

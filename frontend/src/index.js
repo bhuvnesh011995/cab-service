@@ -46,10 +46,14 @@ import BookingService from './Component/Managment/BookingManagement/BookingServi
 import BookingDetails from './Component/Managment/BookingManagement/BookingDetails';
 import EmailTemplateManagement from './Component/Managment/TemplateManagement.js/Email.TemplateManagement';
 import AddEmailTemplate from './Component/Managment/TemplateManagement.js/AddEmailTemplate';
+import SmsTemplateManagement from './Component/Managment/TemplateManagement.js/Sms.TemplateManagement';
+import AddSmsTemplate from './Component/Managment/TemplateManagement.js/AddSmsTemplate';
+import PromotionManagement from './Component/Managment/PromotionManagement.js/PromotionManagement';
+import AddPromotion from './Component/Managment/PromotionManagement.js/AddPromotion';
 const router = createBrowserRouter([
   {
     element:<App />,
-    // errorElement:<ErrorPage/>,
+    errorElement:<ErrorPage/>,
     children:[
     {path:"/",element:<Home/>},
     {path:"adminManagement",element:<AdminManagement />},
@@ -87,7 +91,11 @@ const router = createBrowserRouter([
     {path:"newBooking",element:<BookingService/>},
     {path:"bookingDetails",element:<BookingDetails />},
     {path:"emailTemplate",element:<EmailTemplateManagement />},
-    {path:"addEmailTemplate",element:<AddEmailTemplate/>}
+    {path:"addEmailTemplate",element:<AddEmailTemplate/>},
+    {path:"smsTemplate",element:<SmsTemplateManagement/>},
+    {path:"addSmsTemplate",element:<AddSmsTemplate/>},
+    {path:"promotionManagement",element:<PromotionManagement/>},
+    {path:"addPromotion",element:<AddPromotion/>}
     ]
   },{
     path:"/login", element:<SignIn/>
