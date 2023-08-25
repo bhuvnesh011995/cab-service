@@ -117,7 +117,8 @@ async function init(){
     require("./routes/fare.route")(app)
     require("./routes/transaction.route")(app)
     require("./routes/template.route")(app)
-
+    require("./routes/promotion.route")(app)
+    require("./routes/referral.route")(app)
 module.exports = app;
 
 

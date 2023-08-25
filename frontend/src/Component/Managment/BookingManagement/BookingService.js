@@ -129,7 +129,7 @@ export default function BookingService({show,setIsOpen}) {
           <div class="card">
             <div class="card-body">
         {isLoaded &&
-          <div style={{height:"40vh", width:"100%"}}>
+          <div style={{height:"50vh", width:"100%"}}>
           <Box position='relative' left={0} top={0} h="100%" w='100%'>
         {/* Google Map Box */}
         <GoogleMap
@@ -162,20 +162,20 @@ export default function BookingService({show,setIsOpen}) {
         width="20%"
       >
       <div className='d-flex flex-column justify-content-around mb-2'>
-      <Box spacing={1} flexGrow={1}>
+      <Box m={"5px"} flexGrow={1}>
             <Autocomplete>
               <Input type='text' placeholder='Origin' ref={originRef} />
             </Autocomplete>
           </Box>
-          <Box spacing={1} flexGrow={1}>
+          <Box m="5px" flexGrow={1}>
             <Autocomplete>
               <Input type='text' placeholder='Destination' ref={destiantionRef} />
             </Autocomplete>
           </Box>
-            <Button spacing={1} colorScheme='pink' type='submit' onClick={calculateRoute}>
+            <Button m="5px" colorScheme='pink' type='submit' onClick={calculateRoute}>
               Calculate Route
             </Button>
-            <Button spacing={1} colorScheme="red" onClick={clearRoute}>Clear</Button>
+            <Button m="5px" colorScheme="red" onClick={clearRoute}>Clear</Button>
       </div>
         <HStack spacing={2} mt={2} justifyContent='space-between'>
           <Text>Distance: {distance} </Text>
@@ -183,7 +183,7 @@ export default function BookingService({show,setIsOpen}) {
         </HStack>
         
       </Box>
-      <div style={{position:"relative",left:"92%",top:"-55px"}}>
+      <div style={{position:"relative",left:"94.6%",top:"-55px"}}>
       <IconButton
             aria-label='center back'
             icon={<FaLocationArrow />}

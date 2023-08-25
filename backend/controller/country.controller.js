@@ -40,6 +40,6 @@ exports.filterCountry = async function (req,res,next){
 
 
 exports.getallCountry = async function (req,res,next){
-    const countries = await Country.find({}).select({name:1,_id:0}).lean()
+    const countries = await Country.find({}).select({name:1}).lean()
     res.status(200).json(countries)
 }

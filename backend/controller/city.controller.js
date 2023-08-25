@@ -243,3 +243,15 @@ exports.getcityBystateAndCountry = async function(req,res,next){
           cities:countryDoc.state[0]?.city
         })
 }
+
+
+exports.getCityByStateId = async function (req,res,next){
+  const {stateId} = req.params
+  let cities = await db.city.find({state:stateId}).select("name")
+
+
+  res.status(200).json({
+    success:true,
+    cities
+  })
+}
