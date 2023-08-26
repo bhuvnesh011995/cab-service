@@ -4,15 +4,15 @@ const {Schema,model} = require("mongoose");
 const schema = new Schema({
     name:{
         type:String,
-        require:true
+        required:true
     },
     metaDescription:{
         type:String,
-        require:true
+        required:true
     },
     metaKey:{
         type:String,
-        require:true
+        required:true
     },
     createdAt:{
         type:Date,

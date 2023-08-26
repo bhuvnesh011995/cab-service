@@ -3,7 +3,7 @@ const {Schema,model} = require("mongoose")
 const schema = new Schema({
     title:{
         type:String,
-        require:true
+        required:true
     },
     country:{type:Schema.Types.ObjectId,ref:"Country"},
 
@@ -11,13 +11,13 @@ const schema = new Schema({
 
     city:{type:Schema.Types.ObjectId,ref:"City"},
 
-    forUsers:[{type:String,require:true,enum:["ADMIN","DRIVER","RIDER"]}],
+    forUsers:[{type:String,required:true,enum:["ADMIN","DRIVER","RIDER"]}],
 
     image:{data:Buffer,contentType:String},
 
     status:{
         type:String,
-        require:true,
+        required:true,
         default:"INACTIVE",
         enum:["ACTIVE","INACTIVE"]
     },

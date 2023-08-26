@@ -3,22 +3,22 @@ const {Schema, model} = require("mongoose")
 let schema = new Schema({
     title:{
         type:String,
-        require:true
+        required:true
     },
     body:{
         type:String,
-        require:true
+        required:true
     },
     forUsers:[{
         type:String,
         enum:["ADMIN","DRIVER","RIDER"],
-        require:true
+        required:true
     }],
     status:{
         type:String,
         default:"INACTIVE",
         enum:["ACTIVE","INACTIVE"],
-        require:true
+        required:true
     },
 },{
     collection:"SmsTemplate",

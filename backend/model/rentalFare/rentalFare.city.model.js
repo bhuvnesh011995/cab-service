@@ -5,7 +5,7 @@ let schema = new Schema({
         packageId:{type:Schema.Types.ObjectId,ref:"RentalPackage"},
         packageFare:{
         type:Schema.Types.Decimal128,
-        require:true,
+        required:true,
         },
     },
     country:{type:Schema.Types.ObjectId,ref:"Country"},
@@ -18,31 +18,31 @@ let schema = new Schema({
     
     minCharge:{
         type:Schema.Types.Decimal128,
-        require:true,
+        required:true,
     },
     perMinCharge:{
         type:Schema.Types.Decimal128,
-        require:true,
+        required:true,
     },
     cancelCharge:{
         type:Schema.Types.Decimal128,
-        require:true,
+        required:true,
     },
     bookingFee:{
         type:Schema.Types.Decimal128,
-        require:true,
+        required:true,
     },
     adminCommissionType:{
         type:String,
-        require:true,
+        required:true,
     },
     adminCommission:{
         type:Schema.Types.Decimal128,
-        require:true,
+        required:true,
     },
     status:{
         type:String,
-        require:true,
+        required:true,
         enum:["ACTIVE","INACTIVE"],
         default:"INACTIVE"
     },

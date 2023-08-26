@@ -3,7 +3,7 @@ const {Schema,model} = require("mongoose")
 const schema = new Schema({
     name:{
         type:String,
-        require:true,
+        required:true,
         unique:true,
         lowercase:true
     },
@@ -14,12 +14,12 @@ const schema = new Schema({
     },
     countryCode:{
         type:String,
-        require:true,
+        required:true,
         unique:true
     },
     dialCode:{
         type:Number,
-        require:true,
+        required:true,
     },
     createdAt:{
         type:Date,

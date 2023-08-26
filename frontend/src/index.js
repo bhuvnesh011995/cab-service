@@ -50,6 +50,12 @@ import SmsTemplateManagement from './Component/Managment/TemplateManagement.js/S
 import AddSmsTemplate from './Component/Managment/TemplateManagement.js/AddSmsTemplate';
 import PromotionManagement from './Component/Managment/PromotionManagement.js/PromotionManagement';
 import AddPromotion from './Component/Managment/PromotionManagement.js/AddPromotion';
+import ReferralManagement from './Component/Managment/ReferralManagement/ReferralManagement';
+import AddReferral from './Component/Managment/ReferralManagement/AddReferral';
+import TaxManagement from './Component/Managment/TaxManagement/TaxManagement';
+import AddTax from './Component/Managment/TaxManagement/AddTax';
+import TollManagement from './Component/Managment/TollManagement/TollManagement';
+import AddToll from './Component/Managment/TollManagement/AddToll';
 const router = createBrowserRouter([
   {
     element:<App />,
@@ -95,7 +101,13 @@ const router = createBrowserRouter([
     {path:"smsTemplate",element:<SmsTemplateManagement/>},
     {path:"addSmsTemplate",element:<AddSmsTemplate/>},
     {path:"promotionManagement",element:<PromotionManagement/>},
-    {path:"addPromotion",element:<AddPromotion/>}
+    {path:"addPromotion",element:<AddPromotion/>},
+    {path:"referralManagement",element:<ReferralManagement/>},
+    {path:"addReferral",element:<AddReferral/>},
+    {path:"taxManagement",element:<TaxManagement/>},
+    {path:"addTax",element:<AddTax/>},
+    {path:"tollManagement",element:<TollManagement />},
+    {path:"addToll",element:<AddToll/>}
     ]
   },{
     path:"/login", element:<SignIn/>

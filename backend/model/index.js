@@ -29,7 +29,8 @@ module.exports ={
     emailTemplate:require("./template/email.template.model"),
     smsTemplate:require("./template/sms.template.model"),
     promotion:require("./promotion.model"),
-    referrel:require("./referral.model")
-    
+    referral:require("./referral.model"),
+    toll:require('./toll.model'),
+    tax:require("./tax.model")
 }
 

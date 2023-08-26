@@ -7,31 +7,31 @@ let schema = new Schema({
 
     baseFare:{
         type:Schema.Types.Decimal128,
-        require:true,
+        required:true,
     },
     minCharge:{
         type:Schema.Types.Decimal128,
-        require:true,
+        required:true,
     },
     perMinCharge:{
         type:Schema.Types.Decimal128,
-        require:true,
+        required:true,
     },
     cancelCharge:{
         type:Schema.Types.Decimal128,
-        require:true,
+        required:true,
     },
     bookingFee:{
         type:Schema.Types.Decimal128,
-        require:true,
+        required:true,
     },
     adminCommissionType:{
         type:String,
-        require:true,
+        required:true,
     },
     adminCommission:{
         type:Schema.Types.Decimal128,
-        require:true,
+        required:true,
     },
     status:{
         type:String,

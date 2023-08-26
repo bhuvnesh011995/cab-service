@@ -18,7 +18,7 @@ const schema = new Schema({
     },
     password:{
         type:String,
-        require:true
+        required:true
     },
     mobile:{
         type:String
@@ -46,7 +46,7 @@ const schema = new Schema({
         },
         verified:{
           type:Boolean,
-          require:true,
+          required:true,
           default: false
         },
         verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
@@ -59,7 +59,7 @@ const schema = new Schema({
         },
         verified:{
           type:Boolean,
-          require:true,
+          required:true,
           default: false
         },
         verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
@@ -72,7 +72,7 @@ const schema = new Schema({
         },
         verified:{
           type:Boolean,
-          require:true,
+          required:true,
           default: false
         },
         verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
@@ -87,7 +87,7 @@ const schema = new Schema({
 
     status:{
         type:String,
-        require:true,
+        required:true,
         default:"INACTIVE",
         enum:["ACTIVE","INACTIVE"]
     },

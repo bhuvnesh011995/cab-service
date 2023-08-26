@@ -47,3 +47,26 @@ exports.validateStateId = async function(req,res,next){
     
     next()
 }
+
+
+
+
+exports.validateUserId = async function(req,res,next){
+
+
+   if(req.query.userId && !mongoose.Types.ObjectId.isValid(req.query.userId)) req.query.userId = null
+
+   if(req.params.userId && !mongoose.Types.ObjectId.isValid(req.params.userId)) req.params.userId = null
+
+
+   if(req.body.userId && !mongoose.Types.ObjectId.isValid(req.body.userId)) req.body.userId = null
+
+
+   if(req.body.riderId && !mongoose.Types.ObjectId.isValid(req.body.riderId)) req.body.riderId = null
+
+
+   if(req.body.deiverId && !mongoose.Types.ObjectId.isValid(req.body.deiverId)) req.body.deiverId = null
+
+   next()
+
+}

@@ -10,31 +10,31 @@ let schema = new Schema({
 
     baseFare:{
         type:Number,
-        require:true,
+        required:true,
     },
     minCharge:{
         type:Number,
-        require:true,
+        required:true,
     },
     perMinCharge:{
         type:Number,
-        require:true,
+        required:true,
     },
     cancelCharge:{
         type:Number,
-        require:true,
+        required:true,
     },
     bookingFee:{
         type:Number,
-        require:true,
+        required:true,
     },
     adminCommissionType:{
         type:String,
-        require:true,
+        required:true,
     },
     adminCommission:{
         type:Number,
-        require:true,
+        required:true,
     },
     status:{
         type:String,

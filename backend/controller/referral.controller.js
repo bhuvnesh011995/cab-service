@@ -14,9 +14,7 @@ exports.addReferral = async function(req,res,next){
         amountToReferrer,
         maxAmountToReferrer,
         freeRideToApplier,
-        maxFreeRideToApplier,
         amountToApplier,
-        maxAmountToApplier
     } = req.body;
 
 
@@ -31,9 +29,8 @@ exports.addReferral = async function(req,res,next){
         amountToReferrer,
         maxAmountToReferrer,
         freeRideToApplier,
-        maxFreeRideToApplier,
         amountToApplier,
-        maxAmountToApplier
+        
     })
 
     res.status(200).json({
@@ -49,9 +46,9 @@ exports.filterReferal = async function(req,res,next){
     const {title,status,forUsers} = req.query
 
     if(!title && !status &&!forUsers){
-       var referrals = db.referral.find({}) 
+       var referrals = await db.referral.find({}) 
     }else{
-        referrals = db.referral.find({
+        referrals = await db.referral.find({
             $or:[
                 {title},
                 {status},

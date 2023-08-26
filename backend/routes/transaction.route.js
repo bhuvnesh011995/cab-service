@@ -1,11 +1,10 @@
-const walletController = require("../controller/wallet.controller")
-
+const walletController = require("../controller/transaction.controller")
+const middleware = require("../middleware/index")
 
 
 
 
 module.exports = function (app){
-    app.get("/test/api/v1/wallet/:user",[],walletController.getWalletBalance)
-    app.put("/test/api/v1/wallet/:user",[],walletController.updateBalance)
-    app.get("/test/api/v1/wallet",[],walletController.getalluser)
+    app.get("/test/api/v1/wallet/:userType/:userId",[middleware.validateId.validateUserId],walletController.getWalletBalance)
+    app.put("/test/api/v1/wallet/:userType/:userId",[middleware.validateId.validateUserId],walletController.updateBalance)
 }

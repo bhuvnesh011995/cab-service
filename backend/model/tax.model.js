@@ -2,31 +2,27 @@ const {Schema,model} = require("mongoose")
 
 
 const schema = new Schema({
-    name:{
-        type:String,
-        required:true,
-        unique:true,
-    },
-    maxDuration:{
+    title:{
         type:String,
         required:true
     },
-    maxDistance:{
+    value:{
         type:Schema.Types.Decimal128,
         required:true
     },
     status:{
         type:String,
+        required:true,
         enum:["ACTIVE","INACTIVE"],
         default:"INACTIVE"
     },
-    createdAt:{
-        type:Date,
-        immutable:true,
-        default: Date.now()
-    },
+    
+    taxType:String
 },{
-    collection:"RentalPackage"
+    timestamps:true,
+    collection:"Tax"
 })
 
-module.exports = model("RentalPackage",schema)
+
+
+module.exports = model("Tax",schema)

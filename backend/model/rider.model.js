@@ -8,11 +8,11 @@ const schema = new Schema(
     },
     firstName: {
       type: String,
-      require: true,
+      required: true,
     },
     lastName: {
       type: String,
-      require: true,
+      required: true,
     },
     email: {
       type: String,
@@ -22,7 +22,7 @@ const schema = new Schema(
     },
     password: {
       type: String,
-      require:true
+      required:true
     },
     DOB: {
       type: Date,
@@ -30,7 +30,7 @@ const schema = new Schema(
 
     status:{
         type:String,
-        require:true,
+        required:true,
         default:"INACTIVE",
         enum:["ACTIVE","INACTIVE"]
     },
@@ -38,18 +38,18 @@ const schema = new Schema(
     wallet: { type: Schema.Types.ObjectId, ref: "Wallet" },
 
     address: {
-        place:{ type: String, require: true },
+        place:{ type: String, required: true },
 
-        country: { type: Schema.Types.ObjectId, ref: "Country", require:true },
+        country: { type: Schema.Types.ObjectId, ref: "Country", required:true },
 
-        state: { type: Schema.Types.ObjectId, ref: "State", require:true },
+        state: { type: Schema.Types.ObjectId, ref: "State", required:true },
     
-        city: { type: Schema.Types.ObjectId, ref: "City", require: true },
+        city: { type: Schema.Types.ObjectId, ref: "City", required: true },
 
-        pincode: { type: Number, require: true },
+        pincode: { type: Number, required: true },
     },
 
-    gender: { type: String, require: true, enum: ["MALE", "FEMALE"] },
+    gender: { type: String, required: true, enum: ["MALE", "FEMALE"] },
 
     loginDevice: String,
 

@@ -6,23 +6,23 @@ const adminSchema = new Schema(
     {
         name:{
             type:String,
-            require:true
+            required:true
         },
         username:{
             type:String,
-            require: true,
+            required: true,
             unique:true
                    
         },
         email:{
             type:String,
-            require:true,
+            required:true,
             unique:true,
             lowarcase:true
         },
         password:{
             type:String,
-            require:true
+            required:true
         },
         status:{
             type:String,

@@ -1,7 +1,6 @@
 const {Schema,model} = require("mongoose")
 
 const schema = new Schema({
-    user:{type:Schema.Types.ObjectId,ref:"Rider"},
     balance:{
         type:Number,
         default:0

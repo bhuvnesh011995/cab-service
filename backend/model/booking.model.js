@@ -95,7 +95,7 @@ const schema = new Schema ({
     },
     success:{
         type:String,
-        require:true,
+        required:true,
         default:"PENDING",
         enum:["COMPLETED","CANCELLED","PENDING"]
     },

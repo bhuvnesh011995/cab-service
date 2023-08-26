@@ -4,16 +4,17 @@ const Wallet = require("./wallet.model")
 const schema = new Schema({
     amount:{
         type:Number,
-        require:true
+        required:true
     },
     type:{
         type:String,
-        require:true,
+        required:true,
         enum:["debit",'credit'],
     },
     description:{
         type:String,
-        require:true
+        required:true,
+        default:"No Description available"
     },
     wallet:{type:Schema.Types.ObjectId,ref:"Wallet",require:true}
 },{

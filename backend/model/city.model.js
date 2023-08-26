@@ -4,7 +4,7 @@ const {Schema,model}= require("mongoose")
 const schema = new Schema({
     name:{
         type:String,
-        require:true,
+        required:true,
         lowercase:true
     },
     status:{
@@ -14,7 +14,7 @@ const schema = new Schema({
     },
     utcOffset:{
         type:String,
-        require:true,
+        required:true,
     },
     createdAt:{
         type:Date,

@@ -102,7 +102,7 @@ export default function BookingInputs({ booking, setBooking }) {
 
   useEffect(() => {
     booking.riderId &&
-      fetch(BASE_URL + "/wallet/" + booking.riderId, { method: "GET" })
+      fetch(BASE_URL + "/wallet/Rider" + booking.riderId, { method: "GET" })
         .then((res) => res.json())
         .then((data) => {
           if (data.success) {

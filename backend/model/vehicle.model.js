@@ -2,10 +2,10 @@ const { Schema, model } = require("mongoose");
 
 const schema = new Schema({
   driver:{type:Schema.Types.ObjectId,ref:"Driver"},
-    photo:{
-        data:Buffer,
-        contentType:String
-    },
+  photo:{
+    data:Buffer,
+    contentType:String
+  },
   vehicleType: { type: Schema.Types.ObjectId, ref: "VehicleType" },
 
   fuelType: {
@@ -22,12 +22,12 @@ const schema = new Schema({
     ],
   },
   seatingCapacityName:{
-      type:String,
-      require:true
+    type:String,
+    required:true
   },
   seatingCapacity:{
-      type:Number,
-      require:true,
+    type:Number,
+    required:true,
   },
   make:{type:Schema.Types.ObjectId,ref:"Make"},
   model:String,
@@ -38,12 +38,12 @@ const schema = new Schema({
     number:String,
     expiryDate:Date,
     photo:{
-        data:Buffer,
-        contentType:String
+      data:Buffer,
+      contentType:String
     },
     verified:{
       type:Boolean,
-      require:true,
+      required:true,
       default: false
     },
     verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
@@ -51,12 +51,12 @@ const schema = new Schema({
   insurance:{
     expiryDate:Date,
     photo:{
-        data:Buffer,
-        contentType:String
+      data:Buffer,
+      contentType:String
     },
     verified:{
       type:Boolean,
-      require:true,
+      required:true,
       default: false
     },
     verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
@@ -64,12 +64,12 @@ const schema = new Schema({
   permit:{
     expiryDate:Date,
     photo:{
-        data:Buffer,
-        contentType:String
+      data:Buffer,
+      contentType:String
     },
     verified:{
       type:Boolean,
-      require:true,
+      required:true,
       default: false
     },
     verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
@@ -77,12 +77,12 @@ const schema = new Schema({
   pollutionCertificate:{
     expiryDate:Date,
     photo:{
-        data:Buffer,
-        contentType:String
+      data:Buffer,
+      contentType:String
     },
     verified:{
       type:Boolean,
-      require:true,
+      required:true,
       default: false
     },
     verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
@@ -90,7 +90,7 @@ const schema = new Schema({
   plateNo:String,
   status:{
     type:String,
-    require:true,
+    required:true,
     default:"INACTIVE",
     enum:["ACTIVE","INACTIVE"]
   },

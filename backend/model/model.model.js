@@ -5,12 +5,12 @@ const { Schema,model} = mongoose;
 let schema = new Schema({
     name:{
         type:String,
-        require:true,
+        required:true,
         lowarcase:true
     },
     year:{
         type:Number,
-        require:true
+        required:true
     },
     status:{
         type:String,

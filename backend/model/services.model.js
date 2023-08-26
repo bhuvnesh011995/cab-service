@@ -6,7 +6,7 @@ const  {Schema,model} = mongoose;
 let servicesSchema = new Schema({
     name:{
         type:String,
-        require:true,
+        required:true,
         unique:true
     },
     admin:[{type:mongoose.Types.ObjectId,ref:"Admin"}]

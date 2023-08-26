@@ -3,7 +3,7 @@ const {Schema,model} = require("mongoose")
 const schema = new Schema({
     name:{
         type:String,
-        reqquire:true
+        required:true
     }
 },{
     collection:"RunMode"

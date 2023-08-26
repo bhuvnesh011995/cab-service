@@ -1,11 +1,11 @@
 const {Schema,model} = require("mongoose")
 
 let schema = new Schema({
-    title:{type:String,require:true},
-    subject:{type:String,require:true},
-    body:{type:String,require:true},
+    title:{type:String,required:true},
+    subject:{type:String,required:true},
+    body:{type:String,required:true},
     forUsers:[{type:String,enum:["ADMIN","DRIVER","RIDER"]}],
-    status:{type:String,require:true,default:"INACTIVE",enum:["ACTIVE","INACTIVE"]}
+    status:{type:String,required:true,default:"INACTIVE",enum:["ACTIVE","INACTIVE"]}
 },{
     collection:"EmailTemplate",
     timestamps:true

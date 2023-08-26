@@ -61,9 +61,6 @@ exports.addRider = async function (req, res, next) {
     updatePasswordDate:Date.now()
   });
 
-  await db.wallet.updateOne({_id:wallet._id},{
-    user:rider._id
-  })
 
   res.status(200).json({
     success:true,

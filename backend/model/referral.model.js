@@ -3,16 +3,16 @@ const {Schema,model} = require("mongoose")
 let schema = new Schema({
     title:{
         type:String,
-        require:true
+        required:true
     },
     forUsers:[{
         type:String,
-        require:true,
+        required:true,
         enum:["ADMIN","DRIVER","RIDER"]
     }],
     status:{
         type:String,
-        require:true,
+        required:true,
         enum:["ACTIVE","INACTIVE"]
     },
 
@@ -30,11 +30,7 @@ let schema = new Schema({
 
     freeRideToApplier:Boolean,
 
-    maxFreeRideToApplier:Number,
-
     amountToApplier:Schema.Types.Decimal128,
-
-    maxAmountToApplier:Schema.Types.Decimal128,
 
     image:{
         data:Buffer,

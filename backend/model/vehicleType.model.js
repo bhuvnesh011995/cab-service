@@ -3,24 +3,24 @@ const {Schema,model}= require("mongoose");
 let schema = new Schema({
     name:{
         type:String,
-        require:true,
+        required:true,
         unique:true
     },
     seatingCapacityName:{
         type:String,
-        require:true
+        required:true
     },
     seatingCapacity:{
         type:Number,
-        require:true,
+        required:true,
     },
     img:{
         type:String,
-        require:true
+        required:true
     },
     status:{
         type:String,
-        require:true,
+        required:true,
         enum:["ACTIVE","INACTIVE"],
         default:"INACTIVE"
     },
