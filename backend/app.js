@@ -12,12 +12,13 @@ const cors = require("cors")
 //database connection with confirmation
 
 mongoose.connect(dbConfig.URI,{
-  serverSelectionTimeoutMS: 5000,
+  serverSelectionTimeoutMS: 30000,
   useNewUrlParser: true,
   useUnifiedTopology: true
 })
 const db = mongoose.connection;
-db.on("error",()=>{
+db.on("error",(error)=>{
+  console.log(error)
   console.log("Error while connecting to db")
 })
 
@@ -121,6 +122,9 @@ async function init(){
     require("./routes/referral.route")(app)
     require("./routes/toll.route")(app)
     require("./routes/tax.route")(app)
+    require("./routes/sos.route")(app)
+
+    
 module.exports = app;
 
 

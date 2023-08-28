@@ -12,7 +12,13 @@ import {
   DeleteForever,
 } from "@mui/icons-material/";
 import { Box, IconButton } from "@mui/material";
-import Management_container from "../../Common/Management_container"
+import Management_container from "../../Common/Management_container";
+import MapService from "./MapService"
+
+
+
+
+
 const initialFilter = {
     title:"",
     status:""
@@ -21,6 +27,9 @@ export default function TollManagement() {
     const [filter,setFilter] = useState(initialFilter)
     const [list,setList] = useState([])
     const navigate = useNavigate()
+    
+
+
 
     useEffect(()=>{
         fetch(BASE_URL+"/toll/filter",{
@@ -171,6 +180,7 @@ export default function TollManagement() {
         <div class="col-lg-13">
           <div class="card">
             <div class="card-body">
+            <MapService data={list} />
               <div
                 style={{
                   display: "flex",

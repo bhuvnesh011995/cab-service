@@ -12,10 +12,7 @@ const schema = new Schema({
     },
     amount:Schema.Types.Decimal128,
 
-    location:{
-        latitude:String,
-        longitude:String,
-    }
+    location:{type:Schema.Types.ObjectId,ref:"Location"}
 },{
     timestamps:true,
     collection:"Toll"

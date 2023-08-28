@@ -9,13 +9,19 @@ exports.addToll = async function(req,res,next){
         location,
     } = req.body
 
+    console.log(req.body)
+
+    let locationDoc = await db.location.create({
+        lat:location.lat,
+        lng:location.lng
+    })
+
 
     await db.toll.create({
         title,
         amount,
         status,
-        "location.latitude":location.latitude,
-        "location.longitude":location.longitude,
+        location:locationDoc._id
     })
 
 
@@ -32,14 +38,14 @@ exports.filterToll = async function(req,res,next){
 
 
     if(!title && !status){
-        var tolls = await db.toll.find({})
+        var tolls = await db.toll.find({}).populate("location")
     }else{
         tolls = await db.toll.find({
             $or:[
                 {title},
                 {status}
             ]
-        })
+        }).populate("location")
     }
 
     res.status(200).json({

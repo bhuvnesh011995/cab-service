@@ -19,7 +19,7 @@ export default function StateManagement (){
     const [filter,setFilter]  = useState(initialFilter);
     const [list,setList] = useState();
     const navigate = useNavigate();
-    const url = BASE_URL+"/state/filter/";
+    const url = BASE_URL+"/states/filter/";
 
     useEffect(() => {
         fetch(url, {

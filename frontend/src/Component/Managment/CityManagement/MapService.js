@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { DrawingManager, GoogleMap, Polygon, useJsApiLoader } from '@react-google-maps/api';
 import * as AiIcons from "react-icons/ai"
 
-
+const libraries = ['places', 'drawing']
 const MapService = () => {
 
     const mapRef = useRef();
@@ -29,7 +29,7 @@ const MapService = () => {
 
     const { isLoaded, loadError } = useJsApiLoader({
         googleMapsApiKey: 'AIzaSyAbiy9gnHWRMfzMFt_r1mz7Nc2YTwV7C2k',
-        libraries : ['places', 'drawing'],
+        libraries,
         nonce: "nonce-691d29db-ab00-4bf6-94fa-168373d2fb7e",
     });
 

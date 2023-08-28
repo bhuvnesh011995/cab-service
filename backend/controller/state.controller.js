@@ -35,6 +35,8 @@ exports.getallStateByCountry = async function(req,res,next){
 
 exports.filterState = async function(req,res,next){
     let {country,name,status} = req.query;
+
+    try{
     let states;
     if(!country&&!name&&!status){
         states = await State.find({}).select({name:1,country:1,_id:0,stateCode:1,createdAt:1,status:1}).populate({path:"country",select:{name:1}}).lean()
@@ -74,7 +76,13 @@ exports.filterState = async function(req,res,next){
     res.status(200).json({
         success:true,
         stateList:stateList
-    })
+    })}catch(error){
+        res.status(400).json({
+            success:false,
+            message:"error occoured",
+            error
+        })
+    }
 }
 
 

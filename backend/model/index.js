@@ -31,6 +31,8 @@ module.exports ={
     promotion:require("./promotion.model"),
     referral:require("./referral.model"),
     toll:require('./toll.model'),
-    tax:require("./tax.model")
+    tax:require("./tax.model"),
+    location:require("./location.model"),
+    sos:require("./SOS.model")
 }
 
