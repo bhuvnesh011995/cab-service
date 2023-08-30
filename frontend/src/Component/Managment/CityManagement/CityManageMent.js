@@ -25,6 +25,12 @@ export default function CityManagement(){
   let url = BASE_URL+"/city/"
 
     useEffect(()=>{
+      fetchData()
+
+    },[])
+
+
+    function fetchData(){
       fetch(url,{
         method:"GET"
       }).then(res=>res.json())
@@ -55,8 +61,7 @@ export default function CityManagement(){
           setList(arr);
         }
       })
-
-    },[])
+    }
 
     const columns = useMemo(
       () => [
@@ -128,8 +133,39 @@ export default function CityManagement(){
 
           });
           setList(arr);
+          setPolygons(polygon)
           }
         })
+    }
+
+
+
+    function updateMap(id){
+      let data = {};
+      polygons.map(ele=>{
+        if(ele._id===id){
+          data.area = ele.area
+        }
+      })
+      fetch(BASE_URL+"/city/map/"+id,{
+        method:"PUT",
+        body:JSON.stringify(data),
+        headers:{
+          "Content-type":"application/json; charset=UTF-8"
+        }
+      }).then(res=>res.json())
+      .then(data=>{
+        if(data.success){
+          setList(preVal=>(
+            preVal.map(ele=>{
+                if(ele._id===id){
+                    ele.update = false
+                }
+                return ele
+            })
+        ))
+        }
+      })
     }
 
   
@@ -177,8 +213,8 @@ export default function CityManagement(){
         </Box>
       ):(
         <Box sx={{display:"flex"}}>
-        <button className="m-1">Update Map</button>
-        <button className="m-1">cancel</button>
+        <button className="m-1" onClick={()=>updateMap(row.original._id)}>Update Map</button>
+        <button className="m-1" onClick={fetchData}>cancel</button>
         </Box>
       )}
       />

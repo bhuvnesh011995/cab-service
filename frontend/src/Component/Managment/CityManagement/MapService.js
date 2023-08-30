@@ -136,7 +136,7 @@ const MapService = ({polygon,setPolygon,setData}) => {
             <div className='map-container' style={{ position: 'relative' }}>
                 
                 <GoogleMap
-                    zoom={15}
+                    zoom={8}
                     center={center}
                     onLoad={onLoadMap}
                     mapContainerStyle={containerStyle}

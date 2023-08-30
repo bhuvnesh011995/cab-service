@@ -285,3 +285,23 @@ exports.getCityByStateId = async function (req,res,next){
     cities
   })
 }
+
+
+
+
+exports.updateMapById = async function(req,res,next){
+  const {mapId} = req.params
+
+  const {area} = req.body
+
+  await db.territory.findByIdAndUpdate({_id:mapId},{
+    $set:{
+      area
+    }
+  })
+
+  res.status(200).json({
+    success:true,
+    message:"map updated"
+  })
+}
