@@ -1,7 +1,7 @@
 const db = require("../model/index");
 
 exports.addCity = async function (req, res, next) {
-  const { name, state, country, status,vehicleService,utcOffset} = req.body;
+  const { name, state, country, status,vehicleService,utcOffset,territory} = req.body;
 
   const countryDoc = await db.country
     .findOne({
@@ -34,15 +34,21 @@ exports.addCity = async function (req, res, next) {
         })
   }
 
+
+
+  let territorieDoc = await db.territory.create({area:territory})
+    
+
+
   const city = await db.city.create({
       name:name,
       status:status,
       country:countryDoc._id,
       state:countryDoc.state[0]._id,
-      utcOffset:utcOffset
+      utcOffset:utcOffset,
+      territory:territorieDoc._id
   })
 
-  console.log(stateId)
 
     await db.state.updateOne({_id:stateId},{
       $push:{city:city._id}
@@ -107,9 +113,15 @@ exports.filterCity= async function(req,res,next){
       path:"country",
       model:"Country",
       select:{name:1,_id:0}
-    }])
+    },
+    {
+      path:"territory",
+      model:"Territory"
+    }
+  ])
     }else{
-      var country = await db.country.find({name:text}).populate([{
+      var country = await db.country.find({name:text}).populate([
+        {
         path:"state",
         model:"State",
         populate:{
@@ -121,15 +133,21 @@ exports.filterCity= async function(req,res,next){
               path:"country",
               model:"Country",
               select:{name:1,_id:0}
-          },{
+          },
+          {
             path:"state",
             model:"State",
             select:{name:1,_id:0}
+          },
+          {
+            path:"territory",
+            model:"Territory"
           }
         ]
         }
       }
     ])
+
       var state = await db.state.find({name:text}).populate([{
         path:"city",
         model:"City",
@@ -143,6 +161,10 @@ exports.filterCity= async function(req,res,next){
           path:"state",
           model:"State",
           select:{name:1,_id:0}
+        },
+        {
+          path:"territory",
+          model:"Territory"
         }
       ]
       }])
@@ -152,11 +174,16 @@ exports.filterCity= async function(req,res,next){
       model:"State",
       select:{name:1,_id:0}
     },
-  {
-    path:"country",
-    model:"Country",
-    select:{name:1,_id:0}
-  }])
+    {
+      path:"country",
+      model:"Country",
+      select:{name:1,_id:0}
+    },
+    {
+      path:"territory",
+      model:"Territory"
+    }
+  ])
     }
 
     let set = new Set();
@@ -173,6 +200,7 @@ exports.filterCity= async function(req,res,next){
                 obj.createdAt = country[i].state[j].city[k].createdAt
                 obj.country = country[i].state[j].city[k].country.name
                 obj.state = country[i].state[j].city[k].state.name
+                obj.territory = country[i].state[j].city[k].territory
                 cities.push(obj)
                 set.add(country[i].state[j].city[k]._id)
 
@@ -196,6 +224,7 @@ exports.filterCity= async function(req,res,next){
                 obj.createdAt = state[j].city[k].createdAt
                 obj.country = state[j].city[k].country.name
                 obj.state = state[j].city[k].state.name
+                obj.territory = state[j].city[k].territory
                 cities.push(obj)
                 set.add(state[j].city[k]._id)
 
@@ -212,6 +241,7 @@ exports.filterCity= async function(req,res,next){
         obj.createdAt = city[k].createdAt
         obj.country = city[k].country.name
         obj.state = city[k].state.name
+        obj.territory = city[k].territory
         cities.push(obj)
         set.add(city[k]._id)
 

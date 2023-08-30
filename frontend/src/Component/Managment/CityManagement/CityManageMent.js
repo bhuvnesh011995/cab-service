@@ -19,9 +19,7 @@ export default function CityManagement(){
     const navigate = useNavigate();
     const [filter,setFilter] = useState(initialFilter);
     const [list,setList] = useState();
-    const [mapLayers, setMapLayers] = useState([]);
-
-   
+    const [polygons,setPolygons] = useState([])
 
 
   let url = BASE_URL+"/city/"
@@ -33,6 +31,7 @@ export default function CityManagement(){
       .then(data=>{
         if(data.success){
           let arr = [];
+          let polygon = [];
           data?.cities?.map((ele, i) => {
             arr.push({
               index: i + 1,
@@ -41,8 +40,18 @@ export default function CityManagement(){
               country:ele.country,
               status: ele.status,
               createdAt: ele.createdAt || "",
+              update:false,
+              _id:ele.territory?._id
             });
+
+            
+              polygon.push({
+                _id:ele.territory?._id,
+                area:ele.territory?.area
+              })
+           
           });
+          setPolygons(polygon)
           setList(arr);
         }
       })
@@ -97,6 +106,7 @@ export default function CityManagement(){
         .then(data=>{
           if(data.success){
             let arr = [];
+            let polygon = [];
           data?.cities?.map((ele, i) => {
             arr.push({
               index: i + 1,
@@ -105,7 +115,17 @@ export default function CityManagement(){
               country:ele.country,
               status: ele.status,
               createdAt: ele.createdAt || "",
+              update:false,
+              _id:ele.territory?._id
+
             });
+
+            polygon.push({
+              _id:ele.territory?._id,
+              area:ele.territory?.area
+            })
+
+
           });
           setList(arr);
           }
@@ -117,7 +137,7 @@ export default function CityManagement(){
     return(
         <Management_container title={"City Management"}>
         
-        <MapService mapLayers={mapLayers} setMapLayers={setMapLayers} />
+        <MapService setData={setList} polygon={polygons} setPolygon={setPolygons} />
     
            <div class="row">
     <div class="col-lg-13">
@@ -140,7 +160,7 @@ export default function CityManagement(){
       data={list || []}
       enableRowActions
       positionActionsColumn={'last'}
-      renderRowActions={({row,table})=>(
+      renderRowActions={({row,table})=>!row.original.update ?(
         <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '1px' }}>
           <IconButton>
             <RemoveRedEye />
@@ -155,9 +175,13 @@ export default function CityManagement(){
             <DeleteForever />
           </IconButton>
         </Box>
+      ):(
+        <Box sx={{display:"flex"}}>
+        <button className="m-1">Update Map</button>
+        <button className="m-1">cancel</button>
+        </Box>
       )}
       />
-      <p>{JSON.stringify(mapLayers,0,2)}</p>
         </Management_container>
     )
 }

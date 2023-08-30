@@ -21,6 +21,7 @@ const schema = new Schema({
         immutable:true,
         default:Date.now()
     },
+    territory:{type:Schema.Types.ObjectId,ref:"Territory"},
     country:{type:Schema.Types.ObjectId,ref:"Country"},
     state:{type:Schema.Types.ObjectId,ref:"State"},
     cityService:[{

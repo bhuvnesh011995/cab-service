@@ -143,7 +143,7 @@ exports.addBooking = async function (req, res, next) {
 
 
 exports.getAllBooking = async function (req, res, next) {
-  let bookings = await db.booking.find({});
+  let bookings = await db.booking.find({}).select("_id");
 
   res.status(200).json({
     success: true,

@@ -33,7 +33,7 @@ exports.filterSos = async function(req,res,next){
             { path:"booking",select:""},{path:"user"},{path:"location"}
         ]).lean()
     }else{
-        sos = await db.sos.find(userType).populate([
+        sos = await db.sos.find({userType:userType}).populate([
            { path:"booking"},{path:"user"},{path:"location"}
         ]).lean()
     }

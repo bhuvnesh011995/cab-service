@@ -140,6 +140,16 @@ export default [
             icon:"bi bi-cash-coin"
     },
     {
+        name:"Promocode Management",
+        to:"/promocodeManagement",
+        icon:"bi bi-textarea-t"
+    },
+    {
+        name:"Rental Promocode Management",
+        to:"/rentalPromocodeManagement",
+        icon:"bi bi-textarea-t"
+    },
+    {
             name:"SOS Management",
             to:"/sosService",
             icon:"bi bi-hospital-fill"

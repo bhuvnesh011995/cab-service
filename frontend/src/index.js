@@ -56,6 +56,8 @@ import TaxManagement from './Component/Managment/TaxManagement/TaxManagement';
 import AddTax from './Component/Managment/TaxManagement/AddTax';
 import TollManagement from './Component/Managment/TollManagement/TollManagement';
 import AddToll from './Component/Managment/TollManagement/AddToll';
+import SOSManagement from './Component/Managment/SOSManagement/SOSManagement';
+import AddSos from './Component/Managment/SOSManagement/AddSos';
 const router = createBrowserRouter([
   {
     element:<App />,
@@ -107,7 +109,9 @@ const router = createBrowserRouter([
     {path:"taxManagement",element:<TaxManagement/>},
     {path:"addTax",element:<AddTax/>},
     {path:"tollManagement",element:<TollManagement />},
-    {path:"addToll",element:<AddToll/>}
+    {path:"addToll",element:<AddToll/>},
+    {path:"sosService",element:<SOSManagement/>},
+    {path:"addSos",element:<AddSos/>}
     ]
   },{
     path:"/login", element:<SignIn/>

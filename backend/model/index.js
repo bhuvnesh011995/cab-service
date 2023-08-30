@@ -33,6 +33,7 @@ module.exports ={
     toll:require('./toll.model'),
     tax:require("./tax.model"),
     location:require("./location.model"),
-    sos:require("./SOS.model")
+    sos:require("./SOS.model"),
+    territory:require("./territory.model")
 }
 

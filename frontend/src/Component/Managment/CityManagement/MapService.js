@@ -3,7 +3,7 @@ import { DrawingManager, GoogleMap, Polygon, useJsApiLoader } from '@react-googl
 import * as AiIcons from "react-icons/ai"
 
 const libraries = ['places', 'drawing']
-const MapService = () => {
+const MapService = ({polygon,setPolygon,setData}) => {
 
     const mapRef = useRef();
     const polygonRefs = useRef([]);
@@ -33,29 +33,23 @@ const MapService = () => {
         nonce: "nonce-691d29db-ab00-4bf6-94fa-168373d2fb7e",
     });
 
-    const [polygons, setPolygons] = useState([]);
+    const [polygons, setPolygons] = useState(polygon);
+
+    useEffect(()=>{setPolygons(polygon)},[polygon])
 
     const defaultCenter = {
-        lat: 28.626137,
-        lng: 79.821603,
+        lat: 27.626137,
+        lng: 76.821603,
     }
     const [center, setCenter] = useState(defaultCenter);
 
     const containerStyle = {
         width: '100%',
-        height: '400px',
+        height: '500px',
     }
 
 
-    const deleteIconStyle = {
-        cursor: 'pointer',
-        marginTop: '5px', 
-        backgroundColor: '#fff',
-        position: 'absolute',
-        top: "0px",
-        left: "53%",
-        zIndex: 99999
-    }
+   
 
     const polygonOptions = {
         fillOpacity: 0.3,
@@ -82,7 +76,7 @@ const MapService = () => {
     }
 
     const onLoadPolygon = (polygon, index) => {
-        polygonRefs.current[index] = polygon;
+        polygonRefs.current[index] = {id:polygons[index]._id,ref:polygon};
     }
 
     const onClickPolygon = (index) => {
@@ -105,7 +99,7 @@ const MapService = () => {
             const startPoint = newPolygon[0];
             newPolygon.push(startPoint);
             $overlayEvent.overlay?.setMap(null);
-            setPolygons([...polygons, newPolygon]);
+            setPolygons([...polygons, {area:newPolygon}]);
         }
     }
 
@@ -117,13 +111,22 @@ const MapService = () => {
     const onEditPolygon = (index) => {
         const polygonRef = polygonRefs.current[index];
         if (polygonRef) {
-            const coordinates = polygonRef.getPath()
+            const coordinates = polygonRef.ref.getPath()
                 .getArray()
                 .map(latLng => ({ lat: latLng.lat(), lng: latLng.lng() }));
 
             const allPolygons = [...polygons];
-            allPolygons[index] = coordinates;
-            setPolygons(allPolygons)
+            allPolygons[index].area = coordinates;
+            setPolygon(allPolygons)
+            console.log(polygonRef)
+            setData(preVal=>(
+                preVal.map(ele=>{
+                    if(ele._id===polygonRef.id){
+                        ele.update = true
+                    }
+                    return ele
+                })
+            ))
         }
     }
 
@@ -131,17 +134,7 @@ const MapService = () => {
         isLoaded
             ?
             <div className='map-container' style={{ position: 'relative' }}>
-                {
-                    drawingManagerRef.current
-                    &&
-                    <div
-                        onClick={onDeleteDrawing}
-                        title='Delete shape'
-                        style={deleteIconStyle}
-                        >
-                      <AiIcons.AiFillDelete size={"1.21rem"}/>
-                    </div>
-                }
+                
                 <GoogleMap
                     zoom={15}
                     center={center}
@@ -151,19 +144,18 @@ const MapService = () => {
                 >
                     <DrawingManager
                         onLoad={onLoadDrawingManager}
-                        onOverlayComplete={onOverlayComplete}
                         options={drawingManagerOptions}
                     />
                     {
                         polygons.map((iterator, index) => (
                             <Polygon
-                                key={index}
+                                key={iterator._id}
                                 onLoad={(event) => onLoadPolygon(event, index)}
                                 onMouseDown={() => onClickPolygon(index)}
                                 onMouseUp={() => onEditPolygon(index)}
                                 onDragEnd={() => onEditPolygon(index)}
                                 options={polygonOptions}
-                                paths={iterator}
+                                paths={iterator.area}
                                 draggable
                                 editable
                             />
