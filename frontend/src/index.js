@@ -31,7 +31,6 @@ import RiderManagement from './Component/Managment/RiderManagement/RiderManageme
 import AddRider from './Component/Managment/RiderManagement/AddRider';
 import SignIn from './Component/Auth/SignIn/SignIn';
 import AuthProvider from './Context/AuthContext';
-import SignUp from './Component/Auth/SignUp/SignUp';
 import ResetPass from './Component/Auth/ResetPass/ResetPass';
 import DriverManagement from './Component/Managment/DriverManagement/DriverManagement';
 import AddDriver from './Component/Managment/DriverManagement/AddDriver';
@@ -58,6 +57,9 @@ import TollManagement from './Component/Managment/TollManagement/TollManagement'
 import AddToll from './Component/Managment/TollManagement/AddToll';
 import SOSManagement from './Component/Managment/SOSManagement/SOSManagement';
 import AddSos from './Component/Managment/SOSManagement/AddSos';
+import AdminDataUpdate from './Component/Auth/SignUp/AdminDataUpdate';
+import Permision from './Component/Managment/Permision';
+import AddAdmin from './Component/Auth/SignUp/AddAdmin';
 const router = createBrowserRouter([
   {
     element:<App />,
@@ -111,17 +113,21 @@ const router = createBrowserRouter([
     {path:"tollManagement",element:<TollManagement />},
     {path:"addToll",element:<AddToll/>},
     {path:"sosService",element:<SOSManagement/>},
-    {path:"addSos",element:<AddSos/>}
+    {path:"addSos",element:<AddSos/>},
+    {path:"/AdminDataUpdate", element:<AdminDataUpdate/>},                         
     ]
   },{
     path:"/login", element:<SignIn/>
   },
-  {
-    path:"/signUp", element:<SignUp/>
-  },
+ 
   {
     path:"/reset",element:<ResetPass/>
-  }
+  },
+  {
+    path:"/Permision",element:<Permision/>
+  },
+  {path:"/AddAdmin",element:<AddAdmin/>},       
+
 ])
 
 const root = ReactDOM.createRoot(document.getElementById('root'));

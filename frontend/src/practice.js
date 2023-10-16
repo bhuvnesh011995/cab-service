@@ -6,7 +6,7 @@ export default function Practice (){
     const [img,setImg] = useState()
 
     useEffect(()=>{
-        fetch("http://localhost:8081/",{
+        fetch("http://localhost:8080/",{
             method:"GET"
         }).then(res=>res.json())
         .then(data=>{

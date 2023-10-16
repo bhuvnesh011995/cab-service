@@ -10,7 +10,7 @@ const runmodeConstant = require("./constant/runmode.constant");
 const cors = require("cors")
 
 //database connection with confirmation
-
+console.log(dbConfig)
 mongoose.connect(dbConfig.URI,{
   serverSelectionTimeoutMS: 30000,
   useNewUrlParser: true,
@@ -21,7 +21,6 @@ db.on("error",(error)=>{
   console.log(error)
   console.log("Error while connecting to db")
 })
-
 db.once("open",()=>{
   console.log("connected to db")
   init();
@@ -40,7 +39,7 @@ async function init(){
     let services  = await service.find()
     
     
-      let user = await admin.findOne({status:"ACTIVE"});
+      let user = await admin.findOne({status:"ACTIVE",role:'superadmin'});
     
       if(!user){
         let adminUser = await admin.create({
@@ -48,6 +47,7 @@ async function init(){
           username:"admin",
           email:"admin@braincave.com",
           status:"ACTIVE",
+          role:'superadmin',
           password:bcrypt.hashSync("admin",8)
         })
         console.log("admin created")
@@ -90,6 +90,9 @@ async function init(){
     
     // addRunMode(runmodeConstant)
 
+   
+
+
 
     app.use(bodyParser.urlencoded({extended: false}))
 
@@ -123,6 +126,8 @@ async function init(){
     require("./routes/toll.route")(app)
     require("./routes/tax.route")(app)
     require("./routes/sos.route")(app)
+   
+
 
     
 module.exports = app;

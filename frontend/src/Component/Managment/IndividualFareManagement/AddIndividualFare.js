@@ -68,10 +68,7 @@ export default function AddIndividualFare(){
             onClick={handleDelete} size={"20"} />
     </form></IconContext.Provider>
         )
-    })
-    
-
-
+    }) 
     function handleDelete(e){
         let arr = individualFare.perKMCharge.filter((ele,i)=>{
             if(i!=e.target.getAttribute("index")) return ele
@@ -95,11 +92,7 @@ export default function AddIndividualFare(){
                 setSuccMsg(<span style={{backgroundColor:"red"}}>{data.message}</span>)
             }
         })
-
     }
-
-
-
     function handleClick(e){
         e.preventDefault();
         setIndividualFare(preVal=>({...preVal,perKMCharge:[...preVal.perKMCharge,{minKM:null,maxKM:null,fare:null}]}))
@@ -164,15 +157,12 @@ export default function AddIndividualFare(){
                 <div>Extra Per KM Charge
                    {list}
                     </div>
-                   
-                        
                     </div>
                      <BtnDark
                     title={"Add More"}
                     handleClick={handleClick}
                     />
                 </form>
-                
             </div>
             <div style={{display:"flex", justifyContent:"center"}}>
                 <BtnDark title={"Add Fare"}

@@ -29,6 +29,7 @@ export default function AddModel (){
     },[])
     const url = BASE_URL+"/model/"
     function handleSubmit(e){
+        e.preventDefault();
         fetch(url,{
             method:"POST",
             body:JSON.stringify(model),

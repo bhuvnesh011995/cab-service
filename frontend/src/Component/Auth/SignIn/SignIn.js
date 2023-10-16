@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../config/config";
 import logo from "../../../assets/image/logo-2.png"
 import { authContext } from "../../../Context/AuthContext";
+import { Center } from "@chakra-ui/react";
 
 let url = BASE_URL+"/auth/signIn";
 
@@ -15,7 +16,7 @@ export default function SignIn() {
   const {setAdmin} = useContext(authContext)
   const navigate = useNavigate();
   let [successMsg, setSuccessMsg] = useState();
-
+  
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -29,13 +30,17 @@ export default function SignIn() {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
+          console.log('cccccc',data)
           setAdmin({
             name:data.name,
             email:data.email,
-            username:data.username,
-            token:data.token
+            username:"admin",
+            token:data.token,
+            role:data.role,
+            permissions:data.permissions
+            
           })
-          navigate("/")
+          navigate(-1 || "/" )
         }
         else{
           setSuccessMsg(
@@ -56,8 +61,12 @@ export default function SignIn() {
   }
 
   return (
-    <Wraper>
-      <div className="card-body m-3 pt-0">
+    
+      // <div  className="card-body m-3 pt-0">
+      <div class="my-5 pt-sm-5" >
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-8 col-lg-6 col-xl-5" style={{border:'1px solid gray'}}>
                 <img
                   src={logo}
                   alt="logo"
@@ -121,6 +130,8 @@ export default function SignIn() {
           </form>
         </div>
       </div>
-    </Wraper>
+      </div>
+      </div>
+      </div>
   );
 }

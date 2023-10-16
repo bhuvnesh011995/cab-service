@@ -19,6 +19,8 @@ export default function AddCity() {
   const [city, setCity] = useState(initialInput);
   const [state, setState] = useState();
   const[vehicleService,setVehicleService] = useState();
+  const [successMsg,setSuccessMsg] = useState("")
+  const url = BASE_URL+"/city/"
   useEffect(() => {
     fetch(BASE_URL+"/country/", {
       method: "GET",
@@ -74,10 +76,27 @@ export default function AddCity() {
 
 
 
-  function handleSubmit (e){
-    e.preventDafault()
-    return
-  }
+  function handleSubmit(e){
+    alert('hiiiii')
+    e.preventDefault();
+    fetch(url,{
+        method:"POST",
+        body:JSON.stringify(city),
+        headers: {
+            "Content-type": "application/json; charset=UTF-8",
+          },
+    }).then(res=>res.json())
+    .then(data=>{
+        if(data.success) setSuccessMsg(
+            <div style={{backgroundColor:"lightgreen"}}>{data.message}</div>
+        )
+        else setSuccessMsg(
+            <div style={{backgroundColor:"red"}}>{data.message}</div>
+        )
+    })
+    .catch(e=>
+        setSuccessMsg(<div style={{backgroundColor:"red"}}>{e.message}</div>))
+}
   return (
     <Management_container title={"Add City"}>
      <div class="row" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>

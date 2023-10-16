@@ -36,7 +36,7 @@ export default function ModelManagement() {
           arr.push({
             index: i + 1,
             model: ele.name,
-            make: ele.make.name,
+            make: ele.make ? ele.make.name : 'N/A',
             status: ele.status,
             createdAt: ele.createdAt || "",
           });

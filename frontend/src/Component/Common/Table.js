@@ -1,10 +1,12 @@
+
+
 export default function Table({ heading, list ,tableHeading}) {
   let head = heading.map((ele, i) => {
     return <th key={i}>{ele}</th>;
   });
 
   return (
-    <div className="row" style={{width:"100%"}}>
+    <div className="row" style={{width:"1  00%"}}>
       <div className="col-12">
         <div className="card">
           <div className="card-body">

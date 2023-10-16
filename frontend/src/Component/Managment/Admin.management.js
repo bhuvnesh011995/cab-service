@@ -13,7 +13,7 @@ const initialFilter = {
   name: "",
   username: "",
   status: "",
-  from: "",
+  from: "",          
   to: "",
 };
 let url = BASE_URL + "/admin/filter/";
@@ -26,13 +26,17 @@ export default function AdminManagement() {
     fetch(url, { method: "GET" })
       .then((res) => res.json())
       .then((data) =>{
+        console.log(data)
         let arr = []
         data.map((ele,i)=>{
           arr.push({
             index:i+1,
+            id:ele._id,
             name:ele.name,
+            email:ele.email,
             username:ele.username,
             status:ele.status,
+            password:ele.password,
             createdAt:ele.createdAt
           })
         })
@@ -54,6 +58,10 @@ export default function AdminManagement() {
       //   )
       );
   }, []);
+
+  
+
+
 
 
   const columns = useMemo(
@@ -108,16 +116,71 @@ export default function AdminManagement() {
 
   );
 
- 
+function handleUpdate(i){
+navigate('/AdminDataUpdate',{state:{admin:i}})
+}
+
+
+
+  function handleDelete(rowId) {
+    const confirmDelete = window.confirm("Are you sure you want to delete this admin?");
+    if (confirmDelete) {
+      const deleteUrl = BASE_URL + "/admins/" + rowId;
+      fetch(deleteUrl, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (response.ok) {
+            fetch(url, { method: "GET" })
+              .then((res) => res.json())
+              .then((data) => {
+                console.log(data);
+                let arr = [];
+                data.map((ele, i) => {
+                  arr.push({
+                    index: i + 1,
+                    id: ele._id,
+                    name: ele.name,
+                    username: ele.username,
+                    status: ele.status,
+                    createdAt: ele.createdAt,
+                  });
+                });
+                setList(arr);
+              });
+          } else {
+            console.error("Failed to delete admin");
+          }
+        })
+        .catch((error) => {
+          console.error("Error occurred while deleting admin:", error);
+        });
+    }
+  }
 
   function handleClick(e){
     e.preventDefault();
-    navigate("/signUp")
+    navigate("/AddAdmin")
   }
 
-  function handleClick2(e){
-    e.preventDefault()
-    setFilter(initialFilter)
+  function handleReset() {
+    setFilter(initialFilter);
+    fetch(url, { method: "GET" })
+      .then((res) => res.json())
+      .then((data) => {
+        let arr = [];
+        data.map((ele, i) => {
+          arr.push({
+            index: i + 1,
+            id: ele._id,
+            name: ele.name,
+            username: ele.username,
+            status: ele.status,
+            createdAt: ele.createdAt,
+          });
+        });
+        setList(arr);
+      });
   }
   function handleSubmit(e) {
     e.preventDefault();
@@ -143,6 +206,7 @@ export default function AdminManagement() {
             name:ele.name,
             username:ele.username,
             status:ele.status,
+            email:ele.email,
             createdAt:ele.createdAt
           })
         })
@@ -169,8 +233,8 @@ export default function AdminManagement() {
         initialInput={initialFilter}
         btn1_title={"Search"}
         handleClick1={handleSubmit}
-        handleClick2={handleClick2}
-        btn2_title={"reset"}
+        handleClick2={handleReset} 
+        btn2_title={"Reset"} 
         options={["name","username","status","from","to"]}
       />
       </div></div></div></div>
@@ -187,12 +251,17 @@ export default function AdminManagement() {
         list={list}
       />
       </div> */}
+
+
+
+      
       <MaterialReactTable
       columns={columns}
       data={list}
       enableRowActions
       positionActionsColumn={'last'}
       renderRowActions={({row,table})=>(
+        
         <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '1px' }}>
           <IconButton>
             <RemoveRedEye />
@@ -200,11 +269,11 @@ export default function AdminManagement() {
           <IconButton>
             <Lock />
           </IconButton>
-          <IconButton>
-            <ModeEditOutline />
+          <IconButton   onClick={() => handleUpdate(row.original)}>
+            <ModeEditOutline   />
           </IconButton>
-          <IconButton>
-            <DeleteForever />
+          <IconButton  onClick={() => handleDelete(row.original.id)}> 
+            <DeleteForever   />
           </IconButton>
         </Box>
       )}

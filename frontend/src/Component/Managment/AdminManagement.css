@@ -1,0 +1,32 @@
+/* Style the container for checkboxes */
+.checkbox-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  
+  /* Style the checkboxes themselves */
+  .checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
+    /* Customize checkbox appearance */
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  /* Style the labels for the checkboxes */
+  .checkbox-container label {
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  /* Style the checkboxes when checked */
+  .checkbox-container input[type="checkbox"]:checked {
+    background-color: #007bff; /* Customize the background color when checked */
+    border-color: #007bff; /* Customize the border color when checked */
+    color: #fff; /* Customize the text color when checked */
+  }
+  

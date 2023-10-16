@@ -8,7 +8,6 @@ import { useEffect, useState } from "react";
 import BASE_URL from "../../config/config";
 
 export default function Filter_Option({
- 
   input,
   setInput,
   initialInput,
@@ -93,7 +92,7 @@ export default function Filter_Option({
   },[input?.country,input?.state])
 
   return (
-    <form style={{margin:"50px"}}>
+    <form style={{margin:"10px"}}>
       <div className="row">
         <div className="col-lg-2 inputField" >
         {options.includes("package")&&(

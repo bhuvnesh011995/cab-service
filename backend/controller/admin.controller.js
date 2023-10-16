@@ -37,6 +37,43 @@ exports.filter = async function(req,res,next){
 
 
 
+
+exports.deleteAdminid = async function(req, res, next) {
+    let { id } = req.params;
+    console.log('admin id is',req.params)
+
+    try {
+        const deletedAdmin = await admin.deleteOne({id:id });
+
+        if (deletedAdmin.deletedCount === 1) {
+            res.status(200).json({
+                success: true,
+                message: "Admin deleted successfully",
+                
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                message: "Admin not found",
+            });
+        }
+    } catch (e) {
+        res.status(500).json({
+            success: false,
+            message: "Some internal error occurred",
+            error: e.message,
+        });
+    }
+}
+
+
+
+
+
+
+
+
+
 // delete admin function
 
 exports.deleteAdmin = async function(req,res,next){

@@ -3,7 +3,6 @@ import "./App.css";
 import LeftSidebar from "./Common/LeftSidbar/LeftSidebar";
 import Navbar from "./Common/Navbar/Navbar";
 import { useState } from "react";
-
 function App() {
 
   const [inactive,setInactive] = useState(false);
@@ -13,7 +12,7 @@ function App() {
     <div className="app">
       <div id="layout-wrapper">
         <Navbar inactive={inactive} setInactive={setInactive}/>
-        <LeftSidebar inactive={inactive} setInactive={setInactive}/>
+        <LeftSidebar inactive={inactive} setInactive={setInactive} />
         <Outlet/>
       </div>
     </div>

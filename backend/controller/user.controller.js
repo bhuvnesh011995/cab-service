@@ -17,9 +17,9 @@ const signIn = async function (req, res, next) {
     let user = await admin.findOne({
       username: username,
     });
-
+  console.log("pppppppp",user)
     let isValid =user && bcrypt.compareSync(password, user?.password);
-
+console.log(isValid)
     if (!isValid)
       res.status(404).json({
         success: false,
@@ -29,12 +29,15 @@ const signIn = async function (req, res, next) {
       const token = jwt.sign({ id: user._id }, "abc 123 xyz", {
         expiresIn: 500000,
       });
+      console.log(user,token)
       res.status(200).json({
         success: true,
         name: user.name,
         username: user.username,
         email: user.email,
         token: token,
+        role:user.role,
+        permissions: user.permissions
       });
     }
 //   } catch (err) {
@@ -48,30 +51,46 @@ const signIn = async function (req, res, next) {
 //   }
 };
 
-const signUp = async function (req, res, next) {
-  const { name, username, email, password ,status} = req.body;
 
+const signUp = async function (req, res, next) {
+  const { name, username, email, password, country, state, city, status, selected } = req.body;
+  console.log("Request Body:", req.body);
   try {
-    let user = await admin.create({
+    // Apne password ko req.body se fetch karein
+    const hashedPassword = bcrypt.hashSync(password, 8);
+
+    let userData = await admin.create({
       name: name,
       username: username,
       email: email,
-      status:status,
-      password: bcrypt.hashSync(password, 8),
+      country: country,
+      state: state,
+      city: city,
+      status: status,
+      permissions: selected,
+      password: hashedPassword, // Hashed password ko set karein
     });
+    console.log('admin', userData)
     res.status(201).json({
       success: true,
-      name: user.name,
-      username: user.username,
-      email: user.email,
+      name: userData.name,
+      username: userData.username,
+      email: userData.email,
+      country: userData.country,
+      state: userData.state,
+      city: userData.city
     });
-  } catch (err) {
-    res.status(500).json({
-      success: false,
-      message: "some err happen while creating user",
-    });
+  } catch (error) { 
+    if (error.code === 11000 && error.keyPattern.country === 1) {
+      console.error('Duplicate key error for "country" field:', error.message);
+      res.status(400).json({ success: false, message: 'Duplicate key error for "country" field' });
+    } else {
+      console.error('An error occurred:', error);
+      res.status(500).json({ success: false, message: 'An error occurred' });
+    }
   }
 };
+
 
 async function changePass(req, res, next) {
 
@@ -99,8 +118,49 @@ async function changePass(req, res, next) {
 
 }
 
+const updateAdminData = async (req, res, next) => {
+  const { id, newdata } = req.body;
+
+  try {
+    // Check if newdata is defined
+    if (!newdata) {
+      return res.status(400).json({
+        success: false,
+        message: "New data is missing",
+      });
+    }
+    if (newdata.password) {
+      newdata.password = bcrypt.hashSync(newdata.password, 8);
+    }
+    // Use updateOne method to update a specific document by _id
+    const updatedAdmin = await admin.findByIdAndUpdate(id, newdata,);
+    if (updatedAdmin) {
+      return res.status(200).json({
+        success: true,
+        message: "Admin data updated successfully",
+      });
+    } else {
+      return res.status(404).json({
+        success: false,
+        message: "Admin not found",
+      });
+    }
+  } catch (error) {
+    console.error("Error updating admin data:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
+
+
+
+
 module.exports = {
   signIn,
   signUp,
-  changePass
+  changePass,
+  updateAdminData,
+
 };

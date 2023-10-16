@@ -10,7 +10,7 @@ let schema = new Schema({
     },
     year:{
         type:Number,
-        required:true
+        // required:true
     },
     status:{
         type:String,
