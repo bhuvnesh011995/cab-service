@@ -2,82 +2,39 @@ const db = require("../model/index");
 const bcrypt = require("bcrypt");
 
 exports.addDriver = async function (req, res, next) {
-  let {
-    firstName,
-    lastName,
-    email,
-    password,
-    mobile,
-    DOB,
-    country,
-    state,
-    city,
-    place,
-    pincode,
-    referralCode,
-    license,
-    aadhar,
-    pan,
-    status,
-    verified,
-  } = req.body;
-
+  const driverData = JSON.parse(req.body.data);
+  for (let file of req.files) {
+    if (file.fieldname == "panFile") {
+      driverData.pan.file = file.filename;
+    } else if (file.fieldname == "aadharFile") {
+      driverData.aadhar.file = file.filename;
+    } else if (file.fieldname == "licenseFile") {
+      driverData.license.file = file.filename;
+    } else if (file.fieldname == "driverFile") {
+      driverData.driverFile = file.filename;
+    }
+  }
   let admin = await db.admin.findOne({ username: "admin" });
 
   let wallet = await db.wallet.create({});
 
-  const countryDoc = await db.country.findOne({ name: country }).populate({
-    path: "state",
-    model: "State",
-    match: { name: state },
-    populate: {
-      path: "city",
-      model: "City",
-      match: { name: city },
-    },
-  });
-
-  if (!countryDoc.state[0].city[0]) {
-    res.status(400).josn({
-      success: false,
-      message: "no country or state or city found",
-    });
-    return;
+  driverData.wallet = wallet._id;
+  driverData.password = bcrypt.hashSync(driverData.password, 8);
+  driverData.createdBy = admin._id;
+  driverData.updatedBy = admin._id;
+  if (driverData.verified) {
+    driverData.verifiedBy = admin._id;
   }
-
-  const countryId = countryDoc._id;
-  const stateId = countryDoc.state[0]._id;
-  const cityId = countryDoc.state[0].city[0]._id;
-
-  let driver = await db.driver.create({
-    firstName: firstName,
-    lastName: lastName,
-    email: email,
-    mobile: mobile,
-    DOB: DOB,
-    "address.country": countryId,
-    "address.state": stateId,
-    "address.city": cityId,
-    "address.place": place,
-    "address.pincode": pincode,
-    "license.number": license.number,
-    "license.expiryDate": license.expiryDate,
-    "license.verified": license.verified,
-    "license.verifiedBy": license.verified ? admin._id : undefined,
-    "aadhar.number": aadhar.number,
-    "aadhar.verified": aadhar.verified,
-    "aadhar.verifiedBy": aadhar.verified ? admin._id : undefined,
-    "pan.number": pan.number,
-    "pan.verified": pan.verified,
-    "pan.verifiedBy": pan.verified ? admin._id : undefined,
-    verified: verified,
-    verifiedBy: verified ? admin._id : undefined,
-    status: status,
-    createdBy: admin._id,
-    updatedBy: admin._id,
-    wallet: wallet._id,
-    password: bcrypt.hashSync(password, 8),
-  });
+  if (driverData.pan.verified) {
+    driverData.pan.verifiedBy = admin._id;
+  }
+  if (driverData.aadhar.verified) {
+    driverData.aadhar.verifiedBy = admin._id;
+  }
+  if (driverData.license.verified) {
+    driverData.license.verifiedBy = admin._id;
+  }
+  let driver = await db.driver.create(driverData);
 
   res.status(200).json({
     success: true,
@@ -230,36 +187,37 @@ exports.filterDriver = async function (req, res, next) {
     let drivers = await db.driver
       .find({})
       .populate([
-        { 
-        path: "wallet",
-        select: { balance: 1, _id: 0 }
+        {
+          path: "wallet",
+          select: { balance: 1, _id: 0 },
         },
         {
-            path:"address.country",
-            model:"Country",
-            select:{name:1}
+          path: "address.country",
+          model: "Country",
+          select: { name: 1 },
         },
         {
-            path:"address.state",
-            model:"State",
-            select:{name:1}
+          path: "address.state",
+          model: "State",
+          select: { name: 1 },
         },
         {
-            path:"address.city",
-            model:"City",
-            select:{name:1}
+          path: "address.city",
+          model: "City",
+          select: { name: 1 },
         },
         {
-            path:"createdBy",
-            model:"Admin",
-            select:{name:1}
+          path: "createdBy",
+          model: "Admin",
+          select: { name: 1 },
         },
         {
-            path:"updatedBy",
-            model:"Admin",
-            select:{name:1}
-        }
-]).lean();
+          path: "updatedBy",
+          model: "Admin",
+          select: { name: 1 },
+        },
+      ])
+      .lean();
 
     res.status(200).json({
       success: true,
@@ -328,7 +286,7 @@ exports.updateDriver = async function (req, res, next) {
       verified: verified,
       status: status,
       updatedBy: admin._id,
-    }
+    },
   );
 
   res.status(200).json({
@@ -338,21 +296,20 @@ exports.updateDriver = async function (req, res, next) {
   });
 };
 
-
-
-exports.getActiveDriver = async function (req,res,next){
-  let drivers = await db.driver.find({
-    "license.verified":true,
-    "license.expiryDate":{$gt:Date.now()},
-    "aadhar.verified":true,
-    "pan.verified":true,
-    verified:true,
-    status:"ACTIVE"
-  }).select({firstName:1,lastName:1,email:1,mobile:1})
-
+exports.getActiveDriver = async function (req, res, next) {
+  let drivers = await db.driver
+    .find({
+      "license.verified": true,
+      "license.expiryDate": { $gt: Date.now() },
+      "aadhar.verified": true,
+      "pan.verified": true,
+      verified: true,
+      status: "ACTIVE",
+    })
+    .select({ firstName: 1, lastName: 1, email: 1, mobile: 1 });
 
   res.status(200).json({
-    success:true,
-    drivers
-  })
-}
+    success: true,
+    drivers,
+  });
+};

@@ -1,137 +1,126 @@
-const {Schema,model} = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const schema = new Schema({
-    wallet:{type:Schema.Types.ObjectId,ref:"Wallet"},
-    profilePhoto:{
-        type:Buffer,
-        contentType: String,
-
+const schema = new Schema(
+  {
+    wallet: { type: Schema.Types.ObjectId, ref: "Wallet" },
+    driverFile: {
+      type: String,
     },
-    firstName:{
-        type:String
+    firstName: {
+      type: String,
     },
-    lastName:{
-        type:String
+    lastName: {
+      type: String,
     },
-    email:{
-        type:String
+    email: {
+      type: String,
     },
-    password:{
-        type:String,
-        required:true
+    password: {
+      type: String,
+      required: true,
     },
-    mobile:{
-        type:String
+    mobile: {
+      type: String,
     },
-    DOB:{
-        type:Date
+    DOB: {
+      type: Date,
     },
-    address:{
-        country:{type:Schema.Types.ObjectId,ref:"Country"},
-        state:{type:Schema.Types.ObjectId,ref:"State"},
-        city:{type:Schema.Types.ObjectId,ref:"City"},
-        place:String,
-        pincode:Number
+    address: {
+      country: { type: Schema.Types.ObjectId, ref: "Country" },
+      state: { type: Schema.Types.ObjectId, ref: "State" },
+      city: { type: Schema.Types.ObjectId, ref: "City" },
+      place: String,
+      pincode: Number,
     },
-    referralCode:{
-        type:String,
-        unique:true
+    referralCode: {
+      type: String,
+      unique: true,
     },
-    license:{
-        number:String,
-        expiryDate:Date,
-        photo:{
-            data:Buffer,
-            contentType:String
-        },
-        verified:{
-          type:Boolean,
-          required:true,
-          default: false
-        },
-        verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
-    },
-    aadhar:{
-        number:Number,
-        photo:{
-            data:Buffer,
-            contentType:String
-        },
-        verified:{
-          type:Boolean,
-          required:true,
-          default: false
-        },
-        verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
-    },
-    pan:{
-        number:String,
-        photo:{
-            data:Buffer,
-            contentType:String
-        },
-        verified:{
-          type:Boolean,
-          required:true,
-          default: false
-        },
-        verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
-    },
-
-    verified:{
-        type:Boolean,
+    license: {
+      number: String,
+      expiryDate: Date,
+      photo: String,
+      verified: {
+        type: Boolean,
+        required: true,
         default: false,
+      },
+      verifiedBy: { type: Schema.Types.ObjectId, ref: "Admin" },
+    },
+    aadhar: {
+      number: Number,
+      photo: String,
+      verified: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      verifiedBy: { type: Schema.Types.ObjectId, ref: "Admin" },
+    },
+    pan: {
+      number: String,
+      photo: String,
+      verified: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      verifiedBy: { type: Schema.Types.ObjectId, ref: "Admin" },
     },
 
-    verifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"},
-
-    status:{
-        type:String,
-        required:true,
-        default:"INACTIVE",
-        enum:["ACTIVE","INACTIVE"]
+    verified: {
+      type: Boolean,
+      default: false,
     },
 
+    verifiedBy: { type: Schema.Types.ObjectId, ref: "Admin" },
 
-    createdBy:{type:Schema.Types.ObjectId,ref:"Admin"},
+    status: {
+      type: String,
+      required: true,
+      default: "INACTIVE",
+      enum: ["ACTIVE", "INACTIVE"],
+    },
 
-    updatedBy:{type:Schema.Types.ObjectId,ref:"Admin"},
+    createdBy: { type: Schema.Types.ObjectId, ref: "Admin" },
 
-    vehicle:[{type:Schema.Types.ObjectId,ref:"Vehicle"}],
+    updatedBy: { type: Schema.Types.ObjectId, ref: "Admin" },
 
-    driverHistory:[{type:Schema.Types.ObjectId,ref:"Booking"}]
-},
-{
-    timestamps:true,
-    collection:"Driver"
-})
+    vehicle: [{ type: Schema.Types.ObjectId, ref: "Vehicle" }],
 
-
+    driverHistory: [{ type: Schema.Types.ObjectId, ref: "Booking" }],
+  },
+  {
+    timestamps: true,
+    collection: "Driver",
+  },
+);
 
 function generateReferralCode() {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-    let code = '';
-    for (let i = 0; i < 6; i++) {
-      const randomIndex = Math.floor(Math.random() * characters.length);
-      code += characters.charAt(randomIndex);
-    }
-    return code;
+  const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+  let code = "";
+  for (let i = 0; i < 6; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    code += characters.charAt(randomIndex);
   }
+  return code;
+}
 
-  schema.pre('save', async function (next) {
-    if (this.isNew && !this.referralCode) {
-      let isUnique = false;
-      while (!isUnique) {
-        const referralCode = generateReferralCode();
-        const existingUser = await this.constructor.findOne({ referralCode:referralCode });
-        if (!existingUser) {
-          this.referralCode = referralCode;
-          isUnique = true;
-        }
+schema.pre("save", async function (next) {
+  if (this.isNew && !this.referralCode) {
+    let isUnique = false;
+    while (!isUnique) {
+      const referralCode = generateReferralCode();
+      const existingUser = await this.constructor.findOne({
+        referralCode: referralCode,
+      });
+      if (!existingUser) {
+        this.referralCode = referralCode;
+        isUnique = true;
       }
     }
-    next();
-  });
+  }
+  next();
+});
 
-
-  module.exports = model("Driver",schema)
+module.exports = model("Driver", schema);
