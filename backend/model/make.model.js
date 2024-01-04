@@ -6,9 +6,7 @@ const {Schema,model}= mongoose;
 let schema = new Schema({
     name:{
         type:String,
-        required:true,
-        unique:true,
-        lowercase:true
+      
     },
     status:{
         type:String,

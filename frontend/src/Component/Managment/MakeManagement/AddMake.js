@@ -47,24 +47,12 @@ export default function AddMake(){
       <div class="card">
         <div class="card-body">
             <form>
-                <Text_Input 
-                lebel_text={"CNG : "}
-                setKey={"CNG"}
+            <Selection_Input
+                options={["CNG","petrol","Disel","EV" ]}
                 setInput={setMake}
-                />
-                <Text_Input 
-                lebel_text={"petrol : "}
-                setKey={"petrol"}
-                setInput={setMake}
-                /><Text_Input 
-                lebel_text={"Disel : "}
-                setKey={"Disel"}
-                setInput={setMake}
-                />
-                <Text_Input 
-                lebel_text={"EV : "}
-                setKey={"EV"}
-                setInput={setMake}
+                input={make}
+                lebel_text={"name : "}
+                setKey={"name"}
                 />
                   <Selection_Input
                 options={["ACTIVE","INACTIVE"]}
@@ -73,13 +61,7 @@ export default function AddMake(){
                 lebel_text={"Status : "}
                 setKey={"status"}
                 />
-                <Selection_Input
-                options={["CNC","petrol","Disel","EV" ]}
-                setInput={setMake}
-                input={make}
-                lebel_text={"Status : "}
-                setKey={"status"}
-                />
+              
                 <BtnDark
                 title={"Add"}
                 handleClick={handleSubmit}

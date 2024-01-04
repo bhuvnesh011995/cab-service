@@ -1,4 +1,3 @@
-
 import { useEffect, useMemo, useState } from "react";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Filter_Option from "../../Common/Filter_option";
@@ -18,6 +17,7 @@ const initialFilter = {
     vehicleType:"",
     status:""
   }
+  
 const url = BASE_URL+"/avaialibilityManagement"
 
 export default function AvaialibilityManagement(){

@@ -10,10 +10,23 @@ export default [
             to:"/adminManagement",
             icon:"bi bi-person"
     },
+//     {
+//             name:"Manufacturer",
+//             to:"/makeManagement",
+//             icon:"bi bi-ev-front"
+//     },
+   
     {
-            name:"Manufacturer",
-            to:"/makeManagement",
-            icon:"bi bi-ev-front"
+        name:"Vehicles Management ",
+        to:"#",
+        icon:"bi bi-ev-front",
+        children: [
+            {to: "makeManagement", name: "Manufacturer ",},
+            {to: "modelManagement", name: " Model",},
+            {to: "vehicleTypeManagement", name: "Vehicle Category",},
+            {to: "/pos/order/startsessions", name: "vehicle Type managemen",},
+            {to: "/pos/order/startsessions", name: "vehicles",},
+        ]
     },
     {
         name:"Avaialibility management",
