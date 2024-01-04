@@ -5,55 +5,54 @@ const jwt = require("jsonwebtoken");
 const signIn = async function (req, res, next) {
   const { username, password } = req.body;
 
-  if(!username || !password){
+  if (!username || !password) {
     res.status(404).json({
       success: false,
       message: "enter username or password",
     });
-    return
+    return;
   }
 
-//   try {
-    let user = await admin.findOne({
-      username: username,
+  //   try {
+  let user = await admin.findOne({
+    username: username,
+  });
+  console.log("pppppppp", user);
+  let isValid = user && bcrypt.compareSync(password, user?.password);
+  console.log(isValid);
+  if (!isValid)
+    res.status(404).json({
+      success: false,
+      message: "invalid username or password",
     });
-  console.log("pppppppp",user)
-    let isValid =user && bcrypt.compareSync(password, user?.password);
-console.log(isValid)
-    if (!isValid)
-      res.status(404).json({
-        success: false,
-        message: "invalid username or password",
-      });
-    else {
-      const token = jwt.sign({ id: user._id }, "abc 123 xyz", {
-        expiresIn: 500000,
-      });
-      console.log(user,token)
-      res.status(200).json({
-        success: true,
-        name: user.name,
-        username: user.username,
-        email: user.email,
-        token: token,
-        role:user.role,
-        permissions: user.permissions
-      });
-    }
-//   } catch (err) {
-//     res
-//       .status(500)
-//       .json({
-//         success: false,
-//         message: "some err happen",
-//       })
-//       .end();
-//   }
+  else {
+    const token = jwt.sign({ id: user._id }, "abc 123 xyz", {
+      expiresIn: 500000,
+    });
+    res.status(200).json({
+      success: true,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      token: token,
+      role: user.role,
+      permissions: user.permissions,
+    });
+  }
 };
 
-
 const signUp = async function (req, res, next) {
-  const { name, username, email, password, country, state, city, status, selected } = req.body;
+  const {
+    name,
+    username,
+    email,
+    password,
+    country,
+    state,
+    city,
+    status,
+    selected,
+  } = req.body;
   console.log("Request Body:", req.body);
   try {
     // Apne password ko req.body se fetch karein
@@ -70,7 +69,6 @@ const signUp = async function (req, res, next) {
       permissions: selected,
       password: hashedPassword, // Hashed password ko set karein
     });
-    console.log('admin', userData)
     res.status(201).json({
       success: true,
       name: userData.name,
@@ -78,44 +76,49 @@ const signUp = async function (req, res, next) {
       email: userData.email,
       country: userData.country,
       state: userData.state,
-      city: userData.city
+      city: userData.city,
     });
-  } catch (error) { 
+  } catch (error) {
     if (error.code === 11000 && error.keyPattern.country === 1) {
       console.error('Duplicate key error for "country" field:', error.message);
-      res.status(400).json({ success: false, message: 'Duplicate key error for "country" field' });
+      res.status(400).json({
+        success: false,
+        message: 'Duplicate key error for "country" field',
+      });
     } else {
-      console.error('An error occurred:', error);
-      res.status(500).json({ success: false, message: 'An error occurred' });
+      console.error("An error occurred:", error);
+      res.status(500).json({ success: false, message: "An error occurred" });
     }
   }
 };
 
-
 async function changePass(req, res, next) {
+  const { newPassword, id } = req.body;
 
-  const { newPassword,id } = req.body;
+  try {
+    await admin.updateOne(
+      { _id: id },
+      {
+        password: bcrypt.hashSync(newPassword, 8),
+      },
+    );
 
-  try{
-
-    await admin.updateOne({_id:id},{
-        password:bcrypt.hashSync(newPassword,8)
-    })
-
-    res.status(200).json({
-        success:true,
-        message:"password changed successfully"
-    }).end();
-        }catch (err) {
-            res
-            .status(500)
-            .json({
-                success: false,
-                message: "some err 2 happen",
-            })
-            .end();
-    }
-
+    res
+      .status(200)
+      .json({
+        success: true,
+        message: "password changed successfully",
+      })
+      .end();
+  } catch (err) {
+    res
+      .status(500)
+      .json({
+        success: false,
+        message: "some err 2 happen",
+      })
+      .end();
+  }
 }
 
 const updateAdminData = async (req, res, next) => {
@@ -133,7 +136,7 @@ const updateAdminData = async (req, res, next) => {
       newdata.password = bcrypt.hashSync(newdata.password, 8);
     }
     // Use updateOne method to update a specific document by _id
-    const updatedAdmin = await admin.findByIdAndUpdate(id, newdata,);
+    const updatedAdmin = await admin.findByIdAndUpdate(id, newdata);
     if (updatedAdmin) {
       return res.status(200).json({
         success: true,
@@ -154,13 +157,30 @@ const updateAdminData = async (req, res, next) => {
   }
 };
 
-
-
+const loginedUser = async (req, res, next) => {
+  try {
+    const tokenData = jwt.verify(req.params.token, "abc 123 xyz");
+    let user = await admin.findOne({
+      _id: tokenData.id,
+    });
+    res.status(200).json({
+      success: true,
+      name: user.name,
+      username: user.username,
+      email: user.email,
+      token: req.params.token,
+      role: user.role,
+      permissions: user.permissions,
+    });
+  } catch (err) {
+    console.error(err);
+  }
+};
 
 module.exports = {
   signIn,
   signUp,
   changePass,
   updateAdminData,
-
+  loginedUser,
 };

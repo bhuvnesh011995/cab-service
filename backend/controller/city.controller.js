@@ -258,10 +258,10 @@ exports.getcityBystateAndCountry = async function(req,res,next){
   const country = req.params.country
   const state = req.params.state
 
-  let countryDoc = await db.country.findOne({name:country}).populate([{
+  let countryDoc = await db.country.findOne({_id:country}).populate([{
     path:"state",
     model:"State",
-    match:{name:state},
+    match:{_id:state},
     populate:{
       path:"city",
       model:"City",

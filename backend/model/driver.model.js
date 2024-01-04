@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 
 const schema = new Schema(
   {
-    wallet: { type: Schema.Types.ObjectId, ref: "Wallet" },
+    wallet: { type: Schema.Types.ObjectId },
     driverFile: {
       type: String,
     },
@@ -26,9 +26,9 @@ const schema = new Schema(
       type: Date,
     },
     address: {
-      country: { type: Schema.Types.ObjectId, ref: "Country" },
-      state: { type: Schema.Types.ObjectId, ref: "State" },
-      city: { type: Schema.Types.ObjectId, ref: "City" },
+      country: { type: Schema.Types.ObjectId },
+      state: { type: Schema.Types.ObjectId },
+      city: { type: Schema.Types.ObjectId },
       place: String,
       pincode: Number,
     },
@@ -45,7 +45,7 @@ const schema = new Schema(
         required: true,
         default: false,
       },
-      verifiedBy: { type: Schema.Types.ObjectId, ref: "Admin" },
+      verifiedBy: { type: Schema.Types.ObjectId },
     },
     aadhar: {
       number: Number,
@@ -55,7 +55,7 @@ const schema = new Schema(
         required: true,
         default: false,
       },
-      verifiedBy: { type: Schema.Types.ObjectId, ref: "Admin" },
+      verifiedBy: { type: Schema.Types.ObjectId },
     },
     pan: {
       number: String,
@@ -65,7 +65,7 @@ const schema = new Schema(
         required: true,
         default: false,
       },
-      verifiedBy: { type: Schema.Types.ObjectId, ref: "Admin" },
+      verifiedBy: { type: Schema.Types.ObjectId },
     },
 
     verified: {
@@ -73,7 +73,7 @@ const schema = new Schema(
       default: false,
     },
 
-    verifiedBy: { type: Schema.Types.ObjectId, ref: "Admin" },
+    verifiedBy: { type: Schema.Types.ObjectId },
 
     status: {
       type: String,
@@ -82,13 +82,13 @@ const schema = new Schema(
       enum: ["ACTIVE", "INACTIVE"],
     },
 
-    createdBy: { type: Schema.Types.ObjectId, ref: "Admin" },
+    createdBy: { type: Schema.Types.ObjectId },
 
-    updatedBy: { type: Schema.Types.ObjectId, ref: "Admin" },
+    updatedBy: { type: Schema.Types.ObjectId },
 
-    vehicle: [{ type: Schema.Types.ObjectId, ref: "Vehicle" }],
+    vehicle: [{ type: Schema.Types.ObjectId }],
 
-    driverHistory: [{ type: Schema.Types.ObjectId, ref: "Booking" }],
+    driverHistory: [{ type: Schema.Types.ObjectId }],
   },
   {
     timestamps: true,

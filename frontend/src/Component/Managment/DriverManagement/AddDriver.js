@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Management_container from "../../Common/Management_container";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../config/config";
@@ -10,8 +10,10 @@ import {
   passwordPattern,
   phonePattern,
 } from "../../../Common/validations";
+import { authContext } from "../../../Context/AuthContext";
 
 export default function AddDriver() {
+  const { NewAxiosInstance } = useContext(authContext);
   const {
     handleSubmit,
     register,
@@ -22,48 +24,52 @@ export default function AddDriver() {
   let [countryOption, setCountryOption] = useState([]);
   let [stateOption, setStateOption] = useState([]);
   let [cityOption, setCityOption] = useState([]);
-  const [succMsg, setSuccMsg] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetch(BASE_URL + "/country/", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        let arr = [];
-        data.forEach((ele) => arr.push(ele.name));
-        setCountryOption(arr);
-      });
+    getCountries();
   }, []);
 
-  useEffect(() => {
-    fetch(BASE_URL + "/state/?country=" + watch("country"), {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        let arr = [];
-        data.forEach((ele) => arr.push(ele.name));
-        setStateOption(arr);
-      });
-  }, [watch("country")]);
+  const getCountries = async () => {
+    try {
+      const response = await NewAxiosInstance.get("/country/");
+      if (response.status == 200) {
+        setCountryOption(response.data);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const getStates = async () => {
+    const response = await NewAxiosInstance.get(
+      "/state/?country=" + watch("address.country"),
+    );
+    if (response.status == 200) {
+      setStateOption(response.data);
+    }
+  };
+
+  const getCities = async () => {
+    const response = await NewAxiosInstance.get(
+      `/city/${watch("address.country")}/${watch("address.state")}`,
+    );
+    if (response.status == 200) {
+      setCityOption(response.data);
+    }
+  };
 
   useEffect(() => {
-    if (watch("country") && watch("state")) {
-      fetch(BASE_URL + `/city/${watch("country")}/${watch("state")}`, {
-        method: "GET",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          let arr = [];
-          data.cities.forEach((ele) => arr.push(ele.name));
-          setCityOption(arr);
-        });
+    if (watch("address.country")) getStates();
+  }, [watch("address.country")]);
+
+  useEffect(() => {
+    if (watch("address.country") && watch("address.state")) {
+      getCities();
     } else setCityOption([]);
-  }, [watch("country"), watch("state")]);
+  }, [watch("address.country"), watch("address.state")]);
 
-  function addNewDriver(driverDetails) {
+  async function addNewDriver(driverDetails) {
     const formData = new FormData();
     for (let file of driverDetails.pan.file) formData.append("panFile", file);
     for (let file of driverDetails.aadhar.file)
@@ -75,25 +81,29 @@ export default function AddDriver() {
       formData.append("driverFile", file);
 
     formData.append("data", JSON.stringify(driverDetails));
-    fetch(BASE_URL + "/driver/", {
-      method: "POST",
-      body: formData,
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          setSuccMsg(
-            <span style={{ backgroundColor: "lightgreen" }}>
-              {data.message}
-            </span>,
-          );
-          setTimeout(() => navigate("/driverManagement"), 2000);
-        } else {
-          setSuccMsg(
-            <span style={{ backgroundColor: "red" }}>{data.message}</span>,
-          );
-        }
-      });
+
+    const response = await NewAxiosInstance.post("/driver/", formData);
+    console.log(response);
+
+    // fetch(BASE_URL + "/driver/", {
+    //   method: "POST",
+    //   body: formData,
+    // })
+    //   .then((res) => res.json())
+    //   .then((data) => {
+    //     if (data.success) {
+    //       setSuccMsg(
+    //         <span style={{ backgroundColor: "lightgreen" }}>
+    //           {data.message}
+    //         </span>,
+    //       );
+    //       setTimeout(() => navigate("/driverManagement"), 2000);
+    //     } else {
+    //       setSuccMsg(
+    //         <span style={{ backgroundColor: "red" }}>{data.message}</span>,
+    //       );
+    //     }
+    //   });
   }
 
   function handleCancel() {
@@ -220,7 +230,7 @@ export default function AddDriver() {
                     >
                       <option value=''>select</option>
                       {countryOption.map((country) => (
-                        <option value={country}>{country}</option>
+                        <option value={country._id}>{country.name}</option>
                       ))}
                     </select>
                     {errors?.address?.country && (
@@ -240,7 +250,7 @@ export default function AddDriver() {
                     >
                       <option value=''>select</option>
                       {stateOption.map((state) => (
-                        <option value={state}>{state}</option>
+                        <option value={state._id}>{state.name}</option>
                       ))}
                     </select>
                     {errors?.address?.state && (
@@ -496,7 +506,6 @@ export default function AddDriver() {
                   >
                     Cancel
                   </button>
-                  {succMsg}
                 </div>
               </form>
             </div>
