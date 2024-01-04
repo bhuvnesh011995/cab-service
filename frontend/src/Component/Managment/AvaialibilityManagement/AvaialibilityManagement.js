@@ -29,13 +29,12 @@ export default function AvaialibilityManagement() {
   const [list, setList] = useState();
   const navigate = useNavigate();
   const [filter, setFilter] = useState(initialFilter);
-  console.log("url", url);
 
   useEffect(() => {
     fetch(url, { method: "GET" })
       .then((res) => res.json())
       .then((data) => {
-        console.Console.log(data);
+        console.log(data);
         // if(data.success){
         //   let arr = [];
         //       data?.avaialibilities?.map((ele, i) => {
