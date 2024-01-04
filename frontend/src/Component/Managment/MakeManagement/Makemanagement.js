@@ -108,7 +108,7 @@ return
 
 function handleDelete(rowId) {
   alert(JSON.stringify(rowId))
-  const deleteUrl = BASE_URL + "/make/" + rowId; // Create the URL for the DELETE request
+  const deleteUrl = BASE_URL + "/make/" + rowId;
   alert(deleteUrl)
 
   fetch(deleteUrl, {
@@ -176,7 +176,7 @@ function handleDelete(rowId) {
     }
     
   return (
-    <Management_container title={"Make Management"}>
+    <Management_container title={"Manufacturer"}>
        <div class="row">
     <div class="col-lg-13">
       <div class="card">
@@ -185,7 +185,7 @@ function handleDelete(rowId) {
     
     
     {(admin.role === "superadmin" || (admin.permissions && admin.permissions.includes("addMake"))) && (
-  <BtnDark handleClick={handleClick} title={"Add Make"} />
+  <BtnDark handleClick={handleClick} title={"Add Manufacturer"} />
 )}
       </div>
       <Filter_Option 
@@ -194,8 +194,8 @@ function handleDelete(rowId) {
       initialInput={initialFilter}
       btn1_title={"Search"}
       handleClick1={handleSubmit}
-      handleClick2={handleReset} // Use handleReset for the "Reset" button
-        btn2_title={"Reset"} // Change button title to "Reset"
+      handleClick2={handleReset} 
+        btn2_title={"Reset"} 
       options={["name","status"]}
       /></div></div></div></div>
 

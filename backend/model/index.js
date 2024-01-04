@@ -34,6 +34,7 @@ module.exports ={
     tax:require("./tax.model"),
     location:require("./location.model"),
     sos:require("./SOS.model"),
-    territory:require("./territory.model")
+    territory:require("./territory.model"),
+    avaialibilityManagement: require("./avaialibilityManagement.model")
 }
 

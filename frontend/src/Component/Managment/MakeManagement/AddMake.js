@@ -8,6 +8,7 @@ import BASE_URL from "../../../config/config";
 
 
 const url = BASE_URL+'/make/'
+
 export default function AddMake(){
     const [make,setMake] = useState({
 
@@ -40,19 +41,40 @@ export default function AddMake(){
 
     return(
         <Management_container
-        title={"New Make"}>
+        title={"New Manufacturer"}>
             <div class="row" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
     <div class="col-lg-6">
       <div class="card">
         <div class="card-body">
             <form>
                 <Text_Input 
-                lebel_text={"Name : "}
-                setKey={"name"}
+                lebel_text={"CNG : "}
+                setKey={"CNG"}
                 setInput={setMake}
                 />
-                <Selection_Input
+                <Text_Input 
+                lebel_text={"petrol : "}
+                setKey={"petrol"}
+                setInput={setMake}
+                /><Text_Input 
+                lebel_text={"Disel : "}
+                setKey={"Disel"}
+                setInput={setMake}
+                />
+                <Text_Input 
+                lebel_text={"EV : "}
+                setKey={"EV"}
+                setInput={setMake}
+                />
+                  <Selection_Input
                 options={["ACTIVE","INACTIVE"]}
+                setInput={setMake}
+                input={make}
+                lebel_text={"Status : "}
+                setKey={"status"}
+                />
+                <Selection_Input
+                options={["CNC","petrol","Disel","EV" ]}
                 setInput={setMake}
                 input={make}
                 lebel_text={"Status : "}
