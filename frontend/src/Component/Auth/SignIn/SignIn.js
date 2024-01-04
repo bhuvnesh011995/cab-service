@@ -25,90 +25,95 @@ export default function SignIn() {
   }, []);
 
   const loginUser = async (userData) => {
-    const response = await axios.post(BASE_URL + "/auth/signIn", userData);
-    if (response.status == 200) {
-      setAdmin({
-        name: response.data.name,
-        email: response.data.email,
-        username: response.data.name,
-        token: response.data.token,
-        role: response.data.role,
-        permissions: response.data.permissions,
-      });
-      navigate(-1 || "/");
-      localStorage.setItem("token", response.data.token);
-      toast.success(response.data.message);
+    try {
+      const response = await axios.post(BASE_URL + "/auth/signIn", userData);
+      if (response.status == 200) {
+        setAdmin({
+          name: response.data.name,
+          email: response.data.email,
+          username: response.data.name,
+          token: response.data.token,
+          role: response.data.role,
+          permissions: response.data.permissions,
+        });
+        localStorage.setItem("token", response.data.token);
+        toast.success("login successfull");
+        navigate(-1 || "/");
+      }
+    } catch (error) {
+      toast.error("wrong username password");
+      console.log(error.response);
     }
   };
 
   return (
     // <div  className="card-body m-3 pt-0">
-    <div class='my-5 pt-sm-5'>
-      <div class='container'>
-        <div class='row justify-content-center'>
+    <div class="my-5 pt-sm-5">
+      <div class="container">
+        <div class="row justify-content-center">
           <div
-            class='col-md-8 col-lg-6 col-xl-5'
+            class="col-md-8 col-lg-6 col-xl-5"
             style={{ border: "1px solid gray" }}
           >
-            <img src={logo} alt='logo' height='34' />
-            <div className='p-2'>
+            <img src={logo} alt="logo" height="34" />
+            <div className="p-2">
               <form
-                className='form-horizontal'
+                className="form-horizontal"
                 onSubmit={handleSubmit(loginUser)}
               >
-                <div className='mb-3'>
-                  <label for='username' className='form-label'>
+                <div className="mb-3">
+                  <label for="username" className="form-label">
                     Username
                   </label>
                   <input
-                    type='text'
-                    className='form-control'
-                    placeholder='Enter username'
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter username"
                     {...register("username", {
                       required: "Please Enter Username",
                       pattern: namePattern,
                     })}
                   />
                   {errors?.username && (
-                    <span className='text-danger'>
+                    <span className="text-danger">
                       {errors.username.message}
                     </span>
                   )}
                 </div>
-                <div className='mb-3'>
-                  <label className='form-label'>Password</label>
-                  <div className='input-group auth-pass-inputgroup'>
+                <div className="mb-3">
+                  <label className="form-label">Password</label>
+                  <div className="input-group auth-pass-inputgroup">
                     <input
-                      type='password'
-                      className='form-control'
-                      placeholder='Enter password'
+                      type="password"
+                      className="form-control"
+                      placeholder="Enter password"
                       {...register("password", {
                         required: "Please Enter password",
                       })}
                     />
                     {errors?.password && (
-                      <span className='text-danger'>
+                      <span className="text-danger">
                         {errors.password.message}
                       </span>
                     )}
                   </div>
                 </div>
-                <div class='mt-5 d-grid'>
+                <div class="mt-5 d-grid">
                   <button
-                    class='btn btn-primary waves-effect waves-light'
-                    type='submit'
+                    class="btn btn-primary waves-effect waves-light"
+                    type="submit"
                   >
                     Log In
                   </button>
                 </div>
 
-                <div class='mt-4 text-center'>
+                <div class="mt-4 text-center">
                   <p
                     onClick={() => navigate("/reset")}
                     style={{ cursor: "pointer" }}
-                    class='text-muted'
+                    class="text-muted"
                   >
-                    <i class='mdi mdi-lock me-1'></i> Forgot your password?
+                    <i class="mdi mdi-lock me-1"></i> Forgot your password?
                   </p>
                 </div>
               </form>
