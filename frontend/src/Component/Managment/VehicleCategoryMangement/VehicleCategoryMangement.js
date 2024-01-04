@@ -17,7 +17,7 @@ let initialFilter = {
   name: "",
   status: "",
 };
-export default function MakeManagement() {
+export default function VehicleCategoryManagement() {
   const [filter, setFilter] = useState(initialFilter);
   const [list, setList] = useState();
   const navigate = useNavigate();
@@ -74,9 +74,8 @@ export default function MakeManagement() {
 
   function handleClick(e) {
     e.preventDefault();
-    navigate("/addMake");
+    navigate("/addVehicleCategory");
   }
-  console.log('aaaaaaaaaaaaa',admin.permissions)
 
  function handleReset(e){
     e.preventDefault()
@@ -107,18 +106,13 @@ return
 }
 
 function handleDelete(rowId) {
-  alert(JSON.stringify(rowId))
   const deleteUrl = BASE_URL + "/make/" + rowId;
-  alert(deleteUrl)
 
   fetch(deleteUrl, {
     method: "DELETE",
   })
     .then((response) => {
       if (response) {
-        
-        alert(`Deleted make with _id: ${rowId}`)
-        console.log(`Deleted admin with _id: ${rowId}`);
      
         fetch(url, {
           method: "GET",
@@ -145,7 +139,6 @@ function handleDelete(rowId) {
       }
     })
     .catch((error) => {
-      alert('yyyy')
       console.error("Error occurred while deleting admin:", error);
     });
 }
@@ -171,12 +164,11 @@ function handleDelete(rowId) {
       );
   }
   function handleUpdate(data){
-    console.log(data)
     navigate('/MakeUpdateManagement',{state:{Make:data}})
     }
     
   return (
-    <Management_container title={"Manufacture"}>
+    <Management_container title={"VehicleCategory"}>
        <div class="row">
     <div class="col-lg-13">
       <div class="card">
@@ -185,7 +177,7 @@ function handleDelete(rowId) {
     
     
     {(admin.role === "superadmin" || (admin.permissions && admin.permissions.includes("addMake"))) && (
-  <BtnDark handleClick={handleClick} title={"Add Manufacture"} />
+  <BtnDark handleClick={handleClick} title={"Add VehicleCategory"} />
 )}
       </div>
       <Filter_Option 

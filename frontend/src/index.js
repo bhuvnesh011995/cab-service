@@ -64,6 +64,8 @@ import AvaialibilityManagement from "./Component/Managment/AvaialibilityManageme
 import AddAvaialibilityManagement from "./Component/Managment/AvaialibilityManagement/AddNew.js";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import VehicleCategoryManagement from "./Component/Managment/VehicleCategoryMangement/VehicleCategoryMangement.js";
+import AddVehicleCategory from "./Component/Managment/VehicleCategoryMangement/AddVehicleCategory.js";
 const router = createBrowserRouter([
   {
     element: <App />,
@@ -129,6 +131,14 @@ const router = createBrowserRouter([
       {
         path: "/addAvaialibilityManagement",
         element: <AddAvaialibilityManagement />,
+      },
+      {
+        path: "/addVehicleCategory",
+        element: <AddVehicleCategory />,
+      },
+      {
+        path: "/vehicleCategoryManagement",
+        element: <VehicleCategoryManagement />,
       },
     ],
   },
