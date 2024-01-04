@@ -31,8 +31,7 @@ exports.avaialibilityManagement = async function (req, res, next) {
 
 exports.getAvaialibility = async function (req, res, next) {
   try {
-    // const avaialibilities = await Avaialibility.find({});
-    // return console.log(avaialibilities);
+    const avaialibilities = await Avaialibility.find();
 
     res.status(200).json({
       success: true,
@@ -40,7 +39,6 @@ exports.getAvaialibility = async function (req, res, next) {
       avaialibilities: avaialibilities,
     });
   } catch (e) {
-    console.log(e);
     res.status(500).json({
       success: false,
       message: "Some error happened",
