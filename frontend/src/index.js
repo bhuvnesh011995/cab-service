@@ -60,8 +60,8 @@ import AddSos from "./Component/Managment/SOSManagement/AddSos";
 import AdminDataUpdate from "./Component/Auth/SignUp/AdminDataUpdate";
 import Permision from "./Component/Managment/Permision";
 import AddAdmin from "./Component/Auth/SignUp/AddAdmin";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import AvaialibilityManagement from "./Component/Managment/AvaialibilityManagement/AvaialibilityManagement.js";
+import AddAvaialibilityManagement from "./Component/Managment/AvaialibilityManagement/AddNew.js";
 const router = createBrowserRouter([
   {
     element: <App />,
@@ -120,7 +120,24 @@ const router = createBrowserRouter([
       { path: "sosService", element: <SOSManagement /> },
       { path: "addSos", element: <AddSos /> },
       { path: "/AdminDataUpdate", element: <AdminDataUpdate /> },
+      {
+        path: "/avaialibilityManagement",
+        element: <AvaialibilityManagement />,
+      },
+      {
+        path: "/addAvaialibilityManagement",
+        element: <AddAvaialibilityManagement />,
+      },
     ],
+  },
+  {
+    path: "/login",
+    element: <SignIn />,
+  },
+
+  {
+    path: "/reset",
+    element: <ResetPass />,
   },
   {
     path: "/login",

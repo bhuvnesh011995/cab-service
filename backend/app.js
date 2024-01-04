@@ -126,7 +126,7 @@ async function init(){
     require("./routes/toll.route")(app)
     require("./routes/tax.route")(app)
     require("./routes/sos.route")(app)
-   
+    require("./routes/avaialibilityManagement.route")(app)  
 
 
     
