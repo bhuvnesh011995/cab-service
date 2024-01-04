@@ -62,6 +62,7 @@ import Permision from "./Component/Managment/Permision";
 import AddAdmin from "./Component/Auth/SignUp/AddAdmin";
 import AvaialibilityManagement from "./Component/Managment/AvaialibilityManagement/AvaialibilityManagement.js";
 import AddAvaialibilityManagement from "./Component/Managment/AvaialibilityManagement/AddNew.js";
+import { ToastContainer } from "react-toastify";
 const router = createBrowserRouter([
   {
     element: <App />,
