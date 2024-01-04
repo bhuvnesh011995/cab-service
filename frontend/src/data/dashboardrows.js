@@ -11,10 +11,15 @@ export default [
             icon:"bi bi-person"
     },
     {
-            name:"Make Management",
+            name:"Manufacturer",
             to:"/makeManagement",
             icon:"bi bi-ev-front"
     },
+    {
+        name:"Avaialibility management",
+        to:"/avaialibilityManagement",
+        icon:"bi bi-ev-front"
+},
     {
             name:"Model Menagement",
             to:"/modelManagement",
