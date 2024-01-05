@@ -302,13 +302,11 @@ exports.updateMapById = async function (req, res, next) {
   const { mapId } = req.params;
 
   const { area } = req.body;
-
+  console.log(area);
   await db.territory.findByIdAndUpdate(
     { _id: mapId },
     {
-      $set: {
-        area,
-      },
+      $set: { area },
     }
   );
 
