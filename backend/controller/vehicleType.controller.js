@@ -6,18 +6,13 @@ exports.addVehicleType = async function (req, res, next) {
 
   const runModeIds = [];
 
-  for (let i = 0; i < runModes.length; i++) {
-    const runMode = await db.runMode.findOne({ name: runModes[i] });
-    runModeIds.push(runMode._id);
-  }
-
   await db.vehicleType.create({
     name: name,
     img: img,
     seatingCapacityName: seatingCapacityName,
     seatingCapacity: seatingCapacity,
     status: status,
-    runMode: runModeIds,
+    runMode: runModes,
   });
 
   res.status(200).json({
@@ -43,29 +38,24 @@ exports.filterVehicleType = async function (req, res, next) {
   if (!name && !runMode) {
     var vehicleType = await db.vehicleType
       .find({})
-      .select({ name: 1, _id: 0, seatingCapacity: 1, img: 1, status:1})
-      .populate({path:"runMode", select:{name:1,_id:0}});
-  }else{
+      .select({ name: 1, _id: 0, seatingCapacity: 1, img: 1, status: 1 })
+      .populate({ path: "runMode", select: { name: 1, _id: 0 } });
+  } else {
     if (runMode) {
-        const runModeDoc = await db.runMode.findOne({name:runMode})
-        runMode= runModeDoc._id;
-  }else runMode = null;
+      const runModeDoc = await db.runMode.findOne({ name: runMode });
+      runMode = runModeDoc._id;
+    } else runMode = null;
 
-  vehicleType= await db.vehicleType.find({
-    $or:[
-        {name:name},
-        {runMode:runMode}
-    ]
-  })
-  .select({ name: 1, _id: 0, seatingCapacity: 1, img: 1, status:1})
-  .populate({path:"runMode", select:{name:1,_id:0}});
-
-
+    vehicleType = await db.vehicleType
+      .find({
+        $or: [{ name: name }, { runMode: runMode }],
+      })
+      .select({ name: 1, _id: 0, seatingCapacity: 1, img: 1, status: 1 })
+      .populate({ path: "runMode", select: { name: 1, _id: 0 } });
   }
 
   res.status(200).json({
-    success:true,
-    data:vehicleType
-  })
-  
+    success: true,
+    data: vehicleType,
+  });
 };

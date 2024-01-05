@@ -73,16 +73,18 @@ async function init() {
 
 // add run mode
 async function addRunMode(modes) {
-  await RunMode.deleteMany({});
   for (i in modes) {
-    await RunMode.create({
-      name: modes[i],
-    });
+    let runmode = await RunMode.findOne({ name: modes[i] });
+    if (!runmode) {
+      console.log(`run mode ${modes[i]} added`);
+      await RunMode.create({
+        name: modes[i],
+      });
+    }
   }
-  console.log("all runMode added");
 }
 
-// addRunMode(runmodeConstant)
+addRunMode(runmodeConstant);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
