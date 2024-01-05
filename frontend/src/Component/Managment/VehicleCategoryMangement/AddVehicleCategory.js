@@ -4,11 +4,13 @@ import Management_container from "../../Common/Management_container";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import BASE_URL from "../../../config/config";
 import { useForm } from "react-hook-form";
+import axios from "axios";
 
-const url = BASE_URL+'/make/'
+const url = BASE_URL+'/vehicleCategory/'
 
 export default function AddVehicleCategory(){
-  
+  const [successMsg,setSuccessMsg] = useState("")
+
      
       const {
         register,
@@ -16,9 +18,23 @@ export default function AddVehicleCategory(){
         formState:{error}
       } = useForm();
     
-      const onSubmit =(data)=>{
-       console.log("data",data)
+      const onSubmit = (data) => {
+        console.log("data", data);
+        axios.post(url, data)
+            .then((response) => {
+                // Corrected this block
+                if (response.data.success) setSuccessMsg(
+                    <span style={{ backgroundColor: "lightgreen" }}>{response.data.message}</span>
+                )
+                else setSuccessMsg(
+                    <span style={{ backgroundColor: "red" }}>{response.data.message}</span>
+                )
+            })
+            .catch((error) => {
+                setSuccessMsg(<h4 style={{ backgroundColor: "red" }}>{error.message}</h4>);
+            });
     }
+    
       
  
 
@@ -35,24 +51,8 @@ export default function AddVehicleCategory(){
         <label for="formrow-firstname-input" className="form-label">
                   Category Vehicle
                 </label>
-              <select   className="form-control select2-templating " style={{ width: "100%" }}  {...register("vehicleCategory")}>
-              <option value={""}>
-                     Select
-                    </option>
-                    
-                        <option value={"CNC"}>
-                    CNG
-                    </option>
-                    <option value={"Diesel"}>
-                    Diesel
-                    </option>
-                <option value={"Petrol"}>
-                    Petrol
-                    </option>
-                    <opton value={"EV"}>
-                        EV
-                    </opton>
-                </select>                
+              <input  type="text"  className="form-control select2-templating " style={{ width: "100%" }}  {...register("vehicleCategory")}/>
+            
             
 
             </div>
@@ -83,6 +83,7 @@ export default function AddVehicleCategory(){
        <button type="submit" className="btn btn-success">
             SAVE
           </button>
+          {successMsg}
        </form>
        </div>
         </div>

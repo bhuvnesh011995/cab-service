@@ -54,7 +54,7 @@ export default function ModelManagement() {
       },
       {
         accessorKey: "make",
-        header: "Make",
+        header: "Manufacturer",
         size: 100,
       },
       {
