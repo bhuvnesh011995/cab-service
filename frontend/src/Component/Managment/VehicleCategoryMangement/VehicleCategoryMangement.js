@@ -10,8 +10,7 @@ import {RemoveRedEye,Lock,ModeEditOutline ,DeleteForever } from '@mui/icons-mate
 import { Box, IconButton } from '@mui/material';
 import { authContext } from "../../../Context/AuthContext";
 import { useContext } from "react";
-// import {authContext} from "../../Context/AuthContext"
-// import { useContext } from "react";
+import axios from "axios";
 
 let initialFilter = {
   name: "",
@@ -26,45 +25,37 @@ export default function VehicleCategoryManagement() {
   const [permissions, setPermissions] = useState({
     canView: false,
     canEdit: false,
-    // Add other permissions as needed
   });
-  useEffect(() => {
-    fetch(url, {
-      method: "GET",
+  const api = BASE_URL+'/vehicleCategory/'
+
+  const getAllVehicleCategory = async function(res,req,){
+    await axios.get(api)
+    .then((response) =>{
+      setList(response.data?.vehicleCategory ) 
     })
-      .then((res) => res.json())
-      .then((data) =>{
-        let arr = []
-        data?.makeList?.map((ele,i)=>{
-          arr.push({
-            index:i+1,
-            id:ele._id,
-            name:ele.name,
-            status:ele.status,
-            createdAt:ele.createdAt
-
-          })
-        })
-        setList(arr)
-      }
-      );
-  }, []);
+  }
+    useEffect(()=>{
+      getAllVehicleCategory()
+    },[])
 
 
+    console.log("list",list)
   const columns = useMemo(()=>[
     {
       accessorKey:"index",
       header:"Sr No",
       size:50
     },{
-      accessorKey:"name",
+      accessorKey:"vehicleCategory",
       header:"Name"
-    },{
-      accessorFn:(row)=>row.createdAt.slice(0,10),
+    },
+    {
+      accessorFn:(row)=>row.createdAt?.slice(0,10),
       id:"createdAt",
-      header:"Sr No",
+      header:"createdAt",
       size:100
-    },{
+    },
+    {
       accessorKey:"status",
       header:"Status",
       size:80
@@ -212,7 +203,7 @@ function handleDelete(rowId) {
           <IconButton   onClick={() => handleUpdate(row.original)}>
             <ModeEditOutline />
           </IconButton>
-          <IconButton   onClick={() => handleDelete(row.original.id)}>
+          <IconButton >
             <DeleteForever />
           </IconButton>
         </Box>

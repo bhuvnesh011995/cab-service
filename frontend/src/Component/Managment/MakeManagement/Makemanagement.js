@@ -74,7 +74,7 @@ export default function MakeManagement() {
 
   function handleClick(e) {
     e.preventDefault();
-    navigate("/addMake");
+    navigate("/addManufacturer");
   }
   console.log('aaaaaaaaaaaaa',admin.permissions)
 

@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Management_container from "../../Common/Management_container";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import BASE_URL from "../../../config/config";
+import { toast } from "react-toastify";
 
 
 const url = BASE_URL+'/make/'
@@ -33,9 +34,12 @@ export default function AddMake(){
             else setSuccessMsg(
                 <span style={{backgroundColor:"red"}}>{data.message}</span>
             )
+            toast.success("Submit successfully");
+
         })
         .catch(e=>
             setSuccessMsg(<h4 style={{backgroundColor:"red"}}>{e.message}</h4>))
+            toast.error("error")
     }
 
 

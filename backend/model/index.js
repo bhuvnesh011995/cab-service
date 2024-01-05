@@ -35,6 +35,7 @@ module.exports ={
     location:require("./location.model"),
     sos:require("./SOS.model"),
     territory:require("./territory.model"),
-    avaialibilityManagement: require("./avaialibilityManagement.model")
+    avaialibilityManagement: require("./avaialibilityManagement.model"),
+    vehicleCategory: require("./VehicleCategory.model")
 }
 

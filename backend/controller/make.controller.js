@@ -11,11 +11,12 @@ exports.addMake = async function (req, res, next) {
 
     res.status(201).json({
       success: true,
-      message: "make added",
+      message: "manufacture added",
       name: make.name,
       status: make.status,
     });
   } catch (e) {
+    console.log(e)
     res.status(500).json({
       success: false,
       message: "some error happen",

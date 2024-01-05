@@ -73,8 +73,8 @@ const router = createBrowserRouter([
     children: [
       { path: "/", element: <Home /> },
       { path: "adminManagement", element: <AdminManagement /> },
-      { path: "makeManagement", element: <MakeManagement /> },
-      { path: "addMake", element: <AddMake /> },
+      { path: "manufacturer", element: <MakeManagement /> },
+      { path: "addManufacturer", element: <AddMake /> },
       { path: "modelManagement", element: <ModelManagement /> },
       { path: "addModel", element: <AddModel /> },
       { path: "countryManagement", element: <CountryManagement /> },

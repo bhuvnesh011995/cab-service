@@ -58,7 +58,7 @@ export default function AddModel (){
                 options={options}
                 setInput={setModel}
                 input={model}
-                lebel_text={"Make : "}
+                lebel_text={"Manufacturer : "}
                 setKey={"make"}
                 />
              <Text_Input 
