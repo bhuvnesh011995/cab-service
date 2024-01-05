@@ -355,12 +355,14 @@ export default function VehicleManagement() {
                   zIndex: "2",
                 }}
               >
-                <BtnDark
-                  handleClick={() =>
-                    navigate("/addVehicle", { state: { email: state.email } })
-                  }
-                  title={"Add New"}
-                />
+                {state && (
+                  <BtnDark
+                    handleClick={() =>
+                      navigate("/addVehicle", { state: { email: state.email } })
+                    }
+                    title={"Add New"}
+                  />
+                )}
               </div>
 
               <MaterialReactTable
