@@ -43,24 +43,25 @@ export default function AddDriver() {
 
   const getStates = async () => {
     const response = await NewAxiosInstance.get(
-      "/state/?country=" + watch("address.country")
+      "/state/" + watch("address.country")
     );
     if (response.status == 200) {
-      setStateOption(response.data);
+      setStateOption(response.data.states);
     }
   };
 
   const getCities = async () => {
     const response = await NewAxiosInstance.get(
-      `/city/${watch("address.country")}/${watch("address.state")}`
+      `/city/${watch("address.state")}`
     );
     if (response.status == 200) {
-      setCityOption(response.data);
+      setCityOption(response.data.cities);
     }
   };
 
   useEffect(() => {
     if (watch("address.country")) getStates();
+    console.log(watch("address"));
   }, [watch("address.country")]);
 
   useEffect(() => {
@@ -261,7 +262,7 @@ export default function AddDriver() {
                     >
                       <option value="">select</option>
                       {cityOption.map((city) => (
-                        <option value={city}>{city}</option>
+                        <option value={city._id}>{city.name}</option>
                       ))}
                     </select>
                     {errors?.address?.city && (
