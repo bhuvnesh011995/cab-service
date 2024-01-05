@@ -39,7 +39,6 @@ export default function VehicleManagement() {
               color: ele.color,
               status: ele.status,
               createdAt: ele.createdAt,
-              id: ele._id,
               verified: ele.verified ? (
                 <tiIcons.TiTick />
               ) : (

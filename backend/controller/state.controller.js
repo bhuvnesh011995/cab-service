@@ -18,7 +18,7 @@ exports.addState = async function (req, res, next) {
     { name: country },
     {
       $push: { state: state._id },
-    },
+    }
   );
 
   res
@@ -33,7 +33,7 @@ exports.addState = async function (req, res, next) {
 exports.getallStateByCountry = async function (req, res, next) {
   const { country } = req.query;
 
-  let states = await Country.findOne({ _id: country }).populate({
+  let states = await Country.findOne({ name: country }).populate({
     path: "state",
     select: { name: 1 },
   });
