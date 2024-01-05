@@ -47,8 +47,7 @@ export default function AddMake(){
       <div class="card">
         <div class="card-body">
             <form>
-            <Selection_Input
-                options={["CNG","petrol","Disel","EV" ]}
+            <Text_Input
                 setInput={setMake}
                 input={make}
                 lebel_text={"name : "}

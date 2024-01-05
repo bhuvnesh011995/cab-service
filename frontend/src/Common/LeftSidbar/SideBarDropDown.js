@@ -6,6 +6,7 @@ const SideBarDropDown = ({ ele, i }) => {
   const [isSubMenuOpen, setIsSubMenuOpen] = useState(false);
 
   const handleSubMenuToggle = () => {
+    
     setIsSubMenuOpen(!isSubMenuOpen );
     
   };
@@ -29,7 +30,7 @@ const SideBarDropDown = ({ ele, i }) => {
     let classes = "waves-effect";
   
     if (pathname === ele.to) {
-      classes += " mm-active";
+      classes += "  mm-active";
     }
       
     if (ele.children ) {

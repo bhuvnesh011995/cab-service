@@ -23,9 +23,9 @@ export default [
         children: [
             {to: "makeManagement", name: "Manufacturer ",},
             {to: "modelManagement", name: " Model",},
-            {to: "vehicleTypeManagement", name: "Vehicle Category",},
-            {to: "/pos/order/startsessions", name: "vehicle Type managemen",},
-            {to: "/pos/order/startsessions", name: "vehicles",},
+            {to: "/vehicleCategoryManagement", name: "Vehicle Category",},
+            {to: "vehicleTypeManagement", name: "Vehicle Type Management",},
+            {to: "", name: "vehicles",},
         ]
     },
     {
@@ -54,21 +54,33 @@ export default [
             to:"/cityManagement",
             icon:"bi bi-pin-map"
     },
+
     {
-            name:"Fare Management",
-            to:"/individualFareManagement",
-            icon:"bi bi-cash"
+        name:"Fare Management",
+        to:"#",
+        icon:"bi bi-cash",
+        children: [
+            {to: "individualFareManagement", name: "Fare ",},
+            {to: "rentalFareManagement", name: " Rental",},
+            {to: "rentalPackage", name: "Packages",},
+            {to: "totalManagement", name: "Toll management",},
+        ]
     },
-    {
-            name:"Rental Fare Management",
-            to:"/rentalFareManagement",
-            icon:"bi bi-cash-stack"
-    },
-    {
-            name:"Rental Package Management",
-            to:"/rentalPackage",
-            icon:"bi bi-basket2"
-    },
+//     {
+//             name:"Fare Management",
+//             to:"/individualFareManagement",
+//             icon:"bi bi-cash"
+//     },
+//     {
+//             name:"Rental Fare Management",
+//             to:"/rentalFareManagement",
+//             icon:"bi bi-cash-stack"
+//     },
+//     {
+//             name:"Rental Package Management",
+//             to:"/rentalPackage",
+//             icon:"bi bi-basket2"
+//     },
 //     {
 //             name:"Outstation Fare Management",
 //             to:"/"
