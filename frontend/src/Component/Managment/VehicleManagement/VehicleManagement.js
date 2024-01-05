@@ -20,45 +20,85 @@ export default function VehicleManagement() {
   const [list, setList] = useState();
 
   useEffect(() => {
-    fetch(BASE_URL + "/vehicle/" + state?.id, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = [];
-          data.vehicles.map((ele, i) => {
-            let obj = {
-              id: ele._id,
-              plateNo: ele.plateNo,
-              vehicleType: ele.vehicleType?.name,
-              make: ele.make?.name,
-              model: ele.model,
-              year: ele.year,
-              seatingCapacity: ele.seatingCapacity,
-              color: ele.color,
-              status: ele.status,
-              createdAt: ele.createdAt,
-              verified: ele.verified ? (
-                <tiIcons.TiTick />
-              ) : (
-                <rsIcons.RxCross2 />
-              ),
-            };
-            if (
-              !ele.insurance?.verified ||
-              !ele.permit?.verified ||
-              !ele.pollutionCertificate?.verified ||
-              !ele.registration?.verified
-            )
-              obj.documentStatus = <rsIcons.RxCross2 />;
-            else obj.documentStatus = <tiIcons.TiTick />;
+    if (!state) {
+      fetch(BASE_URL + "/vehicle", { method: "GET" })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            let arr = [];
+            data.vehicles.map((ele, i) => {
+              let obj = {
+                id: ele._id,
+                plateNo: ele.plateNo,
+                vehicleType: ele.vehicleType?.name,
+                make: ele.make?.name,
+                model: ele.model,
+                year: ele.year,
+                seatingCapacity: ele.seatingCapacity,
+                color: ele.color,
+                status: ele.status,
+                createdAt: ele.createdAt,
+                verified: ele.verified ? (
+                  <tiIcons.TiTick />
+                ) : (
+                  <rsIcons.RxCross2 />
+                ),
+              };
+              if (
+                !ele.insurance?.verified ||
+                !ele.permit?.verified ||
+                !ele.pollutionCertificate?.verified ||
+                !ele.registration?.verified
+              )
+                obj.documentStatus = <rsIcons.RxCross2 />;
+              else obj.documentStatus = <tiIcons.TiTick />;
 
-            arr.push(obj);
-          });
-          setList(arr);
-        }
-      });
+              arr.push(obj);
+            });
+            setList(arr);
+          }
+        });
+    } else {
+      fetch(BASE_URL + "/vehicle/" + state?.id, {
+        method: "GET",
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          if (data.success) {
+            let arr = [];
+            data.vehicles.map((ele, i) => {
+              let obj = {
+                id: ele._id,
+                plateNo: ele.plateNo,
+                vehicleType: ele.vehicleType?.name,
+                make: ele.make?.name,
+                model: ele.model,
+                year: ele.year,
+                seatingCapacity: ele.seatingCapacity,
+                color: ele.color,
+                status: ele.status,
+                createdAt: ele.createdAt,
+                verified: ele.verified ? (
+                  <tiIcons.TiTick />
+                ) : (
+                  <rsIcons.RxCross2 />
+                ),
+              };
+              if (
+                !ele.insurance?.verified ||
+                !ele.permit?.verified ||
+                !ele.pollutionCertificate?.verified ||
+                !ele.registration?.verified
+              )
+                obj.documentStatus = <rsIcons.RxCross2 />;
+              else obj.documentStatus = <tiIcons.TiTick />;
+
+              arr.push(obj);
+            });
+            setList(arr);
+          }
+        });
+    }
   }, []);
 
   const columns = useMemo(
