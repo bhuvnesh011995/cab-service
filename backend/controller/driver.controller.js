@@ -286,7 +286,7 @@ exports.updateDriver = async function (req, res, next) {
       verified: verified,
       status: status,
       updatedBy: admin._id,
-    },
+    }
   );
 
   res.status(200).json({

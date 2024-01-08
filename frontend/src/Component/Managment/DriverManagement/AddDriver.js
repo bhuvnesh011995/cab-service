@@ -11,6 +11,7 @@ import {
   phonePattern,
 } from "../../../Common/validations";
 import { authContext } from "../../../Context/AuthContext";
+import { toast } from "react-toastify";
 
 export default function AddDriver() {
   const { NewAxiosInstance } = useContext(authContext);
@@ -71,20 +72,28 @@ export default function AddDriver() {
   }, [watch("address.country"), watch("address.state")]);
 
   async function addNewDriver(driverDetails) {
-    const formData = new FormData();
-    for (let file of driverDetails.pan.file) formData.append("panFile", file);
-    for (let file of driverDetails.aadhar.file)
-      formData.append("aadharFile", file);
-    for (let file of driverDetails.license.file)
-      formData.append("licenseFile", file);
+    try {
+      const formData = new FormData();
+      for (let file of driverDetails.pan.file) formData.append("panFile", file);
+      for (let file of driverDetails.aadhar.file)
+        formData.append("aadharFile", file);
+      for (let file of driverDetails.license.file)
+        formData.append("licenseFile", file);
 
-    for (let file of driverDetails.driverFile)
-      formData.append("driverFile", file);
+      for (let file of driverDetails.driverFile)
+        formData.append("driverFile", file);
 
-    formData.append("data", JSON.stringify(driverDetails));
+      formData.append("data", JSON.stringify(driverDetails));
 
-    const response = await NewAxiosInstance.post("/driver/", formData);
-    console.log(response);
+      const response = await NewAxiosInstance.post("/driver/", formData);
+      if (response.status === 200) {
+        toast.success("driver added successfully");
+        navigate(-1);
+      } else toast.error("error while added driver");
+    } catch (error) {
+      console.log(error);
+      toast.error("error while added driver");
+    }
 
     // fetch(BASE_URL + "/driver/", {
     //   method: "POST",

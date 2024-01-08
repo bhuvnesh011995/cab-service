@@ -39,7 +39,7 @@ const schema = new Schema(
     license: {
       number: String,
       expiryDate: Date,
-      photo: String,
+      file: String,
       verified: {
         type: Boolean,
         required: true,
@@ -49,7 +49,7 @@ const schema = new Schema(
     },
     aadhar: {
       number: Number,
-      photo: String,
+      file: String,
       verified: {
         type: Boolean,
         required: true,
@@ -59,7 +59,7 @@ const schema = new Schema(
     },
     pan: {
       number: String,
-      photo: String,
+      file: String,
       verified: {
         type: Boolean,
         required: true,
@@ -93,7 +93,7 @@ const schema = new Schema(
   {
     timestamps: true,
     collection: "Driver",
-  },
+  }
 );
 
 function generateReferralCode() {
