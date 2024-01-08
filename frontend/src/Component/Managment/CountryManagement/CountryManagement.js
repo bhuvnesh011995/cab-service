@@ -30,12 +30,12 @@ export default function CountryManagement(){
             method:"GET"
         }).then(res=>res.json())
         .then(data=>{
-          console.log(data)
           let arr = [];
           data?.countryList?.map((ele, i) => {
             arr.push({
               index: i + 1,
               name: ele.name,
+              id: ele._id,
               countryCode: ele.countryCode,
               dialCode:ele.dialCode,
               status: ele.status,
@@ -46,12 +46,15 @@ export default function CountryManagement(){
         })
     },[])
 
+
     const columns = useMemo(()=>[
       {
         accessorKey:"index",
         header:"Sr No",
         size:50
-      },{
+      },
+      
+      {
         accessorKey:"name",
         header:"Name"
       },{
@@ -66,11 +69,13 @@ export default function CountryManagement(){
         accessorKey:"status",
         header:"Status",
         size:80
-      },{
-        accessorFn: (row) => row.createdAt.slice(0, 10),
-        id: "createdAt",
-        header: "Created At",
-      }
+      },
+      
+      // {
+      //   accessorFn: (row) => row.createdAt.slice(0, 10),
+      //   id: "createdAt",
+      //   header: "Created At",
+      // }
     ],[])
 
     function handleClick(){
@@ -96,6 +101,12 @@ export default function CountryManagement(){
           setList(arr);
         })
     }
+        const handleDelete = (id) =>{
+              alert(id)
+        }
+          console.log("list",list)
+
+
     function handleClick2(){
         setFilter(initialFilter)
     }
@@ -142,8 +153,8 @@ export default function CountryManagement(){
           <IconButton>
             <ModeEditOutline />
           </IconButton>
-          <IconButton>
-            <DeleteForever />
+          <IconButton onClick={()=>handleDelete(row.original.id)} >        
+            <DeleteForever  />
           </IconButton>
         </Box>
       )}

@@ -4,13 +4,21 @@ import Management_container from "../../Common/Management_container";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import BASE_URL from "../../../config/config";
+import { useLocation } from "react-router-dom";
+export default function ModelUpdate(){
+    const location = useLocation();
+    const data = location.state.model;
+  
+    const [model, setModel] = useState({
+        id: data?.id,
+        make: data?.manufacturer,
+        name: data?.name,
+        status: data?.status,
+      });
+      
 
-export default function AddModel (){
-    const [model,setModel] = useState({
-        name:"",
-        make:"",
-        status:""
-    });
+    console.log("dataaa",model)  
+
     const [options,setOptions]= useState([]);
     const [succMsg,setSuccMsg]=useState("");
 
@@ -27,25 +35,7 @@ export default function AddModel (){
         setOptions(arr)
     })
     },[])
-    
-    const url = BASE_URL+"/model/"
-    function handleSubmit(e){
-        e.preventDefault();
-        fetch(url,{
-            method:"POST",
-            body:JSON.stringify(model),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-              },
-        }).then(res=>res.json())
-        .then(data=>{
-            if(data.success){
-                setSuccMsg(<span style={{backgroundColor:"lightgreen"}}>{data.message}</span>)
-            }else{
-                setSuccMsg(<span style={{backgroundColor:"red"}}>{data.message}</span>)
-            }
-        })
-    }
+        
 
     return(
         <Management_container
@@ -59,25 +49,29 @@ export default function AddModel (){
                 options={options}
                 setInput={setModel}
                 input={model}
+                value={model.make}  
                 lebel_text={"Manufacturer : "}
                 setKey={"make"}
                 />
-             <Text_Input 
-                lebel_text={"Name : "}
-                setKey={"name"}
-                setInput={setModel}
-                />
+           <Text_Input 
+  lebel_text={"Name : "}
+  setKey={"name"}
+  value={model.name}
+  setInput={setModel}
+  onChange={(e) => setModel({ ...model, name: e.target.value })}
+/>
 
                 <Selection_Input 
                 options={["ACTIVE","INACTIVE"]}
                 setInput={setModel}
                 input={model}
                 lebel_text={"Status : "}
+                value = {model.status}
                 setKey={"status"}
                 />
                 <BtnDark
                 title={"Add"}
-                handleClick={handleSubmit}
+            
                 />
                 {succMsg}
             </form></div></div></div>

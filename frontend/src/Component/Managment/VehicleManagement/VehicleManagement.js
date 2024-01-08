@@ -71,7 +71,7 @@ export default function VehicleManagement() {
                 id: ele._id,
                 plateNo: ele.plateNo,
                 vehicleType: ele.vehicleType?.name,
-                make: ele.make?.name,
+                manufacturer: ele.make?.name,
                 model: ele.model,
                 year: ele.year,
                 seatingCapacity: ele.seatingCapacity,
@@ -146,7 +146,7 @@ export default function VehicleManagement() {
       },
       {
         accessorKey: "make",
-        header: "Make",
+        header: "manufacturer",
         enableColumnActions: false,
         size: 100,
         muiTableHeadCellProps: {

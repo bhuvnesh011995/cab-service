@@ -28,7 +28,8 @@ const schema = new Schema({
     },
     state:[{type:Schema.Types.ObjectId,ref:"State"}]
 },{
-    collection:"Country"
+    collection:"Country",
+    timestamps:true
 })
 
 module.exports = model("Country",schema)

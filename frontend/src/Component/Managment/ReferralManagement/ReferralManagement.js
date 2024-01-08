@@ -233,7 +233,7 @@ export default function ReferralManagement() {
             enableColumnActions: false,
             size: 80,
             muiTableHeadCellProps: {
-              align: "center", //change head cell props
+              align: "center",
             },
             Cell: ({ renderedCellValue }) => (
               <Box
@@ -302,7 +302,7 @@ export default function ReferralManagement() {
                   zIndex: "2",
                 }}
               >
-                <BtnDark handleClick={handleClick} title={"Add City"} />
+                <BtnDark handleClick={handleClick} title={"Add Referral"} />
               </div>
               <form style={{margin:"50px"}}>
               <div className="row">

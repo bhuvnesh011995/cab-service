@@ -34,8 +34,9 @@ export default function ModelManagement() {
         let arr = [];
         data?.modelList?.map((ele, i) => {
           arr.push({
+            id: ele._id,
             index: i + 1,
-            model: ele.name,
+            name: ele.name,
             make: ele.make ? ele.make.name : 'N/A',
             status: ele.status,
             createdAt: ele.createdAt || "",
@@ -58,7 +59,7 @@ export default function ModelManagement() {
         size: 100,
       },
       {
-        accessorKey: "model",
+        accessorKey: "name",
         header: "Model",
         size: 100,
       },
@@ -99,6 +100,7 @@ export default function ModelManagement() {
               index: i + 1,
               model: ele.name,
               make: ele.make.name,
+              manufacturer: ele.make?._id,
               status: ele.status,
               createdAt: ele.createdAt || "",
             });
@@ -107,6 +109,32 @@ export default function ModelManagement() {
         }
       });
   }
+
+   const deleteModel=(rowId)=>{
+    const deleteUrl = BASE_URL + "/model/" + rowId;
+
+  fetch(deleteUrl, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (response) {
+      console.log(response.message)
+      
+      } else {
+        console.error("Failed to delete model");
+      }
+    })
+    .catch((error) => {
+      console.error("Error occurred while deleting admin:", error);
+    });
+
+  }
+
+  function handleUpdate(data){
+    console.log(data)
+    navigate('/modelUpdate',{state:{model:data}})
+    }
+
   function handleClick2() {}
 
   return (
@@ -155,10 +183,10 @@ export default function ModelManagement() {
           <IconButton>
             <Lock />
           </IconButton>
-          <IconButton>
+          <IconButton  onClick={()=>handleUpdate(row.original)}>
             <ModeEditOutline />
           </IconButton>
-          <IconButton>
+          <IconButton onClick={()=>deleteModel(row.original.id)} >
             <DeleteForever />
           </IconButton>
         </Box>
@@ -167,3 +195,5 @@ export default function ModelManagement() {
     </Management_container>
   );
 }
+
+
