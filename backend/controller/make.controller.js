@@ -16,7 +16,7 @@ exports.addMake = async function (req, res, next) {
       status: make.status,
     });
   } catch (e) {
-    console.log(e)
+    console.log(e);
     res.status(500).json({
       success: false,
       message: "some error happen",
@@ -32,7 +32,9 @@ exports.getMake = async function (req, res, next) {
     if (!name && !status) {
       make = await Make.find().lean();
     } else {
-      make = await Make.find({ $or: [{ name: name }, { status: status }] }).lean();
+      make = await Make.find({
+        $or: [{ name: name }, { status: status }],
+      }).lean();
     }
 
     res.status(200).json({
@@ -48,37 +50,36 @@ exports.getMake = async function (req, res, next) {
   }
 };
 
-exports.deleteMakeid = async function(req, res, next) {
+exports.deleteMakeid = async function (req, res, next) {
   let { id } = req.params;
-  console.log('make id is',req.params)
+  console.log("make id is", req.params);
 
   try {
-      const deletedMake = await Make.deleteOne({id:id });
+    const deletedMake = await Make.deleteOne({ id: id });
 
-      if (deletedMake.deletedCount === 1) {
-          res.status(200).json({
-              success: true,
-              message: "Make deleted successfully",
-              
-          });
-      } else {
-          res.status(404).json({
-              success: false,
-              message: "Make not found",
-          });
-      }
-  } catch (e) {
-      res.status(500).json({
-          success: false,
-          message: "Some internal error occurred",
-          error: e.message,
+    if (deletedMake.deletedCount === 1) {
+      res.status(200).json({
+        success: true,
+        message: "Make deleted successfully",
       });
+    } else {
+      res.status(404).json({
+        success: false,
+        message: "Make not found",
+      });
+    }
+  } catch (e) {
+    res.status(500).json({
+      success: false,
+      message: "Some internal error occurred",
+      error: e.message,
+    });
   }
-}
+};
 
 exports.updateMakeData = async (req, res, next) => {
   const { id, newdata } = req.body;
-  console.log('fimnal data',id)
+  console.log("fimnal data", id);
   try {
     // Check if newdata is defined
     if (!newdata) {
@@ -88,7 +89,7 @@ exports.updateMakeData = async (req, res, next) => {
       });
     }
     // Use updateOne method to update a specific document by _id
-    const updatedAdmin = await Make.findByIdAndUpdate(id, newdata,);
+    const updatedAdmin = await Make.findByIdAndUpdate(id, newdata);
     if (updatedAdmin) {
       return res.status(200).json({
         success: true,
@@ -109,10 +110,12 @@ exports.updateMakeData = async (req, res, next) => {
   }
 };
 
+exports.getall = async function (req, res, next) {
+  try {
+    let a = await Make.find({}).select({ name: 1, _id: 0 }).lean();
 
-
-exports.getall = async function (req,res,next){
-  let a = await Make.find({}).select({name:1,_id:0}).lean()
-
-  res.status(200).json(a)
-}
+    res.status(200).json(a);
+  } catch (error) {
+    next(error);
+  }
+};

@@ -8,6 +8,7 @@ const RunMode = require("./model/runMode.model");
 const dbs = require("./model/index");
 const runmodeConstant = require("./constant/runmode.constant");
 const cors = require("cors");
+const { ErrorHandler } = require("./middleware/errorHandler");
 
 //database connection with confirmation
 
@@ -120,6 +121,8 @@ require("./routes/tax.route")(app);
 require("./routes/sos.route")(app);
 require("./routes/avaialibilityManagement.route")(app);
 require("./routes/vehicleCategory.route")(app);
+
+app.use(ErrorHandler);
 
 module.exports = app;
 

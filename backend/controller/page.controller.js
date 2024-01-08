@@ -1,55 +1,62 @@
 const db = require("../model/index");
 
-exports.getAllPages = async function(req,res,next){
-    let allPages = await db.page.find({})
+exports.getAllPages = async function (req, res, next) {
+  try {
+    let allPages = await db.page.find({});
 
     res.status(200).json({
-        success:true,
-        pages:allPages
-    })
-}
+      success: true,
+      pages: allPages,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
-exports.addPage = async function(req,res,next){
-    const {name,description,key} = req.body
-    
+exports.addPage = async function (req, res, next) {
+  try {
+    const { name, description, key } = req.body;
+
     let page = await db.page.create({
-        name:name,
-        metaDescription:description,
-        metaKey:key
-    })
+      name: name,
+      metaDescription: description,
+      metaKey: key,
+    });
 
     res.status(200).json({
-        success:true,
-        message:"page Created",
-        page:page
-    })
-}
+      success: true,
+      message: "page Created",
+      page: page,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
+exports.filterPage = async function (req, res, next) {
+  try {
+    const { search } = req.query;
 
-exports.filterPage = async function (req,res,next){
-    const {search} = req.query
+    if (!search) {
+      let allPages = await db.page.find({});
 
-    if(!search){
-        let allPages = await db.page.find({})
+      res.status(200).json({
+        success: true,
+        pages: allPages,
+      });
+    } else {
+      let pages = await db.page.find({
+        $text: {
+          $search: search,
+        },
+      });
 
-    res.status(200).json({
-        success:true,
-        pages:allPages
-    })
-    }else{
-         let pages = await db.page.find({
-        $text:{
-            $search:search
-        }
-    })
-
-    res.status(200).json({
-        success:true,
-        pages:pages
-    })
+      res.status(200).json({
+        success: true,
+        pages: pages,
+      });
     }
-
-   
-}
-
-
+  } catch (error) {
+    next(error);
+  }
+};

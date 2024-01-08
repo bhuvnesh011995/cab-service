@@ -3,42 +3,50 @@ const Country = require("../model/country.model");
 const db = require("../model/index");
 
 exports.addState = async function (req, res, next) {
-  const { name, country, status, stateCode } = req.body;
+  try {
+    const { name, country, status, stateCode } = req.body;
 
-  const countryDoc = await Country.findOne({ name: country });
+    const countryDoc = await Country.findOne({ name: country });
 
-  const state = await State.create({
-    name: name,
-    status: status,
-    stateCode: stateCode,
-    country: countryDoc._id,
-  });
+    const state = await State.create({
+      name: name,
+      status: status,
+      stateCode: stateCode,
+      country: countryDoc._id,
+    });
 
-  await Country.updateOne(
-    { name: country },
-    {
-      $push: { state: state._id },
-    }
-  );
+    await Country.updateOne(
+      { name: country },
+      {
+        $push: { state: state._id },
+      }
+    );
 
-  res
-    .status(202)
-    .json({
-      success: true,
-      message: "state added",
-    })
-    .end();
+    res
+      .status(202)
+      .json({
+        success: true,
+        message: "state added",
+      })
+      .end();
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.getallStateByCountry = async function (req, res, next) {
-  const { country } = req.query;
+  try {
+    const { country } = req.query;
 
-  let states = await Country.findOne({ name: country }).populate({
-    path: "state",
-    select: { name: 1 },
-  });
+    let states = await Country.findOne({ name: country }).populate({
+      path: "state",
+      select: { name: 1 },
+    });
 
-  res.status(200).json(states?.state || []);
+    res.status(200).json(states?.state || []);
+  } catch (error) {
+    next(error);
+  }
 };
 
 exports.filterState = async function (req, res, next) {
@@ -110,12 +118,16 @@ exports.filterState = async function (req, res, next) {
 };
 
 exports.getallStateByCountryId = async function (req, res, next) {
-  const { countryId } = req.params;
+  try {
+    const { countryId } = req.params;
 
-  let states = await db.state.find({ country: countryId }).select("name");
+    let states = await db.state.find({ country: countryId }).select("name");
 
-  res.status(200).json({
-    success: true,
-    states,
-  });
+    res.status(200).json({
+      success: true,
+      states,
+    });
+  } catch (error) {
+    next(error);
+  }
 };

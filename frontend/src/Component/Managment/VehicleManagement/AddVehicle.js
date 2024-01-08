@@ -5,6 +5,7 @@ import Text_Input from "../../Common/Inputs/Text_Input";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import { useLocation, useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const initialState = {
   plateNo: "",
@@ -16,18 +17,16 @@ const initialState = {
   year: "",
   color: "",
   fuelType: "",
-  registration: { number: "", expiryDate: "", verified: null },
-  insurance: { expiryDate: "", verified: null },
-  permit: { expiryDate: "", verified: null },
-  pollutionCertificate: { expiryDate: "", verified: null },
+  registration: { number: "", expiryDate: "", verified: false },
+  insurance: { expiryDate: "", verified: false },
+  permit: { expiryDate: "", verified: false },
+  pollutionCertificate: { expiryDate: "", verified: false },
   status: "",
-  verified: "",
+  verified: false,
 };
 export default function AddVehicle() {
   const [vehicletypeOption, setVehicletypeOption] = useState([]);
   const [makeOption, setMakeOption] = useState([]);
-
-  const [succMsg, setSuccMsg] = useState("");
   const navigate = useNavigate();
   const { state } = useLocation();
   const [vehicle, setVehicle] = useState({
@@ -68,17 +67,9 @@ export default function AddVehicle() {
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
-          setSuccMsg(
-            <span style={{ backgroundColor: "lightgreen" }}>
-              {data.message}
-            </span>
-          );
-          setTimeout(() => navigate(-1), 2000);
-        } else {
-          setSuccMsg(
-            <span style={{ backgroundColor: "red" }}>{data.message}</span>
-          );
-        }
+          toast.success(data.message || "vehicle added");
+          navigate(-1);
+        } else toast.error(data.message || "error occured");
       });
   }
 
@@ -137,7 +128,7 @@ export default function AddVehicle() {
                     options={[
                       "petrol",
                       "piesel",
-                      "plectric vehicles",
+                      "electric vehicles",
                       "cng",
                       "ethanol or methanol",
                       "gasoline",
@@ -445,7 +436,6 @@ export default function AddVehicle() {
             >
               <BtnDark title={"Add Vehicle"} handleClick={handleSubmit} />
               <BtnDark title={"Cancel"} handleClick={handleCancel} />
-              {succMsg}
             </div>
           </div>
         </div>

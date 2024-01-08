@@ -1,10 +1,14 @@
 const db = require("../model/index");
 
 exports.getAllRunMode = async function (req, res, next) {
-  let runModes = await db.runMode.find({}).lean();
+  try {
+    let runModes = await db.runMode.find({}).lean();
 
-  res.status(200).json({
-    success: true,
-    data: runModes,
-  });
+    res.status(200).json({
+      success: true,
+      data: runModes,
+    });
+  } catch (error) {
+    next(error);
+  }
 };

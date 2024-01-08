@@ -7,72 +7,67 @@ import BtnDark from "../../Common/Buttons/BtnDark";
 import BASE_URL from "../../../config/config";
 import { toast } from "react-toastify";
 
+const url = BASE_URL + "/make/";
 
-const url = BASE_URL+'/make/'
+export default function AddMake() {
+  const [make, setMake] = useState({});
+  const [successMsg, setSuccessMsg] = useState("");
+  const navigate = useNavigate();
 
-export default function AddMake(){
-    const [make,setMake] = useState({
+  function handleSubmit(e) {
+    e.preventDefault();
+    fetch(url, {
+      method: "POST",
+      body: JSON.stringify(make),
+      headers: {
+        "Content-type": "application/json; charset=UTF-8",
+      },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          toast.success(data.message);
+          navigate(-1);
+        } else toast.error(data.message);
+      })
+      .catch((e) => toast.error("some error occured"));
+  }
 
-    });
-    const [successMsg,setSuccessMsg] = useState("")
-    const navigate = useNavigate();
-
-    function handleSubmit(e){
-        e.preventDefault();
-        fetch(url,{
-            method:"POST",
-            body:JSON.stringify(make),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-              },
-        })
-        .then(res=>res.json())
-        .then(data=>{
-            if(data.success) setSuccessMsg(
-                <span style={{backgroundColor:"lightgreen"}}>{data.message}</span>
-            )
-            else setSuccessMsg(
-                <span style={{backgroundColor:"red"}}>{data.message}</span>
-            )
-            toast.success("Submit successfully");
-
-        })
-        .catch(e=>
-            setSuccessMsg(<h4 style={{backgroundColor:"red"}}>{e.message}</h4>))
-            toast.error("error")
-    }
-
-
-    return(
-        <Management_container
-        title={"New Manufacturer"}>
-            <div class="row" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
-    <div class="col-lg-6">
-      <div class="card">
-        <div class="card-body">
-            <form>
-            <Text_Input
-                setInput={setMake}
-                input={make}
-                lebel_text={"name : "}
-                setKey={"name"}
+  return (
+    <Management_container title={"New Manufacturer"}>
+      <div
+        class="row"
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        <div class="col-lg-6">
+          <div class="card">
+            <div class="card-body">
+              <form>
+                <Text_Input
+                  setInput={setMake}
+                  input={make}
+                  lebel_text={"name : "}
+                  setKey={"name"}
                 />
-                  <Selection_Input
-                options={["ACTIVE","INACTIVE"]}
-                setInput={setMake}
-                input={make}
-                lebel_text={"Status : "}
-                setKey={"status"}
+                <Selection_Input
+                  options={["ACTIVE", "INACTIVE"]}
+                  setInput={setMake}
+                  input={make}
+                  lebel_text={"Status : "}
+                  setKey={"status"}
                 />
-              
-                <BtnDark
-                title={"Add"}
-                handleClick={handleSubmit}
-                />
+
+                <BtnDark title={"Add"} handleClick={handleSubmit} />
                 {successMsg}
-            </form></div></div></div>
+              </form>
+            </div>
+          </div>
         </div>
-        </Management_container>
-        
-    )
+      </div>
+    </Management_container>
+  );
 }
