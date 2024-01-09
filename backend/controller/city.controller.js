@@ -233,8 +233,8 @@ exports.filterCity = async function (req, res, next) {
                 obj.name = country[i].state[j].city[k].name;
                 obj.status = country[i].state[j].city[k].status;
                 obj.createdAt = country[i].state[j].city[k].createdAt;
-                obj.country = country[i].state[j].city[k].country.name;
-                obj.state = country[i].state[j].city[k].state.name;
+                obj.country = country[i].state[j].city[k].country?.name;
+                obj.state = country[i].state[j].city[k].state?.name;
                 obj.territory = country[i].state[j].city[k].territory;
                 cities.push(obj);
                 set.add(country[i].state[j].city[k]._id);
@@ -254,8 +254,8 @@ exports.filterCity = async function (req, res, next) {
             obj.name = state[j].city[k].name;
             obj.status = state[j].city[k].status;
             obj.createdAt = state[j].city[k].createdAt;
-            obj.country = state[j].city[k].country.name;
-            obj.state = state[j].city[k].state.name;
+            obj.country = state[j].city[k].country?.name;
+            obj.state = state[j].city[k].state?.name;
             obj.territory = state[j].city[k].territory;
             cities.push(obj);
             set.add(state[j].city[k]._id);
@@ -270,8 +270,8 @@ exports.filterCity = async function (req, res, next) {
         obj.name = city[k].name;
         obj.status = city[k].status;
         obj.createdAt = city[k].createdAt;
-        obj.country = city[k].country.name;
-        obj.state = city[k].state.name;
+        obj.country = city[k].country?.name;
+        obj.state = city[k].state?.name;
         obj.territory = city[k].territory;
         cities.push(obj);
         set.add(city[k]._id);
@@ -346,3 +346,20 @@ exports.updateMapById = async function (req, res, next) {
     next(error);
   }
 };
+
+exports.deleteCity = async function (req,res){
+  const id = req.params.id
+  try{
+    const result = await db.city.deleteOne({_id: id})
+    if(result.deletedCount === 1){
+      return res.status(200).json({message : "city delete successfully"});
+    }
+    else{
+      return res.status(400).json({message:"city state not found"})
+    }
+  }
+  catch(error){
+    console.log(error)
+    return res.status(5000).json({message:"Internal Server Error"})
+  }
+}

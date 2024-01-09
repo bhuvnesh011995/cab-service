@@ -6,5 +6,6 @@ module.exports = function(app){
     app.get("/test/api/v1/city/:country/:state",[],cityController.getcityBystateAndCountry)
     app.get("/test/api/v1/city/",cityController.filterCity)
     app.get("/test/api/v1/city/:stateId",[],cityController.getCityByStateId)
-    
+    app.delete("/test/api/v1/city/:id",[],cityController.deleteCity)
+
 }

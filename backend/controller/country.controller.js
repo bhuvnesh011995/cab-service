@@ -34,7 +34,6 @@ exports.filterCountry = async function (req, res, next) {
           countryCode: 1,
           dialCode: 1,
           createAt: 1,
-          _id: 0,
         })
         .lean();
     } else {

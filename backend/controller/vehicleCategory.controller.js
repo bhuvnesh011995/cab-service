@@ -9,7 +9,7 @@ exports.addVehicleCategory = async function (req, res) {
 
     return res.status(201).send({
       vehicleCategory: vehicleCategory,
-      message: "vehicleCategory added successfully",
+      message: "vehicleCategory added successfully", success: true 
     });
   } catch (error) {
     console.error(error);

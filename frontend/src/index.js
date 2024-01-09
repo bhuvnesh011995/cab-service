@@ -68,6 +68,7 @@ import VehicleCategoryManagement from "./Component/Managment/VehicleCategoryMang
 import AddVehicleCategory from "./Component/Managment/VehicleCategoryMangement/AddVehicleCategory.js";
 import MakeUpdateManagement from "./Component/Managment/MakeManagement/MakeUpdateManagement.js";
 import ModelUpdate from "./Component/Managment/ModelManagement/ModelUpdate.js";
+import UpdateVehicleType from "./Component/Managment/VehicleTypeManagement/UpdateVehicleType.js";
 const router = createBrowserRouter([
 
   {
@@ -150,6 +151,10 @@ const router = createBrowserRouter([
       {
         path: "/modelUpdate",
         element: <ModelUpdate/>,
+      },
+      {
+        path: "/updateVehicleType",
+        element: <UpdateVehicleType/>,
       },
      
     ],

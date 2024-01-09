@@ -35,8 +35,8 @@ exports.getAllVehicle = async function (req, res, next) {
   try {
     let vehicleTypes = await db.vehicleType
       .find({})
-      .select({ name: 1, _id: 0 })
-      .populate({ path: "runMode", select: { name: 1, _id: 0 } });
+      .select({ name: 1,  })
+      .populate({ path: "runMode", select: { name: 1,} });
     res.status(200).json({
       success: true,
       data: vehicleTypes,
@@ -53,8 +53,8 @@ exports.filterVehicleType = async function (req, res, next) {
     if (!name && !runMode) {
       var vehicleType = await db.vehicleType
         .find({})
-        .select({ name: 1, _id: 0, seatingCapacity: 1, img: 1, status: 1 })
-        .populate({ path: "runMode", select: { name: 1, _id: 0 } });
+        .select({ name: 1, seatingCapacity: 1, img: 1, status: 1,seatingCapacityName:1 })
+        .populate({ path: "runMode", select: { name: 1,} });
     } else {
       if (runMode) {
         const runModeDoc = await db.runMode.findOne({ name: runMode });
@@ -87,12 +87,38 @@ exports.deleteVehicleType = async function (req, res) {
       const result = await db.vehicleType.deleteOne({ _id: id });
 
       if (result.deletedCount === 1) {
-          return res.status(200).json({ message: "Delete successfully" });
+          return res.status(200).json({ message: "Delete successfully" ,success: true });
       } else {
           return res.status(400).json({ message: "Model not found" });
       }
   } catch (error) {
       console.error(error);
       return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.updateVehicleType = async function (req, res, next) {
+  try {
+      const { id } = req.params;
+      console.log("id", req.body);
+      console.log(id)
+
+
+      let obj = {};
+    
+      if(req.body.vehicleCategory) obj.vehicleCategory = req.body.vehicleCategory
+      if(req.body.status) obj.status = req.body.status
+
+      await db.vehicleType.updateOne({ _id:id}, { $set: obj});
+    
+      res.status(200).json({message:"update successfully"})
+
+  } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+          success: false,
+          message: "Internal error occurred",
+      });
   }
 };

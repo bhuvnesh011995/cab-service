@@ -8,7 +8,8 @@ import { MaterialReactTable } from 'material-react-table';
 import { Box, IconButton } from '@mui/material';
 import {RemoveRedEye,Lock,ModeEditOutline ,DeleteForever } from '@mui/icons-material/';
 import MapService from "./MapService";
-
+import { toast } from "react-toastify";
+import DeleteModal from "../../DeleteModel/DeleteModel";
 const initialFilter ={
     text:""
 }
@@ -20,7 +21,9 @@ export default function CityManagement(){
     const [filter,setFilter] = useState(initialFilter);
     const [list,setList] = useState();
     const [polygons,setPolygons] = useState([])
-
+    const [isOpen ,setIsOpen] = useState(false)
+    const [id, setId] = useState(null)
+    const [deleteInfo, setDeleteInfo] = useState(null)
 
   let url = BASE_URL+"/city/"
 
@@ -138,7 +141,28 @@ export default function CityManagement(){
         })
     }
 
-
+    function handleDelete(rowId) {
+      const deleteUrl = BASE_URL + "/city/" + rowId;
+    
+      fetch(deleteUrl, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            const filterList = list.filter((item) => item.id !== rowId)
+              setList(filterList)
+              setIsOpen(true)
+                return  response.json()
+          }         
+        })
+        .then((data)=>{
+    if(data.success ) toast.success(data.message)
+    else toast.error(data.message)
+        })
+      .catch((error) => {
+          console.error("Error occurred while deleting:", error);
+        });
+    }
 
     function updateMap(id){
       let data = {};
@@ -178,6 +202,13 @@ export default function CityManagement(){
            <div class="row">
     <div class="col-lg-13">
       <div class="card">
+      <DeleteModal
+        info={deleteInfo}
+        show={isOpen}
+        setShow={setIsOpen}
+        handleDelete={handleDelete}
+        arg={id}
+      />
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
            
@@ -207,7 +238,14 @@ export default function CityManagement(){
           <IconButton>
             <ModeEditOutline />
           </IconButton>
-          <IconButton>
+          <IconButton   onClick={() => {
+            setDeleteInfo({
+              message: `Do You Really Want To Delete ${row.original?.name}`,
+              header: "Delete Model",
+            });
+            setIsOpen(true);
+            setId(row.original.id);
+          }} >
             <DeleteForever />
           </IconButton>
         </Box>

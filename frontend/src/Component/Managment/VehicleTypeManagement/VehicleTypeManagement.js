@@ -9,7 +9,8 @@ import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from 'material-react-table';
 import { Box, IconButton } from '@mui/material';
 import {RemoveRedEye,Lock,ModeEditOutline ,DeleteForever } from '@mui/icons-material/';
-
+import { toast } from "react-toastify";
+import DeleteModal from "../../DeleteModel/DeleteModel";
 
 let url = BASE_URL+"/vehicletype/filter/"
 
@@ -23,7 +24,9 @@ export default function VehicleTypeManagement(){
     const [options,setOptions] = useState([]);
     const [list, setList] = useState();
     const navigate = useNavigate()
-
+    const [isOpen ,setIsOpen] = useState(false)
+  const [id, setId] = useState(null)
+  const [deleteInfo, setDeleteInfo] = useState(null)
     useEffect(()=>{
         fetch(BASE_URL+"/runMode/",{
             method:"GET",
@@ -50,6 +53,7 @@ export default function VehicleTypeManagement(){
                   index: i + 1,
                   name: ele.name,
                   runMode: mode.join(),
+                  seatingCapacityName:ele.seatingCapacityName,
                   seatingCapacity:ele.seatingCapacity,
                   img:ele.img,
                   status: ele.status,
@@ -59,6 +63,7 @@ export default function VehicleTypeManagement(){
             }
         })
     },[])
+
 
     const columns = useMemo(
       () => [
@@ -128,23 +133,31 @@ export default function VehicleTypeManagement(){
 
 
     function handleDelete(rowId) {
-      alert(rowId)
-      // const deleteUrl = BASE_URL + "/vehicletype/" + rowId;
+      const deleteUrl = BASE_URL + "/vehicleType/" + rowId;
     
-      // fetch(deleteUrl, {
-      //   method: "DELETE",
-      // })
-      //   .then((response) => {
-      //     if (response) {
-          
-      //     } else {
-      //       console.error("Failed to delete admin");
-      //     }
-      //   })
-      //   .catch((error) => {
-      //     console.error("Error occurred while deleting admin:", error);
-      //   });
+      fetch(deleteUrl, {
+        method: "DELETE",
+      })
+        .then((response) => {
+          if (response.status === 200) {
+            const filterList = list.filter((item) => item.id !== rowId)
+              setList(filterList)
+              setIsOpen(true)
+                return  response.json()
+          }         
+        })
+        .then((data)=>{
+    if(data.success ) toast.success(data.message)
+    else toast.error(data.message)
+        })
+      .catch((error) => {
+          console.error("Error occurred while deleting:", error);
+        });
     }
+
+    function handleUpdate(data){
+      navigate('/updateVehicleType',{state:{model:data}})
+      }
 
     function handleClick2(e){
         return
@@ -155,6 +168,13 @@ export default function VehicleTypeManagement(){
             <div class="row">
     <div class="col-lg-13">
       <div class="card">
+      <DeleteModal
+        info={deleteInfo}
+        show={isOpen}
+        setShow={setIsOpen}
+        handleDelete={handleDelete}
+        arg={id}
+      />
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
       <BtnDark handleClick={handleClick} title={"Add New"} /></div>
@@ -198,10 +218,17 @@ export default function VehicleTypeManagement(){
           <IconButton>
             <Lock />
           </IconButton>
-          <IconButton>
+          <IconButton  onClick={()=>handleUpdate(row.original)}>
             <ModeEditOutline />
           </IconButton>
-          <IconButton  onClick={() => handleDelete(row.original._id)}>
+          <IconButton   onClick={() => {
+            setDeleteInfo({
+              message: `Do You Really Want To Delete ${row.original?.name}`,
+              header: "Delete Model",
+            });
+            setIsOpen(true);
+            setId(row.original.id);
+          }}>
             <DeleteForever />
           </IconButton>
         </Box>

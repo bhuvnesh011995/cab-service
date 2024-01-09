@@ -147,7 +147,7 @@ exports.deleteModel = async function (req, res) {
         const result = await Model.deleteOne({ _id: id });
 
         if (result.deletedCount === 1) {
-            return res.status(200).json({ message: "Delete successfully" });
+            return res.status(200).json({ message: "Delete successfully", success: true });
         } else {
             return res.status(400).json({ message: "Model not found" });
         }
@@ -156,3 +156,24 @@ exports.deleteModel = async function (req, res) {
         return res.status(500).json({ message: "Internal server error" });
     }
 };
+
+
+exports.updateModel = async function(req,res){
+  try{
+    const {id} = req.params
+    console.log(id)
+    console.log(req.body)
+     let obj = {};
+     if(req.body.name) obj.name  = req.body.name
+     if(req.body.make) obj.make  = req.body.make
+     if(req.body.status) obj.status  = req.body.status
+     await Model.updateOne({ _id:id}, { $set: obj});
+     res.status(200).json({message:"update successfully", success: true})
+  }
+  catch(error){
+    res.status(500).json({
+      success: false,
+      message: "Internal error occurres"
+    })
+  }
+}
