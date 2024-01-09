@@ -155,7 +155,7 @@ export default function RentalFareManagement(){
       <div class="card">
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
-        <BtnDark handleClick={handleClick} title={"Add Fare"} /></div>
+        <BtnDark handleClick={handleClick} title={"Add Rental Fare"} /></div>
 
         <Filter_Option
         input={filter}

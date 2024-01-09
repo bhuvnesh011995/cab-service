@@ -62,7 +62,7 @@ export default function MakeManagement() {
     },{
       accessorFn:(row)=>row.createdAt.slice(0,10),
       id:"createdAt",
-      header:"Sr No",
+      header:"createdAt",
       size:100
     },{
       accessorKey:"status",
@@ -76,7 +76,6 @@ export default function MakeManagement() {
     e.preventDefault();
     navigate("/addManufacturer");
   }
-  console.log('aaaaaaaaaaaaa',admin.permissions)
 
  function handleReset(e){
     e.preventDefault()
@@ -107,19 +106,14 @@ return
 }
 
 function handleDelete(rowId) {
-  alert(JSON.stringify(rowId))
   const deleteUrl = BASE_URL + "/make/" + rowId;
-  alert(deleteUrl)
 
   fetch(deleteUrl, {
     method: "DELETE",
   })
     .then((response) => {
       if (response) {
-        
-        alert(`Deleted make with _id: ${rowId}`)
-        console.log(`Deleted admin with _id: ${rowId}`);
-     
+           
         fetch(url, {
           method: "GET",
         })
@@ -172,7 +166,7 @@ function handleDelete(rowId) {
   }
   function handleUpdate(data){
     console.log(data)
-    navigate('/MakeUpdateManagement',{state:{Make:data}})
+    navigate('/makeUpdateManagement',{state:{Make:data}})
     }
     
   return (

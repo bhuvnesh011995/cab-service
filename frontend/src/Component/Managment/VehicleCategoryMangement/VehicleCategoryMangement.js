@@ -41,11 +41,7 @@ export default function VehicleCategoryManagement() {
 
     console.log("list",list)
   const columns = useMemo(()=>[
-    {
-      accessorKey:"index",
-      header:"Sr No",
-      size:50
-    },{
+  {
       accessorKey:"vehicleCategory",
       header:"Name"
     },
@@ -97,34 +93,15 @@ return
 }
 
 function handleDelete(rowId) {
-  const deleteUrl = BASE_URL + "/make/" + rowId;
+  const deleteUrl = BASE_URL + "/vehicleCategory/" + rowId;
 
   fetch(deleteUrl, {
     method: "DELETE",
   })
     .then((response) => {
       if (response) {
-     
-        fetch(url, {
-          method: "GET",
-        })
-          .then((res) => res.json())
-          .then((data) =>{
-            let arr = []
-            data?.makeList?.map((ele,i)=>{
-              arr.push({
-                index:i+1,
-                id:ele._id,
-                name:ele.name,
-                status:ele.status,
-                createdAt:ele.createdAt
-    
-              })
-            })
-            setList(arr)
-          }
-          );
-    
+      getAllVehicleCategory()
+      
       } else {
         console.error("Failed to delete admin");
       }
@@ -155,7 +132,7 @@ function handleDelete(rowId) {
       );
   }
   function handleUpdate(data){
-    navigate('/MakeUpdateManagement',{state:{Make:data}})
+    navigate('/addVehicleCategory',{state:{id:data._id,vehicleCategory:data.vehicleCategory,status:data.status}})
     }
     
   return (
@@ -190,6 +167,8 @@ function handleDelete(rowId) {
       <MaterialReactTable
       columns={columns || []}
       data={list || []}
+      enableRowNumbers= {true}
+       rowNumberDisplayMode= 'static'
       enableRowActions
       positionActionsColumn={'last'}
       renderRowActions={({row,table})=>(
@@ -203,7 +182,7 @@ function handleDelete(rowId) {
           <IconButton   onClick={() => handleUpdate(row.original)}>
             <ModeEditOutline />
           </IconButton>
-          <IconButton >
+          <IconButton  onClick={() => handleDelete(row.original._id)}>
             <DeleteForever />
           </IconButton>
         </Box>

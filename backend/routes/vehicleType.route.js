@@ -4,4 +4,5 @@ module.exports = function(app){
     app.post("/test/api/v1/vehicletype/",[],vehicleTypeController.addVehicleType)
     app.get("/test/api/v1/vehicletype/",[],vehicleTypeController.getAllVehicle)
     app.get("/test/api/v1/vehicletype/filter/",[],vehicleTypeController.filterVehicleType)
+    app.delete("/test/api/v1/vehicletype/:id",[],vehicleTypeController.deleteVehicleType)
 }

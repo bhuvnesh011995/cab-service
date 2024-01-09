@@ -46,6 +46,7 @@ export default function VehicleTypeManagement(){
                 let mode = [];
                 ele.runMode?.map(ele=>mode.push(ele.name))
                 arr.push({
+                  id: ele._id,
                   index: i + 1,
                   name: ele.name,
                   runMode: mode.join(),
@@ -124,6 +125,27 @@ export default function VehicleTypeManagement(){
            }
        })
     }
+
+
+    function handleDelete(rowId) {
+      alert(rowId)
+      // const deleteUrl = BASE_URL + "/vehicletype/" + rowId;
+    
+      // fetch(deleteUrl, {
+      //   method: "DELETE",
+      // })
+      //   .then((response) => {
+      //     if (response) {
+          
+      //     } else {
+      //       console.error("Failed to delete admin");
+      //     }
+      //   })
+      //   .catch((error) => {
+      //     console.error("Error occurred while deleting admin:", error);
+      //   });
+    }
+
     function handleClick2(e){
         return
     }
@@ -179,7 +201,7 @@ export default function VehicleTypeManagement(){
           <IconButton>
             <ModeEditOutline />
           </IconButton>
-          <IconButton>
+          <IconButton  onClick={() => handleDelete(row.original._id)}>
             <DeleteForever />
           </IconButton>
         </Box>

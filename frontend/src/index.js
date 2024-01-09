@@ -66,7 +66,10 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import VehicleCategoryManagement from "./Component/Managment/VehicleCategoryMangement/VehicleCategoryMangement.js";
 import AddVehicleCategory from "./Component/Managment/VehicleCategoryMangement/AddVehicleCategory.js";
+import MakeUpdateManagement from "./Component/Managment/MakeManagement/MakeUpdateManagement.js";
+import ModelUpdate from "./Component/Managment/ModelManagement/ModelUpdate.js";
 const router = createBrowserRouter([
+
   {
     element: <App />,
     errorElement: <ErrorPage />,
@@ -140,6 +143,15 @@ const router = createBrowserRouter([
         path: "/vehicleCategoryManagement",
         element: <VehicleCategoryManagement />,
       },
+      {
+        path: "/makeUpdateManagement",
+        element: <MakeUpdateManagement/>,
+      },
+      {
+        path: "/modelUpdate",
+        element: <ModelUpdate/>,
+      },
+     
     ],
   },
   {

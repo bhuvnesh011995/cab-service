@@ -77,3 +77,22 @@ exports.filterVehicleType = async function (req, res, next) {
     next(error);
   }
 };
+
+
+exports.deleteVehicleType = async function (req, res) {
+  const id = req.params.id;
+  console.log(id);
+
+  try {
+      const result = await db.vehicleType.deleteOne({ _id: id });
+
+      if (result.deletedCount === 1) {
+          return res.status(200).json({ message: "Delete successfully" });
+      } else {
+          return res.status(400).json({ message: "Model not found" });
+      }
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
+  }
+};
