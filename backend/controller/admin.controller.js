@@ -1,6 +1,7 @@
 const admin = require("../model/admin.model");
 const startofday = require("date-fns/startOfDay");
 const endofday = require("date-fns/endOfDay");
+const db = require("../model");
 
 // filter admins using name,username,status,and date
 
@@ -32,9 +33,34 @@ exports.filter = async function (req, res, next) {
       });
     }
 
-    if (!admins) return res.status(200).send("no admin found").end();
-
     res.status(200).json(admins).end();
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getFilteredData = async (req, res, next) => {
+  try {
+    let { globalFilter, page, size, sort, dec } = req.query;
+    let sortBy = sort;
+    dec = dec === "true" ? -1 : 1;
+    size = parseInt(size);
+    let skip = (parseInt(page) - 1) * size;
+    let data = await db.admin.aggregate([
+      {
+        $match: {
+          $or: [
+            { name: { $regex: globalFilter, $options: "i" } },
+            { username: { $regex: globalFilter, $options: "i" } },
+          ],
+        },
+      },
+      { $sort: { [sortBy]: dec } },
+      { $skip: skip },
+      { $limit: size },
+    ]);
+
+    res.status(200).json({ data });
   } catch (error) {
     next(error);
   }

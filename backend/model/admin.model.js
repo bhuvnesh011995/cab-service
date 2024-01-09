@@ -28,10 +28,10 @@ const adminSchema = new Schema(
       enum: ["ACTIVE", "INACTIVE"],
       default: "INACTIVE",
     },
-    role: {  
+    role: {
       type: String,
-      enum: ["superadmin", "admin"], 
-      default: "admin", 
+      enum: ["superadmin", "admin"],
+      default: "admin",
     },
 
     country: {
@@ -42,9 +42,8 @@ const adminSchema = new Schema(
       type: String,
       // unique: true,
     },
-    city:{
-      type:String,
-     
+    city: {
+      type: String,
     },
     permissions: {
       type: [String],
@@ -55,12 +54,17 @@ const adminSchema = new Schema(
       immutable: true,
       default: Date.now(),
     },
-    
+
     service: [{ type: mongoose.Types.ObjectId, ref: "Services" }],
   },
   {
     collection: "Admin",
   }
 );
+
+adminSchema.index({
+  name: "text",
+  username: "text",
+});
 
 module.exports = model("Admin", adminSchema);
