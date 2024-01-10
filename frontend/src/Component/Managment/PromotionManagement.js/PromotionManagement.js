@@ -4,7 +4,8 @@ import BtnDark from "../../Common/Buttons/BtnDark";
 import { useEffect, useMemo, useState } from "react";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import Text_Input from "../../Common/Inputs/Text_Input";
-
+import { toast } from "react-toastify";
+import DeleteModal from "../../DeleteModel/DeleteModel";
 import { MaterialReactTable } from "material-react-table";
 import {
   RemoveRedEye,
@@ -29,7 +30,9 @@ export default function PromotionManagement() {
   const [filter,setFilter] = useState(initialFilter)
   const [list ,setList] = useState([]);
     const navigate = useNavigate();
-
+    const [isOpen ,setIsOpen] = useState(false)
+    const [id, setId] = useState(null)
+    const [deleteInfo, setDeleteInfo] = useState(null)
 
     useEffect(()=>{
      fetch(BASE_URL+"/promotion/self/filter",{method:"GET"})
@@ -38,10 +41,11 @@ export default function PromotionManagement() {
       if(data.success){
         let arr = data.promotions.map(ele=>{
           let obj = {};
+          obj.id = ele._id;
           obj.title = ele.title;
-          obj.country = ele?.country.name;
-          obj.state = ele?.state.name;
-          obj.city = ele?.city.name;
+          obj.country = ele.country?.name;
+          obj.state = ele.state?.name;
+          obj.city = ele.city?.name;
           obj.forUsers = ele?.forUsers.join();
           obj.status = ele?.status;
           obj.description = ele?.description;
@@ -244,9 +248,9 @@ export default function PromotionManagement() {
           let arr = data.promotions.map(ele=>{
             let obj = {};
             obj.title = ele.title;
-            obj.country = ele.country.name;
-            obj.state = ele.state.name;
-            obj.city = ele.city.name;
+            obj.country = ele.country?.name;
+            obj.state = ele.state?.name;
+            obj.city = ele.city?.name;
             obj.forUsers = ele.forUsers.join();
             obj.status = ele.status;
             obj.description = ele.description;
@@ -258,6 +262,31 @@ export default function PromotionManagement() {
         }
       })
     }
+
+    const deleteModel=(rowId)=>{
+      const deleteUrl = BASE_URL + "/promotion/" + rowId;
+  
+    fetch(deleteUrl, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.status === 200) {
+        const filterModel = list.filter((data)=> data.id !== rowId)
+        setList(filterModel)
+        setIsOpen(false)
+        return response.json()
+        } 
+      })
+      .then((item)=>{
+        if(item.success) toast.success(item.message) 
+        else toast.error.apply(item.message)
+      })
+      .catch((error) => {
+        console.error("Error occurred while deleting admin:", error);
+      });
+  
+    }
+
     function handleClick(){
         navigate("/addPromotion")    
     }
@@ -271,6 +300,13 @@ export default function PromotionManagement() {
         <div class="row">
         <div class="col-lg-13">
           <div class="card">
+          <DeleteModal
+        info={deleteInfo}
+        show={isOpen}
+        setShow={setIsOpen}
+        handleDelete={deleteModel}
+        arg={id}
+      />
             <div class="card-body">
               <div
                 style={{
@@ -341,7 +377,14 @@ export default function PromotionManagement() {
           <IconButton>
             <ModeEditOutline />
           </IconButton>
-          <IconButton>
+          <IconButton    onClick={() => {
+            setDeleteInfo({
+              message: `Do You Really Want To Delete ${row.original?.id}`,
+              header: "Delete Model",
+            });
+            setIsOpen(true);
+            setId(row.original.id);
+          }}>
             <DeleteForever />
           </IconButton>
         </Box>

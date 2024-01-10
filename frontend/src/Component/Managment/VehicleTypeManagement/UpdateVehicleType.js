@@ -11,9 +11,9 @@ export default function UpdateVehicleType() {
   const location = useLocation();
   const data = location.state?.model || {};
 
-  const [model, setModel] = useState({});
-  const [options, setOptions] = useState([]);
+  const [model, setModel] = useState({...data});
   const [runMode, setRunMode] = useState([]);
+
 
   const [succMsg, setSuccMsg] = useState("");
   const navigate = useNavigate()
@@ -35,26 +35,18 @@ export default function UpdateVehicleType() {
       });
   }, []);
 
-  useEffect(() => {
-    setModel(data);
-    fetch(BASE_URL + "/make/", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setOptions(data);
-      });
-  }, [data]);
+ 
 
   const handleSubmit = (data) => {
     
-    axios.put(BASE_URL + '/model/' + data.id, data)
+    axios.put(BASE_URL + '/vehicletype/' + data.id, data)
       .then((response) => {
         if (response.data.success) {       
       toast.success(response.data.message)
       navigate(-1)   
         } else {
-            toast.error(response.data.message)
+            toast.success(response.data.message)
+            navigate(-1)   
           console.log(response.data.message);
         }
       })
@@ -62,21 +54,10 @@ export default function UpdateVehicleType() {
         console.error("Error updating model:", error);
       });
   };
-  function handleChange(e) {
-    let runModes = [];
-    for (let ele in e) {
-      console.log(ele);
-      runModes.push(e[ele].value);
-    }
-    setModel((preVal) => ({ ...preVal, runModes }));
-  }
 
-
-  const handleInputChange = (e) => {
-    setModel({
-      ...model,
-      [e.target.name]: e.target.value,
-    });
+  const handleChange = (selectedOptions) => {
+    const selectedValues = selectedOptions.map((option) => option.value);
+    setModel((prevValue) => ({ ...prevValue, runMode: selectedValues }));
   };
 
   return (
@@ -102,19 +83,24 @@ export default function UpdateVehicleType() {
                     name="name"
                     value={model.name || ""}
                     className="form-control"
-                    onChange={handleInputChange}
+                    onChange={(e) => {
+                      setModel((prevValue) => ({ ...prevValue, name: e.target.value }));
+                    }}
                   />
                 </div>
               </div>
               <div className="col-md-12">
                 <div className="mb-3">
+
                     <label></label>
                 <ReactSelect
                     options={runMode}
                     isMulti
+                    value={runMode.filter(
+                      (option) => model.runMode.indexOf(option.value) !== -1
+                    )}
                     onChange={handleChange}
-                  />
-                </div>
+                   />                </div>
 
               </div>
               <div className="col-md-12">
@@ -125,7 +111,9 @@ export default function UpdateVehicleType() {
                     name="name"
                     value={model.seatingCapacityName || ""}
                     className="form-control"
-                    onChange={handleInputChange}
+                    onChange={(e) => {
+                      setModel((prevValue) => ({ ...prevValue, seatingCapacityName: e.target.value }));
+                    }}
                   />
                 </div>
               </div>
@@ -137,8 +125,9 @@ export default function UpdateVehicleType() {
                     name="name"
                     value={model.seatingCapacity || ""}
                     className="form-control"
-                    onChange={handleInputChange}
-                  />
+                    onChange={(e) => {
+                      setModel((prevValue) => ({ ...prevValue, seatingCapacity: e.target.value }));
+                    }}                                    />
                 </div>
               </div>
               <div className="col-md-12">
@@ -148,7 +137,9 @@ export default function UpdateVehicleType() {
                     name="status"
                     value={model.status || ""}
                     className="form-control"
-                    onChange={handleInputChange}
+                    onChange={(e) => {
+                      setModel((prevValue) => ({ ...prevValue, status: e.target.value }));
+                    }}    
                   >
                     <option>Choose</option>
                     <option value="ACTIVE">ACTIVE</option>

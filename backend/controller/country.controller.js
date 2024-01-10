@@ -87,3 +87,30 @@ exports.deleteCountry = async function (req,res){
   return res.status(500).json({message:"Internal server error"})
 }
 }
+
+exports.updateCountry = async function (req, res, next) {
+  try {
+      const { id } = req.params;
+      console.log("id", req.body);
+      console.log(id)
+
+
+      let obj = {};
+    
+      if(req.body.name) obj.name = req.body.name
+      if(req.body.status) obj.status = req.body.status
+      if(req.body.countryCode) obj.countryCode = req.body.countryCode
+      if(req.body.dialCode) obj.dialCode = req.body.dialCode
+      await Country.updateOne({ _id:id}, { $set: obj});
+    
+      res.status(200).json({message:"update successfully"})
+
+  } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+          success: false,
+          message: "Internal error occurred",
+      });
+  }
+};

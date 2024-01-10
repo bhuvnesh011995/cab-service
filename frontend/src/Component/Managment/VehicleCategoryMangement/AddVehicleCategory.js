@@ -5,7 +5,7 @@ import BtnDark from "../../Common/Buttons/BtnDark";
 import BASE_URL from "../../../config/config";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
-
+import { Modal } from "react-bootstrap";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
@@ -13,7 +13,7 @@ import { useEffect } from "react";
 const url = BASE_URL+'/vehicleCategory/'
 const api = BASE_URL+'/vehicleCategory/:id'
 
-export default function AddVehicleCategory(){
+export default function AddVehicleCategory({show,setShow}){
   const [successMsg,setSuccessMsg] = useState("")
   const location = useLocation();
    const navigate = useNavigate();
@@ -43,8 +43,8 @@ export default function AddVehicleCategory(){
                 if (response.data.success) 
                 {
                 toast.success(response.data.message)
-                navigate(-1);
-          
+                 setShow(false)            
+  
                 } 
                 else 
                 toast.error(response.data.message)
@@ -78,11 +78,12 @@ export default function AddVehicleCategory(){
  
 
     return(
-        <Management_container
-        title={"New Manufacturer"}>
-            <div style={{display:"flex",justifyContent:"center",alignItems:"center"}}>                     
-            <div class="card"  style={{width:'50%'}}>
-        <div class="card-body">
+      <Modal size="lg" show={show} onHide={() => setShow(false)}>
+      <Modal.Header closeButton>
+        <Modal.Title>Add New VehicleCategory </Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>          
         <form onSubmit={handleSubmit((formData) => onSubmit(formData,id,data))}>
        <div className="row">
         <div className="col-md-12">
@@ -124,11 +125,8 @@ export default function AddVehicleCategory(){
           </button>
           {successMsg}
        </form>
-       </div>
-        </div>
-        </div>
-
-        </Management_container>
-        
+       </Modal.Body>
+       </Modal>
+          
     )
 }

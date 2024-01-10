@@ -8,7 +8,8 @@ import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from 'material-react-table';
 import { Box, IconButton } from '@mui/material';
 import {RemoveRedEye,Lock,ModeEditOutline ,DeleteForever } from '@mui/icons-material/';
-
+import { toast } from "react-toastify";
+import DeleteModal from "../../DeleteModel/DeleteModel";
 
 const initialFilter = {
     package:"",
@@ -23,7 +24,9 @@ export default function RentalFareManagement(){
     const [list,setList] = useState();
     const navigate = useNavigate();
     const [filter,setFilter] = useState(initialFilter)
-
+    const [isOpen ,setIsOpen] = useState(false)
+    const [id, setId] = useState(null)
+    const [deleteInfo, setDeleteInfo] = useState(null)
     useEffect(()=>{
         fetch(url, { method: "GET" })
       .then((res) => res.json())
@@ -33,7 +36,8 @@ export default function RentalFareManagement(){
             data?.allRentalFare?.map((ele, i) => {
               arr.push({
                 index: i + 1,
-                country: ele.country.name,
+                id: ele._id,
+                country: ele.country?.name,
                 state: ele.state?.name || "NA",
                 city:ele.city?.name || "NA",
                 package:ele.package?.packageId?.name,
@@ -124,7 +128,7 @@ export default function RentalFareManagement(){
             data?.allRentalFare?.map((ele, i) => {
               arr.push({
                 index: i + 1,
-                country: ele.country.name,
+                country: ele.country?.name,
                 state: ele.state?.name || "NA",
                 city:ele.city?.name || "NA",
                 package:ele.package?.packageId?.name,
@@ -137,6 +141,31 @@ export default function RentalFareManagement(){
           }
         })
     }
+
+    const deleteModel=(rowId)=>{
+      const deleteUrl = BASE_URL + "/rentalFare/" + rowId;
+  
+    fetch(deleteUrl, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.status === 200) {
+        const filterModel = list.filter((data)=> data.id !== rowId)
+        setList(filterModel)
+        setIsOpen(false)
+        return response.json()
+        } 
+      })
+      .then((item)=>{
+        if(item.success) toast.success(item.message) 
+        else toast.error.apply(item.message)
+      })
+      .catch((error) => {
+        console.error("Error occurred while deleting admin:", error);
+      });
+  
+    }
+  
 
     function handleClick(e){
         e.preventDefault();
@@ -153,6 +182,13 @@ export default function RentalFareManagement(){
           <div class="row">
     <div class="col-lg-13">
       <div class="card">
+      <DeleteModal
+        info={deleteInfo}
+        show={isOpen}
+        setShow={setIsOpen}
+        handleDelete={deleteModel}
+        arg={id}
+      />
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
         <BtnDark handleClick={handleClick} title={"Add Rental Fare"} /></div>
@@ -183,7 +219,14 @@ export default function RentalFareManagement(){
           <IconButton>
             <ModeEditOutline />
           </IconButton>
-          <IconButton>
+          <IconButton     onClick={() => {
+            setDeleteInfo({
+              message: `Do You Really Want To Delete ${row.original?.name}`,
+              header: "Delete Model",
+            });
+            setIsOpen(true);
+            setId(row.original.id);
+          }}>
             <DeleteForever />
           </IconButton>
         </Box>

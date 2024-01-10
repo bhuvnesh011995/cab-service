@@ -135,12 +135,12 @@ exports.filterCity = async function (req, res, next) {
           {
             path: "state",
             model: "State",
-            select: { name: 1, _id: 0 },
+            select: { name: 1, },
           },
           {
             path: "country",
             model: "Country",
-            select: { name: 1, _id: 0 },
+            select: { name: 1},
           },
           {
             path: "territory",
@@ -160,12 +160,12 @@ exports.filterCity = async function (req, res, next) {
               {
                 path: "country",
                 model: "Country",
-                select: { name: 1, _id: 0 },
+                select: { name: 1, },
               },
               {
                 path: "state",
                 model: "State",
-                select: { name: 1, _id: 0 },
+                select: { name: 1 },
               },
               {
                 path: "territory",
@@ -185,12 +185,12 @@ exports.filterCity = async function (req, res, next) {
             {
               path: "country",
               model: "Country",
-              select: { name: 1, _id: 0 },
+              select: { name: 1},
             },
             {
               path: "state",
               model: "State",
-              select: { name: 1, _id: 0 },
+              select: { name: 1 },
             },
             {
               path: "territory",
@@ -207,12 +207,12 @@ exports.filterCity = async function (req, res, next) {
           {
             path: "state",
             model: "State",
-            select: { name: 1, _id: 0 },
+            select: { name: 1},
           },
           {
             path: "country",
             model: "Country",
-            select: { name: 1, _id: 0 },
+            select: { name: 1},
           },
           {
             path: "territory",
@@ -273,6 +273,7 @@ exports.filterCity = async function (req, res, next) {
         obj.country = city[k].country?.name;
         obj.state = city[k].state?.name;
         obj.territory = city[k].territory;
+      obj._id = city[k]._id,
         cities.push(obj);
         set.add(city[k]._id);
       }

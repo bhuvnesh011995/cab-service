@@ -96,14 +96,10 @@ exports.filterState = async function (req, res, next) {
         stateCode: states[i].stateCode,
         createdAt: states[i].createdAt,
         status: states[i].status,
+        country: states[i].country ? { id: states[i].country._id, name: states[i].country.name } : null,
         _id: states[i]._id,
       });
-      if (states[i].country?.name) {
-        while (count <= i) {
-          stateList[count].country = states[i].country?.name;
-          count++;
-        }
-      }
+     
     }
 
     res.status(200).json({
@@ -151,3 +147,30 @@ exports.deleteState = async function (req,res){
     return res.status(5000).json({message:"Internal Server Error"})
   }
 }
+
+exports.updateState = async function (req, res, next) {
+  try {
+      const { id } = req.params;
+      console.log("id", req.body);
+      console.log(id)
+
+
+      let obj = {};
+    
+      if(req.body.name) obj.name = req.body.name
+      if(req.body.status) obj.status = req.body.status
+      if(req.body.countryCode) obj.countryCode = req.body.countryCode
+      if(req.body.dialCode) obj.dialCode = req.body.dialCode
+      await db.state.updateOne({ _id:id}, { $set: obj});
+    
+      res.status(200).json({message:"update successfully"})
+
+  } catch (error) {
+      console.log(error);
+
+      res.status(500).json({
+          success: false,
+          message: "Internal error occurred",
+      });
+  }
+};

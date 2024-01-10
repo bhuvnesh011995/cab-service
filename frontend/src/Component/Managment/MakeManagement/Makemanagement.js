@@ -10,6 +10,7 @@ import {RemoveRedEye,Lock,ModeEditOutline ,DeleteForever } from '@mui/icons-mate
 import { Box, IconButton } from '@mui/material';
 import { authContext } from "../../../Context/AuthContext";
 import { useContext } from "react";
+import AddManufacturer from "./AddManufacturer";
 // import {authContext} from "../../Context/AuthContext"
 // import { useContext } from "react";
 
@@ -20,13 +21,13 @@ let initialFilter = {
 export default function MakeManagement() {
   const [filter, setFilter] = useState(initialFilter);
   const [list, setList] = useState();
+  const [isOpen,setIsOpen] = useState(false);
   const navigate = useNavigate();
   const url = BASE_URL+"/make/filter/";
   const {admin}=useContext(authContext) 
   const [permissions, setPermissions] = useState({
     canView: false,
     canEdit: false,
-    // Add other permissions as needed
   });
   useEffect(() => {
     fetch(url, {
@@ -72,10 +73,7 @@ export default function MakeManagement() {
   ],
   [])
 
-  function handleClick(e) {
-    e.preventDefault();
-    navigate("/addManufacturer");
-  }
+ 
 
  function handleReset(e){
     e.preventDefault()
@@ -174,12 +172,13 @@ function handleDelete(rowId) {
        <div class="row">
     <div class="col-lg-13">
       <div class="card">
+      {isOpen && <AddManufacturer show={isOpen} setShow={setIsOpen}   />}
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
     
     
     {(admin.role === "superadmin" || (admin.permissions && admin.permissions.includes("addMake"))) && (
-  <BtnDark handleClick={handleClick} title={"Add Manufacture"} />
+  <BtnDark handleClick={()=>{setIsOpen(true)}} title={"Add Manufacture"} />
 )}
       </div>
       <Filter_Option 

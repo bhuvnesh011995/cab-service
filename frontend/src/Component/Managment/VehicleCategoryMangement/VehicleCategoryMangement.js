@@ -11,9 +11,9 @@ import { Box, IconButton } from '@mui/material';
 import { authContext } from "../../../Context/AuthContext";
 import { useContext } from "react";
 import axios from "axios";
+import AddVehicleCategory from "../VehicleCategoryMangement/AddVehicleCategory"
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import { toast } from "react-toastify";
-
 let initialFilter = {
   name: "",
   status: "",
@@ -22,6 +22,7 @@ export default function VehicleCategoryManagement() {
   const [filter, setFilter] = useState(initialFilter);
   const [list, setList] = useState();
   const [isOpen, setIsOpen] = useState(false)
+  const [show, setShow] = useState(false)
   const [id, setId] = useState(null) 
   const [deleteInfo, setDeleteInfo] = useState(null)
   const navigate = useNavigate();
@@ -151,12 +152,13 @@ function handleDelete(rowId) {
         handleDelete={handleDelete}
         arg={id}
       />
+      {show && <AddVehicleCategory show={show} setShow={setShow} />}
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
     
     
     {(admin.role === "superadmin" || (admin.permissions && admin.permissions.includes("addMake"))) && (
-  <BtnDark handleClick={handleClick} title={"Add VehicleCategory"} />
+  <BtnDark handleClick={()=>{setShow(true)}} title={"Add VehicleCategory"} />
 )}
       </div>
       <Filter_Option 

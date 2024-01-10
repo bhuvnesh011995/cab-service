@@ -11,7 +11,7 @@ import { Box, IconButton } from '@mui/material';
 import {RemoveRedEye,Lock,ModeEditOutline ,DeleteForever } from '@mui/icons-material/';
 import { toast } from "react-toastify";
 import DeleteModal from "../../DeleteModel/DeleteModel";
-
+import AddVehicleType from "../VehicleTypeManagement/AddVehicleType"
 let url = BASE_URL+"/vehicletype/filter/"
 
 const initialFilter = {
@@ -25,6 +25,7 @@ export default function VehicleTypeManagement(){
     const [list, setList] = useState();
     const navigate = useNavigate()
     const [isOpen ,setIsOpen] = useState(false)
+    const [show ,setShow] = useState(false)
   const [id, setId] = useState(null)
   const [deleteInfo, setDeleteInfo] = useState(null)
     useEffect(()=>{
@@ -52,7 +53,8 @@ export default function VehicleTypeManagement(){
                   id: ele._id,
                   index: i + 1,
                   name: ele.name,
-                  runMode: mode.join(),
+                  mode: mode.join(),
+                  runMode: ele.runMode.map((item) => item._id),
                   seatingCapacityName:ele.seatingCapacityName,
                   seatingCapacity:ele.seatingCapacity,
                   img:ele.img,
@@ -78,7 +80,7 @@ export default function VehicleTypeManagement(){
           size: 100,
         },
         {
-          accessorKey: "runMode",
+          accessorKey: "mode",
           header: "Run Mode",
           size: 100,
         },
@@ -100,9 +102,6 @@ export default function VehicleTypeManagement(){
       []
     );
 
-    function handleClick(e){
-        navigate("/addVehicleType")
-    }
 
     function handleSubmit(e){
        fetch(url+"?name="+filter.name+"&runMode="+filter.runMode,{
@@ -175,9 +174,10 @@ export default function VehicleTypeManagement(){
         handleDelete={handleDelete}
         arg={id}
       />
+      {show && <AddVehicleType show={show} setShow={setShow} />}
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
-      <BtnDark handleClick={handleClick} title={"Add New"} /></div>
+      <BtnDark handleClick={()=>{setShow(true)}} title={"Add New"} /></div>
       <form style={{margin:"50px"}}>
       <div className="row">
         <div className="col-lg-2 inputField" >

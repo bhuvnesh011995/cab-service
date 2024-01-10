@@ -8,7 +8,6 @@ import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import { toast } from "react-toastify";
-
 import {
   RemoveRedEye,
   Lock,
@@ -128,9 +127,10 @@ export default function CountryManagement(){
     .catch((error) => {
       console.error("Error occurred while deleting admin:", error);
     });
-
   }
-          console.log("list",list)
+    function handleUpdate(data){
+      navigate('/updateCountry',{state:{data:data}})
+      }
 
 
     function handleClick2(){
@@ -183,7 +183,7 @@ export default function CountryManagement(){
           <IconButton>
             <Lock />
           </IconButton>
-          <IconButton>
+          <IconButton   onClick={()=>{handleUpdate(row.original)}}>
             <ModeEditOutline />
           </IconButton>
           <IconButton   onClick={() => {

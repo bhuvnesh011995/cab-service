@@ -7,8 +7,8 @@ exports.addToll = async function (req, res, next) {
     console.log(req.body);
 
     let locationDoc = await db.location.create({
-      lat: location.lat,
-      lng: location.lng,
+      // lat: location.lat,
+      // lng: location.lng,
     });
 
     await db.toll.create({
@@ -47,5 +47,23 @@ exports.filterToll = async function (req, res, next) {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+exports.deleteToll = async function (req, res) {
+  const id = req.params.id;
+  console.log(id);
+
+  try {
+      const result = await db.toll.deleteOne({ _id: id });
+
+      if (result.deletedCount === 1) {
+          return res.status(200).json({ message: "Delete successfully" ,success: true });
+      } else {
+          return res.status(400).json({ message: "Model not found" });
+      }
+  } catch (error) {
+      console.error(error);
+      return res.status(500).json({ message: "Internal server error" });
   }
 };

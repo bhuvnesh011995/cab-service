@@ -5,6 +5,8 @@ import Text_Input from "../../Common/Inputs/Text_Input"
 import Selection_Input from "../../Common/Inputs/Selection_input"
 import { useNavigate } from "react-router-dom"
 import { MaterialReactTable } from "material-react-table";
+import { toast } from "react-toastify";
+import DeleteModal from "../../DeleteModel/DeleteModel";
 import {
   RemoveRedEye,
   Lock,
@@ -27,7 +29,9 @@ export default function TollManagement() {
     const [filter,setFilter] = useState(initialFilter)
     const [list,setList] = useState([])
     const navigate = useNavigate()
-    
+    const [isOpen ,setIsOpen] = useState(false)
+    const [id, setId] = useState(null)
+    const [deleteInfo, setDeleteInfo] = useState(null)
 
 
 
@@ -39,6 +43,7 @@ export default function TollManagement() {
             if(data.success){
                 let arr = data.tolls.map(ele=>{
                     return {
+                      id:ele._id,
                         title:ele.title,
                         amount:ele.amount.$numberDecimal,
                         location:ele.location,
@@ -49,7 +54,10 @@ export default function TollManagement() {
                 setList(arr)
             }
         })
+
     },[])
+
+   
 
     const columns = useMemo(
         () => [
@@ -164,6 +172,30 @@ export default function TollManagement() {
         })
     }
 
+    const deleteModel=(rowId)=>{
+      const deleteUrl = BASE_URL + "/toll/" + rowId;
+  
+    fetch(deleteUrl, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.status === 200) {
+        const filterModel = list.filter((data)=> data.id !== rowId)
+        setList(filterModel)
+        setIsOpen(false)
+        return response.json()
+        } 
+      })
+      .then((item)=>{
+        if(item.success) toast.success(item.message) 
+        else toast.error.apply(item.message)
+      })
+      .catch((error) => {
+        console.error("Error occurred while deleting admin:", error);
+      });
+  
+    }
+
     function handleClick(){
         navigate("/addToll")
     }
@@ -179,6 +211,13 @@ export default function TollManagement() {
         <div class="row">
         <div class="col-lg-13">
           <div class="card">
+          <DeleteModal
+        info={deleteInfo}
+        show={isOpen}
+        setShow={setIsOpen}
+        handleDelete={deleteModel}
+        arg={id}
+      />
             <div class="card-body">
             <MapService data={list} />
               <div
@@ -243,7 +282,15 @@ export default function TollManagement() {
           <IconButton>
             <ModeEditOutline />
           </IconButton>
-          <IconButton>
+          <IconButton  onClick={() => {
+            setDeleteInfo({
+              message: `Do You Really Want To Delete ${row.original?.id}`,
+              header: "Delete Model",
+            });
+            setIsOpen(true);
+            setId(row.original.id);
+          }}
+          >
             <DeleteForever />
           </IconButton>
         </Box>

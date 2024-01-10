@@ -7,7 +7,9 @@ import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
 import { toast } from "react-toastify";
+import AddModel from "./AddModel";
 import DeleteModal from "../../DeleteModel/DeleteModel";
+import ModelUpdate from "../ModelManagement/ModelUpdate"
 import {
   RemoveRedEye,
   Lock,
@@ -26,9 +28,11 @@ export default function ModelManagement() {
   const [filter, setFilter] = useState(initialFilter);
   const [list, setList] = useState();
   const [isOpen ,setIsOpen] = useState(false)
+  const [show ,setShow] = useState(false)
+  const [showUpdate ,setShowUpdate] = useState(false)
   const [id, setId] = useState(null)
   const [deleteInfo, setDeleteInfo] = useState(null)
-
+   const [model, setModel] = useState([])
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -87,9 +91,6 @@ export default function ModelManagement() {
 
   const url = BASE_URL + "/model/filter/";
 
-  function handleClick() {
-    navigate("/addModel");
-  }
   function handleSubmit(e) {
     e.preventDefault();
 
@@ -141,10 +142,11 @@ export default function ModelManagement() {
     });
 
   }
+  const handleUpdate =(data)=>{
+     setModel(data)
+     setShowUpdate(true)
+  }
 
-  function handleUpdate(data){
-    navigate('/modelUpdate',{state:{model:data}})
-    }
 
   function handleClick2() {}
 
@@ -160,6 +162,9 @@ export default function ModelManagement() {
         handleDelete={deleteModel}
         arg={id}
       />
+      {show && <AddModel show={show} setShow={setShow} />}
+      {showUpdate && <ModelUpdate show={showUpdate} setShow={setShowUpdate}  data={model}   />}
+
        <
               div class="card-body">
               <div
@@ -169,7 +174,7 @@ export default function ModelManagement() {
                   zIndex: "2",
                 }}
               >
-                <BtnDark handleClick={handleClick} title={"Add Model"} />
+                <BtnDark handleClick={()=>{setShow(true)}} title={"Add Model"} />
               </div>
               <Filter_Option
                 input={filter}
