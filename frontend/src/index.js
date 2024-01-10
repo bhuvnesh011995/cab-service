@@ -68,8 +68,8 @@ import VehicleCategoryManagement from "./Component/Managment/VehicleCategoryMang
 import AddVehicleCategory from "./Component/Managment/VehicleCategoryMangement/AddVehicleCategory.js";
 import MakeUpdateManagement from "./Component/Managment/MakeManagement/MakeUpdateManagement.js";
 import ModelUpdate from "./Component/Managment/ModelManagement/ModelUpdate.js";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 const router = createBrowserRouter([
-
   {
     element: <App />,
     errorElement: <ErrorPage />,
@@ -145,13 +145,12 @@ const router = createBrowserRouter([
       },
       {
         path: "/makeUpdateManagement",
-        element: <MakeUpdateManagement/>,
+        element: <MakeUpdateManagement />,
       },
       {
         path: "/modelUpdate",
-        element: <ModelUpdate/>,
+        element: <ModelUpdate />,
       },
-     
     ],
   },
   {
@@ -178,14 +177,16 @@ const router = createBrowserRouter([
   },
   { path: "/AddAdmin", element: <AddAdmin /> },
 ]);
-
+let queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-    <ToastContainer />
-    <AuthProvider>
-      <RouterProvider router={router} />
-    </AuthProvider>
+    <QueryClientProvider client={queryClient}>
+      <ToastContainer />
+      <AuthProvider>
+        <RouterProvider router={router} />
+      </AuthProvider>
+    </QueryClientProvider>
   </>
 );
 

@@ -41,26 +41,45 @@ exports.filter = async function (req, res, next) {
 
 exports.getFilteredData = async (req, res, next) => {
   try {
-    let { globalFilter, page, size, sort, dec } = req.query;
-    let sortBy = sort;
-    dec = dec === "true" ? -1 : 1;
+    let { globalFilter = "", start, size, sort } = req.query;
+
+    sort = JSON.parse(sort);
+    let sortBy = sort.id ?? "name";
+    let dec = sort.dec ?? 1;
+    console.log(sort);
     size = parseInt(size);
-    let skip = (parseInt(page) - 1) * size;
+    let skip = parseInt(start);
     let data = await db.admin.aggregate([
       {
-        $match: {
-          $or: [
-            { name: { $regex: globalFilter, $options: "i" } },
-            { username: { $regex: globalFilter, $options: "i" } },
+        $facet: {
+          total: [
+            {
+              $group: {
+                _id: null,
+                count: { $sum: 1 },
+              },
+            },
+          ],
+          rows: [
+            {
+              $match: {
+                $or: [
+                  { name: { $regex: globalFilter, $options: "i" } },
+                  { username: { $regex: globalFilter, $options: "i" } },
+                ],
+              },
+            },
+            { $sort: { [sortBy]: dec } },
+            { $skip: skip },
+            { $limit: size },
           ],
         },
       },
-      { $sort: { [sortBy]: dec } },
-      { $skip: skip },
-      { $limit: size },
     ]);
 
-    res.status(200).json({ data });
+    res
+      .status(200)
+      .json({ total: data[0]?.total[0].count, data: data[0].rows });
   } catch (error) {
     next(error);
   }

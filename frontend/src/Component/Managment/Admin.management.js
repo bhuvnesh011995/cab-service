@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./AdminManagement.css";
 import Table from "../Common/Table";
 import Management_container from "../Common/Management_container";
@@ -7,13 +7,16 @@ import BtnDark from "../Common/Buttons/BtnDark";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../config/config";
 import { MaterialReactTable } from "material-react-table";
-import { Box, IconButton } from "@mui/material";
+import { Box, IconButton, Typography } from "@mui/material";
 import {
   RemoveRedEye,
   Lock,
   ModeEditOutline,
   DeleteForever,
 } from "@mui/icons-material/";
+import useDebounce from "../../Custom Hook/debounce";
+import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import axios from "axios";
 const initialFilter = {
   name: "",
   username: "",
@@ -26,13 +29,47 @@ export default function AdminManagement() {
   const [filter, setFilter] = useState(initialFilter);
   const [list, setList] = useState([]);
   const navigate = useNavigate();
+  const [globalFilter, setGlobalFilter] = useState("");
+  const [sorting, setSorting] = useState([]);
+  let fetchSize = 10;
+  let arr = useMemo(() => [globalFilter, sorting], [globalFilter, sorting]);
+  // const queryKey = useDebounce(arr, 1500);
+  const tableContainerRef = useRef(null); //we can get access to the underlying TableContainer element and react to its scroll events
+  const rowVirtualizerInstanceRef = useRef(null);
+
+  const { data, fetchNextPage, isError, isFetching, isLoading } =
+    useInfiniteQuery({
+      queryKey: [sorting, globalFilter, "table-data"],
+      queryFn: async ({ pageParam }) => {
+        let url = new URL("/test/api/v1/admins", BASE_URL);
+        url.searchParams.set("start", `${pageParam * fetchSize}`);
+        url.searchParams.set("size", `${fetchSize}`);
+        url.searchParams.set("globelFilter", globalFilter);
+        url.searchParams.set("sort", JSON.stringify(sorting));
+        console.log(url.href, "hello");
+        try {
+          const response = await axios.get(url.href);
+          console.log(response, "hellllooo");
+          return response;
+        } catch (error) {
+          console.log(error.response, "hellooo");
+        }
+      },
+      initialPageParam: 0,
+      getNextPageParam: (_lastGroup, groups) => groups.length,
+      refetchOnWindowFocus: false,
+    });
+  console.log(data, "jiii");
+  const flatData = useMemo(
+    () => data?.pages.flatMap((page) => page.data?.data) ?? [],
+    [data]
+  );
 
   useEffect(() => {
     fetch(url, { method: "GET" })
       .then((res) => res.json())
       .then(
         (data) => {
-          console.log(data);
           let arr = [];
           data.map((ele, i) => {
             arr.push({
@@ -63,6 +100,36 @@ export default function AdminManagement() {
         //   )
       );
   }, []);
+  let totalDBRowCount = data?.pages[0]?.data?.total;
+  let totalFetched = flatData?.length;
+  const fetchMoreOnBottomReached = useCallback(
+    (containerRefElement) => {
+      if (containerRefElement) {
+        const { scrollHeight, scrollTop, clientHeight } = containerRefElement;
+        //once the user has scrolled within 400px of the bottom of the table, fetch more data if we can
+        if (
+          scrollHeight - scrollTop - clientHeight < 400 &&
+          !isFetching &&
+          totalFetched < totalDBRowCount
+        ) {
+          fetchNextPage();
+        }
+      }
+    },
+    [fetchNextPage, isFetching, totalFetched, totalDBRowCount]
+  );
+  useEffect(() => {
+    //scroll to the top of the table when the sorting changes
+    try {
+      rowVirtualizerInstanceRef.current?.scrollToIndex?.(0);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [sorting, globalFilter]);
+
+  useEffect(() => {
+    fetchMoreOnBottomReached(tableContainerRef?.current);
+  }, [fetchMoreOnBottomReached]);
 
   const columns = useMemo(
     () => [
@@ -80,7 +147,7 @@ export default function AdminManagement() {
         size: 100,
       },
       {
-        accessorFn: (row) => row.createdAt.slice(0, 10),
+        accessorFn: (row) => row.createdAt?.slice(0, 10),
         id: "createdAt",
         header: "Created At",
         size: 100,
@@ -189,7 +256,7 @@ export default function AdminManagement() {
         <div class="col-lg-12">
           <div class="card">
             <div class="card-body">
-              <div className="mb-3 text-right">
+              <div className="mb-3">
                 <button
                   className="btn btn-primary"
                   onClick={() => navigate("/addAdmin")}
@@ -197,7 +264,8 @@ export default function AdminManagement() {
                   Add New
                 </button>
               </div>
-              <MaterialReactTable
+
+              {/* <MaterialReactTable
                 initialState={{
                   showGlobalFilter: true, //show the global filter by default
                 }}
@@ -209,7 +277,7 @@ export default function AdminManagement() {
                 enableDensityToggle={false}
                 enableFullScreenToggle={false}
                 columns={columns}
-                data={list}
+                data={flatData || []}
                 enableRowActions
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
@@ -228,88 +296,83 @@ export default function AdminManagement() {
                     </IconButton>
                   </Box>
                 )}
-              />
-              {/* <div className="row">
-                <div className="col-md-2">
-                  <div className="mb-3">
-                    <label htmlFor="name" className="form-label">
-                      Name
-                    </label>
-                    <input
-                      placeholder="Enter Name"
-                      name="name"
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-                <div className="col-md-2">
-                  <div className="mb-3">
-                    <label htmlFor="username" className="form-label">
-                      Username :
-                    </label>
-                    <input
-                      placeholder="Enter Username"
-                      name="username"
-                      className="form-control"
-                    />
-                  </div>
-                </div>
-                <div className="col-md-2">
-                  <div className="mb-3">
-                    <label htmlFor="status" className="form-label">
-                      Status :
-                    </label>
-                    <select className="form-control" name="status">
-                      <option value={""}>Choose...</option>
-                      <option value="ACTIVE">Active</option>
-                      <option value="INACTIVE">Inactive</option>
-                    </select>
-                  </div>
-                </div>
-                <div className="col-md-2">
-                  <div className="mb-3">
-                    <label htmlFor="from" className="form-label">
-                      From :
-                    </label>
-                    <input type="date" name="from" className="form-control" />
-                  </div>
-                </div>
-                <div className="col-md-2">
-                  <div className="mb-3">
-                    <label htmlFor="to" className="form-label">
-                      To :
-                    </label>
-                    <input type="date" name="to" className="form-control" />
-                  </div>
-                </div>
-              </div> */}
-              {/* <Filter_Option
-                input={filter}
-                setInput={setFilter}
-                initialInput={initialFilter}
-                btn1_title={"Search"}
-                handleClick1={handleSubmit}
-                handleClick2={handleReset}
-                btn2_title={"Reset"}
-                options={["name", "username", "status", "from", "to"]}
+                enableRowVirtualization={true}
+                manualFiltering={true}
+                manualSorting={true}
+                muiTableContainerProps={{
+                  ref: tableContainerRef, //get access to the table container element
+                  sx: { maxHeight: "600px" }, //give the table a max height
+                  onScroll: (event) => fetchMoreOnBottomReached(event.target), //add an event listener to the table container element
+                }}
+                muiToolbarAlertBannerProps={
+                  isError
+                    ? {
+                        color: "error",
+                        children: "Error loading data",
+                      }
+                    : undefined
+                }
+                onGlobalFilterChange={setGlobalFilter}
+                onSortingChange={setSorting}
+                renderBottomToolbarCustomActions={() => (
+                  <Typography>
+                    Fetched {totalFetched} of {totalDBRowCount} total rows.
+                  </Typography>
+                )}
+                state={{
+                  globalFilter,
+                  isLoading,
+                  showAlertBanner: isError,
+                  showProgressBars: isFetching,
+                  sorting,
+                }}
+                rowVirtualizerInstanceRef //get access to the virtualizer instance
+                rowVirtualizerOptions={{ overscan: 4 }}
               /> */}
+              <MaterialReactTable
+                columns={columns}
+                data={flatData}
+                enablePagination={false}
+                enableRowNumbers
+                enableRowVirtualization //optional, but recommended if it is likely going to be more than 100 rows
+                manualFiltering
+                manualSorting
+                muiTableContainerProps={{
+                  ref: tableContainerRef, //get access to the table container element
+                  sx: { maxHeight: "600px" }, //give the table a max height
+                  onScroll: (
+                    event //add an event listener to the table container element
+                  ) => fetchMoreOnBottomReached(event.target),
+                }}
+                muiToolbarAlertBannerProps={
+                  isError
+                    ? {
+                        color: "error",
+                        children: "Error loading data",
+                      }
+                    : undefined
+                }
+                onGlobalFilterChange={setGlobalFilter}
+                onSortingChange={setSorting}
+                renderBottomToolbarCustomActions={() => (
+                  <Typography>
+                    Fetched {totalFetched} of {totalDBRowCount} total rows.
+                  </Typography>
+                )}
+                state={{
+                  globalFilter,
+                  isLoading,
+                  showAlertBanner: isError,
+                  showProgressBars: isFetching,
+                  sorting,
+                }}
+                rowVirtualizerInstanceRef={rowVirtualizerInstanceRef} //get access to the virtualizer instance
+                rowVirtualizerProps={{ overscan: 4 }}
+              />
             </div>
           </div>
         </div>
       </div>
-      {/* <div class="row">
-      <Table
-        heading={[
-          "Sr no",
-          "Name",
-          "Username",
-          "status",
-          "created At",
-          "Action",
-        ]}
-        list={list}
-      />
-      </div> */}
     </Management_container>
   );
 }
