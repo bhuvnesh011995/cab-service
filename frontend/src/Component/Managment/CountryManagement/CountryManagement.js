@@ -6,6 +6,9 @@ import { useNavigate } from "react-router-dom";
 import Table from "../../Common/Table";
 import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
+import DeleteModal from "../../DeleteModel/DeleteModel";
+import { toast } from "react-toastify";
+
 import {
   RemoveRedEye,
   Lock,
@@ -24,6 +27,9 @@ export default function CountryManagement(){
     const [list,setList] = useState();
     const navigate = useNavigate();
     const url = BASE_URL+"/country/filter/";
+    const [isOpen ,setIsOpen] = useState(false)
+  const [id, setId] = useState(null)
+  const [deleteInfo, setDeleteInfo] = useState(null)
 
     useEffect(()=>{
         fetch(url,{
@@ -34,8 +40,8 @@ export default function CountryManagement(){
           data?.countryList?.map((ele, i) => {
             arr.push({
               index: i + 1,
-              name: ele.name,
               id: ele._id,
+              name: ele.name,
               countryCode: ele.countryCode,
               dialCode:ele.dialCode,
               status: ele.status,
@@ -101,9 +107,29 @@ export default function CountryManagement(){
           setList(arr);
         })
     }
-        const handleDelete = (id) =>{
-              alert(id)
-        }
+       const deleteModel=(rowId)=>{
+    const deleteUrl = BASE_URL + "/country/" + rowId;
+
+  fetch(deleteUrl, {
+    method: "DELETE",
+  })
+    .then((response) => {
+      if (response.status === 200) {
+      const filterModel = list.filter((data)=> data.id !== rowId)
+      setList(filterModel)
+      setIsOpen(false)
+      return response.json()
+      } 
+    })
+    .then((item)=>{
+      if(item.success) toast.success(item.message) 
+      else toast.error.apply(item.message)
+    })
+    .catch((error) => {
+      console.error("Error occurred while deleting admin:", error);
+    });
+
+  }
           console.log("list",list)
 
 
@@ -118,6 +144,13 @@ export default function CountryManagement(){
            <div class="row">
         <div class="col-lg-13">
           <div class="card">
+          <DeleteModal
+        info={deleteInfo}
+        show={isOpen}
+        setShow={setIsOpen}
+        handleDelete={deleteModel}
+        arg={id}
+      />
             <div class="card-body">
         <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
             <BtnDark handleClick={handleClick} title={"Add Country"} />
@@ -153,7 +186,14 @@ export default function CountryManagement(){
           <IconButton>
             <ModeEditOutline />
           </IconButton>
-          <IconButton onClick={()=>handleDelete(row.original.id)} >        
+          <IconButton   onClick={() => {
+            setDeleteInfo({
+              message: `Do You Really Want To Delete ${row.original?.name}`,
+              header: "Delete Model",
+            });
+            setIsOpen(true);
+            setId(row.original.id);
+          }} >        
             <DeleteForever  />
           </IconButton>
         </Box>

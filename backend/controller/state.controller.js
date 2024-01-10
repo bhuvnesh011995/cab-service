@@ -59,7 +59,7 @@ exports.filterState = async function (req, res, next) {
         .select({
           name: 1,
           country: 1,
-          _id: 0,
+           
           stateCode: 1,
           createdAt: 1,
           status: 1,
@@ -78,7 +78,7 @@ exports.filterState = async function (req, res, next) {
         .select({
           name: 1,
           country: 1,
-          _id: 0,
+
           stateCode: 1,
           createdAt: 1,
           status: 1,
@@ -89,16 +89,18 @@ exports.filterState = async function (req, res, next) {
 
     let stateList = [];
     let count = 0;
+    console.log(states)
     for (i = 0; i < states.length; i++) {
       stateList.push({
         name: states[i].name,
         stateCode: states[i].stateCode,
         createdAt: states[i].createdAt,
         status: states[i].status,
+        _id: states[i]._id,
       });
-      if (states[i].country.name) {
+      if (states[i].country?.name) {
         while (count <= i) {
-          stateList[count].country = states[i].country.name;
+          stateList[count].country = states[i].country?.name;
           count++;
         }
       }
@@ -109,6 +111,7 @@ exports.filterState = async function (req, res, next) {
       stateList: stateList,
     });
   } catch (error) {
+    console.log(error)
     res.status(400).json({
       success: false,
       message: "error occoured",
@@ -131,3 +134,20 @@ exports.getallStateByCountryId = async function (req, res, next) {
     next(error);
   }
 };
+
+exports.deleteState = async function (req,res){
+  const id = req.params.id
+  try{
+    const result = await db.state.deleteOne({_id: id})
+    if(result.deletedCount === 1){
+      return res.status(200).json({message : "state delete successfully"});
+    }
+    else{
+      return res.status(400).json({message:"delete state not found"})
+    }
+  }
+  catch(error){
+    console.log(error)
+    return res.status(5000).json({message:"Internal Server Error"})
+  }
+}

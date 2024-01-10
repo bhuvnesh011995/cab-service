@@ -4,7 +4,8 @@ import Management_container from "../../Common/Management_container";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import BASE_URL from "../../../config/config";
-
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 export default function AddModel (){
     const [model,setModel] = useState({
         name:"",
@@ -13,7 +14,7 @@ export default function AddModel (){
     });
     const [options,setOptions]= useState([]);
     const [succMsg,setSuccMsg]=useState("");
-
+    const navigate = useNavigate()  
     useEffect(()=>{
         fetch(BASE_URL+"/make/",{
             method:"GET"
@@ -40,9 +41,10 @@ export default function AddModel (){
         }).then(res=>res.json())
         .then(data=>{
             if(data.success){
-                setSuccMsg(<span style={{backgroundColor:"lightgreen"}}>{data.message}</span>)
+               toast.success("add successfully ")  
+               navigate(-1);
             }else{
-                setSuccMsg(<span style={{backgroundColor:"red"}}>{data.message}</span>)
+                toast.error("error")
             }
         })
     }

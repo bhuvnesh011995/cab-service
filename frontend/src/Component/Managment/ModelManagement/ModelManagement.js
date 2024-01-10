@@ -6,6 +6,8 @@ import Table from "../../Common/Table";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
+import { toast } from "react-toastify";
+import DeleteModal from "../../DeleteModel/DeleteModel";
 import {
   RemoveRedEye,
   Lock,
@@ -23,6 +25,10 @@ let initialFilter = {
 export default function ModelManagement() {
   const [filter, setFilter] = useState(initialFilter);
   const [list, setList] = useState();
+  const [isOpen ,setIsOpen] = useState(false)
+  const [id, setId] = useState(null)
+  const [deleteInfo, setDeleteInfo] = useState(null)
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,7 +43,9 @@ export default function ModelManagement() {
             id: ele._id,
             index: i + 1,
             name: ele.name,
-            make: ele.make ? ele.make.name : 'N/A',
+            make: ele.make ? ele.make._id : 'N/A',
+            manufacturer: ele.make ? ele.make.name : 'N/A',
+
             status: ele.status,
             createdAt: ele.createdAt || "",
           });
@@ -54,7 +62,7 @@ export default function ModelManagement() {
         size: 50,
       },
       {
-        accessorKey: "make",
+        accessorKey: "manufacturer",
         header: "Manufacturer",
         size: 100,
       },
@@ -117,12 +125,16 @@ export default function ModelManagement() {
     method: "DELETE",
   })
     .then((response) => {
-      if (response) {
-      console.log(response.message)
-      
-      } else {
-        console.error("Failed to delete model");
-      }
+      if (response.status === 200) {
+      const filterModel = list.filter((data)=> data.id !== rowId)
+      setList(filterModel)
+      setIsOpen(false)
+      return response.json()
+      } 
+    })
+    .then((item)=>{
+      if(item.success) toast.success(item.message) 
+      else toast.error.apply(item.message)
     })
     .catch((error) => {
       console.error("Error occurred while deleting admin:", error);
@@ -131,7 +143,6 @@ export default function ModelManagement() {
   }
 
   function handleUpdate(data){
-    console.log(data)
     navigate('/modelUpdate',{state:{model:data}})
     }
 
@@ -142,7 +153,15 @@ export default function ModelManagement() {
       <div class="row">
         <div class="col-lg-13">
           <div class="card">
-            <div class="card-body">
+          <DeleteModal
+        info={deleteInfo}
+        show={isOpen}
+        setShow={setIsOpen}
+        handleDelete={deleteModel}
+        arg={id}
+      />
+       <
+              div class="card-body">
               <div
                 style={{
                   display: "flex",
@@ -186,7 +205,16 @@ export default function ModelManagement() {
           <IconButton  onClick={()=>handleUpdate(row.original)}>
             <ModeEditOutline />
           </IconButton>
-          <IconButton onClick={()=>deleteModel(row.original.id)} >
+          <IconButton
+           onClick={() => {
+            setDeleteInfo({
+              message: `Do You Really Want To Delete ${row.original?.name}`,
+              header: "Delete Model",
+            });
+            setIsOpen(true);
+            setId(row.original.id);
+          }}
+           >
             <DeleteForever />
           </IconButton>
         </Box>

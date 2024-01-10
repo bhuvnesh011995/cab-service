@@ -11,6 +11,8 @@ import { Box, IconButton } from '@mui/material';
 import { authContext } from "../../../Context/AuthContext";
 import { useContext } from "react";
 import axios from "axios";
+import DeleteModal from "../../DeleteModel/DeleteModel";
+import { toast } from "react-toastify";
 
 let initialFilter = {
   name: "",
@@ -19,6 +21,9 @@ let initialFilter = {
 export default function VehicleCategoryManagement() {
   const [filter, setFilter] = useState(initialFilter);
   const [list, setList] = useState();
+  const [isOpen, setIsOpen] = useState(false)
+  const [id, setId] = useState(null) 
+  const [deleteInfo, setDeleteInfo] = useState(null)
   const navigate = useNavigate();
   const url = BASE_URL+"/make/filter/";
   const {admin}=useContext(authContext) 
@@ -59,10 +64,6 @@ export default function VehicleCategoryManagement() {
   ],
   [])
 
-  function handleClick(e) {
-    e.preventDefault();
-    navigate("/addVehicleCategory");
-  }
 
  function handleReset(e){
     e.preventDefault()
@@ -101,9 +102,12 @@ function handleDelete(rowId) {
     .then((response) => {
       if (response) {
       getAllVehicleCategory()
-      
+            setIsOpen(false)
+            toast.success(response.message)
+
       } else {
         console.error("Failed to delete admin");
+        toast.error(response.message)
       }
     })
     .catch((error) => {
@@ -131,7 +135,7 @@ function handleDelete(rowId) {
       }
       );
   }
-  function handleUpdate(data){
+  function handleClick(data){
     navigate('/addVehicleCategory',{state:{id:data._id,vehicleCategory:data.vehicleCategory,status:data.status}})
     }
     
@@ -140,6 +144,13 @@ function handleDelete(rowId) {
        <div class="row">
     <div class="col-lg-13">
       <div class="card">
+      <DeleteModal
+        info={deleteInfo}
+        show={isOpen}
+        setShow={setIsOpen}
+        handleDelete={handleDelete}
+        arg={id}
+      />
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
     
@@ -179,10 +190,22 @@ function handleDelete(rowId) {
           <IconButton>
             <Lock />
           </IconButton  >
-          <IconButton   onClick={() => handleUpdate(row.original)}>
+          <IconButton   onClick={() => handleClick(row.original)}>
             <ModeEditOutline />
           </IconButton>
-          <IconButton  onClick={() => handleDelete(row.original._id)}>
+          <IconButton 
+       
+          onClick={() => {
+            setDeleteInfo({
+      message : `Do You Really Want To Delete ${row.original?.vehicleCategory}`,
+     header : "Delete Vehicle Category" 
+          });
+        setIsOpen(true)
+        setId(row.original._id)
+        }}
+          
+          
+          >
             <DeleteForever />
           </IconButton>
         </Box>

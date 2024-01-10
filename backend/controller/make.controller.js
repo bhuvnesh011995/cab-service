@@ -50,6 +50,25 @@ exports.getMake = async function (req, res, next) {
   }
 };
 
+// exports.getMake= async function(req,res){
+//   try{
+//     const make = await Make.find()
+//     return res.status(200).json({
+//       success: true,
+//       message: " vehicleCategory  successfully get",
+//       make: make,
+//     })
+//   }
+//   catch(error){
+//       console.error(error)
+//       return res.status(500).send({
+//           error:"Internal Server Error"
+//       })
+//   }
+
+// }
+
+
 exports.deleteMakeid = async function (req, res, next) {
   let { id } = req.params;
   console.log("make id is", req.params);
@@ -112,7 +131,7 @@ exports.updateMakeData = async (req, res, next) => {
 
 exports.getall = async function (req, res, next) {
   try {
-    let a = await Make.find({}).select({ name: 1, _id: 0 }).lean();
+    let a = await Make.find({})
 
     res.status(200).json(a);
   } catch (error) {

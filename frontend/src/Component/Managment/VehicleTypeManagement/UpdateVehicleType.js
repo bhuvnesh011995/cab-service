@@ -5,16 +5,35 @@ import BASE_URL from "../../../config/config";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
+import ReactSelect from "react-select";
 import { toast } from "react-toastify";
-export default function ModelUpdate() {
+export default function UpdateVehicleType() {
   const location = useLocation();
   const data = location.state?.model || {};
 
   const [model, setModel] = useState({});
   const [options, setOptions] = useState([]);
+  const [runMode, setRunMode] = useState([]);
+
   const [succMsg, setSuccMsg] = useState("");
   const navigate = useNavigate()
   console.log("dtt",data)
+
+  useEffect(() => {
+    fetch(BASE_URL + "/runMode/", {
+      method: "GET",
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          let arr = [];
+          data.data?.map((ele) =>
+            arr.push({ value: ele._id, label: ele.name })
+          );
+          setRunMode(arr);
+        }
+      });
+  }, []);
 
   useEffect(() => {
     setModel(data);
@@ -41,12 +60,17 @@ export default function ModelUpdate() {
       })
       .catch((error) => {
         console.error("Error updating model:", error);
-        // Handle error if needed
       });
   };
-  
+  function handleChange(e) {
+    let runModes = [];
+    for (let ele in e) {
+      console.log(ele);
+      runModes.push(e[ele].value);
+    }
+    setModel((preVal) => ({ ...preVal, runModes }));
+  }
 
-console.log("options",options)
 
   const handleInputChange = (e) => {
     setModel({
@@ -56,7 +80,7 @@ console.log("options",options)
   };
 
   return (
-    <Management_container title={"Update Model"}>
+    <Management_container title={"Update VehicleType"}>
       <div className="card mx-auto" style={{ width: "50%" }}>
         <div className="card-body">
           <form >
@@ -64,19 +88,10 @@ console.log("options",options)
               <div className="col-md-12">
                 <div className="mb-3">
                 <label>Manufacturer</label>
-                <select
-                    name="make"
-                    value={model.make || ""} 
-                    onChange={handleInputChange}
-                    className="form-control"
-                  >
-                    <option value="">Choose</option>
-                    {options.map((item, i) => (
-                      <option key={i} value={item._id}>
-                        {item.name}
-                      </option>
-                    ))}
-                  </select>
+                <input
+                        className="form-control form-control-sm"
+                        type="file"
+                      />
                 </div>
               </div>
               <div className="col-md-12">
@@ -86,6 +101,41 @@ console.log("options",options)
                     type="text"
                     name="name"
                     value={model.name || ""}
+                    className="form-control"
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="mb-3">
+                    <label></label>
+                <ReactSelect
+                    options={runMode}
+                    isMulti
+                    onChange={handleChange}
+                  />
+                </div>
+
+              </div>
+              <div className="col-md-12">
+                <div className="mb-3">
+                  <label>Seating Name :</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={model.seatingCapacityName || ""}
+                    className="form-control"
+                    onChange={handleInputChange}
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="mb-3">
+                  <label>Seating Capacity :</label>
+                  <input
+                    type="text"
+                    name="name"
+                    value={model.seatingCapacity || ""}
                     className="form-control"
                     onChange={handleInputChange}
                   />

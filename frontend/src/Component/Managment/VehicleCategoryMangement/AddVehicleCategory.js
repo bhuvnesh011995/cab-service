@@ -4,18 +4,20 @@ import Management_container from "../../Common/Management_container";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import BASE_URL from "../../../config/config";
 import { useForm } from "react-hook-form";
+import { toast } from "react-toastify";
+
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
+
 const url = BASE_URL+'/vehicleCategory/'
 const api = BASE_URL+'/vehicleCategory/:id'
-
 
 export default function AddVehicleCategory(){
   const [successMsg,setSuccessMsg] = useState("")
   const location = useLocation();
-   
-  const {id,vehicleCategory,status} = location.state;
+   const navigate = useNavigate();
+  const {id,vehicleCategory,status} = location.state  || {};
    const [data,setData] = useState() 
 
    
@@ -38,14 +40,17 @@ export default function AddVehicleCategory(){
         if (!id) {
         axios.post(url, formData)
             .then((response) => {
-                if (response.data.success) setSuccessMsg(
-                    <span style={{ backgroundColor: "lightgreen" }}>{response.data.message}</span>
-                )
-                else setSuccessMsg(
-                    <span style={{ backgroundColor: "lightgreen" }}>{response.data.message}</span>
-                )
+                if (response.data.success) 
+                {
+                toast.success(response.data.message)
+                navigate(-1);
+          
+                } 
+                else 
+                toast.error(response.data.message)
             })
             .catch((error) => {
+              toast.error(error.message)
                 setSuccessMsg(<h4 style={{ backgroundColor: "red" }}>{error.message}</h4>);
             });
           }
@@ -53,6 +58,8 @@ export default function AddVehicleCategory(){
             axios.put(BASE_URL+'/vehicleCategory/'+id ,data)
             .then((response) => {
               if (response.data.success) {
+                toast.success(response.data.message)
+                navigate(-1)
                 setSuccessMsg(
                   <span style={{ backgroundColor: "lightgreen" }}>{response.data.message}</span>
                 );
@@ -63,6 +70,7 @@ export default function AddVehicleCategory(){
               }
             })
             .catch((error) => {
+              toast.error(error.message)
               setSuccessMsg(<h4 style={{ backgroundColor: "red" }}>{error.message}</h4>);
             });
           }
