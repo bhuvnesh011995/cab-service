@@ -1,6 +1,7 @@
 const State = require("../model/state.model");
 const Country = require("../model/country.model");
 const db = require("../model/index");
+const { default: mongoose } = require("mongoose");
 
 exports.addState = async function (req, res, next) {
   try {
@@ -59,7 +60,7 @@ exports.filterState = async function (req, res, next) {
         .select({
           name: 1,
           country: 1,
-           
+
           stateCode: 1,
           createdAt: 1,
           status: 1,
@@ -89,7 +90,7 @@ exports.filterState = async function (req, res, next) {
 
     let stateList = [];
     let count = 0;
-    console.log(states)
+    console.log(states);
     for (i = 0; i < states.length; i++) {
       stateList.push({
         name: states[i].name,
@@ -111,7 +112,7 @@ exports.filterState = async function (req, res, next) {
       stateList: stateList,
     });
   } catch (error) {
-    console.log(error)
+    console.log(error);
     res.status(400).json({
       success: false,
       message: "error occoured",
@@ -124,30 +125,28 @@ exports.getallStateByCountryId = async function (req, res, next) {
   try {
     const { countryId } = req.params;
 
-    let states = await db.state.find({ country: countryId }).select("name");
+    let states = await db.state.aggregate([
+      { $match: { country: new mongoose.Types.ObjectId(countryId) } },
+      { $project: { name: 1 } },
+    ]);
 
-    res.status(200).json({
-      success: true,
-      states,
-    });
+    res.status(200).json(states);
   } catch (error) {
     next(error);
   }
 };
 
-exports.deleteState = async function (req,res){
-  const id = req.params.id
-  try{
-    const result = await db.state.deleteOne({_id: id})
-    if(result.deletedCount === 1){
-      return res.status(200).json({message : "state delete successfully"});
+exports.deleteState = async function (req, res) {
+  const id = req.params.id;
+  try {
+    const result = await db.state.deleteOne({ _id: id });
+    if (result.deletedCount === 1) {
+      return res.status(200).json({ message: "state delete successfully" });
+    } else {
+      return res.status(400).json({ message: "delete state not found" });
     }
-    else{
-      return res.status(400).json({message:"delete state not found"})
-    }
+  } catch (error) {
+    console.log(error);
+    return res.status(5000).json({ message: "Internal Server Error" });
   }
-  catch(error){
-    console.log(error)
-    return res.status(5000).json({message:"Internal Server Error"})
-  }
-}
+};

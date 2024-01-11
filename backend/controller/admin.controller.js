@@ -8,30 +8,37 @@ const db = require("../model");
 exports.filter = async function (req, res, next) {
   try {
     let { name, username, email, status, from, to } = req.query;
-    let admins;
-    if (!name && !username && !email && !status && !from && !to) {
-      admins = await admin.find();
-    } else {
-      if (from) from = startofday(new Date(from));
-      else if (to && !from) from = startofday(new Date(0, 1, 1));
-      else from = Date.now();
-      if (to) to = endofday(new Date(to));
-      else to = Date.now();
-
-      admins = await admin.find({
-        $or: [
-          { name: name },
-          { status: status },
-          { username: username },
-          {
-            createdAt: {
-              $gte: from,
-              $lte: to,
-            },
-          },
-        ],
+    let query = [{ $match: { $or: [] } }];
+    if (name)
+      query[0].$match.$or.push({ name: { $regex: name, $options: "i" } });
+    if (username)
+      query[0].$match.$or.push({
+        username: { $regex: username, $options: "i" },
       });
-    }
+    if (status)
+      query[0].$match.$or.push({ status: { $regex: status, $options: "i" } });
+    if (from)
+      query[0].$match.$or = [
+        ...query[0].$match.$or,
+        { createdAt: { $gte: startofday(new Date(from)) } },
+      ];
+
+    if (to)
+      query[0].$match.$or = [
+        ...query[0].$match.$or,
+        { createdAt: { $lte: endofday(new Date(to)) } },
+      ];
+    if (!query[0].$match.$or.length) query[0].$match = {};
+    query.push({
+      $project: {
+        name: 1,
+        username: 1,
+        status: 1,
+        createdAt: 1,
+      },
+    });
+    console.log(query[0].$match.$or);
+    let admins = await admin.aggregate(query);
 
     res.status(200).json(admins).end();
   } catch (error) {
@@ -41,14 +48,15 @@ exports.filter = async function (req, res, next) {
 
 exports.getFilteredData = async (req, res, next) => {
   try {
-    let { globalFilter = "", start, size, sort } = req.query;
+    let { globalFilter, start, size, sort } = req.query;
+    if (sort) sort = JSON.parse(sort) ?? [];
 
-    sort = JSON.parse(sort);
-    let sortBy = sort.id ?? "name";
-    let dec = sort.dec ?? 1;
-    console.log(sort);
-    size = parseInt(size);
-    let skip = parseInt(start);
+    let sortBy = sort[0]?.id ?? "name";
+    let desc = sort[0]?.desc ? 1 : -1;
+
+    size = (size && parseInt(size)) ?? 10;
+    let skip = (start && parseInt(start)) ?? 0;
+    console.log(globalFilter, size, start, sortBy, sort, desc, "hii");
     let data = await db.admin.aggregate([
       {
         $facet: {
@@ -69,7 +77,7 @@ exports.getFilteredData = async (req, res, next) => {
                 ],
               },
             },
-            { $sort: { [sortBy]: dec } },
+            { $sort: { [sortBy]: desc } },
             { $skip: skip },
             { $limit: size },
           ],
@@ -85,52 +93,14 @@ exports.getFilteredData = async (req, res, next) => {
   }
 };
 
-exports.deleteAdminid = async function (req, res, next) {
-  let { id } = req.params;
-
-  try {
-    const deletedAdmin = await admin.deleteOne({ id: id });
-
-    if (deletedAdmin.deletedCount === 1) {
-      res.status(200).json({
-        success: true,
-        message: "Admin deleted successfully",
-      });
-    } else {
-      res.status(404).json({
-        success: false,
-        message: "Admin not found",
-      });
-    }
-  } catch (e) {
-    res.status(500).json({
-      success: false,
-      message: "Some internal error occurred",
-      error: e.message,
-    });
-  }
-};
-
 // delete admin function
 
 exports.deleteAdmin = async function (req, res, next) {
   try {
-    let { username } = req.params;
+    let { id } = req.params;
+    await admin.deleteOne({ _id: id });
 
-    try {
-      await admin.deleteOne({ username: username });
-
-      res.status(200).json({
-        success: true,
-        message: "admin deleted",
-      });
-    } catch (e) {
-      res.status(500).json({
-        success: false,
-        message: "some internal error happen",
-        error: e.message,
-      });
-    }
+    res.status(204).end();
   } catch (error) {
     next(error);
   }

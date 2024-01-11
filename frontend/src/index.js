@@ -6,7 +6,7 @@ import reportWebVitals from "./reportWebVitals";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import ErrorPage from "./errorPage/ErrorPage";
 import Home from "./Component/Home/Home";
-import AdminManagement from "./Component/Managment/Admin.management";
+import AdminManagement from "./Component/Managment/AdminManagement/Admin.management.js";
 import MakeManagement from "./Component/Managment/MakeManagement/Makemanagement";
 import AddMake from "./Component/Managment/MakeManagement/AddMake";
 import ModelManagement from "./Component/Managment/ModelManagement/ModelManagement";
@@ -70,6 +70,8 @@ import MakeUpdateManagement from "./Component/Managment/MakeManagement/MakeUpdat
 import ModelUpdate from "./Component/Managment/ModelManagement/ModelUpdate.js";
 import UpdateVehicleType from "./Component/Managment/VehicleTypeManagement/UpdateVehicleType.js";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Provider } from "react-redux";
+import Store from "./Redux/Store/Store.js";
 
 const router = createBrowserRouter([
   {
@@ -187,12 +189,14 @@ let queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <>
-    <QueryClientProvider client={queryClient}>
-      <ToastContainer />
-      <AuthProvider>
-        <RouterProvider router={router} />
-      </AuthProvider>
-    </QueryClientProvider>
+    <Provider store={Store}>
+      <QueryClientProvider client={queryClient}>
+        <ToastContainer />
+        <AuthProvider>
+          <RouterProvider router={router} />
+        </AuthProvider>
+      </QueryClientProvider>
+    </Provider>
   </>
 );
 

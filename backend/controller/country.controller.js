@@ -63,27 +63,24 @@ exports.filterCountry = async function (req, res, next) {
 
 exports.getallCountry = async function (req, res, next) {
   try {
-    const countries = await Country.find({}).select({ name: 1 }).lean();
+    const countries = await Country.aggregate([{ $project: { name: 1 } }]);
     res.status(200).json(countries);
   } catch (error) {
     next(error);
   }
 };
 
-exports.deleteCountry = async function (req,res){
-  const id = req.params.id
-  try{
-     const result = await Country.deleteOne({ _id: id})
-    if (result.deletedCount === 1){
-      return res.status(200).json({message:"delete successfully"})
+exports.deleteCountry = async function (req, res) {
+  const id = req.params.id;
+  try {
+    const result = await Country.deleteOne({ _id: id });
+    if (result.deletedCount === 1) {
+      return res.status(200).json({ message: "delete successfully" });
+    } else {
+      return res.status(400).json({ message: "country is not found" });
     }
-    else{
-      return res.status(400).json({message:"country is not found"})
-    }
-
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
-  catch(error){
-  console.log(error)
-  return res.status(500).json({message:"Internal server error"})
-}
-}
+};

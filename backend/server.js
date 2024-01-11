@@ -1,6 +1,5 @@
-const serverConfig = require("./config/server.config") 
+const serverConfig = require("./config/server.config");
 
-    require("./app").listen(serverConfig.PORT,()=>{
-      console.log(`server started at port ${serverConfig.PORT}`)
-    })
-
+require("./app").listen(serverConfig.PORT, () => {
+  console.log(`server started at port ${serverConfig.PORT}`);
+});
