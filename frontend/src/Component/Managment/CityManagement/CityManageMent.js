@@ -44,6 +44,7 @@ export default function CityManagement(){
           data?.cities?.map((ele, i) => {
             arr.push({
               index: i + 1,
+              id: ele._id,
               name: ele.name,
               state: ele.state,
               country:ele.country,
@@ -151,13 +152,13 @@ export default function CityManagement(){
           if (response.status === 200) {
             const filterList = list.filter((item) => item.id !== rowId)
               setList(filterList)
-              setIsOpen(true)
+              setIsOpen(false)
                 return  response.json()
           }         
         })
         .then((data)=>{
     if(data.success ) toast.success(data.message)
-    else toast.error(data.message)
+    else toast.success(data.message)
         })
       .catch((error) => {
           console.error("Error occurred while deleting:", error);

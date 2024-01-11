@@ -6,6 +6,8 @@ import Table from "../../Common/Table";
 import Filter_Option from "../../Common/Filter_option";
 import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
+import { toast } from "react-toastify";
+import DeleteModal from "../../DeleteModel/DeleteModel";
 import {
   RemoveRedEye,
   Lock,
@@ -23,6 +25,9 @@ export default function RentalPackageManagement(){
     const [filter,setFilter] = useState(initialFilter);
     const navigate = useNavigate();
     const [list,setList] = useState();
+    const [isOpen ,setIsOpen] = useState(false)
+    const [id, setId] = useState(null)
+    const [deleteInfo, setDeleteInfo] = useState(null)
 
     useEffect(()=>{
         fetch(url, { method: "GET" })
@@ -34,6 +39,7 @@ export default function RentalPackageManagement(){
         data?.packages?.map((ele, i) => {
           arr.push({
             index: i + 1,
+            id: ele._id,
             name: ele.name,
             maxDuration: ele.maxDuration,
             maxDistance: ele.maxDistance.$numberDecimal ,
@@ -127,6 +133,30 @@ export default function RentalPackageManagement(){
         })
     }
 
+    const deleteModel=(rowId)=>{
+      const deleteUrl = BASE_URL + "/rentalPackage/" + rowId;
+  
+    fetch(deleteUrl, {
+      method: "DELETE",
+    })
+      .then((response) => {
+        if (response.status === 200) {
+        const filterModel = list.filter((data)=> data.id !== rowId)
+        setList(filterModel)
+        setIsOpen(false)
+        return response.json()
+        } 
+      })
+      .then((item)=>{
+        if(item.success) toast.success(item.message) 
+        else toast.error.apply(item.message)
+      })
+      .catch((error) => {
+        console.error("Error occurred while deleting admin:", error);
+      });
+  
+    }
+
     function handleClick2(e){
         e.preventDefault();
     }
@@ -137,6 +167,13 @@ export default function RentalPackageManagement(){
            <div class="row">
     <div class="col-lg-13">
       <div class="card">
+      <DeleteModal
+        info={deleteInfo}
+        show={isOpen}
+        setShow={setIsOpen}
+        handleDelete={deleteModel}
+        arg={id}
+      />
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
                <BtnDark handleClick={handleClick}
@@ -170,7 +207,14 @@ export default function RentalPackageManagement(){
           <IconButton>
             <ModeEditOutline />
           </IconButton>
-          <IconButton>
+          <IconButton   onClick={() => {
+            setDeleteInfo({
+              message: `Do You Really Want To Delete ${row.original?.id}`,
+              header: "Delete Model",
+            });
+            setIsOpen(true);
+            setId(row.original.id);
+          }}>
             <DeleteForever />
           </IconButton>
         </Box>

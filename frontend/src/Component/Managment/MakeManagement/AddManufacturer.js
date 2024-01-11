@@ -2,14 +2,12 @@ import { useState } from "react";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import Text_Input from "../../Common/Inputs/Text_Input";
 import { useNavigate } from "react-router-dom";
-import Management_container from "../../Common/Management_container";
-import BtnDark from "../../Common/Buttons/BtnDark";
 import BASE_URL from "../../../config/config";
 import { toast } from "react-toastify";
-
+import { Modal } from "react-bootstrap";
 const url = BASE_URL + "/make/";
 
-export default function AddMake() {
+export default function AddManufacturer({show,setShow}) {
   const [make, setMake] = useState({});
   const [successMsg, setSuccessMsg] = useState("");
   const navigate = useNavigate();
@@ -27,25 +25,24 @@ export default function AddMake() {
       .then((data) => {
         if (data.success) {
           toast.success(data.message);
-          navigate(-1);
+          setShow(false)
         } else toast.error(data.message);
       })
       .catch((e) => toast.error("some error occured"));
   }
 
   return (
-    <Management_container title={"New Manufacturer"}>
-      <div
+    <Modal size="" show={show} onHide={() => setShow(false)}>
+    <Modal.Header closeButton>
+      <Modal.Title>Add New  Manufacturer</Modal.Title>
+    </Modal.Header>
+
+    <Modal.Body>
+            <div
         class="row"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
       >
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-body">
+        <div class="col-lg-12">
+        
               <form>
                 <Text_Input
                   setInput={setMake}
@@ -60,14 +57,15 @@ export default function AddMake() {
                   lebel_text={"Status : "}
                   setKey={"status"}
                 />
-
-                <BtnDark title={"Add"} handleClick={handleSubmit} />
-                {successMsg}
               </form>
             </div>
           </div>
-        </div>
-      </div>
-    </Management_container>
+      </Modal.Body>
+          <Modal.Footer>
+          <button onClick={handleSubmit} type="button" class="btn btn-success">
+                  Save
+                </button>
+          </Modal.Footer>
+        </Modal>
   );
 }

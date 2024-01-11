@@ -38,7 +38,8 @@ export default function StateManagement (){
                 id: ele._id,
                 name: ele.name,
                 stateCode: ele.stateCode,
-                country:ele.country,
+                country: ele.country?.id,
+                countries: ele.country?.name,
                 status: ele.status,
                 createdAt: ele.createdAt || "",
               });
@@ -66,7 +67,7 @@ export default function StateManagement (){
             size: 100,
           },
           {
-            accessorKey:"country",
+            accessorKey:"countries",
             header:"Country"
           },
           {
@@ -88,6 +89,10 @@ export default function StateManagement (){
     function handleClick(){
         navigate("/addState")
     }
+    function handleUpdate(data){
+      navigate("/updateState",{state:{data:data}} )
+
+  }
 
     function handleSubmit(){
         fetch(`${url}?name=${filter.name}&country=${filter.country}&status=${filter.status}`,{
@@ -180,7 +185,7 @@ export default function StateManagement (){
           <IconButton>
             <Lock />
           </IconButton>
-          <IconButton>
+          <IconButton  onClick={()=>{handleUpdate(row.original)}}>
             <ModeEditOutline />
           </IconButton>
           <IconButton>

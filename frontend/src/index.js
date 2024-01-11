@@ -8,9 +8,7 @@ import ErrorPage from "./errorPage/ErrorPage";
 import Home from "./Component/Home/Home";
 import AdminManagement from "./Component/Managment/AdminManagement/Admin.management.js";
 import MakeManagement from "./Component/Managment/MakeManagement/Makemanagement";
-import AddMake from "./Component/Managment/MakeManagement/AddMake";
 import ModelManagement from "./Component/Managment/ModelManagement/ModelManagement";
-import AddModel from "./Component/Managment/ModelManagement/AddModel";
 import CountryManagement from "./Component/Managment/CountryManagement/CountryManagement";
 import Addcountry from "./Component/Managment/CountryManagement/AddCountry";
 import StateManagement from "./Component/Managment/StateManagement/StateManagement";
@@ -65,10 +63,11 @@ import AddAvaialibilityManagement from "./Component/Managment/AvaialibilityManag
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import VehicleCategoryManagement from "./Component/Managment/VehicleCategoryMangement/VehicleCategoryMangement.js";
-import AddVehicleCategory from "./Component/Managment/VehicleCategoryMangement/AddVehicleCategory.js";
 import MakeUpdateManagement from "./Component/Managment/MakeManagement/MakeUpdateManagement.js";
 import ModelUpdate from "./Component/Managment/ModelManagement/ModelUpdate.js";
 import UpdateVehicleType from "./Component/Managment/VehicleTypeManagement/UpdateVehicleType.js";
+import UpdateCountry from "./Component/Managment/CountryManagement/UpdateCountry.js";
+import UpdateState from "./Component/Managment/StateManagement/UpdateState.js";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import Store from "./Redux/Store/Store.js";
@@ -81,9 +80,7 @@ const router = createBrowserRouter([
       { path: "/", element: <Home /> },
       { path: "adminManagement", element: <AdminManagement /> },
       { path: "manufacturer", element: <MakeManagement /> },
-      { path: "addManufacturer", element: <AddMake /> },
       { path: "modelManagement", element: <ModelManagement /> },
-      { path: "addModel", element: <AddModel /> },
       { path: "countryManagement", element: <CountryManagement /> },
       { path: "addCountry", element: <Addcountry /> },
       { path: "stateManagement", element: <StateManagement /> },
@@ -139,10 +136,7 @@ const router = createBrowserRouter([
         path: "/addAvaialibilityManagement",
         element: <AddAvaialibilityManagement />,
       },
-      {
-        path: "/addVehicleCategory",
-        element: <AddVehicleCategory />,
-      },
+
       {
         path: "/vehicleCategoryManagement",
         element: <VehicleCategoryManagement />,
@@ -158,6 +152,14 @@ const router = createBrowserRouter([
       {
         path: "/updateVehicleType",
         element: <UpdateVehicleType />,
+      },
+      {
+        path: "/updateCountry",
+        element: <UpdateCountry />,
+      },
+      {
+        path: "/updateState",
+        element: <UpdateState />,
       },
     ],
   },

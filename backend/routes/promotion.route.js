@@ -20,4 +20,13 @@ module.exports = function (app) {
     ],
     promotionController.filterPromotion
   );
+  app.delete(
+    "/test/api/v1/promotion/:id",
+    [
+      middleware.validateId.validateCountryId,
+      middleware.validateId.validateStateId,
+      middleware.validateId.validateCityId,
+    ],
+    promotionController.deletePromotion
+  );
 };

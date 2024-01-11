@@ -6,7 +6,9 @@ import BtnDark from "../../Common/Buttons/BtnDark";
 import BASE_URL from "../../../config/config";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-export default function AddModel (){
+import { Modal } from "react-bootstrap";
+
+export default function AddModel ({show,setShow}){
     const [model,setModel] = useState({
         name:"",
         make:"",
@@ -42,7 +44,7 @@ export default function AddModel (){
         .then(data=>{
             if(data.success){
                toast.success("add successfully ")  
-               navigate(-1);
+               setShow(false)
             }else{
                 toast.error("error")
             }
@@ -50,12 +52,12 @@ export default function AddModel (){
     }
 
     return(
-        <Management_container
-        title={"New Model"}>
-            <div class="row" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
-    <div class="col-lg-6">
-      <div class="card">
-        <div class="card-body">
+        <Modal size="" show={show} onHide={() => setShow(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add New  Model</Modal.Title>
+        </Modal.Header>
+    
+        <Modal.Body>
             <form>
                 <Selection_Input 
                 options={options}
@@ -77,14 +79,17 @@ export default function AddModel (){
                 lebel_text={"Status : "}
                 setKey={"status"}
                 />
-                <BtnDark
+               
+                {succMsg}
+            </form>
+            </Modal.Body>
+          <Modal.Footer>
+          <BtnDark
                 title={"Add"}
                 handleClick={handleSubmit}
                 />
-                {succMsg}
-            </form></div></div></div>
-            </div>
+          </Modal.Footer>
+        </Modal>
 
-        </Management_container>
     )
 }

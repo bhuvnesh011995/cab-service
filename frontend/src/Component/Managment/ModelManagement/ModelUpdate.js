@@ -6,15 +6,15 @@ import BtnDark from "../../Common/Buttons/BtnDark";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
-export default function ModelUpdate() {
-  const location = useLocation();
-  const data = location.state?.model || {};
+import { Modal } from "react-bootstrap";
+export default function ModelUpdate({show,setShow,data}) {
+  // const location = useLocation();
+  // const data = location.state?.model || {};
 
   const [model, setModel] = useState({});
   const [options, setOptions] = useState([]);
   const [succMsg, setSuccMsg] = useState("");
   const navigate = useNavigate()
-  console.log("dtt",data)
 
   useEffect(() => {
     setModel(data);
@@ -41,7 +41,6 @@ export default function ModelUpdate() {
       })
       .catch((error) => {
         console.error("Error updating model:", error);
-        // Handle error if needed
       });
   };
   
@@ -56,11 +55,15 @@ console.log("options",options)
   };
 
   return (
-    <Management_container title={"Update Model"}>
-      <div className="card mx-auto" style={{ width: "50%" }}>
-        <div className="card-body">
+      <Modal size="lg" show={show} onHide={()=>{setShow(false)}}>
+        <Modal.Header  closeButton>
+          <Modal.Title>
+            Add Update Modal
+          </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>                    
           <form >
-            <div className="row">
+          <div className="row">
               <div className="col-md-12">
                 <div className="mb-3">
                 <label>Manufacturer</label>
@@ -112,8 +115,7 @@ console.log("options",options)
                 handleClick={()=>handleSubmit(model)}
                 />
           </form>
-        </div>
-      </div>
-    </Management_container>
+          </Modal.Body>   
+          </Modal>
   );
 }

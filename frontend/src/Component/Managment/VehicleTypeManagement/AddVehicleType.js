@@ -7,6 +7,7 @@ import BASE_URL from "../../../config/config";
 import ReactSelect from "react-select";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { Modal } from "react-bootstrap";
 
 let initialInput = {
   img: "http://img.url.com",
@@ -18,11 +19,11 @@ let initialInput = {
 };
 
 let url = BASE_URL + "/vehicletype/";
-export default function AddVehicleType() {
+export default function AddVehicleType({show,setShow}) {
   const [vehicletype, setVehicleType] = useState(initialInput);
   const [options, setOptions] = useState();
   const [successMsg, setSuccessMsg] = useState();
-
+    
   useEffect(() => {
     fetch(BASE_URL + "/runMode/", {
       method: "GET",
@@ -76,93 +77,101 @@ export default function AddVehicleType() {
       .then((data) => {
         if (data.success) {
           toast.success(data.message);
-          navigate(-1);
+          setShow(false)
         } else toast.error(data.message);
       })
       .catch((e) => toast.error("error while added vehicle type"));
   }
 
   return (
-    <Management_container title={"Add Vehicle Type"}>
-      <div
-        class="row"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-body">
-              <form>
-                <div className="col-sm-6">
-                  <div className="mt-4">
-                    <div>
-                      <label for="formFileSm" className="form-label">
-                        select an image
-                      </label>
-                      <input
+           <Modal size="lg" show={show} onHide={()=>{setShow(false)}}>    
+                     <Modal.Header closeButton>
+                  <Modal.Title>
+                    Add New Vehicle Type
+                  </Modal.Title>
+                     </Modal.Header>
+                     <Modal.Body>                  
+           <form>
+           <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">
+                <label>file</label>
+                <input
                         className="form-control form-control-sm"
                         type="file"
                       />
-                    </div>
-                  </div>
                 </div>
-                <Text_Input
-                  lebel_text={"Name : "}
-                  setKey={"name"}
-                  setInput={setVehicleType}
-                />
-
-                <div className="d-flex align-items-center m-3">
-                  <label className="form-label me-2">Run Mode : </label>
-                  <ReactSelect
-                    options={options}
-                    isMulti
-                    onChange={handleChange}
-                  />
-                  {/* <select
-                    name="selectedStatus"
-                    defaultValue={""}
-                    multiple={true}
-                    onChange={(e) => handleChange(e)}
-                  >
-                    {optionList}
-                  </select> */}
-                </div>
-                <Text_Input
-                  lebel_text={"Seating Name : "}
-                  setKey={"seatingCapacityName"}
-                  setInput={setVehicleType}
-                />
-                <div>
-                  <label>Seating Capacity</label>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label>Name</label>
                   <input
-                    onChange={(e) =>
-                      setVehicleType((preVal) => ({
-                        ...preVal,
-                        seatingCapacity: e.target.value,
-                      }))
-                    }
-                    type="number"
-                    placeholder="Enter Number"
+                    type="text"
+                    name="name"
+                    className="form-control"
+                    onChange={(e) => {
+                      setVehicleType((prevValue) => ({ ...prevValue, name: e.target.value }));
+                    }}
                   />
                 </div>
-                <Selection_Input
-                  options={["ACTIVE", "INACTIVE"]}
-                  setInput={setVehicleType}
-                  input={vehicletype}
-                  lebel_text={"Status : "}
-                  setKey={"status"}
-                />
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+
+                    <label>Run Modes</label>
+                <ReactSelect
+                    options={options}
+                    isMulti   
+                    onChange={handleChange}
+                   />                </div>
+
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label>Seating Name :</label>
+                  <input
+                    type="text"
+                    name="name"
+                    className="form-control"
+                    onChange={(e) => {
+                      setVehicleType((prevValue) => ({ ...prevValue, seatingCapacityName: e.target.value }));
+                    }}
+                  />
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label>Seating Capacity :</label>
+                  <input
+                    type="text"
+                    name="name"
+                    className="form-control"
+                    onChange={(e) => {
+                      setVehicleType((prevValue) => ({ ...prevValue, seatingCapacity: e.target.value }));
+                    }}                                    />
+                </div>
+              </div>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label>Status</label>
+                  <select
+                    name="status"
+                    className="form-control"
+                    onChange={(e) => {
+                      setVehicleType((prevValue) => ({ ...prevValue, status: e.target.value }));
+                    }}    
+                  >
+                    <option>Choose</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="INACTIVE">INACTIVE</option>
+                  </select>
+                </div>
+              </div>
+            </div>
                 <BtnDark title={"Add"} handleClick={handleSubmit} />
                 {successMsg}
               </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </Management_container>
+              </Modal.Body>
+              </Modal>
   );
 }

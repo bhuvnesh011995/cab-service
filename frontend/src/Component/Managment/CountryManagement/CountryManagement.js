@@ -8,7 +8,7 @@ import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import { toast } from "react-toastify";
-
+import Addcountry from "./AddCountry";
 import {
   RemoveRedEye,
   Lock,
@@ -128,9 +128,10 @@ export default function CountryManagement(){
     .catch((error) => {
       console.error("Error occurred while deleting admin:", error);
     });
-
   }
-          console.log("list",list)
+    function handleUpdate(data){
+      navigate('/updateCountry',{state:{data:data}})
+      }
 
 
     function handleClick2(){
@@ -151,6 +152,7 @@ export default function CountryManagement(){
         handleDelete={deleteModel}
         arg={id}
       />
+      
             <div class="card-body">
         <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
             <BtnDark handleClick={handleClick} title={"Add Country"} />
@@ -183,7 +185,7 @@ export default function CountryManagement(){
           <IconButton>
             <Lock />
           </IconButton>
-          <IconButton>
+          <IconButton   onClick={()=>{handleUpdate(row.original)}}>
             <ModeEditOutline />
           </IconButton>
           <IconButton   onClick={() => {
