@@ -8,6 +8,7 @@ import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import { toast } from "react-toastify";
+import Addcountry from "./AddCountry";
 import {
   RemoveRedEye,
   Lock,
@@ -151,6 +152,7 @@ export default function CountryManagement(){
         handleDelete={deleteModel}
         arg={id}
       />
+      
             <div class="card-body">
         <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
             <BtnDark handleClick={handleClick} title={"Add Country"} />

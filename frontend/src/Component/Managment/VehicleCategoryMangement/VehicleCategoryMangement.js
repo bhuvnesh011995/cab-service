@@ -23,11 +23,13 @@ export default function VehicleCategoryManagement() {
   const [list, setList] = useState();
   const [isOpen, setIsOpen] = useState(false)
   const [show, setShow] = useState(false)
+
   const [id, setId] = useState(null) 
   const [deleteInfo, setDeleteInfo] = useState(null)
   const navigate = useNavigate();
   const url = BASE_URL+"/make/filter/";
   const {admin}=useContext(authContext) 
+  const [updateData,setUpdateData] = useState(null)
   const [permissions, setPermissions] = useState({
     canView: false,
     canEdit: false,
@@ -136,9 +138,9 @@ function handleDelete(rowId) {
       }
       );
   }
-  function handleClick(data){
-    navigate('/addVehicleCategory',{state:{id:data._id,vehicleCategory:data.vehicleCategory,status:data.status}})
-    }
+  // function handleClick(data){
+  //   navigate('/addVehicleCategory',{state:{id:data._id,vehicleCategory:data.vehicleCategory,status:data.status}})
+  //   }
     
   return (
     <Management_container title={"VehicleCategory"}>
@@ -152,7 +154,7 @@ function handleDelete(rowId) {
         handleDelete={handleDelete}
         arg={id}
       />
-      {show && <AddVehicleCategory show={show} setShow={setShow} />}
+      {show && <AddVehicleCategory show={show} setShow={setShow}  viewData={updateData} setViewData={setUpdateData}  />}
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
     
@@ -192,7 +194,16 @@ function handleDelete(rowId) {
           <IconButton>
             <Lock />
           </IconButton  >
-          <IconButton   onClick={() => handleClick(row.original)}>
+          <IconButton
+           onClick={() => {
+            let obj = {
+              ...row.original, 
+              vehicleCategory:row.original.vehicleCategory,
+              status:row.original.status
+            };
+            setUpdateData(obj);
+            setShow(true);
+          }}>
             <ModeEditOutline />
           </IconButton>
           <IconButton 

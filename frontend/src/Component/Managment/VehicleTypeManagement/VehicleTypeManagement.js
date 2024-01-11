@@ -12,6 +12,7 @@ import {RemoveRedEye,Lock,ModeEditOutline ,DeleteForever } from '@mui/icons-mate
 import { toast } from "react-toastify";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import AddVehicleType from "../VehicleTypeManagement/AddVehicleType"
+import UpdateVehicleType from "./UpdateVehicleType";
 let url = BASE_URL+"/vehicletype/filter/"
 
 const initialFilter = {
@@ -26,8 +27,11 @@ export default function VehicleTypeManagement(){
     const navigate = useNavigate()
     const [isOpen ,setIsOpen] = useState(false)
     const [show ,setShow] = useState(false)
+    const [isTrue ,setIsTrue] = useState(false)
   const [id, setId] = useState(null)
   const [deleteInfo, setDeleteInfo] = useState(null)
+  const [updateData, setUpdateData] = useState(null)
+
     useEffect(()=>{
         fetch(BASE_URL+"/runMode/",{
             method:"GET",
@@ -155,7 +159,8 @@ export default function VehicleTypeManagement(){
     }
 
     function handleUpdate(data){
-      navigate('/updateVehicleType',{state:{model:data}})
+      setUpdateData(data)
+       setIsTrue(true)
       }
 
     function handleClick2(e){
@@ -174,6 +179,7 @@ export default function VehicleTypeManagement(){
         handleDelete={handleDelete}
         arg={id}
       />
+  {isTrue &&  <UpdateVehicleType show={isTrue} setShow={setIsTrue} data={updateData} />}
       {show && <AddVehicleType show={show} setShow={setShow} />}
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>

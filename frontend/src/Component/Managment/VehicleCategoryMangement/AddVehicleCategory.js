@@ -13,7 +13,8 @@ import { useEffect } from "react";
 const url = BASE_URL+'/vehicleCategory/'
 const api = BASE_URL+'/vehicleCategory/:id'
 
-export default function AddVehicleCategory({show,setShow}){
+export default function AddVehicleCategory({show,setShow,viewData,  setViewData,
+}){
   const [successMsg,setSuccessMsg] = useState("")
   const location = useLocation();
    const navigate = useNavigate();
@@ -33,11 +34,20 @@ export default function AddVehicleCategory({show,setShow}){
     if (id) {
       reset({vehicleCategory,status});
     }
-
   }, []);
-    
+
+  useEffect(() => {
+    if (viewData) {
+      reset(viewData);
+    }
+    return () => {
+      setViewData(null);
+    };
+  }, []);
+ 
+   console.log("view",viewData)  
       const onSubmit = (formData,id,data) => {
-        if (!id) {
+        if (!viewData) {
         axios.post(url, formData)
             .then((response) => {
                 if (response.data.success) 
@@ -60,6 +70,7 @@ export default function AddVehicleCategory({show,setShow}){
               if (response.data.success) {
                 toast.success(response.data.message)
                 navigate(-1)
+                setShow(false)            
                 setSuccessMsg(
                   <span style={{ backgroundColor: "lightgreen" }}>{response.data.message}</span>
                 );
@@ -84,7 +95,7 @@ export default function AddVehicleCategory({show,setShow}){
       </Modal.Header>
 
       <Modal.Body>          
-        <form onSubmit={handleSubmit((formData) => onSubmit(formData,id,data))}>
+        <form onSubmit={handleSubmit((formData) => onSubmit(formData,viewData._id,data))}>
        <div className="row">
         <div className="col-md-12">
         <div className="mb-4">

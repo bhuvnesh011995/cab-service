@@ -7,9 +7,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import ReactSelect from "react-select";
 import { toast } from "react-toastify";
-export default function UpdateVehicleType() {
-  const location = useLocation();
-  const data = location.state?.model || {};
+import { Modal } from "react-bootstrap";
+export default function UpdateVehicleType({show,setShow,data}) {
+
 
   const [model, setModel] = useState({...data});
   const [runMode, setRunMode] = useState([]);
@@ -61,14 +61,18 @@ export default function UpdateVehicleType() {
   };
 
   return (
-    <Management_container title={"Update VehicleType"}>
-      <div className="card mx-auto" style={{ width: "50%" }}>
-        <div className="card-body">
+    <Modal size="lg" show={show} onHide={()=>{setShow(false)}}>    
+    <Modal.Header closeButton>
+ <Modal.Title>
+   Add Update Vehicle Type
+ </Modal.Title>
+    </Modal.Header>
+    <Modal.Body>     
           <form >
             <div className="row">
               <div className="col-md-12">
                 <div className="mb-3">
-                <label>Manufacturer</label>
+                <label>files</label>
                 <input
                         className="form-control form-control-sm"
                         type="file"
@@ -153,8 +157,7 @@ export default function UpdateVehicleType() {
                 handleClick={()=>handleSubmit(model)}
                 />
           </form>
-        </div>
-      </div>
-    </Management_container>
+          </Modal.Body>
+              </Modal>
   );
 }

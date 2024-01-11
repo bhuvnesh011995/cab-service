@@ -4,6 +4,7 @@ import Text_Input from "../../Common/Inputs/Text_Input";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import BASE_URL from "../../../config/config";
+import { Modal } from "react-bootstrap";
 
 const initialState = {
     name:"",
@@ -11,7 +12,7 @@ const initialState = {
     dialCode:"",
     status:""
 }
-export default function Addcountry(){
+export default function Addcountry({show,setShow}){
     const [country,setCountry] = useState(initialState)
     const [successMsg,setSuccessMsg] = useState();
 
@@ -34,12 +35,12 @@ export default function Addcountry(){
         })
     }
     return(
-        <Management_container
-        title={"Add Country"}>
-            <div class="row" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
-    <div class="col-lg-6">
-      <div class="card">
-        <div class="card-body">
+        <Modal size="lg" show={show} onHide={() => setShow(false)}>
+      <Modal.Header closeButton>
+        <Modal.Title>Add New VehicleCategory </Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>   
 
             <form>
             <Text_Input 
@@ -72,9 +73,8 @@ export default function Addcountry(){
                 handleClick={handleSubmit}
                 />
                 {successMsg}
-            </form></div></div></div>
-            </div>
-
-        </Management_container>
+            </form>  </Modal.Body>
+       </Modal>
+          
     )
 }
