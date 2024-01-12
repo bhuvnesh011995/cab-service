@@ -5,6 +5,7 @@ import Text_Input from "../../Common/Inputs/Text_Input";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../config/config";
+import { Modal } from "react-bootstrap";
 
 
 let initialState = {
@@ -15,7 +16,7 @@ let initialState = {
 }
 const url = BASE_URL+"/state/"
 
-export default function AddState(){
+export default function AddState({show,setShow}){
     const [state,setState] = useState(initialState);
     const [options,setOptions] = useState();
     const [successMsg,setSuccessMsg] = useState("")
@@ -55,11 +56,12 @@ export default function AddState(){
             setSuccessMsg(<div style={{backgroundColor:"red"}}>{e.message}</div>))
     }
     return(
-        <Management_container title={"Add State"}>
-            <div class="row" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
-    <div class="col-lg-6">
-      <div class="card">
-        <div class="card-body">
+        <Modal size="lg" show={show} onHide={() => setShow(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Add New VehicleCategory </Modal.Title>
+        </Modal.Header>
+  
+        <Modal.Body>  
             <form>
                 <Selection_Input
                 options={options}
@@ -95,8 +97,8 @@ export default function AddState(){
                 {successMsg} 
                 </div>
                 
-            </form></div></div></div>
-            </div>
-        </Management_container>
+            </form>   </Modal.Body>
+       </Modal>
+          
     )
 }
