@@ -173,15 +173,6 @@ const router = createBrowserRouter([
     element: <ResetPass />,
   },
   {
-    path: "/login",
-    element: <SignIn />,
-  },
-
-  {
-    path: "/reset",
-    element: <ResetPass />,
-  },
-  {
     path: "/Permision",
     element: <Permision />,
   },
@@ -194,9 +185,9 @@ root.render(
     <Provider store={Store}>
       <QueryClientProvider client={queryClient}>
         <ToastContainer />
-        <AuthProvider>
-          <RouterProvider router={router} />
-        </AuthProvider>
+        {/* <AuthProvider> */}
+        <RouterProvider router={router} />
+        {/* </AuthProvider> */}
       </QueryClientProvider>
     </Provider>
   </>

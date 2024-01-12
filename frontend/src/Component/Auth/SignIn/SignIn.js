@@ -7,9 +7,16 @@ import { useForm } from "react-hook-form";
 import { namePattern, passwordPattern } from "../../../Common/validations";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getError,
+  getStatus,
+  loggedUser,
+  login,
+} from "../../../Redux/features/authReducer";
 
 export default function SignIn() {
-  const { setAdmin, admin } = useContext(authContext);
+  // const { setAdmin, admin } = useContext(authContext);
   const navigate = useNavigate();
 
   const {
@@ -19,33 +26,24 @@ export default function SignIn() {
     reset,
     formState: { errors },
   } = useForm();
-
+  const dispatch = useDispatch();
+  const status = useSelector(getStatus);
+  const error = useSelector(getError);
   useEffect(() => {
-    if (admin.token || localStorage.getItem("token")) navigate(-1 || "/");
-  }, []);
+    if (status === "idle") dispatch(loggedUser());
+    else if (status === "success") {
+      toast.info("user already loggedin");
+      navigate("/");
+    } else if (status === "succeeded") {
+      toast.success("login successfull");
+      navigate("/");
+    } else if (status === "error")
+      toast.error(error.message || "some error occured");
+  }, [status, loggedUser]);
 
   const loginUser = async (userData) => {
-    try {
-      const response = await axios.post(BASE_URL + "/auth/signIn", userData);
-      if (response.status == 200) {
-        setAdmin({
-          name: response.data.name,
-          email: response.data.email,
-          username: response.data.name,
-          token: response.data.token,
-          role: response.data.role,
-          permissions: response.data.permissions,
-        });
-        localStorage.setItem("token", response.data.token);
-        toast.success("login successfull");
-        navigate(-1 || "/");
-      }
-    } catch (error) {
-      toast.error("wrong username password");
-      console.log(error.response);
-    }
+    dispatch(login(userData));
   };
-
 
   return (
     // <div  className="card-body m-3 pt-0">

@@ -8,7 +8,7 @@ module.exports = function (app) {
   app.post(
     "/test/api/v1/auth/reset/:username",
     [varifyUser],
-    userController.changePass,
+    userController.changePass
   );
-  app.get("/test/api/v1/auth/loginedUser/:token", userController.loginedUser);
+  app.get("/test/api/v1/auth/loggedUser", userController.loginedUser);
 };
