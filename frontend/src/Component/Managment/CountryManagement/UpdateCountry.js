@@ -7,11 +7,11 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../config/config";
+import { Modal } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
-export default function UpdateCountry(){
-    const location = useLocation();
-    const data = location.state?.data || {};
+export default function UpdateCountry({show,setShow,data}){
+
     const [country,setCountry] = useState({...data})
     const [successMsg,setSuccessMsg] = useState();
     const navigate = useNavigate()
@@ -37,9 +37,12 @@ export default function UpdateCountry(){
 
 
     return (
-        <Management_container title={"Update Country"}>
-          <div className="card mx-auto" style={{ width: "50%" }}>
-            <div className="card-body">
+      <Modal size="lg" show={show} onHide={() => setShow(false)}>
+      <Modal.Header closeButton>
+        <Modal.Title>Add New VehicleCategory </Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>   
               <form >
                 <div className="row">
                 
@@ -105,9 +108,8 @@ export default function UpdateCountry(){
                     handleClick={()=>handleSubmit(country)}
                     />
               </form>
-            </div>
-          </div>
-        </Management_container>
+              </Modal.Body>
+       </Modal>
       );
     }
     

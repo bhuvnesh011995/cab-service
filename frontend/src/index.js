@@ -63,7 +63,7 @@ import AddAvaialibilityManagement from "./Component/Managment/AvaialibilityManag
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import VehicleCategoryManagement from "./Component/Managment/VehicleCategoryMangement/VehicleCategoryMangement.js";
-import MakeUpdateManagement from "./Component/Managment/MakeManagement/MakeUpdateManagement.js";
+// import MakeUpdateManagement from "./Component/Managment/MakeManagement/MakeUpdateManagement.js";
 import ModelUpdate from "./Component/Managment/ModelManagement/ModelUpdate.js";
 import UpdateVehicleType from "./Component/Managment/VehicleTypeManagement/UpdateVehicleType.js";
 import UpdateCountry from "./Component/Managment/CountryManagement/UpdateCountry.js";
@@ -141,10 +141,10 @@ const router = createBrowserRouter([
         path: "/vehicleCategoryManagement",
         element: <VehicleCategoryManagement />,
       },
-      {
-        path: "/makeUpdateManagement",
-        element: <MakeUpdateManagement />,
-      },
+      // {
+      //   path: "/makeUpdateManagement",
+      //   element: <MakeUpdateManagement />,
+      // },
       {
         path: "/modelUpdate",
         element: <ModelUpdate />,
