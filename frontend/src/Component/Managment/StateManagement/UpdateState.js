@@ -9,9 +9,8 @@ import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../config/config";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
-export default function UpdateState(){
-    const location = useLocation();
-    const data = location.state?.data || {};
+import { Modal } from "react-bootstrap";
+export default function UpdateState({show,setShow,data}){
     const [state,setState] = useState({...data})
     const [country,setCountry] = useState([])
     const [successMsg,setSuccessMsg] = useState();
@@ -48,9 +47,12 @@ export default function UpdateState(){
 
 
     return (
-        <Management_container title={"Update Country"}>
-          <div className="card mx-auto" style={{ width: "50%" }}>
-            <div className="card-body">
+      <Modal size="lg" show={show} onHide={() => setShow(false)}>
+      <Modal.Header closeButton>
+        <Modal.Title>Add Update State </Modal.Title>
+      </Modal.Header>
+
+      <Modal.Body>  
               <form >
                 <div className="row">
                 <div className="col-md-12">
@@ -123,9 +125,8 @@ export default function UpdateState(){
                     handleClick={()=>handleSubmit(state)}
                     />
               </form>
-            </div>
-          </div>
-        </Management_container>
+              </Modal.Body>
+              </Modal>
       );
     }
     

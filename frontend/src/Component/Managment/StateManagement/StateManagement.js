@@ -11,6 +11,7 @@ import {RemoveRedEye,Lock,ModeEditOutline ,DeleteForever } from '@mui/icons-mate
 import { toast } from "react-toastify";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import AddState from "../StateManagement/AddState"
+import UpdateState from "../StateManagement/UpdateState"
 const initialFilter = {
     name:"",
     country:"",
@@ -24,8 +25,10 @@ export default function StateManagement (){
     const url = BASE_URL+"/states/filter/";
     const [isOpen ,setIsOpen] = useState(false)
     const [open ,setOpen] = useState(false)
+    const [isTrue ,setIsTrue] = useState(false)
     const [id, setId] = useState(null)
     const [deleteInfo, setDeleteInfo] = useState(null)
+    const [updateData,setUpdateData] = useState([])
 
     useEffect(() => {
         fetch(url, {
@@ -92,8 +95,8 @@ export default function StateManagement (){
         navigate("/addState")
     }
     function handleUpdate(data){
-      navigate("/updateState",{state:{data:data}} )
-
+      setUpdateData(data)
+      setIsTrue(true)
   }
 
     function handleSubmit(){
@@ -156,7 +159,8 @@ export default function StateManagement (){
         handleDelete={handleDelete}
         arg={id}
       />
-     {open && <AddState show={open} setShow={setOpen}/>}
+   {isTrue &&  <UpdateState show={isTrue} setShow={setIsTrue} data={updateData} />}
+     {open && <AddState show={open} setShow={setOpen}  />}
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
             <BtnDark handleClick={()=>{setOpen(true)}} title={"Add State"} />
