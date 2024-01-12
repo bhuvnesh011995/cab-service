@@ -66,7 +66,7 @@ export default function AdminManagement() {
     if (status === "idle") dispatch(fetchAdmins());
     // fetchAdmins({});
   }, []);
-  console.log(error, "error");
+
   const columns = useMemo(
     () => [
       {
@@ -119,7 +119,8 @@ export default function AdminManagement() {
   }
 
   function handleSubmit(e) {
-    // fetchAdmins(filter);
+    console.log("hello", filter);
+    dispatch(fetchAdmins(filter));
   }
 
   return (

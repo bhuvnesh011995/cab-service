@@ -9,9 +9,16 @@ let initialState = {
 };
 export const fetchAdmins = createAsyncThunk(
   "admins/fetchAdmins",
-  async (_, { rejectWithValue }) => {
+  async ({ name, username, status, from, to } = {}, { rejectWithValue }) => {
     try {
-      let response = await axios.get(BASE_URL + "/admins");
+      let url = new URL("/test/api/v1/admin/filter", BASE_URL);
+      if (name) url.searchParams.set("name", name);
+      if (username) url.searchParams.set("username", username);
+      if (status) url.searchParams.set("status", status);
+      if (from) url.searchParams.set("from", from);
+      if (to) url.searchParams.set("to", to);
+      console.log(url.href, "url");
+      let response = await axios.get(url.href);
       if (response.status === 200) return response.data;
       else
         return rejectWithValue({
@@ -60,7 +67,7 @@ const adminsSlice = createSlice({
     builder.addCase(fetchAdmins.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.error = null;
-      state.admins = state.admins.concat(action.payload);
+      state.admins = action.payload;
     });
     builder.addCase(fetchAdmins.rejected, (state, action) => {
       state.status = "error";

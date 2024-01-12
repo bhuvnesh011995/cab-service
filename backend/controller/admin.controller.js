@@ -37,7 +37,7 @@ exports.filter = async function (req, res, next) {
         createdAt: 1,
       },
     });
-    console.log(query[0].$match.$or);
+
     let admins = await admin.aggregate(query);
 
     res.status(200).json(admins).end();

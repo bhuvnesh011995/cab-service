@@ -1,7 +1,8 @@
 const admin = require("../model/admin.model");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-
+const { promisify } = require("util");
+const verifyToken = promisify(jwt.verify);
 const signIn = async function (req, res, next) {
   try {
     const { username, password } = req.body;
@@ -163,7 +164,8 @@ const updateAdminData = async (req, res, next) => {
 
 const loginedUser = async (req, res, next) => {
   try {
-    const tokenData = jwt.verify(req.params.token, "abc 123 xyz");
+    const tokenData = await verifyToken(req.params.token, "abc 123 xyz");
+
     let user = await admin.findOne({
       _id: tokenData.id,
     });
@@ -177,7 +179,9 @@ const loginedUser = async (req, res, next) => {
       permissions: user.permissions,
     });
   } catch (err) {
-    console.error(err);
+    console.log("hi");
+    console.log(err.name);
+    console.log(err.expiredAt);
   }
 };
 
