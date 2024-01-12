@@ -10,6 +10,7 @@ import { Box, IconButton } from '@mui/material';
 import {RemoveRedEye,Lock,ModeEditOutline ,DeleteForever } from '@mui/icons-material/';
 import { toast } from "react-toastify";
 import DeleteModal from "../../DeleteModel/DeleteModel";
+import AddState from "../StateManagement/AddState"
 const initialFilter = {
     name:"",
     country:"",
@@ -22,6 +23,7 @@ export default function StateManagement (){
     const navigate = useNavigate();
     const url = BASE_URL+"/states/filter/";
     const [isOpen ,setIsOpen] = useState(false)
+    const [open ,setOpen] = useState(false)
     const [id, setId] = useState(null)
     const [deleteInfo, setDeleteInfo] = useState(null)
 
@@ -154,9 +156,10 @@ export default function StateManagement (){
         handleDelete={handleDelete}
         arg={id}
       />
+     {open && <AddState show={open} setShow={setOpen}/>}
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
-            <BtnDark handleClick={handleClick} title={"Add State"} />
+            <BtnDark handleClick={()=>{setOpen(true)}} title={"Add State"} />
         </div>
         <Filter_Option 
             input={filter}

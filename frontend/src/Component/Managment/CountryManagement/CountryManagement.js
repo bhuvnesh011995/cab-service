@@ -8,7 +8,8 @@ import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import { toast } from "react-toastify";
-import Addcountry from "./AddCountry";
+import AddCountry from "./AddCountry";
+import UpdateCountry from "./UpdateCountry";
 import {
   RemoveRedEye,
   Lock,
@@ -28,9 +29,11 @@ export default function CountryManagement(){
     const navigate = useNavigate();
     const url = BASE_URL+"/country/filter/";
     const [isOpen ,setIsOpen] = useState(false)
+    const [isTrue ,setIsTrue] = useState(false)
+    const [updateData,setUpdateData ] = useState([])
   const [id, setId] = useState(null)
   const [deleteInfo, setDeleteInfo] = useState(null)
-
+   const [open ,setOpen] = useState(false)
     useEffect(()=>{
         fetch(url,{
             method:"GET"
@@ -83,10 +86,6 @@ export default function CountryManagement(){
       //   header: "Created At",
       // }
     ],[])
-
-    function handleClick(){
-        navigate("/addCountry")
-    }
     function handleSubmit(){
         fetch(`${url}?name=${filter.name}&status=${filter.status}`,{
             method:"GET"
@@ -130,8 +129,9 @@ export default function CountryManagement(){
     });
   }
     function handleUpdate(data){
-      navigate('/updateCountry',{state:{data:data}})
-      }
+     setIsTrue(true)
+     setUpdateData(data)
+    }
 
 
     function handleClick2(){
@@ -152,10 +152,12 @@ export default function CountryManagement(){
         handleDelete={deleteModel}
         arg={id}
       />
-      
+      {open && <AddCountry show={open} setShow={setOpen} />}
+      {isTrue && <UpdateCountry show={isTrue} setShow={setIsTrue}  data={updateData}/>}
+
             <div class="card-body">
         <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
-            <BtnDark handleClick={handleClick} title={"Add Country"} />
+            <BtnDark handleClick={()=>{setOpen(true)}} title={"Add Country"} />
         </div>
         <Filter_Option 
             input={filter}

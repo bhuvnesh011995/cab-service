@@ -11,6 +11,7 @@ import { Box, IconButton } from '@mui/material';
 import { authContext } from "../../../Context/AuthContext";
 import { useContext } from "react";
 import AddManufacturer from "./AddManufacturer";
+import UpdateManufacturer from "./UpdateManufacturer";
 // import {authContext} from "../../Context/AuthContext"
 // import { useContext } from "react";
 
@@ -22,6 +23,8 @@ export default function MakeManagement() {
   const [filter, setFilter] = useState(initialFilter);
   const [list, setList] = useState();
   const [isOpen,setIsOpen] = useState(false);
+  const [open,setOpen] = useState(false);
+  const [updateData,setUpdateData] = useState([])
   const navigate = useNavigate();
   const url = BASE_URL+"/make/filter/";
   const {admin}=useContext(authContext) 
@@ -163,9 +166,9 @@ function handleDelete(rowId) {
       );
   }
   function handleUpdate(data){
-    console.log(data)
-    navigate('/makeUpdateManagement',{state:{Make:data}})
-    }
+   setUpdateData(data)
+   setOpen(true)
+  }
     
   return (
     <Management_container title={"Manufacture"}>
@@ -173,6 +176,8 @@ function handleDelete(rowId) {
     <div class="col-lg-13">
       <div class="card">
       {isOpen && <AddManufacturer show={isOpen} setShow={setIsOpen}   />}
+      {open && <UpdateManufacturer show={open} setShow={setOpen} data={updateData}   />}
+
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
     
