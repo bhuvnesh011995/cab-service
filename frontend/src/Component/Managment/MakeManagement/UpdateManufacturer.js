@@ -1,25 +1,16 @@
 import { useState } from "react";
-import Selection_Input from "../../Common/Inputs/Selection_input";
-import Text_Input from "../../Common/Inputs/Text_Input";
-import { useNavigate } from "react-router-dom";
-import Management_container from "../../Common/Management_container";
-import BtnDark from "../../Common/Buttons/BtnDark";
-import BASE_URL from "../../../config/config";
-import { useLocation } from "react-router-dom";
 import { Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from 'react-redux'
+import { putManufacturer } from "../../../Redux/features/ManufacturerReducer";
 export default function UpdateManufacturer({ show, setShow, data }) {
 
   const [manufacturer, setManufacturer] = useState({ ...data });
 
-  const [successMsg, setSuccessMsg] = useState("");
-  const navigate = useNavigate();
    const dispatch = useDispatch()
-  // const url = BASE_URL + "/make/update/" + make.id;
     const handleUpdate =()=>{
-      dispatch(({ id: manufacturer.id, manufacturer }))
+      dispatch(putManufacturer({ id: manufacturer._id ,newData:manufacturer }))
+      setShow(false)
     }
- 
 
   return (
     <Modal size="lg" show={show} onHide={() => setShow(false)}>
@@ -41,8 +32,8 @@ export default function UpdateManufacturer({ show, setShow, data }) {
                   name="name"
                   placeholder="Enter Name"
                   required
-                  value={data.name}
-               onChange={(e)=>{setManufacturer((prevValue) => ({ ...prevValue ,name:e.target.value}))}}
+                  value={manufacturer.name}
+               onChange={(e)=>{setManufacturer((prevValue) => ({ ...prevValue,name:e.target.value}))}}
                   />
               </div>    </div>
               <div className="col-md-12">

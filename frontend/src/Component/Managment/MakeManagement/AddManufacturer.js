@@ -1,34 +1,23 @@
 import { useState } from "react";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import Text_Input from "../../Common/Inputs/Text_Input";
-import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../config/config";
 import { toast } from "react-toastify";
 import { Modal } from "react-bootstrap";
-const url = BASE_URL + "/make/";
-
+import {useDispatch ,useSelector} from "react-redux";
+import {postManufacturer,fetchManufacturer} from "../../../Redux/features/ManufacturerReducer";
 export default function AddManufacturer({show,setShow}) {
   const [make, setMake] = useState({});
   const [successMsg, setSuccessMsg] = useState("");
-  const navigate = useNavigate();
-
+  const dispatch = useDispatch() 
+  
   function handleSubmit(e) {
     e.preventDefault();
-    fetch(url, {
-      method: "POST",
-      body: JSON.stringify(make),
-      headers: {
-        "Content-type": "application/json; charset=UTF-8",
-      },
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          toast.success(data.message);
-          setShow(false)
-        } else toast.error(data.message);
-      })
-      .catch((e) => toast.error("some error occured"));
+   dispatch(postManufacturer(make))
+  }
+  const manufacturerStatus = useSelector((state) => state.manufacturer.status);
+     if(manufacturerStatus === "succeeded" ){
+    dispatch(fetchManufacturer());
   }
 
   return (

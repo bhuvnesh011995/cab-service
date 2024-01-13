@@ -97,18 +97,19 @@ exports.deleteMakeid = async function (req, res, next) {
 };
 
 exports.updateMakeData = async (req, res, next) => {
-  const { id, newdata } = req.body;
-  console.log("fimnal data", id);
+  const data = req.body;
+
+  console.log("fimnal data", data);
   try {
     // Check if newdata is defined
-    if (!newdata) {
+    if (!data) {
       return res.status(400).json({
         success: false,
         message: "New data is missing",
       });
     }
     // Use updateOne method to update a specific document by _id
-    const updatedAdmin = await Make.findByIdAndUpdate(id, newdata);
+    const updatedAdmin = await Make.findByIdAndUpdate(req.params.id, data);
     if (updatedAdmin) {
       return res.status(200).json({
         success: true,
