@@ -169,6 +169,7 @@ const loginedUser = async (req, res, next) => {
     let user = await admin.findOne({
       _id: tokenData.id,
     });
+    if (!user) return res.status(401).json({ message: "no user found" });
     res.status(200).json({
       success: true,
       name: user.name,
