@@ -37,7 +37,7 @@ export const loggedUser = createAsyncThunk(
       let response = await axios.get(url, {
         headers: { "x-access-token": token },
       });
-
+      console.log(response.data);
       if (response.status === 200 && response.data.success) {
         return response.data;
       } else {

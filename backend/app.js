@@ -47,6 +47,7 @@ async function init() {
       email: "admin@braincave.com",
       status: "ACTIVE",
       role: "superadmin",
+      permissions: ["All"],
       password: bcrypt.hashSync("admin", 8),
     });
     console.log("admin created");
