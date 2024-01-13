@@ -6,9 +6,9 @@ const verifyToken = promisify(jwt.verify);
 const signIn = async function (req, res, next) {
   try {
     const { username, password } = req.body;
-
+    console.log(req.body);
     if (!username || !password) {
-      res.status(404).json({
+      res.status(200).json({
         success: false,
         message: "enter username or password",
       });
@@ -21,9 +21,9 @@ const signIn = async function (req, res, next) {
     });
     console.log("pppppppp", user);
     let isValid = user && bcrypt.compareSync(password, user?.password);
-    console.log(isValid);
+
     if (!isValid)
-      res.status(404).json({
+      res.status(200).json({
         success: false,
         message: "invalid username or password",
       });
@@ -127,21 +127,21 @@ async function changePass(req, res, next) {
 }
 
 const updateAdminData = async (req, res, next) => {
-  const { id, newdata } = req.body;
+  const data = req.body;
 
   try {
     // Check if newdata is defined
-    if (!newdata) {
+    if (!data) {
       return res.status(400).json({
         success: false,
         message: "New data is missing",
       });
     }
     if (newdata.password) {
-      newdata.password = bcrypt.hashSync(newdata.password, 8);
+      data.password = bcrypt.hashSync(data.password, 8);
     }
     // Use updateOne method to update a specific document by _id
-    const updatedAdmin = await admin.findByIdAndUpdate(id, newdata);
+    const updatedAdmin = await admin.findByIdAndUpdate(req.params.id, data);
     if (updatedAdmin) {
       return res.status(200).json({
         success: true,
@@ -154,7 +154,6 @@ const updateAdminData = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.error("Error updating admin data:", error);
     return res.status(500).json({
       success: false,
       message: "Internal server error",
@@ -164,11 +163,13 @@ const updateAdminData = async (req, res, next) => {
 
 const loginedUser = async (req, res, next) => {
   try {
-    const tokenData = await verifyToken(req.params.token, "abc 123 xyz");
+    let token = req.headers["x-access-token"];
+    const tokenData = await verifyToken(token, "abc 123 xyz");
 
     let user = await admin.findOne({
       _id: tokenData.id,
     });
+    if (!user) return res.status(401).json({ message: "no user found" });
     res.status(200).json({
       success: true,
       name: user.name,
@@ -179,9 +180,15 @@ const loginedUser = async (req, res, next) => {
       permissions: user.permissions,
     });
   } catch (err) {
-    console.log("hi");
-    console.log(err.name);
-    console.log(err.expiredAt);
+    if (err.name === "TokenExpiredError") {
+      res
+        .status(401)
+        .json({ success: false, message: "token expired login again" });
+    } else if (err.name === "JsonWebTokenError") {
+      res.status(401).json({ success: false, message: "invalid token" });
+    } else {
+      next(err);
+    }
   }
 };
 

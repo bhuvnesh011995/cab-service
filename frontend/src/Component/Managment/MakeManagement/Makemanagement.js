@@ -12,55 +12,51 @@ import { authContext } from "../../../Context/AuthContext";
 import { useContext } from "react";
 import AddManufacturer from "./AddManufacturer";
 import UpdateManufacturer from "./UpdateManufacturer";
-// import {authContext} from "../../Context/AuthContext"
-// import { useContext } from "react";
+import { selectManufacturer,fetchManufacturer,deleteManufacturer } from "../../../Redux/features/ManufacturerReducer";
+import { useSelector,useDispatch } from "react-redux";
+import DeleteModal from "../../DeleteModel/DeleteModel";
 
 let initialFilter = {
   name: "",
   status: "",
 };
+  
+
 export default function MakeManagement() {
   const [filter, setFilter] = useState(initialFilter);
   const [list, setList] = useState();
   const [isOpen,setIsOpen] = useState(false);
+  const [deleteModal,setDeleteModal] = useState(false);
   const [open,setOpen] = useState(false);
+  const [id, setId] = useState(null)
+  const [deleteInfo, setDeleteInfo] = useState(null)
   const [updateData,setUpdateData] = useState([])
   const navigate = useNavigate();
   const url = BASE_URL+"/make/filter/";
   const {admin}=useContext(authContext) 
-  const [permissions, setPermissions] = useState({
-    canView: false,
-    canEdit: false,
-  });
-  useEffect(() => {
-    fetch(url, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) =>{
-        let arr = []
-        data?.makeList?.map((ele,i)=>{
-          arr.push({
-            index:i+1,
-            id:ele._id,
-            name:ele.name,
-            status:ele.status,
-            createdAt:ele.createdAt
+  const dispatch = useDispatch();
 
-          })
-        })
-        setList(arr)
-      }
-      );
+  useEffect(() => {
+    dispatch(fetchManufacturer());
   }, []);
 
+  const manufacturerData = useSelector(selectManufacturer);
+  console.log("manufacturerData,",manufacturerData)
 
+  const manufacturerStatus = useSelector((state) => state.manufacturer.status);
+     if(manufacturerStatus === "deleted" ){
+    setDeleteModal(false)
+    dispatch(fetchManufacturer());
+  }
+
+
+  const handleDeleteClick = (manufacturerId) => {
+    dispatch(deleteManufacturer(manufacturerId));
+  };
+   
+        
   const columns = useMemo(()=>[
-    {
-      accessorKey:"index",
-      header:"Sr No",
-      size:50
-    },{
+     {
       accessorKey:"name",
       header:"Name"
     },{
@@ -101,50 +97,8 @@ export default function MakeManagement() {
       }
       );
 
-
-
 return  
 }
-
-function handleDelete(rowId) {
-  const deleteUrl = BASE_URL + "/make/" + rowId;
-
-  fetch(deleteUrl, {
-    method: "DELETE",
-  })
-    .then((response) => {
-      if (response) {
-           
-        fetch(url, {
-          method: "GET",
-        })
-          .then((res) => res.json())
-          .then((data) =>{
-            let arr = []
-            data?.makeList?.map((ele,i)=>{
-              arr.push({
-                index:i+1,
-                id:ele._id,
-                name:ele.name,
-                status:ele.status,
-                createdAt:ele.createdAt
-    
-              })
-            })
-            setList(arr)
-          }
-          );
-    
-      } else {
-        console.error("Failed to delete admin");
-      }
-    })
-    .catch((error) => {
-      alert('yyyy')
-      console.error("Error occurred while deleting admin:", error);
-    });
-}
-
   function handleSubmit(e) {
     e.preventDefault();
     fetch(`${url}?name=${filter.name}&status=${filter.status}`, {
@@ -175,6 +129,13 @@ function handleDelete(rowId) {
        <div class="row">
     <div class="col-lg-13">
       <div class="card">
+      <DeleteModal
+        info={deleteInfo}
+        show={deleteModal}
+        setShow={setDeleteModal}
+        handleDelete={handleDeleteClick}
+        arg={id}
+      />
       {isOpen && <AddManufacturer show={isOpen} setShow={setIsOpen}   />}
       {open && <UpdateManufacturer show={open} setShow={setOpen} data={updateData}   />}
 
@@ -204,7 +165,7 @@ function handleDelete(rowId) {
         {(admin.role === "superadmin" || (admin.permissions && admin.permissions.includes("viewTable"))) && (
       <MaterialReactTable
       columns={columns || []}
-      data={list || []}
+      data={manufacturerData || []}
       enableRowActions
       positionActionsColumn={'last'}
       renderRowActions={({row,table})=>(
@@ -218,7 +179,14 @@ function handleDelete(rowId) {
           <IconButton   onClick={() => handleUpdate(row.original)}>
             <ModeEditOutline />
           </IconButton>
-          <IconButton   onClick={() => handleDelete(row.original.id)}>
+          <IconButton    onClick={() => {
+            setDeleteInfo({
+              message: `Do You Really Want To Delete ${row.original?.name}`,
+              header: "Delete Model",
+            });
+            setDeleteModal(true);
+            setId(row.original.id);
+          }}>
             <DeleteForever />
           </IconButton>
         </Box>

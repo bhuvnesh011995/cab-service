@@ -17,7 +17,7 @@ export const fetchAdmins = createAsyncThunk(
       if (status) url.searchParams.set("status", status);
       if (from) url.searchParams.set("from", from);
       if (to) url.searchParams.set("to", to);
-      console.log(url.href, "url");
+
       let response = await axios.get(url.href);
       if (response.status === 200) return response.data;
       else
