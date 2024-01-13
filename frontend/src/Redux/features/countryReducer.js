@@ -1,14 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import BASE_URL from "../../config/config";
-import { useSelector } from "react-redux";
-import { fetchManufacturer } from "./ManufacturerReducer";
+import axios from "axios";
 let initialState = {
   countries: [],
   status: "idle",
   error: null,
 };
-export const fetchContries = createAsyncThunk(
-  "countries/fetchContries",
+export const fetchCountries = createAsyncThunk(
+  "countries/fetchCountries",
   async (_, { rejectWithValue }) => {
     try {
       let response = await axios.get(BASE_URL + "/country");
@@ -33,16 +32,16 @@ const countrySlice = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchContries.fulfilled, (state, action) => {
+    builder.addCase(fetchCountries.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.countries = action.payload;
       state.error = null;
     });
-    builder.addCase(fetchContries.pending, (state, action) => {
+    builder.addCase(fetchCountries.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(fetchContries.rejected, (state, action) => {
+    builder.addCase(fetchCountries.rejected, (state, action) => {
       state.status = "error";
       state.error = { message: action.payload.message };
     });
@@ -56,3 +55,5 @@ export const status = (state) => state.countries.status;
 export const countryById = (state, id) => {
   return state.countries.countries.find((country) => country._id === id);
 };
+
+export const getCountries = (state) => state.countries.countries;

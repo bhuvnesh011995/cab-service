@@ -47,42 +47,13 @@ const signIn = async function (req, res, next) {
 };
 
 const signUp = async function (req, res, next) {
-  const {
-    name,
-    username,
-    email,
-    password,
-    country,
-    state,
-    city,
-    status,
-    selected,
-  } = req.body;
-  console.log("Request Body:", req.body);
   try {
     // Apne password ko req.body se fetch karein
-    const hashedPassword = bcrypt.hashSync(password, 8);
+    req.body.password = bcrypt.hashSync(req.body.password, 8);
 
-    let userData = await admin.create({
-      name: name,
-      username: username,
-      email: email,
-      country: country,
-      state: state,
-      city: city,
-      status: status,
-      permissions: selected,
-      password: hashedPassword, // Hashed password ko set karein
-    });
-    res.status(201).json({
-      success: true,
-      name: userData.name,
-      username: userData.username,
-      email: userData.email,
-      country: userData.country,
-      state: userData.state,
-      city: userData.city,
-    });
+    let userData = await admin.create(req.body);
+    const { _id, name, username, status, createdAt } = userData;
+    res.status(201).json({ _id, name, username, status, createdAt });
   } catch (error) {
     if (error.code === 11000 && error.keyPattern.country === 1) {
       console.error('Duplicate key error for "country" field:', error.message);

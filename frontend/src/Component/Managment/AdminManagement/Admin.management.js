@@ -64,8 +64,12 @@ export default function AdminManagement() {
   const error = useSelector((state) => state.admins.error);
   useEffect(() => {
     if (status === "idle") dispatch(fetchAdmins());
+    else if (status === "added") {
+      toast.success("admin added successfully");
+      setAdminModalOpen(false);
+    }
     // fetchAdmins({});
-  }, []);
+  }, [status]);
 
   const columns = useMemo(
     () => [

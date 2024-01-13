@@ -4,15 +4,15 @@ import { useSelector } from "react-redux";
 import { fetchManufacturer } from "./ManufacturerReducer";
 import axios from "axios";
 let initialState = {
-  states: [],
+  cities: [],
   status: "idle",
   error: null,
 };
-export const fetchStates = createAsyncThunk(
-  "states/fetchStates",
-  async (countryId, { rejectWithValue }) => {
+export const fetchCities = createAsyncThunk(
+  "cities/fetchCities",
+  async (stateId, { rejectWithValue }) => {
     try {
-      let response = await axios.get(BASE_URL + "/state/" + countryId);
+      let response = await axios.get(BASE_URL + "/cities/" + stateId);
       if (response.status === 200) {
         return response.data;
       } else
@@ -29,35 +29,36 @@ export const fetchStates = createAsyncThunk(
   }
 );
 
-const stateSlice = createSlice({
-  name: "states",
+const citySlice = createSlice({
+  name: "cities",
   initialState,
   reducers: {
-    emptyStates: (state, action) => initialState,
+    emptyCities: (state, action) => initialState,
   },
   extraReducers: (builder) => {
-    builder.addCase(fetchStates.fulfilled, (state, action) => {
+    builder.addCase(fetchCities.fulfilled, (state, action) => {
       state.status = "succeeded";
-      state.states = action.payload;
+      state.cities = action.payload;
       state.error = null;
     });
-    builder.addCase(fetchStates.pending, (state, action) => {
+    builder.addCase(fetchCities.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(fetchStates.rejected, (state, action) => {
+    builder.addCase(fetchCities.rejected, (state, action) => {
       state.status = "error";
       state.error = { message: action.payload.message };
     });
   },
 });
 
-export default stateSlice.reducer;
+export default citySlice.reducer;
 
-export const stateStatus = (state) => state.states.status;
+export const stateStatus = (state) => state.cities.status;
 
-export const stateById = (state, id) => {
-  return state.states.states.find((state) => state._id === id);
+export const cityByid = (state, id) => {
+  return state.cities.cities.find((city) => city._id === id);
 };
-export const getStates = (state) => state.states.states;
-export const { emptyStates } = stateSlice.actions;
+export const getCities = (state) => state.cities.cities;
+
+export const { emptyCities } = citySlice.actions;

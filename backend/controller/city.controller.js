@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const db = require("../model/index");
 
 exports.addCity = async function (req, res, next) {
@@ -135,12 +136,12 @@ exports.filterCity = async function (req, res, next) {
           {
             path: "state",
             model: "State",
-            select: { name: 1, },
+            select: { name: 1 },
           },
           {
             path: "country",
             model: "Country",
-            select: { name: 1},
+            select: { name: 1 },
           },
           {
             path: "territory",
@@ -160,7 +161,7 @@ exports.filterCity = async function (req, res, next) {
               {
                 path: "country",
                 model: "Country",
-                select: { name: 1, },
+                select: { name: 1 },
               },
               {
                 path: "state",
@@ -185,7 +186,7 @@ exports.filterCity = async function (req, res, next) {
             {
               path: "country",
               model: "Country",
-              select: { name: 1},
+              select: { name: 1 },
             },
             {
               path: "state",
@@ -207,12 +208,12 @@ exports.filterCity = async function (req, res, next) {
           {
             path: "state",
             model: "State",
-            select: { name: 1},
+            select: { name: 1 },
           },
           {
             path: "country",
             model: "Country",
-            select: { name: 1},
+            select: { name: 1 },
           },
           {
             path: "territory",
@@ -273,8 +274,7 @@ exports.filterCity = async function (req, res, next) {
         obj.country = city[k].country?.name;
         obj.state = city[k].state?.name;
         obj.territory = city[k].territory;
-      obj._id = city[k]._id,
-        cities.push(obj);
+        (obj._id = city[k]._id), cities.push(obj);
         set.add(city[k]._id);
       }
     }
@@ -326,6 +326,20 @@ exports.getCityByStateId = async function (req, res, next) {
   }
 };
 
+exports.getCitiesByState = async (req, res, next) => {
+  try {
+    const { stateId } = req.params;
+    let cities = await db.city.aggregate([
+      { $match: { state: new mongoose.Types.ObjectId(stateId) } },
+      { $project: { name: 1 } },
+    ]);
+
+    res.status(200).json(cities);
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.updateMapById = async function (req, res, next) {
   try {
     const { mapId } = req.params;
@@ -348,19 +362,17 @@ exports.updateMapById = async function (req, res, next) {
   }
 };
 
-exports.deleteCity = async function (req,res){
-  const id = req.params.id
-  try{
-    const result = await db.city.deleteOne({_id: id})
-    if(result.deletedCount === 1){
-      return res.status(200).json({message : "city delete successfully"});
+exports.deleteCity = async function (req, res) {
+  const id = req.params.id;
+  try {
+    const result = await db.city.deleteOne({ _id: id });
+    if (result.deletedCount === 1) {
+      return res.status(200).json({ message: "city delete successfully" });
+    } else {
+      return res.status(400).json({ message: "city state not found" });
     }
-    else{
-      return res.status(400).json({message:"city state not found"})
-    }
+  } catch (error) {
+    console.log(error);
+    return res.status(5000).json({ message: "Internal Server Error" });
   }
-  catch(error){
-    console.log(error)
-    return res.status(5000).json({message:"Internal Server Error"})
-  }
-}
+};

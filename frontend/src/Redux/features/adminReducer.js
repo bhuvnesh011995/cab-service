@@ -39,8 +39,8 @@ export const addAdmin = createAsyncThunk(
   "admins/addAdmin",
   async (adminData, { rejectWithValue }) => {
     try {
-      let response = axios.post(BASE_URL + "/auth/signUp", adminData);
-      if (response.status === 200) return response.data;
+      let response = await axios.post(BASE_URL + "/auth/signUp", adminData);
+      if (response.status === 201) return response.data;
       else
         return rejectWithValue({
           status: (await response).status,
@@ -78,7 +78,7 @@ const adminsSlice = createSlice({
       state.error = null;
     });
     builder.addCase(addAdmin.fulfilled, (state, action) => {
-      state.status = "succeeded";
+      state.status = "added";
       state.error = null;
       state.admins.push(action.payload);
     });
