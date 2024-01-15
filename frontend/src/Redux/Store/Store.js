@@ -5,7 +5,8 @@ import authReducer from "../features/authReducer";
 import countryReducer from "../features/countryReducer";
 import stateReducer from "../features/stateReducer";
 import cityReducer from "../features/cityReducer";
-
+import ModelReducer from "../features/ModelReducer"
+import vehicleCategoryReducer from "../features/vehicleCategoryReducer";
 export default configureStore({
   reducer: {
     admins: adminReducer,
@@ -14,5 +15,8 @@ export default configureStore({
     countries: countryReducer,
     states: stateReducer,
     cities: cityReducer,
+    model :ModelReducer,
+    vehicleCategory:vehicleCategoryReducer 
+
   },
 });

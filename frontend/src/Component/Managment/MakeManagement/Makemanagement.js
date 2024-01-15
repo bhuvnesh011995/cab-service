@@ -39,7 +39,6 @@ export default function MakeManagement() {
   const permissions = useSelector(getPermissions)
   const dispatch = useDispatch();
 
-  console.log("permissions",permissions)
 
   useEffect(() => {
     dispatch(fetchManufacturer());
@@ -48,8 +47,7 @@ export default function MakeManagement() {
   
 
   const manufacturerData = useSelector(selectManufacturer);
-  
-  console.log("manufacturerData,",manufacturerData)
+
 
   const manufacturerStatus = useSelector((state) => state.manufacturer.status);
   const message = useSelector((state) => state.manufacturer.message);

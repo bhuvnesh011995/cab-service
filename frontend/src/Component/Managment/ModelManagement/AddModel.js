@@ -41,7 +41,7 @@ export default function AddModel({show,setShow,data}) {
       <Modal size="lg" show={show} onHide={()=>{setShow(false)}}>
         <Modal.Header  closeButton>
           <Modal.Title>
-            Add Update Modal
+            Add New Modal
           </Modal.Title>
           </Modal.Header>
           <Modal.Body>                    

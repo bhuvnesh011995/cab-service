@@ -10,6 +10,8 @@ import { toast } from "react-toastify";
 import AddModel from "./AddModel";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import ModelUpdate from "../ModelManagement/ModelUpdate"
+import { useSelector,useDispatch } from "react-redux";
+import { fetchModel,getAllModel,deleteModels } from "../../../Redux/features/ModelReducer";
 import {
   RemoveRedEye,
   Lock,
@@ -17,12 +19,12 @@ import {
   DeleteForever,
 } from "@mui/icons-material/";
 import { Box, IconButton } from "@mui/material";
-
 let initialFilter = {
   make: "",
   name: "",
   status: "",
 };
+     
 
 export default function ModelManagement() {
   const [filter, setFilter] = useState(initialFilter);
@@ -34,39 +36,37 @@ export default function ModelManagement() {
   const [deleteInfo, setDeleteInfo] = useState(null)
    const [model, setModel] = useState([])
   const navigate = useNavigate();
-
-  useEffect(() => {
-    fetch(url, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        let arr = [];
-        data?.modelList?.map((ele, i) => {
-          arr.push({
-            id: ele._id,
-            index: i + 1,
-            name: ele.name,
-            make: ele.make ? ele.make._id : 'N/A',
-            manufacturer: ele.make ? ele.make.name : 'N/A',
-
-            status: ele.status,
-            createdAt: ele.createdAt || "",
-          });
-        });
-        setList(arr);
-      });
-  }, []);
-
+  const dispatch = useDispatch();
+  
+   useEffect(()=>{
+    dispatch(fetchModel());
+   },[])
+  
+   const modelData = useSelector(getAllModel);
+   const modelstatus = useSelector((state) => state.model.status);
+   const message = useSelector((state) => state.model.message);
+   
+  useEffect(()=>{
+    if(modelstatus === "deleted") 
+    {
+      setIsOpen(false) 
+    toast.success(message) 
+    }
+    else if(modelstatus === "added") {
+      setShow(false) 
+      toast.success(message) 
+    }
+    else if(modelstatus === "update") {
+      setShowUpdate(false) 
+      toast.success("updated") 
+    }
+},[modelstatus])
+ 
   const columns = useMemo(
     () => [
+    
       {
-        accessorKey: "index",
-        header: "Sr No",
-        size: 50,
-      },
-      {
-        accessorKey: "manufacturer",
+        accessorKey: "make.name",
         header: "Manufacturer",
         size: 100,
       },
@@ -119,27 +119,8 @@ export default function ModelManagement() {
       });
   }
 
-   const deleteModel=(rowId)=>{
-    const deleteUrl = BASE_URL + "/model/" + rowId;
-
-  fetch(deleteUrl, {
-    method: "DELETE",
-  })
-    .then((response) => {
-      if (response.status === 200) {
-      const filterModel = list.filter((data)=> data.id !== rowId)
-      setList(filterModel)
-      setIsOpen(false)
-      return response.json()
-      } 
-    })
-    .then((item)=>{
-      if(item.success) toast.success(item.message) 
-      else toast.error.apply(item.message)
-    })
-    .catch((error) => {
-      console.error("Error occurred while deleting admin:", error);
-    });
+   const deleteModel=(id)=>{
+   dispatch(deleteModels(id))
 
   }
   const handleUpdate =(data)=>{
@@ -196,7 +177,10 @@ export default function ModelManagement() {
       /> */}
       <MaterialReactTable
       columns={columns}
-      data={list || []}
+      data={modelData || []}
+      enableRowNumbers= {true} 
+      rowNumberDisplayMode= 'static'
+
       enableRowActions
       positionActionsColumn={'last'}
       renderRowActions={({row,table})=>(
@@ -217,7 +201,7 @@ export default function ModelManagement() {
               header: "Delete Model",
             });
             setIsOpen(true);
-            setId(row.original.id);
+            setId(row.original._id);
           }}
            >
             <DeleteForever />

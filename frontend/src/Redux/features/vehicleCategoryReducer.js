@@ -5,15 +5,16 @@ import BASE_URL from "../../config/config";
 let initialState = {
   status: "idle",
   error: null,
-  model: [],
+  vehicleCategory: [],
   message: "",
 };
 
- export const addModel = createAsyncThunk(
-  "model/addModel",
+ export const addVehicleCategory = createAsyncThunk(
+  "vehicleCategory/addVehicleCategory",
   async (data, { rejectWithValue }) => {  
+    console.log("data",data)
     try {
-      let response = await axios.post(BASE_URL + "/models", data);
+      let response = await axios.post(BASE_URL + "/vehicleCategory", data);
       if (response.status === 201 && response.data.success) return response.data;
       else
         return rejectWithValue({
@@ -28,11 +29,11 @@ let initialState = {
     }
   }
 );
- const fetchModel = createAsyncThunk(
-    "model/fetchModel",
+ const fetchVehicleCategory = createAsyncThunk(
+    "vehicleCategory/fetchVehicleCategory",
     async(_,{rejectWithValue}) =>{
         try{
-      let response = await axios.get(BASE_URL + "/models/");
+      let response = await axios.get(BASE_URL + "/vehicleCategory/");
       if(response.status === 200) return response.data;
       else
       return rejectWithValue({
@@ -50,12 +51,12 @@ let initialState = {
     }
 )
 
-const updateModels = createAsyncThunk(
-  "model/updateModel",
+const updateVehicleCategory = createAsyncThunk(
+  "vehicleCategory/updateVehicleCategory",
 async(data,{rejectWithValue}) =>{
   console.log("data",data)
 try{
-   let response = await axios.put(BASE_URL + "/model/" + data.id,data.newData)
+   let response = await axios.put(BASE_URL + "/vehicleCategory/" + data.id,data.newData)
    if(response.status=== 200) return response.data
    else 
    return rejectWithValue({
@@ -72,12 +73,12 @@ catch(error){
 }
 )
 
-export const deleteModels = createAsyncThunk(
-  "model/deleteModels",
+export const deleteVehicleCategory = createAsyncThunk(
+  "vehicleCategory/deleteVehicleCategory",
   async(id,{rejectWithValue})=>{
     console.log("idd",id)
     try{
-    let response = await axios.delete(BASE_URL+ "/model/" + id )
+    let response = await axios.delete(BASE_URL+ "/vehicleCategory/" + id )
     if(response.status === 200) return {...response.data,id}
     else
     return rejectWithValue({
@@ -95,8 +96,8 @@ export const deleteModels = createAsyncThunk(
   }
 )
 
-const modelSlice = createSlice({
-  name: "model",
+const vehicleCategorySlice = createSlice({
+  name: "vehicleCategory",
   initialState,
 
     reducers:{
@@ -105,71 +106,71 @@ const modelSlice = createSlice({
        }} ,
   
   extraReducers: (builder) => {
-    builder.addCase(addModel.pending, (state, action) => {
+    builder.addCase(addVehicleCategory.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(addModel.fulfilled, (state, action) => {
+    builder.addCase(addVehicleCategory.fulfilled, (state, action) => {
       state.status = "added";
       state.error = null;
-      state.model = state.model.concat(action.payload.models);
-      state.message = action.payload.message;      
+      state.vehicleCategory = state.vehicleCategory.concat(action.payload.vehicleCategory);
+      
     });
-    builder.addCase(addModel.rejected, (state, action) => {
+    builder.addCase(addVehicleCategory.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });
-    builder.addCase(fetchModel.pending,(state,action) =>{
+    builder.addCase(fetchVehicleCategory.pending,(state,action) =>{
         state.status ="loading";
         state.error= null;
     });
-    builder.addCase(fetchModel.fulfilled,(state,action)=>{
+    builder.addCase(fetchVehicleCategory.fulfilled,(state,action)=>{
         state.status ="succeeded";
     state.error = null;
-    state.model = action.payload.models; 
+    state.vehicleCategory = action.payload.vehicleCategory; 
 });
-    builder.addCase(fetchModel.rejected,(state,action)=>{
+    builder.addCase(fetchVehicleCategory.rejected,(state,action)=>{
    state.status ="error";
-   state.error =   action.payload;
+   state.error =   action.payload.vehicleCategory;
     }) ;
-    builder.addCase(updateModels.pending,(state,action) =>{
+    builder.addCase(updateVehicleCategory.pending,(state,action) =>{
       state.status ="loading";
       state.error = null;
    });
-   builder.addCase(updateModels.fulfilled,(state,action) =>{
+   builder.addCase(updateVehicleCategory.fulfilled,(state,action) =>{
     state.status="update";
-    state.model = state.model.map((item) =>
-    item._id === action.payload.models._id ? action.payload.models : item
+    state.vehicleCategory = state.vehicleCategory.map((item) =>
+    item._id === action.payload.vehicleCategory._id ? action.payload.vehicleCategory : item
 ); 
 state.error = null
    });
-   builder.addCase(updateModels.rejected,(state,action) =>{
+   builder.addCase(updateVehicleCategory.rejected,(state,action) =>{
     state.status ="error";
     state.error = action.payload
    });
-   builder.addCase(deleteModels.pending,(state,action) =>{
+   builder.addCase(deleteVehicleCategory.pending,(state,action) =>{
     state.status = "loading";
     state.error = null;
   });
-  builder.addCase(deleteModels.fulfilled,(state,action) =>{
+  builder.addCase(deleteVehicleCategory.fulfilled,(state,action) =>{
     state.status = "deleted";
     state.error = null;
-    state.model = state.model.filter((item)=> item._id !== action.payload.id)
+    state.vehicleCategory = state.vehicleCategory.filter((item)=> item._id !== action.payload.id)
     state.message = action.payload.message
   })
 
-  builder.addCase(deleteModels.rejected, (state, action) => {
+  builder.addCase(deleteVehicleCategory.rejected, (state, action) => {
     state.status = "error";
     state.error = action.payload;
   });
   },
 });
- const getAllModel = (state) => state.model.model;
+ const getAllVehicleCategory = (state) => state.vehicleCategory.vehicleCategory;
 
  export {
-  getAllModel,
-  fetchModel,
-  updateModels,
+    getAllVehicleCategory,
+  fetchVehicleCategory,
+  updateVehicleCategory,
  }
 
-export default modelSlice.reducer;
+export default vehicleCategorySlice.reducer;
