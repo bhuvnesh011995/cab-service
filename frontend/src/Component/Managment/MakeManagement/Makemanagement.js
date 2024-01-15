@@ -15,6 +15,9 @@ import UpdateManufacturer from "./UpdateManufacturer";
 import { selectManufacturer,fetchManufacturer,deleteManufacturer } from "../../../Redux/features/ManufacturerReducer";
 import { useSelector,useDispatch } from "react-redux";
 import DeleteModal from "../../DeleteModel/DeleteModel";
+import { getPermissions } from "../../../Redux/features/authReducer";
+import { toast } from "react-toastify";
+
 
 let initialFilter = {
   name: "",
@@ -33,24 +36,41 @@ export default function MakeManagement() {
   const [updateData,setUpdateData] = useState([])
   const navigate = useNavigate();
   const url = BASE_URL+"/make/filter/";
-  const {admin}=useContext(authContext) 
+  const permissions = useSelector(getPermissions)
   const dispatch = useDispatch();
+
+  console.log("permissions",permissions)
 
   useEffect(() => {
     dispatch(fetchManufacturer());
   }, []);
 
+  
+
   const manufacturerData = useSelector(selectManufacturer);
+  
   console.log("manufacturerData,",manufacturerData)
 
   const manufacturerStatus = useSelector((state) => state.manufacturer.status);
-     if(manufacturerStatus === "deleted" ){
-    setDeleteModal(false)
-    dispatch(fetchManufacturer());
-  }
+  const message = useSelector((state) => state.manufacturer.message);
 
+  useEffect(()=>{
+      if(manufacturerStatus === "deleted") 
+      {
+      setDeleteModal(false) 
+      toast.success(message) 
+      }
+      else if(manufacturerStatus === "added") {
+        setIsOpen(false) 
+        toast.success(message) 
+      }
+      else if(manufacturerStatus === "updated") {
+        setOpen(false) 
+        toast.success("updated") 
+      }
+  },[manufacturerStatus])
 
-  const handleDeleteClick = (manufacturerId) => {
+  const handleDeleteClick = (manufacturerId) => { 
     dispatch(deleteManufacturer(manufacturerId));
   };
    
@@ -59,12 +79,8 @@ export default function MakeManagement() {
      {
       accessorKey:"name",
       header:"Name"
-    },{
-      accessorFn:(row)=>row.createdAt.slice(0,10),
-      id:"createdAt",
-      header:"createdAt",
-      size:100
-    },{
+    },
+    {
       accessorKey:"status",
       header:"Status",
       size:80
@@ -141,9 +157,9 @@ return
 
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
+       
     
-    
-    {(admin.role === "superadmin" || (admin.permissions && admin.permissions.includes("addMake"))) && (
+    { (permissions.includes("All") || permissions.includes("addMake")) && (
   <BtnDark handleClick={()=>{setIsOpen(true)}} title={"Add Manufacture"} />
 )}
       </div>
@@ -162,8 +178,8 @@ return
         heading={["Sr no", "Name", "Status", "Created At", "Action"]}
         list={list}
       /> */}
-        {(admin.role === "superadmin" || (admin.permissions && admin.permissions.includes("viewTable"))) && (
-      <MaterialReactTable
+ { (permissions.includes("All") || permissions.includes("viewTable")) && (
+        <MaterialReactTable
       columns={columns || []}
       data={manufacturerData || []}
       enableRowActions
@@ -185,7 +201,7 @@ return
               header: "Delete Model",
             });
             setDeleteModal(true);
-            setId(row.original.id);
+            setId(row.original._id);
           }}>
             <DeleteForever />
           </IconButton>

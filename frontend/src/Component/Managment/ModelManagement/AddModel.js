@@ -1,95 +1,101 @@
-import { useEffect, useState } from "react";
-import Text_Input from "../../Common/Inputs/Text_Input";
-import Management_container from "../../Common/Management_container";
-import Selection_Input from "../../Common/Inputs/Selection_input";
-import BtnDark from "../../Common/Buttons/BtnDark";
-import BASE_URL from "../../../config/config";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
 import { Modal } from "react-bootstrap";
+import BASE_URL from "../../../config/config";
+import axios from "axios";
+import { useForm } from "react-hook-form";
+import { addModel } from "../../../Redux/features/ModelReducer";
+import { useDispatch } from "react-redux";
 
-export default function AddModel ({show,setShow}){
-    const [model,setModel] = useState({
-        name:"",
-        make:"",
-        status:""
-    });
-    const [options,setOptions]= useState([]);
-    const [succMsg,setSuccMsg]=useState("");
-    const navigate = useNavigate()  
-    useEffect(()=>{
-        fetch(BASE_URL+"/make/",{
-            method:"GET"
-        }
-    ).then(res=>res.json())
-    .then(data=>{
-        let arr = [];
-        data.forEach(ele=>{
-            arr.push(ele.name)
-        })
-        setOptions(arr)
+export default function AddModel({show,setShow,data}) {
+  const [model, setModel] = useState({});
+  const [options, setOptions] = useState([]);
+  const [succMsg, setSuccMsg] = useState("");
+  const dispatch = useDispatch()
+
+
+  const {
+     register,
+     handleSubmit,
+     reset,
+     formState:{error}
+  } = useForm()
+
+  useEffect(() => {
+    setModel(data);
+    fetch(BASE_URL + "/make/", {
+      method: "GET",
     })
-    },[])
-    
-    const url = BASE_URL+"/model/"
-    function handleSubmit(e){
-        e.preventDefault();
-        fetch(url,{
-            method:"POST",
-            body:JSON.stringify(model),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-              },
-        }).then(res=>res.json())
-        .then(data=>{
-            if(data.success){
-               toast.success("add successfully ")  
-               setShow(false)
-            }else{
-                toast.error("error")
-            }
-        })
-    }
+      .then((res) => res.json())
+      .then((data) => {
+        setOptions(data);
+      });
+  }, [data]);
 
-    return(
-        <Modal size="" show={show} onHide={() => setShow(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New  Model</Modal.Title>
-        </Modal.Header>
-    
-        <Modal.Body>
-            <form>
-                <Selection_Input 
-                options={options}
-                setInput={setModel}
-                input={model}
-                lebel_text={"Manufacturer : "}
-                setKey={"make"}
-                />
-             <Text_Input 
-                lebel_text={"Name : "}
-                setKey={"name"}
-                setInput={setModel}
-                />
+  const onSubmit =(data)=>{
+    dispatch(addModel(data))
+  }
 
-                <Selection_Input 
-                options={["ACTIVE","INACTIVE"]}
-                setInput={setModel}
-                input={model}
-                lebel_text={"Status : "}
-                setKey={"status"}
-                />
-               
-                {succMsg}
-            </form>
-            </Modal.Body>
-          <Modal.Footer>
-          <BtnDark
-                title={"Add"}
-                handleClick={handleSubmit}
-                />
-          </Modal.Footer>
-        </Modal>
 
-    )
+  return (
+      <Modal size="lg" show={show} onHide={()=>{setShow(false)}}>
+        <Modal.Header  closeButton>
+          <Modal.Title>
+            Add Update Modal
+          </Modal.Title>
+          </Modal.Header>
+          <Modal.Body>                    
+          <form   onSubmit={handleSubmit((formData) => onSubmit(formData))}>
+          <div className="row">
+              <div className="col-md-12">
+                <div className="mb-3">
+                <label>Manufacturer</label>
+                <select
+                    name="make"
+                    className="form-control"
+                        {...register("make") }
+                  >
+                    <option value="">Choose</option>
+                    {options.map((item, i) => (
+                      <option key={i} value={item._id}>
+                        {item.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="mb-3">
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    name="name"
+                    {...register("name") }
+                    className="form-control"
+                  />
+                </div>
+              </div>
+              <div className="col-md-12">
+                <div className="mb-3">
+                  <label>Status</label>
+                  <select
+                    name="status"
+                    {...register('status')}
+                    className="form-control"
+                  >
+                    <option>Choose</option>
+                    <option value="ACTIVE">ACTIVE</option>
+                    <option value="INACTIVE">INACTIVE</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <button  type="submit" class="btn btn-success" >
+                  Save
+                </button>
+          </form>
+          
+          </Modal.Body>   
+          </Modal>
+  );
 }

@@ -15,10 +15,8 @@ export default function AddManufacturer({show,setShow}) {
     e.preventDefault();
    dispatch(postManufacturer(make))
   }
-  const manufacturerStatus = useSelector((state) => state.manufacturer.status);
-     if(manufacturerStatus === "succeeded" ){
-    dispatch(fetchManufacturer());
-  }
+
+ 
 
   return (
     <Modal size="" show={show} onHide={() => setShow(false)}>
