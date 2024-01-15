@@ -7,13 +7,13 @@ exports.addMake = async function (req, res, next) {
     const make = await Make.create({
       name: name,
       status: status,
+     
     });
 
     res.status(201).json({
       success: true,
       message: "manufacture added",
-      name: make.name,
-      status: make.status,
+      make 
     });
   } catch (e) {
     console.log(e);
@@ -74,17 +74,17 @@ exports.deleteMakeid = async function (req, res, next) {
   console.log("make id is", req.params);
 
   try {
-    const deletedMake = await Make.deleteOne({ id: id });
+    const deletedMake = await Make.deleteOne({_id: id });
 
     if (deletedMake.deletedCount === 1) {
       res.status(200).json({
         success: true,
-        message: "Make deleted successfully",
+        message: "manufacture deleted successfully",
       });
     } else {
       res.status(404).json({
         success: false,
-        message: "Make not found",
+        message: "manufacture not found",
       });
     }
   } catch (e) {
@@ -95,6 +95,26 @@ exports.deleteMakeid = async function (req, res, next) {
     });
   }
 };
+
+// exports.updaupdateMakeDatateModel = async function(req,res){
+//   try{
+//     const {id} = req.params
+//     console.log(id)
+//     console.log(req.body)
+//      let obj = {};
+//      if(req.body.name) obj.name  = req.body.name
+//      if(req.body.make) obj.make  = req.body.make
+//      if(req.body.status) obj.status  = req.body.status
+//      await Model.updateOne({ _id:id}, { $set: obj});
+//      res.status(200).json({message:"update successfully", success: true,data:obj})
+//   }
+//   catch(error){
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal error occurres"
+//     })
+//   }
+// }
 
 exports.updateMakeData = async (req, res, next) => {
   const data = req.body;
@@ -108,12 +128,12 @@ exports.updateMakeData = async (req, res, next) => {
         message: "New data is missing",
       });
     }
-    // Use updateOne method to update a specific document by _id
-    const updatedAdmin = await Make.findByIdAndUpdate(req.params.id, data);
-    if (updatedAdmin) {
+    const updatedManufacturer = await Make.findByIdAndUpdate(req.params.id, data);
+    if (updatedManufacturer) {
       return res.status(200).json({
         success: true,
         message: "make data updated successfully",
+        data
       });
     } else {
       return res.status(404).json({

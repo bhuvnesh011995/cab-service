@@ -168,7 +168,7 @@ exports.updateModel = async function(req,res){
      if(req.body.make) obj.make  = req.body.make
      if(req.body.status) obj.status  = req.body.status
      await Model.updateOne({ _id:id}, { $set: obj});
-     res.status(200).json({message:"update successfully", success: true})
+     res.status(200).json({message:"update successfully", success: true,data:obj})
   }
   catch(error){
     res.status(500).json({

@@ -7,10 +7,13 @@ export default function UpdateManufacturer({ show, setShow, data }) {
   const [manufacturer, setManufacturer] = useState({ ...data });
 
    const dispatch = useDispatch()
+   
     const handleUpdate =()=>{
       dispatch(putManufacturer({ id: manufacturer._id ,newData:manufacturer }))
-      setShow(false)
     }
+
+    
+      
 
   return (
     <Modal size="lg" show={show} onHide={() => setShow(false)}>
