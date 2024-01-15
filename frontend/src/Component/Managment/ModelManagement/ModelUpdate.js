@@ -33,7 +33,7 @@ export default function ModelUpdate({show,setShow,data}) {
       .then((response) => {
         if (response.data.success) {       
       toast.success(response.data.message)
-      navigate(-1)   
+    
         } else {
             toast.error(response.data.message)
           console.log(response.data.message);
