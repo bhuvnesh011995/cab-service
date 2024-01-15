@@ -14,12 +14,12 @@ export default function LeftSidebar() {
   list = dashboardrows.map((ele, i) => <SideBarDropDown ele={ele} key={i} />);
 
   return (
-    <div className="vertical-menu">
-      <div data-simplebar className="h-100">
+    <div className='vertical-menu'>
+      <div data-simplebar className='h-100'>
         {/* <!--- Sidemenu --> */}
-        <div id="sidebar-menu">
+        <div id='sidebar-menu'>
           {/* <!-- Left Menu Start --> */}
-          <ul className="metismenu list-unstyled" id="side-menu">
+          <ul className='metismenu list-unstyled' id='side-menu'>
             {/* <li>
                                 <Link to="/dashboard" className="waves-effect">
                                     <i className="bi bi-house"></i>

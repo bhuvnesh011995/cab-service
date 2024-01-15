@@ -127,56 +127,56 @@ const router = createBrowserRouter([
       { path: "addToll", element: <AddToll /> },
       { path: "sosService", element: <SOSManagement /> },
       { path: "addSos", element: <AddSos /> },
-      { path: "/AdminDataUpdate", element: <AdminDataUpdate /> },
+      { path: "AdminDataUpdate", element: <AdminDataUpdate /> },
       {
-        path: "/avaialibilityManagement",
+        path: "avaialibilityManagement",
         element: <AvaialibilityManagement />,
       },
       {
-        path: "/addAvaialibilityManagement",
+        path: "addAvaialibilityManagement",
         element: <AddAvaialibilityManagement />,
       },
 
       {
-        path: "/vehicleCategoryManagement",
+        path: "vehicleCategoryManagement",
         element: <VehicleCategoryManagement />,
       },
       // {
-      //   path: "/makeUpdateManagement",
+      //   path: "makeUpdateManagement",
       //   element: <MakeUpdateManagement />,
       // },
       {
-        path: "/modelUpdate",
+        path: "modelUpdate",
         element: <ModelUpdate />,
       },
       {
-        path: "/updateVehicleType",
+        path: "updateVehicleType",
         element: <UpdateVehicleType />,
       },
       {
-        path: "/updateCountry",
+        path: "updateCountry",
         element: <UpdateCountry />,
       },
       {
-        path: "/updateState",
+        path: "updateState",
         element: <UpdateState />,
       },
     ],
   },
   {
-    path: "/login",
+    path: "login",
     element: <SignIn />,
   },
 
   {
-    path: "/reset",
+    path: "reset",
     element: <ResetPass />,
   },
   {
-    path: "/Permision",
+    path: "Permision",
     element: <Permision />,
   },
-  { path: "/AddAdmin", element: <AddAdmin /> },
+  { path: "AddAdmin", element: <AddAdmin /> },
 ]);
 let queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -190,7 +190,7 @@ root.render(
         {/* </AuthProvider> */}
       </QueryClientProvider>
     </Provider>
-  </>
+  </>,
 );
 
 // If you want to start measuring performance in your app, pass a function
