@@ -105,3 +105,15 @@ exports.deleteAdmin = async function (req, res, next) {
     next(error);
   }
 };
+
+exports.getAdminById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const admin = await db.admin.findById(id);
+
+    if (admin) return res.status(204).end();
+    else return res.status(200).json(admin);
+  } catch (error) {
+    next(error);
+  }
+};

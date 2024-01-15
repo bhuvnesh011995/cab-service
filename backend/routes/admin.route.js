@@ -5,4 +5,5 @@ module.exports = function (app) {
   app.delete("/test/api/v1/admin/:id", adminController.deleteAdmin);
 
   app.get("/test/api/v1/admins/", adminController.getFilteredData);
+  app.get("/test/api/v1/admin/:id", adminController.getAdminById);
 };

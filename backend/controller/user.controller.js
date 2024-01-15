@@ -3,6 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { promisify } = require("util");
 const verifyToken = promisify(jwt.verify);
+const db = require("../model");
 const signIn = async function (req, res, next) {
   try {
     const { username, password } = req.body;

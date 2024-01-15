@@ -18,8 +18,9 @@ import {
 } from "../../../Redux/features/cityReducer";
 import { addAdmin } from "../../../Redux/features/adminReducer";
 
-export default function AddNew({ show, setShow }) {
+export default function AddNew({ show, setShow, adminData }) {
   const [ready, setReady] = useState(false);
+
   const {
     handleSubmit,
     register,
