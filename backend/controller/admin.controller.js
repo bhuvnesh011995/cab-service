@@ -2,6 +2,7 @@ const admin = require("../model/admin.model");
 const startofday = require("date-fns/startOfDay");
 const endofday = require("date-fns/endOfDay");
 const db = require("../model");
+const { default: mongoose } = require("mongoose");
 
 // filter admins using name,username,status,and date
 
@@ -109,10 +110,25 @@ exports.deleteAdmin = async function (req, res, next) {
 exports.getAdminById = async (req, res, next) => {
   try {
     const { id } = req.params;
+    console.log(id);
     const admin = await db.admin.findById(id);
+    console.log(admin, "admin");
 
-    if (admin) return res.status(204).end();
+    if (!admin) return res.status(400).end();
     else return res.status(200).json(admin);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateAdmin = async (req, res, next) => {
+  try {
+    let admin = await db.admin.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: req.body },
+      { new: true }
+    );
+    res.status(200).json(admin);
   } catch (error) {
     next(error);
   }

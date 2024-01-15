@@ -16,9 +16,16 @@ import {
   fetchCities,
   getCities,
 } from "../../../Redux/features/cityReducer";
-import { addAdmin } from "../../../Redux/features/adminReducer";
+import {
+  addAdmin,
+  clearAdmin,
+  getAdmin,
+  status,
+  updateAdmin,
+} from "../../../Redux/features/adminReducer";
+import { toast } from "react-toastify";
 
-export default function AddNew({ show, setShow, adminData }) {
+export default function AddNew({ show, setShow }) {
   const [ready, setReady] = useState(false);
 
   const {
@@ -30,35 +37,66 @@ export default function AddNew({ show, setShow, adminData }) {
     control,
     formState: { errors, dirtyFields, isDirty },
   } = useForm();
-  const onSubmit = useCallback(async (data) => {
-    dispatch(addAdmin(data));
-  }, []);
+  const onSubmit = useCallback(
+    async (data) => {
+      if (!admin) {
+        dispatch(addAdmin(data));
+      } else {
+        let changedField = Object.keys(dirtyFields);
+        if (!changedField.length) return toast.info("change some field first");
+        else {
+          let obj = {};
+          changedField.forEach((field) => (obj[field] = data[field]));
+
+          dispatch(updateAdmin({ id: admin._id, data: obj }));
+        }
+      }
+    },
+    [isDirty, dirtyFields]
+  );
 
   const countries = useSelector(getCountries);
   const states = useSelector(getStates);
   const cities = useSelector(getCities);
   const dispatch = useDispatch();
+  const adminStatus = useSelector(status);
   useEffect(() => {
     if (ready) {
       dispatch(fetchCountries());
     } else setReady(true);
-  }, [ready]);
+
+    return () => {
+      if (adminStatus === "fetched") dispatch(clearAdmin());
+    };
+  }, [ready, adminStatus]);
+  const admin = useSelector(getAdmin);
   useEffect(() => {
-    setValue("city", null);
-    if (watch("state")) {
-      dispatch(fetchCities(watch("state")));
-    } else {
-      dispatch(emptyCities());
+    if (admin && ready) {
+      reset(admin);
+      setValue("country", admin.country);
+      setValue("state", admin.state);
+      setValue("city", admin.city);
     }
-  }, [watch("state")]);
+  }, [admin]);
+
   useEffect(() => {
-    setValue("state", null);
-    if (watch("country")) {
-      dispatch(fetchStates(watch("country")));
-    } else {
-      dispatch(emptyStates());
+    if (ready) {
+      if (watch("state")) {
+        dispatch(fetchCities(watch("state")));
+      } else {
+        dispatch(emptyCities());
+      }
     }
-  }, [watch("country")]);
+  }, [watch("state"), ready, admin]);
+  useEffect(() => {
+    if (ready) {
+      if (watch("country")) {
+        dispatch(fetchStates(watch("country")));
+      } else {
+        dispatch(emptyStates());
+      }
+    }
+  }, [watch("country"), ready, admin]);
   return (
     <>
       <Modal size="md" show={show} onHide={() => setShow(false)}>
