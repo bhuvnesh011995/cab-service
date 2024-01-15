@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import BASE_URL from "../../config/config";
 import { useSelector } from "react-redux";
+import axios from "axios";
 import { fetchManufacturer } from "./ManufacturerReducer";
 let initialState = {
   states: [],
@@ -25,7 +26,7 @@ export const fetchStates = createAsyncThunk(
         message: error.response?.data?.message,
       });
     }
-  }
+  },
 );
 
 const stateSlice = createSlice({
