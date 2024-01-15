@@ -3,7 +3,6 @@ import BASE_URL from "../../config/config";
 import { useSelector } from "react-redux";
 import axios from "axios";
 import { fetchManufacturer } from "./ManufacturerReducer";
-import axios from "axios";
 let initialState = {
   states: [],
   status: "idle",
