@@ -124,7 +124,6 @@ export default function ModelManagement() {
 
   }
   const handleUpdate =(data)=>{
-     setModel(data)
      setShowUpdate(true)
   }
 
