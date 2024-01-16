@@ -1,11 +1,17 @@
-export default function Date_input({ lebel_text, setInput, setKey }) {
+export default function Date_input({
+  lebel_text,
+  setInput,
+  setKey,
+  isDisabled,
+}) {
   return (
-    <div class="mb-3">
-      <label class="form-label">{lebel_text}</label>
+    <div class='mb-3'>
+      <label class='form-label'>{lebel_text}</label>
       <input
-      type="date"
-      class="form-control"
-      placeholder="dd M, yyyy"
+        type='date'
+        class='form-control'
+        disabled={isDisabled}
+        placeholder='dd M, yyyy'
         onChange={(e) =>
           setInput((preVal) => ({ ...preVal, [setKey]: e.target.value }))
         }

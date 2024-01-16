@@ -5,15 +5,33 @@ import BASE_URL from "../../config/config";
 let initialState = {
   status: "idle",
   error: null,
-  manufacturer: [],
+  fares: [],
   message: "",
+  selectedFare: null,
 };
 
-export const postManufacturer = createAsyncThunk(
-  "manufacturer/postManufacturer",
+export const getSelectedFareData = createAsyncThunk(
+  "fare/getSelectedFare",
+  async (data, { rejectWithValue }) => {
+    const url = BASE_URL + "/fare/getSelectedFare/" + data;
+    const response = await axios.get(url);
+    if (response.status == 200) {
+      return response.data;
+    } else
+      return rejectWithValue({
+        status: response.status,
+        message: response.data.message,
+      });
+  },
+);
+
+export const postFare = createAsyncThunk(
+  "fare/addFare",
   async (data, { rejectWithValue }) => {
     try {
-      let response = await axios.post(BASE_URL + "/make", data);
+      console.log(data);
+      let response = await axios.post(BASE_URL + "/fare/addFare", data);
+      return;
       if (response.status === 201 && response.data.success)
         return response.data;
       else
@@ -30,11 +48,11 @@ export const postManufacturer = createAsyncThunk(
   },
 );
 
-export const fetchManufacturer = createAsyncThunk(
-  "manufacturer/fetchManufacturer",
+export const fetchAllFares = createAsyncThunk(
+  "fare/fetchAllFares",
   async (_, { rejectWithValue }) => {
     try {
-      let response = await axios.get(BASE_URL + "/make/filter/");
+      let response = await axios.get(BASE_URL + "/fare/fetchAllFares");
       if (response.status === 200) return response.data;
       else
         return rejectWithValue({
@@ -49,11 +67,11 @@ export const fetchManufacturer = createAsyncThunk(
     }
   },
 );
-export const deleteManufacturer = createAsyncThunk(
-  "manufacturer/deleteManufacture",
+export const deleteFare = createAsyncThunk(
+  "fare/deleteFare",
   async (id, { rejectWithValue }) => {
     try {
-      let response = await axios.delete(BASE_URL + "/make/" + id);
+      let response = await axios.delete(BASE_URL + "/fare/deleteFare/" + id);
       if (response.status === 200) return { ...response.data, id };
       else
         return rejectWithValue({
@@ -68,13 +86,12 @@ export const deleteManufacturer = createAsyncThunk(
     }
   },
 );
-const putManufacturer = createAsyncThunk(
-  "manufacturer/putManufacturer",
+const putFare = createAsyncThunk(
+  "fare/putFare",
   async (data, { rejectWithValue }) => {
-    console.log("data", data);
     try {
       let response = await axios.put(
-        BASE_URL + "/make/update/" + data.id,
+        BASE_URL + "/fare/putFare/" + data.id,
         data.newData,
       );
       if (response.status === 200 && response.data.success) {
@@ -94,8 +111,8 @@ const putManufacturer = createAsyncThunk(
   },
 );
 
-const manufacturerSlice = createSlice({
-  name: "manufacturer",
+const fareSlice = createSlice({
+  name: "fare",
   initialState,
   reducers: {
     setSucceessStatus: (state, action) => {
@@ -104,64 +121,79 @@ const manufacturerSlice = createSlice({
   },
 
   extraReducers(builder) {
-    builder.addCase(postManufacturer.pending, (state, action) => {
+    builder.addCase(postFare.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(postManufacturer.fulfilled, (state, action) => {
+    builder.addCase(postFare.fulfilled, (state, action) => {
       state.status = "added";
       state.error = null;
-      state.manufacturer = state.manufacturer.concat(action.payload.make);
+      state.fares = state.fares.concat(action.payload.make);
       state.message = action.payload.message;
     });
-    builder.addCase(fetchManufacturer.pending, (state, action) => {
+    builder.addCase(fetchAllFares.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(fetchManufacturer.fulfilled, (state, action) => {
+    builder.addCase(fetchAllFares.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.error = null;
-      state.manufacturer = action.payload.makeList;
+      state.fares = action.payload.makeList;
     });
-    builder.addCase(fetchManufacturer.rejected, (state, action) => {
+    builder.addCase(fetchAllFares.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });
-    builder.addCase(putManufacturer.pending, (state) => {
+    builder.addCase(putFare.pending, (state) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(putManufacturer.fulfilled, (state, action) => {
+    builder.addCase(putFare.fulfilled, (state, action) => {
       state.status = "updated";
       state.error = null;
-      state.manufacturer = state.manufacturer.map((item) =>
+      state.fares = state.fares.map((item) =>
         item._id === action.payload.data._id ? action.payload.data : item,
       );
     });
-    builder.addCase(putManufacturer.rejected, (state, action) => {
+    builder.addCase(putFare.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });
-    builder.addCase(deleteManufacturer.pending, (state, action) => {
+    builder.addCase(deleteFare.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(deleteManufacturer.fulfilled, (state, action) => {
+    builder.addCase(deleteFare.fulfilled, (state, action) => {
       state.status = "deleted";
       state.error = null;
-      state.manufacturer = state.manufacturer.filter(
+      state.fares = state.fares.filter(
         (item) => item._id !== action.payload.id,
       );
       state.message = action.payload.message;
     });
 
-    builder.addCase(deleteManufacturer.rejected, (state, action) => {
+    builder.addCase(deleteFare.rejected, (state, action) => {
+      state.status = "error";
+      state.error = action.payload;
+    });
+
+    builder.addCase(getSelectedFareData.pending, (state, action) => {
+      state.status = "pending";
+      state.error = action.payload;
+    });
+    builder.addCase(getSelectedFareData.fulfilled, (state, action) => {
+      state.status = "updated";
+      state.error = null;
+      state.selectedFare = action.payload;
+    });
+    builder.addCase(getSelectedFareData.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });
   },
 });
 
-export const selectManufacturer = (state) => state.manufacturer.manufacturer;
-export default manufacturerSlice.reducer;
-export { putManufacturer };
+export const allFares = (state) => state.fare.fares;
+export const selectedFare = (state) => state.fare.selectedFare;
+export default fareSlice.reducer;
+export { putFare };
