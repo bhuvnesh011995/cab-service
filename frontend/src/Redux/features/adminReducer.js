@@ -9,6 +9,29 @@ let initialState = {
   admin: null,
   error: null,
 };
+
+export const deleteAdmin = createAsyncThunk(
+  "admins/id",
+  async ({ url, id }, { rejectWithValue }) => {
+    try {
+      let response = await axios.delete(url);
+      if (response.status === 204) return { id };
+      else
+        return rejectWithValue({
+          status: "error",
+          message: response.data.message ?? "error while deleting",
+        });
+    } catch (error) {
+      console.log(error);
+      console.log(error.response);
+      return rejectWithValue({
+        status: "error",
+        message: error.response.data.message ?? "error while deleting",
+      });
+    }
+  }
+);
+
 export const fetchAdmins = createAsyncThunk(
   "admins/fetchAdmins",
   async ({ name, username, status, from, to } = {}, { rejectWithValue }) => {
@@ -171,6 +194,16 @@ const adminsSlice = createSlice({
         status: "error",
         message: action.payload.message ?? "error while updating admin",
       };
+    });
+    builder.addCase(deleteAdmin.fulfilled, (state, action) => {
+      state.admins = state.admins.filter(
+        (admin) => admin._id !== action.payload.id
+      );
+      state.status = "deleted";
+    });
+    builder.addCase(deleteAdmin.rejected, (state, action) => {
+      state.status = "error";
+      state.error = { status: "error", message: "error while deleting admin" };
     });
   },
 });

@@ -24,6 +24,11 @@ import {
   fetchAdmins,
   getAllAdmins,
 } from "../../../Redux/features/adminReducer";
+import DeleteModalAdv from "../../../Common/deleteModalRedux";
+import {
+  openModal,
+  showDeleteModal,
+} from "../../../Redux/features/deleteModalReducer";
 const initialFilter = {
   name: "",
   username: "",
@@ -33,32 +38,9 @@ const initialFilter = {
 };
 let url = BASE_URL + "/admin/filter/";
 export default function AdminManagement() {
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [id, setId] = useState(null);
+  const show = useSelector(showDeleteModal);
   const [adminModalOpen, setAdminModalOpen] = useState(false);
   const [filter, setFilter] = useState(initialFilter);
-  const [list, setList] = useState([]);
-  const navigate = useNavigate();
-  // const fetchAdmins = useCallback(
-  //   async ({ name, username, status, from, to }) => {
-  //     try {
-  //       let url = new URL("/test/api/v1/admin/filter", BASE_URL);
-  //       if (name) url.searchParams.set("name", name);
-  //       if (username) url.searchParams.set("username", username);
-  //       if (status) url.searchParams.set("status", status);
-  //       if (from) url.searchParams.set("from", from);
-  //       if (to) url.searchParams.set("to", to);
-
-  //       let response = await axios.get(url.href);
-  //       if (response.status === 200) setList(response.data);
-  //       else toast.error("error while fetching admins");
-  //     } catch (error) {
-  //       toast.error("error while fetching admins");
-  //       console.log(error);
-  //     }
-  //   },
-  //   [BASE_URL]
-  // );
   const dispatch = useDispatch();
   const AllAdmins = useSelector(getAllAdmins);
   const status = useSelector((state) => state.admins.status);
@@ -71,6 +53,8 @@ export default function AdminManagement() {
     } else if (status === "updated") {
       toast.success("admin updated succeeful");
       setAdminModalOpen(false);
+    } else if (status === "deleted") {
+      toast.success("admin deleted successfully");
     }
   }, [status]);
 
@@ -100,33 +84,7 @@ export default function AdminManagement() {
     []
   );
 
-  // function handleUpdate(i) {
-  //   navigate("/AdminDataUpdate", { state: { admin: i } });
-  // }
-
-  async function handleDelete(id) {
-    try {
-      let response = await axios.delete(BASE_URL + "/admin/" + id);
-      if (response.status === 204) {
-        toast.success("admin deleted successfully");
-        let arr = list.filter((ele) => ele._id !== id);
-        setList(arr);
-        setDeleteModalOpen(false);
-        setId(null);
-      } else toast.error("error while deleting admin");
-    } catch (error) {
-      console.log(error);
-      toast.error("error while deleting admin");
-    }
-  }
-
-  function handleClick(e) {
-    e.preventDefault();
-    navigate("/AddAdmin");
-  }
-
   function handleSubmit(e) {
-    console.log("hello", filter);
     dispatch(fetchAdmins(filter));
   }
 
@@ -135,14 +93,7 @@ export default function AdminManagement() {
       {adminModalOpen && (
         <AddNew show={adminModalOpen} setShow={setAdminModalOpen} />
       )}
-      {deleteModalOpen && (
-        <DeleteModal
-          show={deleteModalOpen}
-          setShow={setDeleteModalOpen}
-          arg={id}
-          handleDelete={handleDelete}
-        />
-      )}
+      {show && <DeleteModalAdv />}
       <div class="row">
         <div class="col-lg-13">
           <div class="card">
@@ -171,19 +122,6 @@ export default function AdminManagement() {
           </div>
         </div>
       </div>
-      {/* <div class="row">
-      <Table
-        heading={[
-          "Sr no",
-          "Name",
-          "Username",
-          "status",
-          "created At",
-          "Action",
-        ]}
-        list={list}
-      />
-      </div> */}
 
       <MaterialReactTable
         columns={columns}
@@ -208,8 +146,12 @@ export default function AdminManagement() {
             </IconButton>
             <IconButton
               onClick={() => {
-                setId(row.original._id);
-                setDeleteModalOpen(true);
+                dispatch(
+                  openModal({
+                    url: `${BASE_URL}/admin/${row.original._id}`,
+                    id: row.original._id,
+                  })
+                );
               }}
             >
               <DeleteForever />
