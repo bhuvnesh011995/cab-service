@@ -11,7 +11,7 @@ export default function UpdateManufacturer({ show, setShow, data }) {
     const handleUpdate =()=>{
       dispatch(putManufacturer({ id: manufacturer._id ,newData:manufacturer }))
     }
-
+    
     
       
 

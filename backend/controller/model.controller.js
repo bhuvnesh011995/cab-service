@@ -7,7 +7,6 @@ exports.addModel = async function (req, res, next) {
     console.log("Request Body:", req.body);
 
     try {
-      // Attempt to find a 'Make' document with the specified name
       const makeDoc = await Make.findOne({ name: make });
 
       if (!makeDoc) {
@@ -58,6 +57,27 @@ exports.addModel = async function (req, res, next) {
   }
 };
 
+exports.addModels = async function (req,res,next) {
+  let obj = { ...req.body }; 
+  try{
+    let model = await Model.create(obj)
+      model = await Model.findById(model._id).populate({ path: "make", select: "name" });
+    return res.status(201).send({
+      models: model,
+      message: "model added successfully", 
+      success: true 
+    });
+  }
+  
+  catch(error){
+    console.log(error)
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+    });
+  }
+} 
+
 exports.addState = async function (req, res, next) {
   try {
     const { name, country, status, stateCode } = req.body;
@@ -104,6 +124,25 @@ exports.getModel = async function (req, res, next) {
     next(error);
   }
 };
+
+exports.getModels = async function (req, res,next){
+  try{
+    const models = await Model.find({}).populate({ path: "make", select: "name" });
+    return res.status(200).json({
+      success: true,
+      models: models,
+      message :"get Models"
+    })
+
+  }
+  catch(error){
+    return res.status(500).json({
+      success : false,
+      error: false,
+      error: error.message,
+    });
+  }
+}
 
 exports.filterModel = async function (req, res, next) {
   let { name, make, status } = req.query;
@@ -158,22 +197,21 @@ exports.deleteModel = async function (req, res) {
 };
 
 
+
 exports.updateModel = async function(req,res){
   try{
     const {id} = req.params
-    console.log(id)
-    console.log(req.body)
      let obj = {};
+     if(req.body._id) obj._id  = req.body._id
      if(req.body.name) obj.name  = req.body.name
      if(req.body.make) obj.make  = req.body.make
      if(req.body.status) obj.status  = req.body.status
-     await Model.updateOne({ _id:id}, { $set: obj});
-     res.status(200).json({message:"update successfully", success: true,data:obj})
+     let model = await Model.findOneAndUpdate({ _id:id}, { $set: obj},{new:true});
+     model = await Model.findById(model._id).populate({ path: "make", select: "name" });
+
+     res.status(200).json({models:model})
   }
   catch(error){
-    res.status(500).json({
-      success: false,
-      message: "Internal error occurres"
-    })
+  next(error)
   }
 }
