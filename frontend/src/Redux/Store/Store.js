@@ -7,6 +7,7 @@ import stateReducer from "../features/stateReducer";
 import cityReducer from "../features/cityReducer";
 import ModelReducer from "../features/ModelReducer"
 import vehicleCategoryReducer from "../features/vehicleCategoryReducer";
+import vehicleTypeReducer from "../features/vehicleTypeReducer";
 export default configureStore({
   reducer: {
     admins: adminReducer,
@@ -16,7 +17,7 @@ export default configureStore({
     states: stateReducer,
     cities: cityReducer,
     model :ModelReducer,
-    vehicleCategory:vehicleCategoryReducer 
-
+    vehicleCategory:vehicleCategoryReducer,
+    vehicleType:vehicleTypeReducer
   },
 });

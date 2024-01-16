@@ -11,7 +11,7 @@ import { Modal } from "react-bootstrap";
 export default function UpdateVehicleType({show,setShow,data}) {
 
 
-  const [model, setModel] = useState({...data});
+  const [vehicleType, setVehicleType] = useState({...data});
   const [runMode, setRunMode] = useState([]);
 
 
@@ -46,7 +46,6 @@ export default function UpdateVehicleType({show,setShow,data}) {
       navigate(-1)   
         } else {
             toast.success(response.data.message)
-            navigate(-1)   
           console.log(response.data.message);
         }
       })
@@ -57,7 +56,7 @@ export default function UpdateVehicleType({show,setShow,data}) {
 
   const handleChange = (selectedOptions) => {
     const selectedValues = selectedOptions.map((option) => option.value);
-    setModel((prevValue) => ({ ...prevValue, runMode: selectedValues }));
+    setVehicleType((prevValue) => ({ ...prevValue, runMode: selectedValues }));
   };
 
   return (
@@ -85,10 +84,10 @@ export default function UpdateVehicleType({show,setShow,data}) {
                   <input
                     type="text"
                     name="name"
-                    value={model.name || ""}
+                    value={vehicleType.name || ""}
                     className="form-control"
                     onChange={(e) => {
-                      setModel((prevValue) => ({ ...prevValue, name: e.target.value }));
+                      setVehicleType((prevValue) => ({ ...prevValue, name: e.target.value }));
                     }}
                   />
                 </div>
@@ -101,7 +100,7 @@ export default function UpdateVehicleType({show,setShow,data}) {
                     options={runMode}
                     isMulti
                     value={runMode.filter(
-                      (option) => model.runMode.indexOf(option.value) !== -1
+                      (option) => vehicleType.runMode.indexOf(option.value) !== -1
                     )}
                     onChange={handleChange}
                    />                </div>
@@ -113,10 +112,10 @@ export default function UpdateVehicleType({show,setShow,data}) {
                   <input
                     type="text"
                     name="name"
-                    value={model.seatingCapacityName || ""}
+                    value={vehicleType.seatingCapacityName || ""}
                     className="form-control"
                     onChange={(e) => {
-                      setModel((prevValue) => ({ ...prevValue, seatingCapacityName: e.target.value }));
+                      setVehicleType((prevValue) => ({ ...prevValue, seatingCapacityName: e.target.value }));
                     }}
                   />
                 </div>
@@ -127,10 +126,10 @@ export default function UpdateVehicleType({show,setShow,data}) {
                   <input
                     type="text"
                     name="name"
-                    value={model.seatingCapacity || ""}
+                    value={vehicleType.seatingCapacity || ""}
                     className="form-control"
                     onChange={(e) => {
-                      setModel((prevValue) => ({ ...prevValue, seatingCapacity: e.target.value }));
+                      setVehicleType((prevValue) => ({ ...prevValue, seatingCapacity: e.target.value }));
                     }}                                    />
                 </div>
               </div>
@@ -139,10 +138,10 @@ export default function UpdateVehicleType({show,setShow,data}) {
                   <label>Status</label>
                   <select
                     name="status"
-                    value={model.status || ""}
+                    value={vehicleType.status || ""}
                     className="form-control"
                     onChange={(e) => {
-                      setModel((prevValue) => ({ ...prevValue, status: e.target.value }));
+                      setVehicleType((prevValue) => ({ ...prevValue, status: e.target.value }));
                     }}    
                   >
                     <option>Choose</option>
@@ -154,7 +153,7 @@ export default function UpdateVehicleType({show,setShow,data}) {
             </div>
             <BtnDark
                 title={"Add"}
-                handleClick={()=>handleSubmit(model)}
+                handleClick={()=>handleSubmit(vehicleType)}
                 />
           </form>
           </Modal.Body>

@@ -73,6 +73,7 @@ catch(error){
 }
 )
 
+
 export const deleteVehicleCategory = createAsyncThunk(
   "vehicleCategory/deleteVehicleCategory",
   async(id,{rejectWithValue})=>{

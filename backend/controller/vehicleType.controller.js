@@ -2,35 +2,31 @@ const db = require("../model/index");
 
 exports.addVehicleType = async function (req, res, next) {
   try {
-    const {
-      img,
-      name,
-      runModes,
-      seatingCapacity,
-      seatingCapacityName,
-      status,
-    } = req.body;
+    const data = JSON.parse(req.body.data);
 
-    const runModeIds = [];
+    const obj = {
+      name: data.name,
+      seatingCapacityName: data.seatingCapacityName,
+      seatingCapacity: data.seatingCapacity,
+      file: req.file?.filename,
+      status: data.status ,
+      runMode: data.runMode || [], 
+    };
+    let vehicleType = await db.vehicleType.create(obj);
 
-    await db.vehicleType.create({
-      name: name,
-      img: img,
-      seatingCapacityName: seatingCapacityName,
-      seatingCapacity: seatingCapacity,
-      status: status,
-      runMode: runModes,
-    });
-
-    res.status(200).json({
+    // Populate the runMode field
+    vehicleType = await db.vehicleType
+      .findById(vehicleType._id)
+      .populate({ path: "runMode" });
+    res.status(201).json({
       success: true,
-      message: "vehicle type added with runmodes",
+      message: "Vehicle type added",
+      vehicleType: vehicleType,
     });
   } catch (error) {
     next(error);
   }
 };
-
 exports.getAllVehicle = async function (req, res, next) {
   try {
     let vehicleTypes = await db.vehicleType
@@ -42,9 +38,11 @@ exports.getAllVehicle = async function (req, res, next) {
       data: vehicleTypes,
     });
   } catch (error) {
+    console.log(error)
     next(error);
   }
 };
+
 
 exports.filterVehicleType = async function (req, res, next) {
   try {
@@ -96,6 +94,24 @@ exports.deleteVehicleType = async function (req, res) {
       return res.status(500).json({ message: "Internal server error" });
   }
 };
+exports.getAllVehicleType = async function (req, res,next){
+  try{
+    const vehicleType = await db.vehicleType.find({}).populate({ path: "runMode", select: "name" });
+    return res.status(200).json({
+      success: true,
+      vehicleType: vehicleType,
+      message :"get vehicleType"
+    })
+
+  }
+  catch(error){
+    return res.status(500).json({
+      success : false,
+      error: false,
+      error: error.message,
+    });
+  }
+}
 
 exports.updateVehicleType = async function (req, res, next) {
   try {
