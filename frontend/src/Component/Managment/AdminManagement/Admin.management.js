@@ -20,6 +20,7 @@ import DeleteModal from "../../../Common/DeleteModal";
 import AddNew from "./AddNew";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  fetchAdminById,
   fetchAdmins,
   getAllAdmins,
 } from "../../../Redux/features/adminReducer";
@@ -67,8 +68,10 @@ export default function AdminManagement() {
     else if (status === "added") {
       toast.success("admin added successfully");
       setAdminModalOpen(false);
+    } else if (status === "updated") {
+      toast.success("admin updated succeeful");
+      setAdminModalOpen(false);
     }
-    // fetchAdmins({});
   }, [status]);
 
   const columns = useMemo(
@@ -97,9 +100,9 @@ export default function AdminManagement() {
     []
   );
 
-  function handleUpdate(i) {
-    navigate("/AdminDataUpdate", { state: { admin: i } });
-  }
+  // function handleUpdate(i) {
+  //   navigate("/AdminDataUpdate", { state: { admin: i } });
+  // }
 
   async function handleDelete(id) {
     try {
@@ -195,7 +198,12 @@ export default function AdminManagement() {
             <IconButton>
               <Lock />
             </IconButton>
-            <IconButton onClick={() => handleUpdate(row.original)}>
+            <IconButton
+              onClick={() => {
+                dispatch(fetchAdminById(row.original._id));
+                setAdminModalOpen(true);
+              }}
+            >
               <ModeEditOutline />
             </IconButton>
             <IconButton
