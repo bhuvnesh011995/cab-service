@@ -7,15 +7,18 @@ import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Modal } from "react-bootstrap";
+import { updateModels } from "../../../Redux/features/ModelReducer";
+import { useDispatch } from "react-redux";
 export default function ModelUpdate({show,setShow,data}) {
   // const location = useLocation();
   // const data = location.state?.model || {};
-
+ console.log("d",data)
   const [model, setModel] = useState({});
   const [options, setOptions] = useState([]);
   const [succMsg, setSuccMsg] = useState("");
   const navigate = useNavigate()
-
+  const dispatch = useDispatch()
+     
   useEffect(() => {
     setModel(data);
     fetch(BASE_URL + "/make/", {
@@ -28,24 +31,12 @@ export default function ModelUpdate({show,setShow,data}) {
   }, [data]);
 
   const handleSubmit = (data) => {
-    
-    axios.put(BASE_URL + '/model/' + data.id, data)
-      .then((response) => {
-        if (response.data.success) {       
-      toast.success(response.data.message)
-    
-        } else {
-            toast.error(response.data.message)
-          console.log(response.data.message);
-        }
-      })
-      .catch((error) => {
-        console.error("Error updating model:", error);
-      });
+    dispatch(updateModels({ id: data._id ,newData:data }))
+
   };
   
 
-console.log("options",options)
+
 
   const handleInputChange = (e) => {
     setModel({

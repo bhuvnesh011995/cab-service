@@ -19,6 +19,13 @@ import axios from "axios";
 import AddVehicleCategory from "../VehicleCategoryMangement/AddVehicleCategory";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import { toast } from "react-toastify";
+import { getPermissions } from "../../../Redux/features/authReducer";
+import {
+  deleteVehicleCategory,
+  fetchVehicleCategory,
+  getAllVehicleCategory,
+} from "../../../Redux/features/vehicleCategoryReducer";
+import { useDispatch, useSelector } from "react-redux";
 let initialFilter = {
   name: "",
   status: "",
@@ -28,29 +35,43 @@ export default function VehicleCategoryManagement() {
   const [list, setList] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
-
   const [id, setId] = useState(null);
   const [deleteInfo, setDeleteInfo] = useState(null);
+  const dispatch = useDispatch();
   const navigate = useNavigate();
   const url = BASE_URL + "/make/filter/";
-  // const { admin } = useContext(authContext);
   const [updateData, setUpdateData] = useState(null);
-  // const [permissions, setPermissions] = useState({
-  //   canView: false,
-  //   canEdit: false,
-  // });
+  const permissions = useSelector(getPermissions);
+
   const api = BASE_URL + "/vehicleCategory/";
 
-  const getAllVehicleCategory = async function (res, req) {
-    await axios.get(api).then((response) => {
-      setList(response.data?.vehicleCategory);
-    });
-  };
   useEffect(() => {
-    getAllVehicleCategory();
+    dispatch(fetchVehicleCategory());
   }, []);
 
+  const vehicleCategoryData = useSelector(getAllVehicleCategory);
+  console.log("ve", vehicleCategoryData);
+
   console.log("list", list);
+
+  const vehicleCategoryStatus = useSelector(
+    (state) => state.vehicleCategory.status,
+  );
+  const message = useSelector((state) => state.vehicleCategory.message);
+
+  useEffect(() => {
+    if (vehicleCategoryStatus === "deleted") {
+      setIsOpen(false);
+      toast.success(message);
+    } else if (vehicleCategoryStatus === "added") {
+      setShow(false);
+      toast.success(message);
+    } else if (vehicleCategoryStatus === "update") {
+      setShow(false);
+      toast.success("updated");
+    }
+  }, [vehicleCategoryStatus]);
+
   const columns = useMemo(
     () => [
       {
@@ -99,22 +120,11 @@ export default function VehicleCategoryManagement() {
   function handleDelete(rowId) {
     const deleteUrl = BASE_URL + "/vehicleCategory/" + rowId;
 
-    fetch(deleteUrl, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        if (response) {
-          getAllVehicleCategory();
-          setIsOpen(false);
-          toast.success(response.message);
-        } else {
-          console.error("Failed to delete admin");
-          toast.error(response.message);
-        }
-      })
-      .catch((error) => {
-        console.error("Error occurred while deleting admin:", error);
-      });
+    return;
+  }
+
+  function handleDelete(rowId) {
+    dispatch(deleteVehicleCategory(rowId));
   }
 
   function handleSubmit(e) {
@@ -168,82 +178,67 @@ export default function VehicleCategoryManagement() {
                   zIndex: "2",
                 }}
               >
-                {/* {(admin.role === "superadmin" ||
-                  (admin.permissions &&
-                    admin.permissions.includes("addMake"))) && ( */}
-                <BtnDark
-                  handleClick={() => {
-                    setShow(true);
-                  }}
-                  title={"Add VehicleCategory"}
-                />
-                {/* )} */}
+                {(permissions.includes("All") ||
+                  permissions.includes("addModel")) && (
+                  <BtnDark
+                    handleClick={() => {
+                      setShow(true);
+                    }}
+                    title={"Add VehicleCategory"}
+                  />
+                )}
               </div>
-              <Filter_Option
-                input={filter}
-                setInput={setFilter}
-                initialInput={initialFilter}
-                btn1_title={"Search"}
-                handleClick1={handleSubmit}
-                handleClick2={handleReset}
-                btn2_title={"Reset"}
-                options={["name", "status"]}
-              />
             </div>
+
+            {(permissions.includes("All") ||
+              permissions.includes("viewTable")) && (
+              <MaterialReactTable
+                columns={columns || []}
+                data={vehicleCategoryData || []}
+                enableRowNumbers={true}
+                rowNumberDisplayMode='static'
+                enableRowActions
+                positionActionsColumn={"last"}
+                renderRowActions={({ row, table }) => (
+                  <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
+                    <IconButton>
+                      <RemoveRedEye />
+                    </IconButton>
+                    <IconButton>
+                      <Lock />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => {
+                        let obj = {
+                          ...row.original,
+                          vehicleCategory: row.original.vehicleCategory,
+                          status: row.original.status,
+                        };
+                        setUpdateData(obj);
+                        setShow(true);
+                      }}
+                    >
+                      <ModeEditOutline />
+                    </IconButton>
+                    <IconButton
+                      onClick={() => {
+                        setDeleteInfo({
+                          message: `Do You Really Want To Delete ${row.original?.vehicleCategory}`,
+                          header: "Delete Vehicle Category",
+                        });
+                        setIsOpen(true);
+                        setId(row.original._id);
+                      }}
+                    >
+                      <DeleteForever />
+                    </IconButton>
+                  </Box>
+                )}
+              />
+            )}
           </div>
         </div>
       </div>
-
-      {/* <Table
-        heading={["Sr no", "Name", "Status", "Created At", "Action"]}
-        list={list}
-      /> */}
-      {/* {(admin.role === "superadmin" ||
-        (admin.permissions && admin.permissions.includes("viewTable"))) && ( */}
-      <MaterialReactTable
-        columns={columns || []}
-        data={list || []}
-        enableRowNumbers={true}
-        rowNumberDisplayMode='static'
-        enableRowActions
-        positionActionsColumn={"last"}
-        renderRowActions={({ row, table }) => (
-          <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-            <IconButton>
-              <RemoveRedEye />
-            </IconButton>
-            <IconButton>
-              <Lock />
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                let obj = {
-                  ...row.original,
-                  vehicleCategory: row.original.vehicleCategory,
-                  status: row.original.status,
-                };
-                setUpdateData(obj);
-                setShow(true);
-              }}
-            >
-              <ModeEditOutline />
-            </IconButton>
-            <IconButton
-              onClick={() => {
-                setDeleteInfo({
-                  message: `Do You Really Want To Delete ${row.original?.vehicleCategory}`,
-                  header: "Delete Vehicle Category",
-                });
-                setIsOpen(true);
-                setId(row.original._id);
-              }}
-            >
-              <DeleteForever />
-            </IconButton>
-          </Box>
-        )}
-      />
-      {/* )} */}
     </Management_container>
   );
 }

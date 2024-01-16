@@ -139,8 +139,7 @@ const manufacturerSlice = createSlice({
               state.manufacturer = state.manufacturer.map((item) =>
        item._id === action.payload.data._id ? action.payload.data : item
   );
-        });
-        
+        });    
         builder.addCase(putManufacturer.rejected, (state, action) => {
           state.status = "error";
           state.error = action.payload;

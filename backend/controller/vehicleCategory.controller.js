@@ -70,7 +70,7 @@ exports.updateVehicleCategory = async function (req, res, next) {
 
       await db.vehicleCategory.updateOne({ _id:id}, { $set: obj});
     
-      res.status(200).json({message:"update successfully"})
+      res.status(200).json({message:"update successfully",vehicleCategory:req.body})
 
   } catch (error) {
       console.log(error);
