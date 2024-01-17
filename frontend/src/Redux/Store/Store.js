@@ -7,6 +7,7 @@ import stateReducer from "../features/stateReducer";
 import cityReducer from "../features/cityReducer";
 import ModelReducer from "../features/ModelReducer";
 import vehicleCategoryReducer from "../features/vehicleCategoryReducer";
+import fareReducer from "../features/individualFareReducer";
 import deleteModalReducer from "../features/deleteModalReducer";
 import vehicleTypeReducer from "../features/vehicleTypeReducer";
 
@@ -20,6 +21,7 @@ export default configureStore({
     cities: cityReducer,
     model: ModelReducer,
     vehicleCategory: vehicleCategoryReducer,
+    fare: fareReducer,
     delete: deleteModalReducer,
     vehicleType: vehicleTypeReducer,
   },

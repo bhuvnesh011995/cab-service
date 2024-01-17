@@ -44,7 +44,7 @@ exports.addFare = async function (req, res, next) {
       allExtraCharge.forEach(async (ele) => {
         await db.indiFareCountry.updateOne(
           { _id: fare._id },
-          { $push: { perKMCharge: ele } }
+          { $push: { perKMCharge: ele } },
         );
       });
 
@@ -81,7 +81,7 @@ exports.addFare = async function (req, res, next) {
       allExtraCharge.forEach(async (ele) => {
         await db.indiFareState.updateOne(
           { _id: fare._id },
-          { $push: { perKMCharge: ele } }
+          { $push: { perKMCharge: ele } },
         );
       });
 
@@ -134,7 +134,7 @@ exports.addFare = async function (req, res, next) {
       allExtraCharge.forEach(async (ele) => {
         await db.indiFareCity.updateOne(
           { _id: fare._id },
-          { $push: { perKMCharge: ele } }
+          { $push: { perKMCharge: ele } },
         );
       });
 
@@ -157,7 +157,7 @@ exports.addFare = async function (req, res, next) {
             });
           }
           return perkmcharge._id;
-        })
+        }),
       );
 
       return arr;
@@ -320,15 +320,51 @@ exports.deleteIndividualFare = async function (req, res) {
   console.log(id);
 
   try {
-      const result = await db.indiFareCity.deleteOne({ _id: id });
+    const result = await db.indiFareCity.deleteOne({ _id: id });
 
-      if (result.deletedCount === 1) {
-          return res.status(200).json({ message: "Delete successfully" ,success: true });
-      } else {
-          return res.status(400).json({ message: "Model not found" });
-      }
+    if (result.deletedCount === 1) {
+      return res
+        .status(200)
+        .json({ message: "Delete successfully", success: true });
+    } else {
+      return res.status(400).json({ message: "Model not found" });
+    }
   } catch (error) {
-      console.error(error);
-      return res.status(500).json({ message: "Internal server error" });
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+exports.getSelectedFare = async function (req, res) {
+  const id = req.params.id;
+  try {
+    const result = await db.indiFareCity.aggregate([
+      {
+        $match: {
+          $expr: {
+            $eq: [{ $toString: "$_id" }, id],
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: "PerKMCharge",
+          let: { fieldArrayData: "$perKMCharge" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $in: ["$_id", "$$fieldArrayData"],
+                },
+              },
+            },
+          ],
+          as: "perKmChargeData",
+        },
+      },
+    ]);
+    return res.status(200).send(result[0]);
+  } catch (err) {
+    console.error(err);
   }
 };

@@ -1,5 +1,4 @@
 import { MaterialReactTable } from "material-react-table";
-import { useForm } from "react-hook-form";
 import { FormattedMessage } from "react-intl";
 
 export const CommonDataTable = ({
@@ -34,12 +33,12 @@ export const CommonDataTable = ({
     tableColumns.push({
       accessorKey: e,
       header: tableHeaders[e],
-      Header: () => (
-        <FormattedMessage
-          id={tableHeaders[e]}
-          defaultMessage={tableHeaders[e]}
-        />
-      ),
+      // Header: () => (
+      //   <FormattedMessage
+      //     id={tableHeaders[e]}
+      //     defaultMessage={tableHeaders[e]}
+      //   />
+      // ),
     });
 
     //  makes all cells input tags
@@ -76,9 +75,9 @@ export const CommonDataTable = ({
   if (actionButtons) {
     tableColumns.push({
       header: "Actions",
-      Header: () => (
-        <FormattedMessage id='Actions' defaultMessage={"Actions"} />
-      ),
+      // Header: () => (
+      //   <FormattedMessage id='Actions' defaultMessage={"Actions"} />
+      // ),
       Cell: ({ row }) => (
         <div className='hstack gap-2 fs-1'>
           {viewButton && (

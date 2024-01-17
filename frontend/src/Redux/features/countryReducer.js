@@ -24,7 +24,7 @@ export const fetchCountries = createAsyncThunk(
         message: error.response?.data?.message,
       });
     }
-  }
+  },
 );
 
 const countrySlice = createSlice({

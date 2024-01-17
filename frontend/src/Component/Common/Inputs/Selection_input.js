@@ -7,11 +7,12 @@ export default function Selection_Input({
   lebel_text,
   setInput,
   setKey,
+  isDisabled,
 }) {
   let optionList = options?.map((ele, i) => {
     return (
-      <option key={i} value={ele}>
-        {ele.toLowerCase()}
+      <option key={i} value={ele?._id ? ele._id : ele}>
+        {ele?.name ? ele?.name.toLowerCase() : ele}
       </option>
     );
   });
@@ -20,6 +21,7 @@ export default function Selection_Input({
     <div className='m-3'>
       <label className='form-label'>{lebel_text}</label>
       <select
+        disabled={isDisabled}
         style={{ width: "200px" }}
         name='selectedStatus'
         key={`my_unique_select_key_${input[setKey]}`}

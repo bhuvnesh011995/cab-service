@@ -6,6 +6,25 @@ import BtnDark from "./Buttons/BtnDark";
 import Date_range from "./Inputs/Date_range";
 import { useEffect, useState } from "react";
 import BASE_URL from "../../config/config";
+import {
+  fetchCountries,
+  getCountries,
+} from "../../Redux/features/countryReducer";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  emptyStates,
+  fetchStates,
+  getStates,
+} from "../../Redux/features/stateReducer";
+import {
+  emptyCities,
+  fetchCities,
+  getCities,
+} from "../../Redux/features/cityReducer";
+import {
+  fetchVehicleType,
+  getAllVehicleType,
+} from "../../Redux/features/vehicleTypeReducer";
 
 export default function Filter_Option({
   input,
@@ -18,35 +37,21 @@ export default function Filter_Option({
   handleClick2,
   children,
 }) {
-  let [countryOption, setCountryOption] = useState([]);
-  let [stateOption, setStateOption] = useState([]);
-  let [cityOption, setCityOption] = useState([]);
-  const [vehicleTypeOption, setVehicleTypeOption] = useState([]);
+  const dispatch = useDispatch();
   const [packages, setPackages] = useState([]);
+
+  const countries = useSelector(getCountries);
+  const states = useSelector(getStates);
+  const cities = useSelector(getCities);
+  const vehicles = useSelector(getAllVehicleType);
 
   useEffect(() => {
     if (options.includes("country")) {
-      fetch(BASE_URL + "/country/", {
-        method: "GET",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          let arr = [];
-          data.forEach((ele) => arr.push(ele.name));
-          setCountryOption(arr);
-        });
+      dispatch(fetchCountries());
     }
 
     if (options.includes("vehicleType")) {
-      fetch(BASE_URL + "/vehicletype/", {
-        method: "GET",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          let arr = [];
-          data.data.forEach((ele) => arr.push(ele.name));
-          setVehicleTypeOption(arr);
-        });
+      dispatch(fetchVehicleType());
     }
 
     if (options.includes("package")) {
@@ -63,36 +68,23 @@ export default function Filter_Option({
 
   useEffect(() => {
     if (options.includes("state") && input?.country) {
-      fetch(BASE_URL + "/state/?country=" + input?.country, {
-        method: "GET",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          let arr = [];
-          data.forEach((ele) => arr.push(ele.name));
-          setStateOption(arr);
-        });
+      dispatch(fetchStates(input?.country));
+      dispatch(emptyStates());
+      dispatch(emptyCities());
     }
   }, [input?.country]);
 
   useEffect(() => {
     if (options.includes("city") && input.country && input.state) {
-      fetch(BASE_URL + `/city/${input.country}/${input.state}`, {
-        method: "GET",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          let arr = [];
-          data.cities.forEach((ele) => arr.push(ele.name));
-          setCityOption(arr);
-        });
-    } else setCityOption([]);
+      dispatch(fetchCities(input?.state));
+      dispatch(emptyCities());
+    }
   }, [input?.country, input?.state]);
 
   return (
     <form>
-      <div className="row">
-        <div className="col-lg-2 inputField">
+      <div className='row'>
+        <div className='col-lg-2 inputField'>
           {options.includes("package") && (
             <Selection_Input
               options={packages}
@@ -105,7 +97,7 @@ export default function Filter_Option({
 
           {options.includes("country") && (
             <Selection_Input
-              options={countryOption}
+              options={countries}
               input={input}
               setInput={setInput}
               lebel_text={"Country : "}
@@ -115,7 +107,7 @@ export default function Filter_Option({
           )}
           {options.includes("state") && (
             <Selection_Input
-              options={stateOption}
+              options={states}
               input={input}
               setInput={setInput}
               lebel_text={"State : "}
@@ -125,7 +117,7 @@ export default function Filter_Option({
           )}
           {options.includes("city") && (
             <Selection_Input
-              options={cityOption}
+              options={cities}
               input={input}
               setInput={setInput}
               lebel_text={"City : "}
@@ -134,7 +126,7 @@ export default function Filter_Option({
           )}
           {options.includes("vehicleType") && (
             <Selection_Input
-              options={vehicleTypeOption}
+              options={vehicles}
               input={input}
               setInput={setInput}
               lebel_text={"VehicleType : "}
