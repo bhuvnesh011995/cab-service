@@ -1,15 +1,9 @@
-import Filter_Option from "../../Common/Filter_option";
-import Selection_Input from "../../Common/Inputs/Selection_input";
-import Text_Input from "../../Common/Inputs/Text_Input";
-import Management_container from "../../Common/Management_container";
 import { useEffect, useState } from "react";
 import "./AddIndividualFare.css";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import * as RiIcons from "react-icons/ri";
 import { IconContext } from "react-icons";
-import BASE_URL from "../../../config/config";
 import { Modal } from "react-bootstrap";
-import axios from "axios";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -27,14 +21,17 @@ import {
   getCountries,
 } from "../../../Redux/features/countryReducer";
 import {
+  emptySelectedFare,
   getSelectedFareData,
   postFare,
   selectedFare,
 } from "../../../Redux/features/individualFareReducer";
+import {
+  fetchVehicleType,
+  getAllVehicleType,
+} from "../../../Redux/features/vehicleTypeReducer";
 
-const initialState = {
-  perKMCharge: [{ minKM: null, maxKM: null, fare: null }],
-};
+const initialState = [{ minKM: null, maxKM: null, fare: null }];
 
 export default function AddIndividualFare({
   fareId,
@@ -46,6 +43,8 @@ export default function AddIndividualFare({
     register,
     watch,
     reset,
+    getValues,
+    setValue,
     handleSubmit,
     formState: { errors, dirtyFields },
   } = useForm();
@@ -54,16 +53,19 @@ export default function AddIndividualFare({
   const cities = useSelector(getCities);
   const states = useSelector(getStates);
   const countries = useSelector(getCountries);
+  const vehicleTypes = useSelector(getAllVehicleType);
   const selectedFareData = useSelector(selectedFare);
-  const [individualFare, setIndividualFare] = useState(initialState);
+  const [perKMCharge, setPerKMCharge] = useState(initialState);
   const [succMsg, setSuccMsg] = useState("");
 
   useEffect(() => {
-    console.log(selectedFareData);
     if (selectedFareData) reset(selectedFareData);
+    else {
+      setPerKMCharge([...initialState]);
+      reset({});
+    }
     if (selectedFareData?.perKmChargeData) {
-      individualFare.perKMCharge = selectedFareData.perKmChargeData;
-      setIndividualFare(individualFare);
+      setPerKMCharge([...selectedFareData.perKmChargeData]);
     }
   }, [selectedFareData]);
 
@@ -72,6 +74,7 @@ export default function AddIndividualFare({
       dispatch(getSelectedFareData(fareId));
     }
     dispatch(fetchCountries());
+    dispatch(fetchVehicleType());
   }, []);
 
   useEffect(() => {
@@ -86,81 +89,30 @@ export default function AddIndividualFare({
     else dispatch(emptyCities());
   }, [watch("state")]);
 
-  // let list = individualFare?.perKMCharge?.map((ele, i) => {
-  //   return (
-  //     <IconContext.Provider value={"#fff"}>
-  //       <form>
-  //         <input
-  //           type='number'
-  //           index={i}
-  //           placeholder='min KM'
-  //           value={ele.minKM}
-  //           onChange={(e) => {
-  //             // let obj = individualFare;
-  //             // individualFare.perKMCharge[e.target.getAttribute("index")].minKM =
-  //             //   e.target.value;
-  //             // setIndividualFare((preVal) => ({ ...preVal, ...obj }));
-  //           }}
-  //           disabled={viewModal}
-  //         />
-
-  //         <input
-  //           type='number'
-  //           index={i}
-  //           placeholder='max KM'
-  //           value={ele.maxKM}
-  //           onChange={(e) => {
-  //             let obj = individualFare;
-  //             individualFare.perKMCharge[e.target.getAttribute("index")].maxKM =
-  //               e.target.value;
-  //             setIndividualFare((preVal) => ({ ...preVal, ...obj }));
-  //           }}
-  //           disabled={viewModal}
-  //         />
-
-  //         <input
-  //           type='number'
-  //           index={i}
-  //           placeholder='fare'
-  //           value={ele.fare}
-  //           onChange={(e) => {
-  //             let obj = individualFare;
-  //             individualFare.perKMCharge[e.target.getAttribute("index")].fare =
-  //               e.target.value;
-  //             setIndividualFare((preVal) => ({ ...preVal, ...obj }));
-  //           }}
-  //           disabled={viewModal}
-  //         />
-  //         {!viewModal && (
-  //           <RiIcons.RiDeleteBin6Line
-  //             index={i}
-  //             style={{ cursor: "pointer" }}
-  //             onClick={() => console.log("delete")}
-  //             size={"20"}
-  //           />
-  //         )}
-  //       </form>
-  //     </IconContext.Provider>
-  //   );
-  // });
-
   function handleClick(e) {
     e.preventDefault();
-    setIndividualFare((preVal) => ({
-      ...preVal,
-      perKMCharge: [
-        ...preVal.perKMCharge,
-        { minKM: null, maxKM: null, fare: null },
-      ],
-    }));
+    // const addAnotherFare = perKMCharge.map(
+    //   (perKM) =>
+    //     !!perKM.fare?.length && !!perKM.maxKM?.length && !!perKM.minKM?.length,
+    // );
+    // if (addAnotherFare.includes(false)) {
+    //   return;
+    // }
+    setPerKMCharge([...perKMCharge, ...initialState]);
   }
 
   const addNewFare = async (data) => {
     dispatch(postFare(data));
+    handleClose();
+  };
+
+  const handleClose = () => {
+    setShow(false);
+    dispatch(emptySelectedFare());
   };
 
   return (
-    <Modal show={show} onHide={() => setShow(false)} size='lg'>
+    <Modal show={show} onHide={handleClose} size='xl'>
       <Modal.Header closeButton>
         <Modal.Title>
           {viewModal ? "View" : fareId ? "Update" : "Add New"} Individual Fare
@@ -170,74 +122,6 @@ export default function AddIndividualFare({
         <div class='card'>
           <div class='card-body'>
             <form onSubmit={handleSubmit(addNewFare)}>
-              <div className='row'>
-                <div className='col-lg-2 inputField'>
-                  <div className='m-3'>
-                    <label className='form-label'>Country</label>
-                    <select
-                      disabled={viewModal}
-                      style={{ width: "200px" }}
-                      {...register("country")}
-                      className='form-select'
-                    >
-                      <option value=''>select</option>
-                      {countries.map((country) => (
-                        <option
-                          value={country._id}
-                          selected={
-                            country._id == watch("country") && watch("country")
-                          }
-                        >
-                          {country.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className='m-3'>
-                    <label className='form-label'>State</label>
-                    <select
-                      disabled={viewModal}
-                      style={{ width: "200px" }}
-                      {...register("state")}
-                      className='form-select'
-                    >
-                      <option value=''>select</option>
-                      {states.map((state) => (
-                        <option
-                          value={state._id}
-                          selected={
-                            state._id == watch("state") && watch("state")
-                          }
-                        >
-                          {state.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  <div className='m-3'>
-                    <label className='form-label'>City</label>
-                    <select
-                      disabled={viewModal}
-                      style={{ width: "200px" }}
-                      {...register("city")}
-                      className='form-select'
-                    >
-                      <option value=''>select</option>
-                      {cities.map((city) => (
-                        <option
-                          value={city._id}
-                          selected={city._id == watch("city") && watch("city")}
-                        >
-                          {city.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div>
-              </div>
-
               <div
                 style={{
                   display: "flex",
@@ -247,54 +131,188 @@ export default function AddIndividualFare({
                 }}
               >
                 <div className='m-3'>
+                  <label className='form-label'>Country</label>
+                  <select
+                    disabled={viewModal}
+                    style={{ width: "200px" }}
+                    {...register("country", {
+                      required: "Please Select Country",
+                    })}
+                    className='form-select'
+                  >
+                    <option value=''>select</option>
+                    {countries.map((country) => (
+                      <option
+                        value={country._id}
+                        selected={
+                          country._id == watch("country") && watch("country")
+                        }
+                      >
+                        {country.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors?.country && (
+                    <span className='text-danger'>
+                      {errors.country.message}
+                    </span>
+                  )}
+                </div>
+
+                <div className='m-3'>
+                  <label className='form-label'>State</label>
+                  <select
+                    disabled={viewModal}
+                    style={{ width: "200px" }}
+                    {...register("state", { required: "Please Select State" })}
+                    className='form-select'
+                  >
+                    <option value=''>select</option>
+                    {states.map((state) => (
+                      <option
+                        value={state._id}
+                        selected={state._id == watch("state") && watch("state")}
+                      >
+                        {state.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors?.state && (
+                    <span className='text-danger'>{errors.state.message}</span>
+                  )}
+                </div>
+
+                <div className='m-3'>
+                  <label className='form-label'>City</label>
+                  <select
+                    disabled={viewModal}
+                    style={{ width: "200px" }}
+                    {...register("city", { required: "Please Select City" })}
+                    className='form-select'
+                  >
+                    <option value=''>select</option>
+                    {cities.map((city) => (
+                      <option
+                        value={city._id}
+                        selected={city._id == watch("city") && watch("city")}
+                      >
+                        {city.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors?.city && (
+                    <span className='text-danger'>{errors.city.message}</span>
+                  )}
+                </div>
+                <div className='m-3'>
+                  <label className='form-label'>Vehicle Type</label>
+                  <select
+                    disabled={viewModal}
+                    style={{ width: "200px" }}
+                    name='selectedStatus'
+                    className='form-select'
+                    {...register("vehicleType", {
+                      required: "Please Select vehicleType",
+                    })}
+                  >
+                    <option value=''>select</option>
+                    {vehicleTypes.map((vehicleType) => (
+                      <option value={vehicleType._id}>
+                        {vehicleType.name}
+                      </option>
+                    ))}
+                  </select>
+                  {errors?.vehicleType && (
+                    <span className='text-danger'>
+                      {errors.vehicleType.message}
+                    </span>
+                  )}
+                </div>
+
+                <div className='m-3'>
                   <label className='form-label'>Base Fare : </label>
                   <input
                     disabled={viewModal}
                     className='form-control'
-                    {...register("baseFare")}
+                    {...register("baseFare", {
+                      required: "Please Enter Base Fare",
+                    })}
                     type={"number"}
                     placeholder={"base Fare"}
                   />
+                  {errors?.baseFare && (
+                    <span className='text-danger'>
+                      {errors.baseFare.message}
+                    </span>
+                  )}
                 </div>
                 <div className='m-3'>
                   <label className='form-label'>Min Charge : </label>
                   <input
                     disabled={viewModal}
                     className='form-control'
-                    {...register("minCharge")}
+                    {...register("minCharge", {
+                      required: "Please Enter Min Charge",
+                    })}
                     type={"number"}
                     placeholder={"Min Charge"}
                   />
+                  {errors?.minCharge && (
+                    <span className='text-danger'>
+                      {errors.minCharge.message}
+                    </span>
+                  )}
                 </div>
                 <div className='m-3'>
                   <label className='form-label'>Per Min Charge : </label>
                   <input
                     disabled={viewModal}
                     className='form-control'
-                    {...register("perMinCharge")}
+                    {...register("perMinCharge", {
+                      required: "Please Enter Per Min Charge",
+                    })}
                     type={"number"}
                     placeholder={"Per Min Charge"}
                   />
+                  {errors?.perMinCharge && (
+                    <span className='text-danger'>
+                      {errors.perMinCharge.message}
+                    </span>
+                  )}
                 </div>
                 <div className='m-3'>
                   <label className='form-label'>Cancel Charge : </label>
                   <input
                     disabled={viewModal}
                     className='form-control'
-                    {...register("cancelCharge")}
+                    {...register("cancelCharge", {
+                      required: "Please Enter Cancel Charge",
+                    })}
                     type={"number"}
                     placeholder={"Cancel Charge"}
                   />
+                  {errors?.cancelCharge && (
+                    <span className='text-danger'>
+                      {errors.cancelCharge.message}
+                    </span>
+                  )}
                 </div>
                 <div className='m-3'>
                   <label className='form-label'>Booking Fee : </label>
                   <input
                     disabled={viewModal}
                     className='form-control'
-                    {...register("bookingFee")}
+                    {...register("bookingFee", {
+                      required: "Please Enter Booking Fee",
+                    })}
                     type={"number"}
                     placeholder={"Booking Fee"}
                   />
+                  {errors?.bookingFee && (
+                    <span className='text-danger'>
+                      {errors.bookingFee.message}
+                    </span>
+                  )}
                 </div>
 
                 <div className='m-3'>
@@ -302,68 +320,109 @@ export default function AddIndividualFare({
                   <select
                     disabled={viewModal}
                     style={{ width: "200px" }}
-                    {...register("adminCommissionType")}
+                    {...register("adminCommissionType", {
+                      required: "Please Select Admin Commission Type",
+                    })}
                     className='form-select'
                   >
                     <option value=''>select</option>
                     <option value='FIX'>Fix</option>
                     <option value='PERCENTAGE'>Percentage</option>
                   </select>
+                  {errors?.adminCommissionType && (
+                    <span className='text-danger'>
+                      {errors.adminCommissionType.message}
+                    </span>
+                  )}
                 </div>
                 <div className='m-3'>
                   <label className='form-label'>Admin Commission : </label>
                   <input
                     disabled={viewModal}
                     className='form-control'
-                    {...register("adminCommission")}
+                    {...register("adminCommission", {
+                      required: "Please Enter Admin Commission",
+                    })}
                     type={"number"}
                     placeholder={"Admin Commission"}
                   />
+                  {errors?.adminCommission && (
+                    <span className='text-danger'>
+                      {errors.adminCommission.message}
+                    </span>
+                  )}
                 </div>
               </div>
               <div className='d-flex align-items-center justify-content-center'>
-                {!viewModal && (
-                  <BtnDark
-                    title={"Add More"}
-                    handleClick={handleClick}
-                    isDisabled={viewModal}
-                  />
-                )}
+                <div className='d-flex align-items-center justify-content-center'>
+                  {!viewModal && (
+                    <BtnDark
+                      title={"Add More"}
+                      handleClick={handleClick}
+                      isDisabled={viewModal}
+                    />
+                  )}
+                </div>
                 <div className='d-flex flex-column'>
-                  <span>Extra Per KM Charge</span>
+                  <span className='d-flex align-items-center justify-content-center h4'>
+                    Extra Per KM Charge
+                  </span>
                   <div>
-                    {individualFare?.perKMCharge?.map((ele, i) => (
-                      <IconContext.Provider value={"#fff"}>
-                        <input
-                          type='number'
-                          placeholder='min KM'
-                          disabled={viewModal}
-                          {...register(`perKmChargeData[${i}].minKM`)}
-                        />
-
-                        <input
-                          type='number'
-                          placeholder='max KM'
-                          disabled={viewModal}
-                          {...register(`perKmChargeData[${i}].maxKM`)}
-                        />
-
-                        <input
-                          type='number'
-                          placeholder='fare'
-                          disabled={viewModal}
-                          {...register(`perKmChargeData[${i}].fare`)}
-                        />
-                        {!viewModal && (
-                          <RiIcons.RiDeleteBin6Line
-                            style={{ cursor: "pointer" }}
-                            onClick={() => {
-                              console.log("boom");
-                            }}
-                            size={"20"}
+                    {perKMCharge?.map((ele, i) => (
+                      <div className='d-flex flex-row m-2'>
+                        <IconContext.Provider value={"#fff"}>
+                          <input
+                            type='number'
+                            placeholder='min KM'
+                            disabled={viewModal}
+                            className='form-control mx-2'
+                            {...register(`perKmChargeData[${i}].minKM`, {
+                              onChange: ({ target }) => {
+                                setPerKMCharge([...watch("perKmChargeData")]);
+                              },
+                            })}
                           />
-                        )}
-                      </IconContext.Provider>
+
+                          <input
+                            type='number'
+                            placeholder='max KM'
+                            disabled={viewModal}
+                            className='form-control mx-2'
+                            {...register(`perKmChargeData[${i}].maxKM`, {
+                              onChange: ({ target }) => {
+                                setPerKMCharge([...watch("perKmChargeData")]);
+                              },
+                            })}
+                          />
+
+                          <input
+                            type='number'
+                            placeholder='fare'
+                            disabled={viewModal}
+                            className='form-control mx-2'
+                            {...register(`perKmChargeData[${i}].fare`, {
+                              onChange: ({ target }) => {
+                                setPerKMCharge([...watch("perKmChargeData")]);
+                              },
+                            })}
+                          />
+
+                          {!viewModal && (
+                            <span
+                              className='btn btn-danger'
+                              onClick={() => {
+                                const filterPerKMCharge = perKMCharge.filter(
+                                  (perKM, perKMindex) => perKMindex != i,
+                                );
+                                setValue("perKmChargeData", filterPerKMCharge);
+                                setPerKMCharge([...filterPerKMCharge]);
+                              }}
+                            >
+                              <i className='bx bxs-trash' />
+                            </span>
+                          )}
+                        </IconContext.Provider>
+                      </div>
                     ))}
                   </div>
                 </div>
@@ -381,7 +440,11 @@ export default function AddIndividualFare({
                     {succMsg}
                   </div>
                 )}
-                <button type='button' className='btn btn-outline-danger'>
+                <button
+                  type='button'
+                  className='btn btn-outline-danger'
+                  onClick={handleClose}
+                >
                   Cancel
                 </button>
               </Modal.Footer>

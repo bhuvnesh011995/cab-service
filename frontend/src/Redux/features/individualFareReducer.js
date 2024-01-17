@@ -13,7 +13,7 @@ let initialState = {
 export const getSelectedFareData = createAsyncThunk(
   "fare/getSelectedFare",
   async (data, { rejectWithValue }) => {
-    const url = BASE_URL + "/fare/getSelectedFare/" + data;
+    const url = BASE_URL + "/fares/getSelectedFare/" + data;
     const response = await axios.get(url);
     if (response.status == 200) {
       return response.data;
@@ -29,11 +29,8 @@ export const postFare = createAsyncThunk(
   "fare/addFare",
   async (data, { rejectWithValue }) => {
     try {
-      console.log(data);
-      let response = await axios.post(BASE_URL + "/fare/addFare", data);
-      return;
-      if (response.status === 201 && response.data.success)
-        return response.data;
+      let response = await axios.post(BASE_URL + "/fares/addFare", data);
+      if (response.status === 200) return response.data;
       else
         return rejectWithValue({
           status: response.status,
@@ -50,9 +47,10 @@ export const postFare = createAsyncThunk(
 
 export const fetchAllFares = createAsyncThunk(
   "fare/fetchAllFares",
-  async (_, { rejectWithValue }) => {
+  async (filters, { rejectWithValue }) => {
     try {
-      let response = await axios.get(BASE_URL + "/fare/fetchAllFares");
+      const url = BASE_URL + "/fares/fetchAllFares";
+      let response = await axios.get(url, { params: filters });
       if (response.status === 200) return response.data;
       else
         return rejectWithValue({
@@ -71,7 +69,7 @@ export const deleteFare = createAsyncThunk(
   "fare/deleteFare",
   async (id, { rejectWithValue }) => {
     try {
-      let response = await axios.delete(BASE_URL + "/fare/deleteFare/" + id);
+      let response = await axios.delete(BASE_URL + "/fares/deleteFare/" + id);
       if (response.status === 200) return { ...response.data, id };
       else
         return rejectWithValue({
@@ -86,30 +84,6 @@ export const deleteFare = createAsyncThunk(
     }
   },
 );
-const putFare = createAsyncThunk(
-  "fare/putFare",
-  async (data, { rejectWithValue }) => {
-    try {
-      let response = await axios.put(
-        BASE_URL + "/fare/putFare/" + data.id,
-        data.newData,
-      );
-      if (response.status === 200 && response.data.success) {
-        return response.data;
-      } else
-        return rejectWithValue({
-          status: response.status,
-          data: response.data,
-        });
-    } catch (error) {
-      console.log(error.response);
-      return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
-      });
-    }
-  },
-);
 
 const fareSlice = createSlice({
   name: "fare",
@@ -117,6 +91,9 @@ const fareSlice = createSlice({
   reducers: {
     setSucceessStatus: (state, action) => {
       state.status = "success";
+    },
+    emptySelectedFare: (state, action) => {
+      state.selectedFare = null;
     },
   },
 
@@ -128,8 +105,24 @@ const fareSlice = createSlice({
     builder.addCase(postFare.fulfilled, (state, action) => {
       state.status = "added";
       state.error = null;
-      state.fares = state.fares.concat(action.payload.make);
-      state.message = action.payload.message;
+      const filteredFares = state.fares.filter(
+        (item) => item?._id == action.payload[0]._id,
+      );
+      if (filteredFares.length) {
+        if (filteredFares[0]._id) {
+          state.fares.map((fare, index) => {
+            if (fare._id == filteredFares[0]._id) {
+              state.fares[index] = action.payload[0];
+            }
+          });
+        }
+      } else {
+        state.fares.push(action.payload[0]);
+      }
+    });
+    builder.addCase(postFare.rejected, (state, action) => {
+      state.status = "error";
+      state.error = action.payload;
     });
     builder.addCase(fetchAllFares.pending, (state, action) => {
       state.status = "loading";
@@ -138,24 +131,9 @@ const fareSlice = createSlice({
     builder.addCase(fetchAllFares.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.error = null;
-      state.fares = action.payload.makeList;
+      state.fares = action.payload;
     });
     builder.addCase(fetchAllFares.rejected, (state, action) => {
-      state.status = "error";
-      state.error = action.payload;
-    });
-    builder.addCase(putFare.pending, (state) => {
-      state.status = "loading";
-      state.error = null;
-    });
-    builder.addCase(putFare.fulfilled, (state, action) => {
-      state.status = "updated";
-      state.error = null;
-      state.fares = state.fares.map((item) =>
-        item._id === action.payload.data._id ? action.payload.data : item,
-      );
-    });
-    builder.addCase(putFare.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });
@@ -195,5 +173,5 @@ const fareSlice = createSlice({
 
 export const allFares = (state) => state.fare.fares;
 export const selectedFare = (state) => state.fare.selectedFare;
+export const { emptySelectedFare } = fareSlice.actions;
 export default fareSlice.reducer;
-export { putFare };

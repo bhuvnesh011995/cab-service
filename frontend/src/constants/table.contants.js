@@ -7,3 +7,12 @@ export const fareManagementTableHeaders = {
   status: "Status",
   createdAt: "Created On",
 };
+
+export const packageTableHeaders = {
+  index: "Sr No",
+  name: "Name",
+  maxDuration: "Max Duration",
+  maxDistance: "Max Distance",
+  status: "Status",
+  createdAt: "Created On",
+};

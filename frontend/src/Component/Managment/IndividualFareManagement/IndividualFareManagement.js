@@ -18,6 +18,12 @@ import DeleteModal from "../../DeleteModel/DeleteModel";
 import { CommonDataTable } from "../../../Common/commonDataTable";
 import { fareManagementTableHeaders } from "../../../constants/table.contants";
 import AddIndividualFare from "./AddIndividualFare";
+import {
+  allFares,
+  deleteFare,
+  fetchAllFares,
+} from "../../../Redux/features/individualFareReducer";
+import { useDispatch, useSelector } from "react-redux";
 
 const initialFilter = {
   country: "",
@@ -26,9 +32,10 @@ const initialFilter = {
   vehicleType: "",
   status: "",
 };
-const url = BASE_URL + "/individualFare/";
+
 export default function IndividualFareManagement() {
-  const [list, setList] = useState([]);
+  const dispatch = useDispatch();
+  const fares = useSelector(allFares);
   const [filter, setFilter] = useState(initialFilter);
   const [isOpen, setIsOpen] = useState(false);
   const [id, setId] = useState(null);
@@ -37,91 +44,20 @@ export default function IndividualFareManagement() {
   const [fareViewModal, setFareViewModal] = useState(false);
 
   useEffect(() => {
-    fetch(url, { method: "GET" })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = [];
-          data?.allIndiFare?.map((ele, i) => {
-            arr.push({
-              index: i + 1,
-              id: ele._id,
-              country: ele.country?.name,
-              state: ele.state?.name || "NA",
-              city: ele.city?.name || "NA",
-              vehicleType: ele.vehicleType?.name || "NA",
-              status: ele.status,
-              createdAt: ele.createdAt || "NA",
-            });
-          });
-          setList(arr);
-        }
-      });
-  }, []);
+    dispatch(fetchAllFares(filter));
+  }, [filter]);
 
   function handleSubmit(e) {
     e.preventDefault();
-    fetch(
-      `${url}?country=${
-        filter.country +
-        "&state=" +
-        filter.state +
-        "&city=" +
-        filter.city +
-        "&vehicleType=" +
-        filter.vehicleType +
-        "&status=" +
-        filter.status
-      }`,
-      {
-        method: "GET",
-      },
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = [];
-          data?.allIndiFare?.map((ele, i) => {
-            arr.push({
-              index: i + 1,
-              country: ele.country?.name,
-              state: ele.state?.name || "NA",
-              city: ele.city?.name || "NA",
-              vehicleType: ele.vehicleType?.name || "NA",
-              status: ele.status,
-              createdAt: ele.createdAt || "NA",
-            });
-          });
-          setList(arr);
-        }
-      });
   }
 
-  const deleteModel = (rowId) => {
-    const deleteUrl = BASE_URL + "/individualFare/" + rowId;
-
-    fetch(deleteUrl, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          const filterModel = list.filter((data) => data.id !== rowId);
-          setList(filterModel);
-          setIsOpen(false);
-          return response.json();
-        }
-      })
-      .then((item) => {
-        if (item.success) toast.success(item.message);
-        else toast.error.apply(item.message);
-      })
-      .catch((error) => {
-        console.error("Error occurred while deleting admin:", error);
-      });
+  const deleteModel = () => {
+    dispatch(deleteFare(id));
+    setIsOpen(false);
   };
 
   const updateFareData = (data, type, index) => {
-    setId(data?.id);
+    setId(data?._id);
     if (type == "view") {
       setFareViewModal(true);
       setIsOpen(false);
@@ -136,7 +72,9 @@ export default function IndividualFareManagement() {
     if (type != "delete") setFareModal(true);
   };
 
-  function handleClick2() {}
+  function handleClick2() {
+    setFilter(initialFilter);
+  }
   return (
     <Management_container title={"Individual Fare Management"}>
       <div class='row'>
@@ -166,7 +104,6 @@ export default function IndividualFareManagement() {
                 input={filter}
                 setInput={setFilter}
                 initialInput={initialFilter}
-                btn1_title={"Search"}
                 handleClick1={handleSubmit}
                 handleClick2={handleClick2}
                 btn2_title={"reset"}
@@ -178,7 +115,7 @@ export default function IndividualFareManagement() {
       </div>
 
       <CommonDataTable
-        data={list}
+        data={fares}
         tableHeaders={fareManagementTableHeaders}
         actionButtons
         viewButton

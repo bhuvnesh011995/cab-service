@@ -123,6 +123,7 @@ require("./routes/sos.route")(app);
 require("./routes/avaialibilityManagement.route")(app);
 require("./routes/vehicleCategory.route")(app);
 require("./routes/fares.route")(app);
+require("./routes/package.route")(app);
 
 app.use(ErrorHandler);
 

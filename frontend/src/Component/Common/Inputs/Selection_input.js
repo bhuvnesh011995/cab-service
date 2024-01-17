@@ -11,8 +11,8 @@ export default function Selection_Input({
 }) {
   let optionList = options?.map((ele, i) => {
     return (
-      <option key={i} value={ele}>
-        {ele.toLowerCase()}
+      <option key={i} value={ele?._id ? ele._id : ele}>
+        {ele?.name ? ele?.name.toLowerCase() : ele}
       </option>
     );
   });
