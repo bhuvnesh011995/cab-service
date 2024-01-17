@@ -24,6 +24,7 @@ import {
   deleteVehicleCategory,
   fetchVehicleCategory,
   getAllVehicleCategory,
+  updateVehicleCategoryById,
 } from "../../../Redux/features/vehicleCategoryReducer";
 import { useDispatch, useSelector } from "react-redux";
 let initialFilter = {
@@ -210,16 +211,11 @@ export default function VehicleCategoryManagement() {
               <IconButton>
                 <Lock />
               </IconButton>
-              <IconButton
-                onClick={() => {
-                  let obj = {
-                    ...row.original,
-                    vehicleCategory: row.original.vehicleCategory,
-                    status: row.original.status,
-                  };
-                  setUpdateData(obj);
-                  setShow(true);
-                }}
+              <IconButton  
+             onClick={()=>{
+            dispatch(updateVehicleCategoryById({id:row.original._id}))
+            setShow(true)
+             }}
               >
                 <ModeEditOutline />
               </IconButton>

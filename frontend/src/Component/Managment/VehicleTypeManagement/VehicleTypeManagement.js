@@ -14,7 +14,7 @@ import DeleteModal from "../../DeleteModel/DeleteModel";
 import AddVehicleType from "../VehicleTypeManagement/AddVehicleType"
 import UpdateVehicleType from "./UpdateVehicleType";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchVehicleType, getAllVehicleType, deleteVehicleType } from "../../../Redux/features/vehicleTypeReducer";
+import { fetchVehicleType, getAllVehicleType, deleteVehicleType, updateVehicleTypeById } from "../../../Redux/features/vehicleTypeReducer";
 let url = BASE_URL + "/vehicletype/filter/"
 
 const initialFilter = {
@@ -79,18 +79,9 @@ export default function VehicleTypeManagement() {
         size: 100,
       },
       {
-        accessorKey: "runMode.name",
-        header: "Run Mode",
-        size: 100,
-      },
-      {
         accessorKey: "seatingCapacity",
         header: "Seating Capacity",
         size: 40
-      },
-      {
-        accessorKey: "img",
-        header: "Image Selected"
       },
       {
         accessorKey: "status",
@@ -133,10 +124,6 @@ export default function VehicleTypeManagement() {
   function handleDelete(rowId) {
     dispatch(deleteVehicleType(rowId))
   }
-  const handleUpdate = (data) => {
-   setUpdateData(data)
-   setIsTrue(true)
-  }
 
 
   function handleClick2(e) {
@@ -155,7 +142,6 @@ export default function VehicleTypeManagement() {
               handleDelete={handleDelete}
               arg={id}
             />
-            {isTrue && <UpdateVehicleType show={isTrue} setShow={setIsTrue} data={updateData} />}
             {show && <AddVehicleType show={show} setShow={setShow} />}
             <div class="card-body">
               <div style={{ display: "flex", justifyContent: "right", zIndex: "2" }}>
@@ -200,7 +186,11 @@ export default function VehicleTypeManagement() {
             <IconButton>
               <Lock />
             </IconButton>
-            <IconButton onClick={() => handleUpdate(row.original)}>
+            <IconButton  onClick={()=>{
+            dispatch(updateVehicleTypeById({id:row.original._id}))
+            setShow(true)
+
+             }}>
               <ModeEditOutline />
             </IconButton>
             <IconButton onClick={() => {

@@ -60,17 +60,12 @@ exports.deleteVehicleCategory = async function (req,res){
 exports.updateVehicleCategory = async function (req, res, next) {
   try {
       const { id } = req.params;
-      console.log("id", req.body);
-
-
       let obj = {};
     
       if(req.body.vehicleCategory) obj.vehicleCategory = req.body.vehicleCategory
       if(req.body.status) obj.status = req.body.status
-
-      await db.vehicleCategory.updateOne({ _id:id}, { $set: obj});
-    
-      res.status(200).json({message:"update successfully",vehicleCategory:req.body})
+      let vehicleCategory = await  db.vehicleCategory.findOneAndUpdate({ _id:id}, { $set: obj},{new:true});    
+      res.status(200).json({message:"update successfully",vehicleCategory:vehicleCategory})
 
   } catch (error) {
       console.log(error);
