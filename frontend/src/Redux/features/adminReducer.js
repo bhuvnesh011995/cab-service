@@ -47,14 +47,15 @@ export const fetchAdmins = createAsyncThunk(
       if (response.status === 200) return response.data;
       else
         return rejectWithValue({
-          status: response.status,
-          data: response.data,
+          status: "error",
+          data: response.data.message || "error while fetching admins",
         });
     } catch (error) {
       console.log(error.response);
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: "error",
+        message:
+          error?.response?.data?.message || "error while fetching admins",
       });
     }
   }

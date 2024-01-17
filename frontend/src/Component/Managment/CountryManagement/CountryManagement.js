@@ -1,15 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
-import BtnDark from "../../Common/Buttons/BtnDark";
 import Filter_Option from "../../Common/Filter_option";
 import Management_container from "../../Common/Management_container";
-import { useNavigate } from "react-router-dom";
-import Table from "../../Common/Table";
 import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
-import DeleteModal from "../../DeleteModel/DeleteModel";
+
 import { toast } from "react-toastify";
 import AddCountry from "./AddCountry";
-import UpdateCountry from "./UpdateCountry";
+
 import {
   RemoveRedEye,
   Lock,
@@ -17,194 +14,180 @@ import {
   DeleteForever,
 } from "@mui/icons-material/";
 import { Box, IconButton } from "@mui/material";
-
+import { useDispatch, useSelector } from "react-redux";
+import {
+  clearStatus,
+  deleteCountry,
+  error,
+  filterCountries,
+  getCountries,
+  status,
+  updateCountry,
+} from "../../../Redux/features/countryReducer";
+import {
+  closeModal,
+  status as deleteModalStatus,
+  url,
+  openModal,
+  showDeleteModal,
+  doneDelete,
+} from "../../../Redux/features/deleteModalReducer";
+import DeleteModalAdv from "../../../Common/deleteModalRedux";
 
 let initialFilter = {
-    name:"",
-    status:""
-}
-export default function CountryManagement(){
-    const [filter,setFilter] = useState(initialFilter);
-    const [list,setList] = useState();
-    const navigate = useNavigate();
-    const url = BASE_URL+"/country/filter/";
-    const [isOpen ,setIsOpen] = useState(false)
-    const [isTrue ,setIsTrue] = useState(false)
-    const [updateData,setUpdateData ] = useState([])
-  const [id, setId] = useState(null)
-  const [deleteInfo, setDeleteInfo] = useState(null)
-   const [open ,setOpen] = useState(false)
-    useEffect(()=>{
-        fetch(url,{
-            method:"GET"
-        }).then(res=>res.json())
-        .then(data=>{
-          let arr = [];
-          data?.countryList?.map((ele, i) => {
-            arr.push({
-              index: i + 1,
-              id: ele._id,
-              name: ele.name,
-              countryCode: ele.countryCode,
-              dialCode:ele.dialCode,
-              status: ele.status,
-              createdAt: ele.createdAt || ele.createAt || "",
-            });
-          });
-          setList(arr);
-        })
-    },[])
+  name: "",
+  status: "",
+};
+export default function CountryManagement() {
+  const dispatch = useDispatch();
+  const [ready, setReady] = useState(false);
+  const [filter, setFilter] = useState(initialFilter);
+  const contries = useSelector(getCountries);
+  const countryStatus = useSelector(status);
+  const countryError = useSelector(error);
+  const show = useSelector(showDeleteModal);
+  const [isOpen, setIsOpen] = useState(false);
+  const deleteStatus = useSelector(deleteModalStatus);
+  const id = useSelector((state) => state.delete.id);
+  const URL = useSelector(url);
+  useEffect(() => {
+    if (ready) {
+      dispatch(filterCountries(filter));
+    } else setReady(true);
+  }, [ready]);
 
-
-    const columns = useMemo(()=>[
-      {
-        accessorKey:"index",
-        header:"Sr No",
-        size:50
-      },
-      
-      {
-        accessorKey:"name",
-        header:"Name"
-      },{
-        accessorKey:"countryCode",
-        header:"Country Code",
-        size : 50
-      },{
-        accessorKey:"dialCode",
-        header:"Dial Code",
-        size:50
-      },{
-        accessorKey:"status",
-        header:"Status",
-        size:80
-      },
-      
-      // {
-      //   accessorFn: (row) => row.createdAt.slice(0, 10),
-      //   id: "createdAt",
-      //   header: "Created At",
-      // }
-    ],[])
-    function handleSubmit(){
-        fetch(`${url}?name=${filter.name}&status=${filter.status}`,{
-            method:"GET"
-        }).then(res=>res.json())
-        .then(data=>{
-          console.log(data)
-          let arr = [];
-          data?.countryList?.map((ele, i) => {
-            arr.push({
-              index: i + 1,
-              name: ele.name,
-              countryCode: ele.countryCode,
-              dialCode:ele.dialCode,
-              status: ele.status,
-              createdAt: ele.createdAt || ele.createAt || "",
-            });
-          });
-          setList(arr);
-        })
+  useEffect(() => {
+    if (countryStatus === "updated") {
+      toast.success(countryError?.message || "country Updated successfully");
+      setIsOpen(false);
+    } else if (countryStatus === "error") {
+      toast.error(countryError?.message || "some error occured");
+    } else if (countryStatus === "added") {
+      toast.success("country added successfully");
+      setIsOpen(false);
+    } else if (countryStatus === "deleted") {
+      toast.success("country deleted successfully");
+      dispatch(closeModal());
+    } else if (countryStatus === "error") {
+      toast.error(error.message || "some error occured");
     }
-       const deleteModel=(rowId)=>{
-    const deleteUrl = BASE_URL + "/country/" + rowId;
+  }, [countryStatus, error]);
 
-  fetch(deleteUrl, {
-    method: "DELETE",
-  })
-    .then((response) => {
-      if (response.status === 200) {
-      const filterModel = list.filter((data)=> data.id !== rowId)
-      setList(filterModel)
-      setIsOpen(false)
-      return response.json()
-      } 
-    })
-    .then((item)=>{
-      if(item.success) toast.success(item.message) 
-      else toast.error.apply(item.message)
-    })
-    .catch((error) => {
-      console.error("Error occurred while deleting admin:", error);
-    });
+  useEffect(() => {
+    if (deleteStatus === "delete") {
+      dispatch(deleteCountry({ url: URL, id }));
+      dispatch(doneDelete());
+    }
+  }, [deleteStatus, URL, id]);
+
+  const columns = useMemo(
+    () => [
+      {
+        accessorKey: "name",
+        header: "Name",
+      },
+      {
+        accessorKey: "countryCode",
+        header: "Country Code",
+        size: 50,
+      },
+      {
+        accessorKey: "dialCode",
+        header: "Dial Code",
+        size: 50,
+      },
+      {
+        accessorKey: "status",
+        header: "Status",
+        size: 80,
+      },
+    ],
+    []
+  );
+  function handleSubmit() {
+    dispatch(filterCountries(filter));
   }
-    function handleUpdate(data){
-     setIsTrue(true)
-     setUpdateData(data)
-    }
 
+  function handleClick2() {
+    setFilter(initialFilter);
+  }
 
-    function handleClick2(){
-        setFilter(initialFilter)
-    }
-
-    return(
-        <Management_container
-        title={"Country Management"}
-        >
-           <div class="row">
+  return (
+    <Management_container title={"Country Management"}>
+      <div class="row">
         <div class="col-lg-13">
           <div class="card">
-          <DeleteModal
-        info={deleteInfo}
-        show={isOpen}
-        setShow={setIsOpen}
-        handleDelete={deleteModel}
-        arg={id}
-      />
-      {open && <AddCountry show={open} setShow={setOpen} />}
-      {isTrue && <UpdateCountry show={isTrue} setShow={setIsTrue}  data={updateData}/>}
+            {show && <DeleteModalAdv />}
+            {isOpen && <AddCountry show={isOpen} setShow={setIsOpen} />}
 
             <div class="card-body">
-        <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
-            <BtnDark handleClick={()=>{setOpen(true)}} title={"Add Country"} />
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "right",
+                  zIndex: "2",
+                }}
+              >
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setIsOpen(true)}
+                >
+                  Add Country
+                </button>
+              </div>
+              <Filter_Option
+                input={filter}
+                setInput={setFilter}
+                initialInput={initialFilter}
+                btn1_title={"Search"}
+                handleClick1={handleSubmit}
+                handleClick2={handleClick2}
+                btn2_title={"reset"}
+                options={["name", "status"]}
+              />
+            </div>
+          </div>
         </div>
-        <Filter_Option 
-            input={filter}
-            setInput={setFilter}
-            initialInput={initialFilter}
-            btn1_title={"Search"}
-            handleClick1={handleSubmit}
-            handleClick2={handleClick2}
-            btn2_title={"reset"}
-            options={["name","status"]}
-            /></div></div></div></div>
+      </div>
 
-        {/* <Table
-            heading={["Sr no", "Name","Country Code","Dial Code", "Status", "Created At", "Action"]}
-            list={list}
-       /> */}
-       <MaterialReactTable
-      columns={columns}
-      data={list || []}
-      enableRowActions
-      positionActionsColumn={'last'}
-      renderRowActions={({row,table})=>(
-        <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '1px' }}>
-          <IconButton>
-            <RemoveRedEye />
-          </IconButton>
-          <IconButton>
-            <Lock />
-          </IconButton>
-          <IconButton   onClick={()=>{handleUpdate(row.original)}}>
-            <ModeEditOutline />
-          </IconButton>
-          <IconButton   onClick={() => {
-            setDeleteInfo({
-              message: `Do You Really Want To Delete ${row.original?.name}`,
-              header: "Delete Model",
-            });
-            setIsOpen(true);
-            setId(row.original.id);
-          }} >        
-            <DeleteForever  />
-          </IconButton>
-        </Box>
-      )}
+      <MaterialReactTable
+        columns={columns}
+        data={contries}
+        enableRowNumbers
+        rowNumberMode="static"
+        enableRowActions
+        positionActionsColumn={"last"}
+        renderRowActions={({ row, table }) => (
+          <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
+            <IconButton>
+              <RemoveRedEye />
+            </IconButton>
+            <IconButton>
+              <Lock />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                dispatch(updateCountry({ id: row.original._id }));
+                setIsOpen(true);
+              }}
+            >
+              <ModeEditOutline />
+            </IconButton>
+            <IconButton
+              onClick={() => {
+                dispatch(
+                  openModal({
+                    url: `${BASE_URL}/country/${row.original._id}`,
+                    id: row.original._id,
+                  })
+                );
+              }}
+            >
+              <DeleteForever />
+            </IconButton>
+          </Box>
+        )}
       />
-
-
-        </Management_container>
-    )
+    </Management_container>
+  );
 }
