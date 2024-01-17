@@ -3,24 +3,20 @@ const {Schema,model}= require("mongoose");
 let schema = new Schema({
     name:{
         type:String,
-        required:true,
-        unique:true
     },
     seatingCapacityName:{
         type:String,
-        required:true
+       
     },
     seatingCapacity:{
         type:Number,
-        required:true,
     },
-    img:{
-        type:String,
-        required:true
+    file:{
+        type:String, 
     },
     status:{
         type:String,
-        required:true,
+      
         enum:["ACTIVE","INACTIVE"],
         default:"INACTIVE"
     },
@@ -29,5 +25,6 @@ let schema = new Schema({
     collection:"VehicleType"
 })
 
+schema.index({ name: 1 }, { unique: false });
 
 module.exports = model("VehicleType",schema);
