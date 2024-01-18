@@ -1,30 +1,23 @@
-  import { useEffect, useState } from "react";
-  import Text_Input from "../../Common/Inputs/Text_Input";
-  import Management_container from "../../Common/Management_container";
-  import Selection_Input from "../../Common/Inputs/Selection_input";
-  import BtnDark from "../../Common/Buttons/BtnDark";
+  import { useCallback, useEffect, useState } from "react";
   import BASE_URL from "../../../config/config";
   import ReactSelect from "react-select";
-  import { toast } from "react-toastify";
-  import { useNavigate } from "react-router-dom";
   import { Modal } from "react-bootstrap";
-  import { useDispatch } from "react-redux";
-  import { addVehicleType } from "../../../Redux/features/vehicleTypeReducer";
-  let initialInput = {
-     file: null, 
-    name: "",
-    runMode: [],
-    seatingCapacityName: "",
-    seatingCapacity: null,
-    status: "",
-  };
-  
-  let url = BASE_URL + "/vehicletype/";
-  export default function AddVehicleType({show,setShow}) {
-    const [vehicletype, setVehicleType] = useState(initialInput);
+  import { useDispatch, useSelector } from "react-redux";
+  import { addVehicleType, cleanSelectVehicleType, getVehicleType, updateVehicleType } from "../../../Redux/features/vehicleTypeReducer";
+  import { useForm ,Controller} from "react-hook-form";
+import { toast } from "react-toastify";
+    export default function AddVehicleType({show,setShow}) {
     const [options, setOptions] = useState();
-    const [successMsg, setSuccessMsg] = useState();
-    const dispatch = useDispatch()  
+    const dispatch = useDispatch()     
+    const {
+      register,
+      handleSubmit,
+      reset,
+      control,
+      setValue,
+      formState: { errors,dirtyFields,isDirty }
+    } = useForm();
+
     useEffect(() => {
       fetch(BASE_URL + "/runMode/", {
         method: "GET",
@@ -40,35 +33,48 @@
           }
         });
     }, []);
-    const navigate = useNavigate();
-    // let optionList = options?.map((ele, i) => {
-    //   return (
-    //     <option key={i} value={ele}>
-    //       {ele.toLowerCase()}
-    //     </option>
-    //   );
-    // });
-  
-    function handleChange(e) {
-      let runMode = [];
-      for (let ele in e) {
-        console.log(ele);
-        runMode.push(e[ele].value);
+    
+    const selectVehicleType = useSelector(getVehicleType)
+    console.log("selectVehicleType",selectVehicleType)
+    useEffect(() => {
+      if (selectVehicleType) {
+        reset(selectVehicleType)
+        setValue("runMode", selectVehicleType.runMode);
+
       }
-      setVehicleType((preVal) => ({ ...preVal, runMode }));
-      // for(let i=0;i<e.target.options.length;i++){
-      //     if(e.target.options[i].selected){
-      //         value.push(e.target.options[i].value)
-      //     }
-      // }
-      // setVehicleType(preVal=>({...preVal,runModes:value}))
-    }
+    }, [selectVehicleType])
+    const vehicleTypeStatus = useSelector(
+      (state) => state.vehicleType.status
+    );
+    useEffect(() => {
+      return () => {
+        if (vehicleTypeStatus === "fetched") dispatch(cleanSelectVehicleType());
+      };
+    }, [vehicleTypeStatus]);
   
-    function handleSubmit(e) {
-      e.preventDefault();
-      dispatch(addVehicleType(vehicletype))
-    }
+    const onSubmit = useCallback(
+      async (formData) => {
+        let runModeIds = formData.runMode.map((option) => option.value);
+        let formDataWithIds = {
+          ...formData,
+          runMode: runModeIds,
+        }
+        if (!selectVehicleType) {
+          dispatch(addVehicleType(formDataWithIds));
+        } else {
+          let changedField = Object.keys(dirtyFields);
+          if (!changedField.length) return toast.info("change some field first");
+          else {
+            let obj = {};
+            changedField.forEach((field) => (obj[field] = formDataWithIds[field]));
+            dispatch(updateVehicleType({ id:selectVehicleType._id, newData: obj }));
+          }
+        }
+      },
+      [isDirty, dirtyFields]
+    );
   
+    
     return (
              <Modal size="lg" show={show} onHide={()=>{setShow(false)}}>    
                        <Modal.Header closeButton>
@@ -77,23 +83,19 @@
                     </Modal.Title>
                        </Modal.Header>
                        <Modal.Body>                  
-             <form>
+             <form onSubmit={handleSubmit((formData) => onSubmit(formData))}  >
              <div className="row">
                 <div className="col-md-6">
                   <div className="mb-3">
                   <label>file</label>
                   <input
   className="form-control form-control-sm"
-  type="file"
-  onChange={(e) => {
-    const selectedFile = e.target.files[0]; 
-
-    if (selectedFile) {
-      
-      setVehicleType((prevValue) => ({ ...prevValue, file: selectedFile }));
-    }
-  }}
+  type="file" name="file"
+ {...register("file", { required: "this is required field" })}
 />
+ {errors.file && (
+                    <span style={{ color: "red" }}>{errors.file.message}</span>
+                  )}
 
                   </div>
                 </div>
@@ -103,22 +105,36 @@
                     <input
                       type="text"
                       name="name"
-                      className="form-control"
-                      onChange={(e) => {
-                        setVehicleType((prevValue) => ({ ...prevValue, name: e.target.value }));
-                      }}
+                      className="form-control form-control-sm"
+                      {...register("name", { required: "this is required field" })}
+
                     />
+                     {errors.name && (
+                    <span style={{ color: "red" }}>{errors.name.message}</span>
+                  )} 
                   </div>
                 </div>
                 <div className="col-md-6">
                   <div className="mb-3">
   
                       <label>Run Modes</label>
-                  <ReactSelect
-                      options={options}
-                      isMulti   
-                      onChange={handleChange}
-                     />                </div>
+                      <Controller
+  name="runMode"
+  control={control}
+  defaultValue={[]}
+  rules={{
+    required: "this is required field", 
+    validate: (value) => value.length > 0, 
+  }}
+  render={({ field }) => (
+    <ReactSelect options={options} isMulti {...field} />
+  )}
+/>
+{errors.runMode && (
+  <div style={{ color: "red" }}>{errors.runMode.message}</div>
+)}
+
+                             </div>
   
                 </div>
                 <div className="col-md-6">
@@ -126,12 +142,14 @@
                     <label>Seating Name :</label>
                     <input
                       type="text"
-                      name="name"
+                      name="seatingName"
                       className="form-control"
-                      onChange={(e) => {
-                        setVehicleType((prevValue) => ({ ...prevValue, seatingCapacityName: e.target.value }));
-                      }}
+                      {...register("seatingCapacityName", { required: "this is required field" })} 
+ 
                     />
+                     {errors.seatingCapacityName && (
+                    <span style={{ color: "red" }}>{errors.seatingCapacityName.message}</span>
+                  )} 
                   </div>
                 </div>
                 <div className="col-md-6">
@@ -139,11 +157,13 @@
                     <label>Seating Capacity :</label>
                     <input
                       type="text"
-                      name="name"
+                      name="seatingCapacity"
                       className="form-control"
-                      onChange={(e) => {
-                        setVehicleType((prevValue) => ({ ...prevValue, seatingCapacity: e.target.value }));
-                      }}                                    />
+                      {...register("seatingCapacity", { required: "this is required field" })} 
+                      />
+                       {errors.seatingCapacity && (
+                    <span style={{ color: "red" }}>{errors.seatingCapacity.message}</span>
+                  )} 
                   </div>
                 </div>
                 <div className="col-md-6">
@@ -152,20 +172,23 @@
                     <select
                       name="status"
                       className="form-control"
-                      onChange={(e) => {
-                        setVehicleType((prevValue) => ({ ...prevValue, status: e.target.value }));
-                      }}    
+                      {...register("status", { required: "this is required field" })} 
                     >
-                      <option>Choose</option>
+                      <option value="">Choose</option>
                       <option value="ACTIVE">ACTIVE</option>
                       <option value="INACTIVE">INACTIVE</option>
                     </select>
+                      {errors.status && (
+                    <span style={{ color: "red" }}>{errors.status.message}</span>
+                      )}
+                
                   </div>
                 </div>
               </div>
-                  <BtnDark title={"Add"} handleClick={handleSubmit} />
-                  {successMsg}
-                </form>
+              <button type="submit" className="btn btn-success">
+            SAVE
+          </button>
+                 </form>
                 </Modal.Body>
                 </Modal>
     );

@@ -3,7 +3,8 @@ const db = require("../model/index");
 exports.addVehicleType = async function (req, res, next) {
   try {
     const data = JSON.parse(req.body.data);
-
+     console.log(data)
+     console.log(req.file)
     const obj = {
       name: data.name,
       seatingCapacityName: data.seatingCapacityName,
@@ -127,9 +128,9 @@ exports.updateVehicleType = async function (req, res, next) {
       if(req.body.seatingCapacityName) obj.seatingCapacityName = req.body.seatingCapacityName
       if(req.body.seatingCapacity) obj.seatingCapacity = req.body.seatingCapacity
       if(req.body.runMode) obj.runMode = req.body.runMode
-      await db.vehicleType.updateOne({ _id:id}, { $set: obj});
-    
-      res.status(200).json({message:"update successfully"})
+
+      let vehicleType = await db.vehicleType.findOneAndUpdate({ _id:id}, { $set: obj},{new:true});    
+      res.status(200).json({message:"update successfully",vehicleType:vehicleType})
 
   } catch (error) {
       console.log(error);

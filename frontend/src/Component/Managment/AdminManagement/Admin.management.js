@@ -3,7 +3,6 @@ import "./AdminManagement.css";
 import Management_container from "../../Common/Management_container";
 import Filter_Option from "../../Common/Filter_option";
 import BtnDark from "../../Common/Buttons/BtnDark";
-import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
 import { Box, IconButton } from "@mui/material";
@@ -13,13 +12,12 @@ import {
   ModeEditOutline,
   DeleteForever,
 } from "@mui/icons-material/";
-import axios from "axios";
 import { toast } from "react-toastify";
 import moment from "moment/moment";
-import DeleteModal from "../../../Common/DeleteModal";
 import AddNew from "./AddNew";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  deleteAdmin,
   fetchAdminById,
   fetchAdmins,
   getAllAdmins,
@@ -28,6 +26,10 @@ import DeleteModalAdv from "../../../Common/deleteModalRedux";
 import {
   openModal,
   showDeleteModal,
+  url,
+  status as deleteModalStatus,
+  closeModal,
+  doneDelete,
 } from "../../../Redux/features/deleteModalReducer";
 const initialFilter = {
   name: "",
@@ -36,7 +38,7 @@ const initialFilter = {
   from: "",
   to: "",
 };
-let url = BASE_URL + "/admin/filter/";
+// let url = BASE_URL + "/admin/filter/";
 export default function AdminManagement() {
   const show = useSelector(showDeleteModal);
   const [adminModalOpen, setAdminModalOpen] = useState(false);
@@ -45,6 +47,9 @@ export default function AdminManagement() {
   const AllAdmins = useSelector(getAllAdmins);
   const status = useSelector((state) => state.admins.status);
   const error = useSelector((state) => state.admins.error);
+  const URL = useSelector(url);
+  const id = useSelector((state) => state.delete.id);
+  const deleteStatus = useSelector(deleteModalStatus);
   useEffect(() => {
     if (status === "idle") dispatch(fetchAdmins());
     else if (status === "added") {
@@ -55,8 +60,16 @@ export default function AdminManagement() {
       setAdminModalOpen(false);
     } else if (status === "deleted") {
       toast.success("admin deleted successfully");
+      dispatch(closeModal());
     }
-  }, [status]);
+  }, [status, error]);
+
+  useEffect(() => {
+    if (deleteStatus === "delete") {
+      dispatch(deleteAdmin({ url: URL, id }));
+      dispatch(doneDelete());
+    }
+  }, [deleteStatus, URL, id]);
 
   const columns = useMemo(
     () => [

@@ -1,22 +1,10 @@
 const Country = require("../model/country.model");
+const db = require("../model");
 
 exports.addCountry = async function (req, res, next) {
   try {
-    const { name, countryCode, status, dialCode } = req.body;
-
-    const country = await Country.create({
-      name: name,
-      countryCode: countryCode,
-      status: status,
-      dialCode: dialCode,
-    });
-    res
-      .status(201)
-      .json({
-        success: true,
-        message: "country added",
-      })
-      .end();
+    const country = await Country.create(req.body);
+    res.status(201).json(country);
   } catch (error) {
     next(error);
   }
@@ -70,42 +58,51 @@ exports.getallCountry = async function (req, res, next) {
   }
 };
 
+exports.filterContries = async (req, res, next) => {
+  try {
+    const { name, status } = req.query;
+    let query = [{ $match: { $or: [] } }];
+    if (name)
+      query[0].$match.$or.push({ name: { $regex: name, $options: "i" } });
+    if (status)
+      query[0].$match.$or.push({ status: { $regex: status, $options: "i" } });
+
+    if (!query[0].$match.$or.length) query[0].$match = {};
+    let countries = await db.country.aggregate(query);
+
+    res.status(200).json(countries);
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.deleteCountry = async function (req, res) {
   const id = req.params.id;
   try {
     const result = await Country.deleteOne({ _id: id });
     if (result.deletedCount === 1) {
-      return res.status(200).json({ message: "delete successfully" });
+      return res.status(204).end();
     } else {
       return res.status(400).json({ message: "country is not found" });
     }
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: "Internal server error" });
+    next(error);
   }
 };
 
 exports.updateCountry = async function (req, res, next) {
   try {
-    const { id } = req.params;
-    console.log("id", req.body);
-    console.log(id);
+    const country = await db.country.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: req.body },
+      { new: true }
+    );
 
-    let obj = {};
-
-    if (req.body.name) obj.name = req.body.name;
-    if (req.body.status) obj.status = req.body.status;
-    if (req.body.countryCode) obj.countryCode = req.body.countryCode;
-    if (req.body.dialCode) obj.dialCode = req.body.dialCode;
-    await Country.updateOne({ _id: id }, { $set: obj });
-
-    res.status(200).json({ message: "update successfully" });
+    res.status(200).json(country);
   } catch (error) {
     console.log(error);
 
-    res.status(500).json({
-      success: false,
-      message: "Internal error occurred",
-    });
+    next(error);
   }
 };

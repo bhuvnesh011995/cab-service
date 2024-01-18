@@ -7,6 +7,7 @@ let initialState = {
   error: null,
   vehicleCategory: [],
   message: "",
+  selectVehicleCategory:null,
 };
 
  export const addVehicleCategory = createAsyncThunk(
@@ -100,11 +101,18 @@ export const deleteVehicleCategory = createAsyncThunk(
 const vehicleCategorySlice = createSlice({
   name: "vehicleCategory",
   initialState,
-
     reducers:{
       setSucceessStatus:(state,action)=>{
         state.status = "success";
-       }} ,
+       },
+       updateVehicleCategoryById: (state, action) => {
+      state.selectVehicleCategory= state.vehicleCategory.find(selectVehicleCategory =>selectVehicleCategory._id === action.payload.id)
+      state.status="fetched"
+      },
+      cleanVehicleCategory:(state,action) =>{
+        state.selectVehicleCategory = null;
+      }
+      } ,
   
   extraReducers: (builder) => {
     builder.addCase(addVehicleCategory.pending, (state, action) => {
@@ -115,7 +123,7 @@ const vehicleCategorySlice = createSlice({
       state.status = "added";
       state.error = null;
       state.vehicleCategory = state.vehicleCategory.concat(action.payload.vehicleCategory);
-      
+      state.message = action.payload.message
     });
     builder.addCase(addVehicleCategory.rejected, (state, action) => {
       state.status = "error";
@@ -175,3 +183,5 @@ state.error = null
  }
 
 export default vehicleCategorySlice.reducer;
+export const {updateVehicleCategoryById,cleanVehicleCategory} = vehicleCategorySlice.actions;
+export const getVehicleCategory = (state) => state.vehicleCategory.selectVehicleCategory;
