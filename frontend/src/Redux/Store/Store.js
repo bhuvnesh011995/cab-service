@@ -10,6 +10,7 @@ import vehicleCategoryReducer from "../features/vehicleCategoryReducer";
 import fareReducer from "../features/individualFareReducer";
 import deleteModalReducer from "../features/deleteModalReducer";
 import vehicleTypeReducer from "../features/vehicleTypeReducer";
+import packageReducer from "../features/packageReducer";
 
 export default configureStore({
   reducer: {
@@ -24,5 +25,6 @@ export default configureStore({
     fare: fareReducer,
     delete: deleteModalReducer,
     vehicleType: vehicleTypeReducer,
+    package: packageReducer,
   },
 });

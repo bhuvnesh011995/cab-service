@@ -1,74 +1,152 @@
-import { useState } from "react";
 import Management_container from "../../Common/Management_container";
-import Text_Input from "../../Common/Inputs/Text_Input";
-import Selection_Input from "../../Common/Inputs/Selection_input";
 import BtnDark from "../../Common/Buttons/BtnDark";
-import BASE_URL from "../../../config/config";
+import { useForm } from "react-hook-form";
+import { Modal } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addPackageReducer,
+  emptySelectedPackage,
+  getSelectedPackage,
+  getSelectedPackageReducer,
+} from "../../../Redux/features/packageReducer";
+import { useEffect } from "react";
 
-const initialState = {
-    name:"",
-    maxDuration: "8 hr",
-    maxDistance:80,
-    status:""
-}
+export default function AddRentalPackage({ isOpen, setIsOpen, id, viewModal }) {
+  const {
+    register,
+    reset,
+    formState: { errors },
+    handleSubmit,
+  } = useForm();
+  const dispatch = useDispatch();
 
-let url = BASE_URL+"/rentalPackage/"
-export default function AddRentalPackage(){
-    const [rentalPackage,setPackage] = useState(initialState)
-    const [succMsg,setSuccMsg] = useState();
+  const selectedPackage = useSelector(getSelectedPackage);
 
-    function handleSubmit(e){
-        e.preventDefault();
+  const addPackage = (data) => {
+    dispatch(addPackageReducer(data));
+    handleClose();
+  };
 
-        fetch(url,{
-            method:"POST",
-            body:JSON.stringify(rentalPackage),
-            headers:{
-                "Content-type": "application/json; charset=UTF-8",
-            }
-        }).then(res=>res.json())
-        .then(data=>{
-            if(data.success){
-                setSuccMsg(<span style={{backgroundColor:"lightgreen"}}>{data.message}</span>)
-            }else{
-                setSuccMsg(<span style={{backgroundColor:"red"}}>{data.message}</span>)
-            }
-        })
-    }
+  useEffect(() => {
+    if (id) dispatch(getSelectedPackageReducer(id));
+  }, []);
 
+  useEffect(() => {
+    console.log(selectedPackage, "hhhhhhh");
+    if (selectedPackage) reset(selectedPackage);
+    else reset({});
+  }, [selectedPackage]);
 
-    return(
-        <Management_container title={"Add Package"}>
-            <div class="row" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
-    <div class="col-lg-6">
-      <div class="card">
-        <div class="card-body">
-            <form>
-            <Text_Input
-            lebel_text={"Name : "}
-            setKey={"name"}
-            setInput={setPackage} />
-            <Text_Input
-            lebel_text={"Max Duration : "}
-            setKey={"maxDuration"}
-            setInput={setPackage} />
-            <Text_Input
-            type={"number"}
-            lebel_text={"Max Distance : "}
-            setKey={"maxDistance"}
-            setInput={setPackage} />
-            <Selection_Input 
-            input={rentalPackage}
-            setInput={setPackage}
-            setKey={"status"}
-            options={["ACTIVE","INACTIVE"]}
-            />
-            <BtnDark  title={"Add"}
-                handleClick={handleSubmit}
-                />
-                {succMsg}
-            </form>
-            </div></div></div></div>
-        </Management_container>
-    )
+  const handleClose = () => {
+    setIsOpen(false);
+    dispatch(emptySelectedPackage());
+  };
+
+  return (
+    <Modal show={isOpen} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Add Package</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div
+          class='row'
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div class='col-lg-12'>
+            <div class='card'>
+              <div class='card-body'>
+                <form onSubmit={handleSubmit(addPackage)}>
+                  <div className='m-3'>
+                    <label className='form-label'>Name :</label>
+                    <input
+                      disabled={viewModal}
+                      className='form-control'
+                      {...register("name", { required: "Please Enter Name" })}
+                      type={"text"}
+                      placeholder={"Enter Name"}
+                    />
+                    {errors?.name && (
+                      <span className='text-danger'>
+                        {errors?.name.message}
+                      </span>
+                    )}
+                  </div>
+                  <div className='m-3'>
+                    <label className='form-label'>Max Duration :</label>
+                    <input
+                      disabled={viewModal}
+                      className='form-control'
+                      {...register("maxDuration", {
+                        required: "Please Max Duration",
+                      })}
+                      type={"text"}
+                      placeholder={"Enter Max Duration"}
+                    />
+                    {errors?.maxDuration && (
+                      <span className='text-danger'>
+                        {errors?.maxDuration.message}
+                      </span>
+                    )}
+                  </div>
+                  <div className='m-3'>
+                    <label className='form-label'>Max Distance :</label>
+                    <input
+                      disabled={viewModal}
+                      className='form-control'
+                      {...register("maxDistance", {
+                        required: "Please Max Distance",
+                      })}
+                      type={"text"}
+                      placeholder={"Enter Max Distance"}
+                    />
+                    {errors?.maxDistance && (
+                      <span className='text-danger'>
+                        {errors?.maxDistance.message}
+                      </span>
+                    )}
+                  </div>
+                  <div className='m-3'>
+                    <label className='form-label'>Status</label>
+                    <select
+                      disabled={viewModal}
+                      {...register("status")}
+                      style={{ width: "200px" }}
+                      className='form-select'
+                    >
+                      <option value=''>select</option>
+                      <option value='INACTIVE'>Inactive</option>
+                      <option value='ACTIVE'>Active</option>
+                    </select>
+                  </div>
+                  <div>
+                    {!viewModal && (
+                      <button
+                        type='submit'
+                        className='btn btn-outline-primary mx-2'
+                      >
+                        {id ? "Update" : "Add"}
+                      </button>
+                    )}
+                    <button
+                      type='button'
+                      className='btn btn-outline-danger mx-2'
+                      onClick={handleClose}
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <Modal.Footer></Modal.Footer>
+      </Modal.Body>
+    </Modal>
+  );
 }

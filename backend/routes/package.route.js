@@ -11,4 +11,14 @@ module.exports = function (app) {
     [],
     packageController.getAllPackages,
   );
+  app.delete(
+    "/test/api/v1/packages/deletePackage/:id",
+    [],
+    packageController.deletePackage,
+  );
+  app.get(
+    "/test/api/v1/packages/getSelectedPackage/:id",
+    [],
+    packageController.getSelectedPackage,
+  );
 };
