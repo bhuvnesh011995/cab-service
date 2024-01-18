@@ -6,6 +6,7 @@ let initialState = {
   status: 'idle',
   error: null,
   vehicleType: [],
+  selectVehicleType: null,
   message: ''
 };
 
@@ -15,7 +16,7 @@ const addVehicleType = createAsyncThunk(
       try {
         const formData = new FormData();
         formData.append("data", JSON.stringify(data));
-        formData.append("file", data.file);
+        formData.append("file", data.file[0]);
         const response = await axios.post(BASE_URL + "/vehicleType/", formData);
   
         if (response.status === 201) {
@@ -103,7 +104,15 @@ export const deleteVehicleType = createAsyncThunk(
 const vehicleTypeSlice = createSlice({
   name: "vehicleType",
   initialState,
-  reducers: {},
+  reducers: {
+    updateVehicleTypeById: (state, action) => {
+      state.selectVehicleType= state.vehicleType.find(selectVehicleType =>selectVehicleType._id === action.payload.id)
+      state.status="fetched"
+      },
+      cleanSelectVehicleType:(state,action) =>{
+        state.selectVehicleType = null;
+      }
+  },
   extraReducers: (builder) => {
     builder
       .addCase(addVehicleType.pending, (state, action) => {
@@ -157,8 +166,8 @@ const vehicleTypeSlice = createSlice({
      });
      builder.addCase(updateVehicleType.fulfilled,(state,action) =>{
       state.status="update";
-      state.vehicleCategory = state.vehicleCategory.map((item) =>
-      item._id === action.payload.vehicleCategory._id ? action.payload.vehicleCategory : item
+      state.vehicleType = state.vehicleType.map((item) =>
+      item._id === action.payload.vehicleType._id ? action.payload.vehicleType : item
   ); 
   state.error = null
      });
@@ -172,4 +181,7 @@ const vehicleTypeSlice = createSlice({
 
 export default vehicleTypeSlice.reducer;
 const getAllVehicleType = (state) => state.vehicleType.vehicleType
-export { addVehicleType,getAllVehicleType,fetchVehicleType };
+export { addVehicleType,getAllVehicleType,fetchVehicleType ,updateVehicleType};
+export const {updateVehicleTypeById,cleanSelectVehicleType} = vehicleTypeSlice.actions;
+export const getVehicleType = (state) => state.vehicleType.selectVehicleType;
+
