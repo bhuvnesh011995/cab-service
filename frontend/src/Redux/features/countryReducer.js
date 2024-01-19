@@ -138,6 +138,9 @@ const countrySlice = createSlice({
     clearCountry: (state, action) => {
       state.country = null;
     },
+    clearCountryStatus: (state, action) => {
+      state.status = "OK";
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(fetchCountries.fulfilled, (state, action) => {
@@ -205,14 +208,14 @@ const countrySlice = createSlice({
       state.status = "error";
       state.error = action.payload || {
         status: "error",
-        message: "error while deleting admin",
+        message: "error while deleting country",
       };
     });
   },
 });
 
 export default countrySlice.reducer;
-export const { clearStatus, clearCountry, updateCountry } =
+export const { clearStatus, clearCountry, updateCountry, clearCountryStatus } =
   countrySlice.actions;
 
 export const status = (state) => state.countries.status;

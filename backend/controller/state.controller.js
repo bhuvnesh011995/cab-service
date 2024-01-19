@@ -50,6 +50,41 @@ exports.getallStateByCountry = async function (req, res, next) {
   }
 };
 
+exports.filterStates = async (req, res, next) => {
+  try {
+    const { name, status, country } = req.query;
+    let query = [];
+
+    query.push(
+      {
+        $lookup: {
+          from: "Country",
+          localField: "country",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: true } }],
+          as: "country",
+        },
+      },
+      { $unwind: "$country" }
+    );
+    query[2] = { $match: { $or: [] } };
+    if (name)
+      query[2].$match.$or.push({ name: { $regex: name, $options: "i" } });
+    if (status)
+      query[2].$match.$or.push({ status: { $regex: status, $options: "i" } });
+    if (country)
+      query[2].$match.$or.push({
+        "country.name": { $regex: country, $options: "i" },
+      });
+    if (!query[2].$match.$or.length) query[2] = { $match: {} };
+    let states = await db.state.aggregate([query]);
+
+    res.status(200).json(states);
+  } catch (error) {
+    next(error);
+  }
+};
+
 exports.filterState = async function (req, res, next) {
   let { country, name, status } = req.query;
 
@@ -90,17 +125,18 @@ exports.filterState = async function (req, res, next) {
 
     let stateList = [];
     let count = 0;
-    console.log(states);
+
     for (i = 0; i < states.length; i++) {
       stateList.push({
         name: states[i].name,
         stateCode: states[i].stateCode,
         createdAt: states[i].createdAt,
         status: states[i].status,
-        country: states[i].country ? { id: states[i].country._id, name: states[i].country.name } : null,
+        country: states[i].country
+          ? { id: states[i].country._id, name: states[i].country.name }
+          : null,
         _id: states[i]._id,
       });
-     
     }
 
     res.status(200).json({
@@ -145,30 +181,28 @@ exports.deleteState = async function (req, res) {
     console.log(error);
     return res.status(5000).json({ message: "Internal Server Error" });
   }
-}
+};
 exports.updateState = async function (req, res, next) {
   try {
-      const { id } = req.params;
-      console.log("id", req.body);
-      console.log(id)
+    const { id } = req.params;
+    console.log("id", req.body);
+    console.log(id);
 
+    let obj = {};
 
-      let obj = {};
-    
-      if(req.body.name) obj.name = req.body.name
-      if(req.body.status) obj.status = req.body.status
-      if(req.body.countryCode) obj.countryCode = req.body.countryCode
-      if(req.body.dialCode) obj.dialCode = req.body.dialCode
-      await db.state.updateOne({ _id:id}, { $set: obj});
-    
-      res.status(200).json({message:"update successfully"})
+    if (req.body.name) obj.name = req.body.name;
+    if (req.body.status) obj.status = req.body.status;
+    if (req.body.countryCode) obj.countryCode = req.body.countryCode;
+    if (req.body.dialCode) obj.dialCode = req.body.dialCode;
+    await db.state.updateOne({ _id: id }, { $set: obj });
 
+    res.status(200).json({ message: "update successfully" });
   } catch (error) {
-      console.log(error);
+    console.log(error);
 
-      res.status(500).json({
-          success: false,
-          message: "Internal error occurred",
-      });
+    res.status(500).json({
+      success: false,
+      message: "Internal error occurred",
+    });
   }
 };
