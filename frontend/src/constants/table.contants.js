@@ -16,3 +16,10 @@ export const packageTableHeaders = {
   status: "Status",
   createdAt: "Created On",
 };
+
+export const tollTableHeaders = {
+  title: "Toll Name",
+  amount: "Amount",
+  status: "Status",
+  createdAt: "Created On",
+};

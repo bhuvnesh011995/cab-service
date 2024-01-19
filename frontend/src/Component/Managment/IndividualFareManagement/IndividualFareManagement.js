@@ -24,6 +24,7 @@ import {
   fetchAllFares,
 } from "../../../Redux/features/individualFareReducer";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 
 const initialFilter = {
   country: "",
@@ -122,6 +123,16 @@ export default function IndividualFareManagement() {
         editButton
         deleteButton
         callback={(e, type, index) => updateFareData(e, type, index)}
+        changeSelectedColumnDataDesign={["createdAt"]}
+        changedDataCellColumn={(header, accessor) => {
+          return {
+            accessorKey: accessor,
+            header: header,
+            Cell: ({ row }) => (
+              <div>{moment(row.original.createdAt).format("YYYY-DD-MM")}</div>
+            ),
+          };
+        }}
       />
       {fareModal && (
         <AddIndividualFare

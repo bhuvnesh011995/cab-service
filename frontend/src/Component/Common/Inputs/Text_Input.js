@@ -15,6 +15,7 @@ export default function Text_Input({
         onChange={(e) =>
           setInput((preVal) => ({ ...preVal, [setKey]: e.target.value }))
         }
+        value={input[setKey]}
         type={type || "text"}
         placeholder={setKey}
         // value={input[setKey]}

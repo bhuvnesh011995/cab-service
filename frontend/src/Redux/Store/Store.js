@@ -11,6 +11,7 @@ import fareReducer from "../features/individualFareReducer";
 import deleteModalReducer from "../features/deleteModalReducer";
 import vehicleTypeReducer from "../features/vehicleTypeReducer";
 import packageReducer from "../features/packageReducer";
+import tollReducer from "../features/tollReducer";
 
 export default configureStore({
   reducer: {
@@ -26,5 +27,6 @@ export default configureStore({
     delete: deleteModalReducer,
     vehicleType: vehicleTypeReducer,
     package: packageReducer,
+    toll: tollReducer,
   },
 });

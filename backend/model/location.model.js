@@ -1,12 +1,17 @@
-const {Schema,model} = require("mongoose")
+const { Schema, model } = require("mongoose");
 
-const schema = new Schema({
-    lat:String,
+const schema = new Schema(
+  {
+    title: String,
+    amount: Number,
+    lat: String,
+    status: String,
+    lng: String,
+  },
+  {
+    timestamps: true,
+    collection: "Location",
+  },
+);
 
-    lng:String
-},{
-    collection:"Location"
-})
-
-
-module.exports = model("Location",schema)
+module.exports = model("Location", schema);

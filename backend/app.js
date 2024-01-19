@@ -124,6 +124,7 @@ require("./routes/avaialibilityManagement.route")(app);
 require("./routes/vehicleCategory.route")(app);
 require("./routes/fares.route")(app);
 require("./routes/package.route")(app);
+require("./routes/tolls.route.js")(app);
 
 app.use(ErrorHandler);
 
