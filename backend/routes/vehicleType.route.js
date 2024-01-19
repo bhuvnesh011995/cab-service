@@ -6,7 +6,6 @@ let storage = multer.diskStorage({
   },
   filename: (req, file, cb) => {
     let uniqueName;
-    console.log(file);
     uniqueName = "file-" + Date.now() + "." + file.mimetype.split("/")[1];
     cb(null, uniqueName);
   },

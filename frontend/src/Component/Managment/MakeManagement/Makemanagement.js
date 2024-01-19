@@ -12,7 +12,7 @@ import { authContext } from "../../../Context/AuthContext";
 import { useContext } from "react";
 import AddManufacturer from "./AddManufacturer";
 import UpdateManufacturer from "./UpdateManufacturer";
-import { selectManufacturer,fetchManufacturer,deleteManufacturer } from "../../../Redux/features/ManufacturerReducer";
+import { selectManufacturer,fetchManufacturer,deleteManufacturer, updatetManufacturerById, status } from "../../../Redux/features/ManufacturerReducer";
 import { useSelector,useDispatch } from "react-redux";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import { getPermissions } from "../../../Redux/features/authReducer";
@@ -33,8 +33,6 @@ export default function MakeManagement() {
   const [open,setOpen] = useState(false);
   const [id, setId] = useState(null)
   const [deleteInfo, setDeleteInfo] = useState(null)
-  const [updateData,setUpdateData] = useState([])
-  const navigate = useNavigate();
   const url = BASE_URL+"/make/filter/";
   const permissions = useSelector(getPermissions)
   const dispatch = useDispatch();
@@ -49,7 +47,7 @@ export default function MakeManagement() {
   const manufacturerData = useSelector(selectManufacturer);
 
 
-  const manufacturerStatus = useSelector((state) => state.manufacturer.status);
+  const manufacturerStatus = useSelector(status);
   const message = useSelector((state) => state.manufacturer.message);
 
   useEffect(()=>{
@@ -63,7 +61,7 @@ export default function MakeManagement() {
         toast.success(message) 
       }
       else if(manufacturerStatus === "updated") {
-        setOpen(false) 
+        setIsOpen(false) 
         toast.success("updated") 
       }
   },[manufacturerStatus])
@@ -77,6 +75,11 @@ export default function MakeManagement() {
      {
       accessorKey:"name",
       header:"Name"
+    },
+    {
+      accessorFn: (row) => row.createdAt.slice(0, 10),
+      id: "createdAt",
+      header: "Created At",
     },
     {
       accessorKey:"status",
@@ -133,11 +136,7 @@ return
       }
       );
   }
-  function handleUpdate(data){
-   setUpdateData(data)
-   setOpen(true)
-  }
-    
+
   return (
     <Management_container title={"Manufacture"}>
        <div class="row">
@@ -151,7 +150,6 @@ return
         arg={id}
       />
       {isOpen && <AddManufacturer show={isOpen} setShow={setIsOpen}   />}
-      {open && <UpdateManufacturer show={open} setShow={setOpen} data={updateData}   />}
 
         <div class="card-body">
     <div style={{display:"flex",justifyContent:"right",zIndex:"2"}}>
@@ -180,6 +178,8 @@ return
         <MaterialReactTable
       columns={columns || []}
       data={manufacturerData || []}
+      enableRowNumbers= {true} 
+      rowNumberDisplayMode= 'static'
       enableRowActions
       positionActionsColumn={'last'}
       renderRowActions={({row,table})=>(
@@ -190,7 +190,10 @@ return
           <IconButton>
             <Lock />
           </IconButton  >
-          <IconButton   onClick={() => handleUpdate(row.original)}>
+          <IconButton   onClick={()=>{
+            dispatch(updatetManufacturerById({id:row.original._id}))
+            setIsOpen(true)
+             }}>
             <ModeEditOutline />
           </IconButton>
           <IconButton    onClick={() => {

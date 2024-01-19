@@ -11,7 +11,7 @@ import AddModel from "./AddModel";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import ModelUpdate from "../ModelManagement/ModelUpdate"
 import { useSelector,useDispatch } from "react-redux";
-import { fetchModel,getAllModel,deleteModels } from "../../../Redux/features/ModelReducer";
+import { fetchModel,getAllModel,deleteModels, updateModelById } from "../../../Redux/features/ModelReducer";
 import {
   RemoveRedEye,
   Lock,
@@ -57,16 +57,17 @@ export default function ModelManagement() {
       toast.success(message) 
     }
     else if(modelstatus === "update") {
-      setShowUpdate(false) 
+      setShow(false) 
       toast.success("updated") 
     }
 },[modelstatus])
  
+console.log("modeldata",modelData)
   const columns = useMemo(
     () => [
     
       {
-        accessorKey: "make.name",
+        accessorKey: "manufacturer.name",
         header: "Manufacturer",
         size: 100,
       },
@@ -123,9 +124,6 @@ export default function ModelManagement() {
    dispatch(deleteModels(id))
 
   }
-  const handleUpdate =(data)=>{
-     setShowUpdate(true)
-  }
 
 
   function handleClick2() {}
@@ -143,8 +141,6 @@ export default function ModelManagement() {
         arg={id}
       />
       {show && <AddModel show={show} setShow={setShow} />}
-      {showUpdate && <ModelUpdate show={showUpdate} setShow={setShowUpdate}  data={model}   />}
-
        <
               div class="card-body">
               <div
@@ -190,7 +186,10 @@ export default function ModelManagement() {
           <IconButton>
             <Lock />
           </IconButton>
-          <IconButton  onClick={()=>handleUpdate(row.original)}>
+          <IconButton    onClick={()=>{
+            dispatch(updateModelById({id:row.original._id}))
+            setShow(true)
+             }}>
             <ModeEditOutline />
           </IconButton>
           <IconButton

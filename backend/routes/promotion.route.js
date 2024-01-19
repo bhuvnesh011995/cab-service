@@ -20,6 +20,15 @@ module.exports = function (app) {
     ],
     promotionController.filterPromotion
   );
+  app.get(
+    "/test/api/v1/promotion/",
+    [
+      middleware.validateId.validateCountryId,
+      middleware.validateId.validateStateId,
+      middleware.validateId.validateCityId,
+    ],
+    promotionController.getAllPromotion
+  );
   app.delete(
     "/test/api/v1/promotion/:id",
     [
@@ -28,5 +37,14 @@ module.exports = function (app) {
       middleware.validateId.validateCityId,
     ],
     promotionController.deletePromotion
+  );
+  app.put(
+    "/test/api/v1/promotion/:id",
+    [
+      middleware.validateId.validateCountryId,
+      middleware.validateId.validateStateId,
+      middleware.validateId.validateCityId,
+    ],
+    promotionController.updatePromotion
   );
 };

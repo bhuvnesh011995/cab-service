@@ -28,6 +28,7 @@ export default function AddVehicleCategory({ show, setShow
       reset(selectVehicleCategory)
     }
   }, [selectVehicleCategory])
+  
   const vehicleCategoryStatus = useSelector(
     (state) => state.vehicleCategory.status
   );

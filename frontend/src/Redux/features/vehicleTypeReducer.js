@@ -14,10 +14,8 @@ const addVehicleType = createAsyncThunk(
     "vehicleType/addVehicleType",
     async (data, { rejectWithValue }) => {
       try {
-        const formData = new FormData();
-        formData.append("data", JSON.stringify(data));
-        formData.append("file", data.file[0]);
-        const response = await axios.post(BASE_URL + "/vehicleType/", formData);
+         if(data.file)  data.file = data.file[0]
+        const response = await axios.post(BASE_URL + "/vehicleType/", data,{headers:{"Content-Type":"multipart/form-data"}});
   
         if (response.status === 201) {
           return response.data;
@@ -106,8 +104,12 @@ const vehicleTypeSlice = createSlice({
   initialState,
   reducers: {
     updateVehicleTypeById: (state, action) => {
-      state.selectVehicleType= state.vehicleType.find(selectVehicleType =>selectVehicleType._id === action.payload.id)
+      let obj = state.vehicleType.find(selectVehicleType =>selectVehicleType._id === action.payload.id)
       state.status="fetched"
+       obj.runMode.forEach((item,i) =>{
+      obj.runMode[i]= {value:item._id,label:item.name}
+  })   
+  state.selectVehicleType = obj;
       },
       cleanSelectVehicleType:(state,action) =>{
         state.selectVehicleType = null;

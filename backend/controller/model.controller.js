@@ -61,7 +61,7 @@ exports.addModels = async function (req,res,next) {
   let obj = { ...req.body }; 
   try{
     let model = await Model.create(obj)
-      model = await Model.findById(model._id).populate({ path: "make", select: "name" });
+      model = await Model.findById(model._id).populate({ path: "manufacturer", select: "name" });
     return res.status(201).send({
       models: model,
       message: "model added successfully", 
@@ -127,7 +127,7 @@ exports.getModel = async function (req, res, next) {
 
 exports.getModels = async function (req, res,next){
   try{
-    const models = await Model.find({}).populate({ path: "make", select: "name" });
+    const models = await Model.find({}).populate({ path: "manufacturer", select: "name" });
     return res.status(200).json({
       success: true,
       models: models,
@@ -204,10 +204,10 @@ exports.updateModel = async function(req,res){
      let obj = {};
      if(req.body._id) obj._id  = req.body._id
      if(req.body.name) obj.name  = req.body.name
-     if(req.body.make) obj.make  = req.body.make
+     if(req.body.manufacturer) obj.manufacturer  = req.body.manufacturer
      if(req.body.status) obj.status  = req.body.status
      let model = await Model.findOneAndUpdate({ _id:id}, { $set: obj},{new:true});
-     model = await Model.findById(model._id).populate({ path: "make", select: "name" });
+     model = await Model.findById(model._id).populate({ path: "manufacturer", select: "name" });
 
      res.status(200).json({models:model})
   }

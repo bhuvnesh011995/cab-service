@@ -7,6 +7,7 @@ let initialState = {
   error: null,
   model: [],
   message: "",
+  selectModel:null,
 };
 
  export const addModel = createAsyncThunk(
@@ -51,7 +52,7 @@ let initialState = {
 )
 
 const updateModels = createAsyncThunk(
-  "model/updateModel",
+  "model/updateModels",
 async(data,{rejectWithValue}) =>{
   console.log("data",data)
 try{
@@ -102,7 +103,16 @@ const modelSlice = createSlice({
     reducers:{
       setSucceessStatus:(state,action)=>{
         state.status = "success";
-       }} ,
+       },
+       updateModelById: (state, action) => {  
+       let obj = state.model.find(selectModel =>selectModel._id ===  action.payload.id)
+       state.selectModel = {...obj,manufacturer:obj.manufacturer._id}
+        state.status="fetched"
+        },
+        cleanModel:(state,action) =>{
+          state.selectModel = null;
+        },
+      } ,
   
   extraReducers: (builder) => {
     builder.addCase(addModel.pending, (state, action) => {
@@ -173,3 +183,6 @@ state.error = null
  }
 
 export default modelSlice.reducer;
+export const {updateModelById,cleanModel} = modelSlice.actions;
+export const status = (state) => state.model.status;
+export const getModel = (state) => state.model.selectModel;

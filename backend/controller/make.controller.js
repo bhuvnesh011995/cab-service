@@ -96,59 +96,27 @@ exports.deleteMakeid = async function (req, res, next) {
   }
 };
 
-// exports.updaupdateMakeDatateModel = async function(req,res){
-//   try{
-//     const {id} = req.params
-//     console.log(id)
-//     console.log(req.body)
-//      let obj = {};
-//      if(req.body.name) obj.name  = req.body.name
-//      if(req.body.make) obj.make  = req.body.make
-//      if(req.body.status) obj.status  = req.body.status
-//      await Model.updateOne({ _id:id}, { $set: obj});
-//      res.status(200).json({message:"update successfully", success: true,data:obj})
-//   }
-//   catch(error){
-//     res.status(500).json({
-//       success: false,
-//       message: "Internal error occurres"
-//     })
-//   }
-// }
-
-exports.updateMakeData = async (req, res, next) => {
-  const data = req.body;
-
-  console.log("fimnal data", data);
+exports.updatedManufacturer = async function (req, res, next) {
   try {
-    // Check if newdata is defined
-    if (!data) {
-      return res.status(400).json({
-        success: false,
-        message: "New data is missing",
-      });
-    }
-    const updatedManufacturer = await Make.findByIdAndUpdate(req.params.id, data);
-    if (updatedManufacturer) {
-      return res.status(200).json({
-        success: true,
-        message: "make data updated successfully",
-        data
-      });
-    } else {
-      return res.status(404).json({
-        success: false,
-        message: "make not found",
-      });
-    }
+      const { id } = req.params;
+      let obj = {};
+      if(req.body.name) obj.name = req.body.name
+      if(req.body.status) obj.status = req.body.status
+      let manufacturer = await Make.findOneAndUpdate({ _id:id}, { $set: obj},{new:true});    
+      res.status(200).json({message:"update successfully",manufacturer:manufacturer})
+
   } catch (error) {
-    console.error("Error updating admin data:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
+      console.log(error);
+
+      res.status(500).json({
+          success: false,
+          message: "Internal error occurred",
+      });
   }
 };
+
+
+
 
 exports.getall = async function (req, res, next) {
   try {

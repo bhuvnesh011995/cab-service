@@ -1,20 +1,14 @@
 import { useState } from "react";
 import { Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from 'react-redux'
-import { putManufacturer } from "../../../Redux/features/ManufacturerReducer";
 export default function UpdateManufacturer({ show, setShow, data }) {
 
   const [manufacturer, setManufacturer] = useState({ ...data });
 
    const dispatch = useDispatch()
    
-    const handleUpdate =()=>{
-      dispatch(putManufacturer({ id: manufacturer._id ,newData:manufacturer }))
-    }
+   
     
-    
-      
-
   return (
     <Modal size="lg" show={show} onHide={() => setShow(false)}>
       <Modal.Header closeButton>
@@ -54,13 +48,7 @@ export default function UpdateManufacturer({ show, setShow, data }) {
             </div>    </div>
            
           </div>
-          <button
-              className="btn btn-primary waves-effect waves-light"
-              type="button"
-              onClick={handleUpdate}
-            >
-              Update manufacturer
-            </button>
+         
         </form>
       </Modal.Body>
     </Modal>

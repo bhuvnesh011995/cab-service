@@ -1,41 +1,59 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { Modal } from "react-bootstrap";
-import BASE_URL from "../../../config/config";
-import axios from "axios";
 import { useForm } from "react-hook-form";
-import { addModel } from "../../../Redux/features/ModelReducer";
-import { useDispatch } from "react-redux";
+import { addModel, cleanModel, getModel, status, updateModels } from "../../../Redux/features/ModelReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchManufacturer, selectManufacturer } from "../../../Redux/features/ManufacturerReducer";
 
-export default function AddModel({show,setShow,data}) {
-  const [model, setModel] = useState({});
-  const [options, setOptions] = useState([]);
-  const [succMsg, setSuccMsg] = useState("");
+export default function AddModel({show,setShow}) {
+
   const dispatch = useDispatch()
 
 
   const {
-     register,
-     handleSubmit,
-     reset,
-     formState:{error}
-  } = useForm()
-
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    formState: { errors,dirtyFields,isDirty }
+  } = useForm();
+  const manufacturerData = useSelector(selectManufacturer);
   useEffect(() => {
-    setModel(data);
-    fetch(BASE_URL + "/make/", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setOptions(data);
-      });
-  }, [data]);
+    dispatch(fetchManufacturer());
+  }, []);
+  
+  const selctModel = useSelector(getModel)
+  useEffect(() => {
+    if (selctModel) {
+      reset(selctModel)
+    }
+  }, [selctModel])
 
-  const onSubmit =(data)=>{
-    dispatch(addModel(data))
-  }
+  const modelStatus = useSelector(status);
+  useEffect(() => {
+    return () => {
+      if (modelStatus === "fetched") dispatch(cleanModel());
+    };
+  }, [modelStatus]);
 
+  const onSubmit = useCallback(
+    async (data) => {
+      if (!selctModel) {
+        dispatch(addModel(data));
+      } else {
+        let changedField = Object.keys(dirtyFields);
+        if (!changedField.length) return toast.info("change some field first");
+        else {
+          let obj = {};
+          changedField.forEach((field) => (obj[field] = data[field]));
+
+          dispatch(updateModels({ id:selctModel._id, newData: obj }));
+        }
+      }
+    },
+    [isDirty, dirtyFields]
+  );
 
   return (
       <Modal size="lg" show={show} onHide={()=>{setShow(false)}}>
@@ -51,17 +69,20 @@ export default function AddModel({show,setShow,data}) {
                 <div className="mb-3">
                 <label>Manufacturer</label>
                 <select
-                    name="make"
+                    name="manufacturer"
                     className="form-control"
-                        {...register("make") }
+                        {...register("manufacturer",{required:"this is Required field"}) }
                   >
                     <option value="">Choose</option>
-                    {options.map((item, i) => (
+                    {manufacturerData.map((item, i) => (
                       <option key={i} value={item._id}>
                         {item.name}
                       </option>
                     ))}
                   </select>
+                  {errors.manufacturer && (
+                    <span style={{ color: "red" }}>{errors.manufacturer.message}</span>
+                  )} 
                 </div>
               </div>
               <div className="col-md-12">
@@ -70,9 +91,12 @@ export default function AddModel({show,setShow,data}) {
                   <input
                     type="text"
                     name="name"
-                    {...register("name") }
+                    {...register("name",{required:"this is Required field"}) }
                     className="form-control"
                   />
+                   {errors.name && (
+                    <span style={{ color: "red" }}>{errors.name.message}</span>
+                  )} 
                 </div>
               </div>
               <div className="col-md-12">
@@ -80,13 +104,17 @@ export default function AddModel({show,setShow,data}) {
                   <label>Status</label>
                   <select
                     name="status"
-                    {...register('status')}
+                    {...register('status',{required:"this is Required field"})}
                     className="form-control"
                   >
                     <option>Choose</option>
                     <option value="ACTIVE">ACTIVE</option>
                     <option value="INACTIVE">INACTIVE</option>
                   </select>
+            
+                {errors.status && (
+                    <span style={{ color: "red" }}>{errors.status.message}</span>
+                  )} 
                 </div>
               </div>
             </div>

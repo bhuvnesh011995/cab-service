@@ -7,13 +7,14 @@ let initialState = {
   error: null,
   manufacturer: [],
   message: "",
+  selectManufacturer: null,
 };
 
-export const postManufacturer = createAsyncThunk(
-  "manufacturer/postManufacturer",
+export const addManufacturer = createAsyncThunk(
+  "manufacturer/addManufacturer",
   async (data, { rejectWithValue }) => {
     try {
-      let response = await axios.post(BASE_URL + "/make", data);
+      let response = await axios.post(BASE_URL + "/manufacturer", data);
       if (response.status === 201 && response.data.success)
         return response.data;
       else
@@ -27,14 +28,14 @@ export const postManufacturer = createAsyncThunk(
         message: error.response.data.message,
       });
     }
-  },
+  }
 );
 
 export const fetchManufacturer = createAsyncThunk(
   "manufacturer/fetchManufacturer",
   async (_, { rejectWithValue }) => {
     try {
-      let response = await axios.get(BASE_URL + "/make/filter/");
+      let response = await axios.get(BASE_URL + "/manufacturer/");
       if (response.status === 200) return response.data;
       else
         return rejectWithValue({
@@ -47,13 +48,13 @@ export const fetchManufacturer = createAsyncThunk(
         data: error.response.data,
       });
     }
-  },
+  }
 );
 export const deleteManufacturer = createAsyncThunk(
   "manufacturer/deleteManufacture",
   async (id, { rejectWithValue }) => {
     try {
-      let response = await axios.delete(BASE_URL + "/make/" + id);
+      let response = await axios.delete(BASE_URL + "/manufacturer/" + id);
       if (response.status === 200) return { ...response.data, id };
       else
         return rejectWithValue({
@@ -66,18 +67,18 @@ export const deleteManufacturer = createAsyncThunk(
         message: error.data.message,
       });
     }
-  },
+  }
 );
-const putManufacturer = createAsyncThunk(
-  "manufacturer/putManufacturer",
+const updateManufacturer = createAsyncThunk(
+  "manufacturer/updateManufacturer",
   async (data, { rejectWithValue }) => {
     console.log("data", data);
     try {
       let response = await axios.put(
-        BASE_URL + "/make/update/" + data.id,
-        data.newData,
+        BASE_URL + "/manufacturer/" + data.id,
+        data.newData
       );
-      if (response.status === 200 && response.data.success) {
+      if (response.status === 200) {
         return response.data;
       } else
         return rejectWithValue({
@@ -91,7 +92,7 @@ const putManufacturer = createAsyncThunk(
         data: error.response.data,
       });
     }
-  },
+  }
 );
 
 const manufacturerSlice = createSlice({
@@ -101,18 +102,33 @@ const manufacturerSlice = createSlice({
     setSucceessStatus: (state, action) => {
       state.status = "success";
     },
+    updatetManufacturerById: (state, action) => {
+      state.selectManufacturer = state.manufacturer.find(
+        (selectManufacturer) => selectManufacturer._id === action.payload.id
+      );
+      state.status = "fetched";
+    },
+    cleanManfacturer: (state, action) => {
+      state.selectManufacturer = null;
+    },
   },
 
   extraReducers(builder) {
-    builder.addCase(postManufacturer.pending, (state, action) => {
+    builder.addCase(addManufacturer.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(postManufacturer.fulfilled, (state, action) => {
+    builder.addCase(addManufacturer.fulfilled, (state, action) => {
       state.status = "added";
       state.error = null;
-      state.manufacturer = state.manufacturer.concat(action.payload.make);
+      state.manufacturer = state.manufacturer.concat(
+        action.payload.manufacturer
+      );
       state.message = action.payload.message;
+    });
+    builder.addCase(addManufacturer.rejected, (state, action) => {
+      state.status = "error";
+      state.error = action.payload;
     });
     builder.addCase(fetchManufacturer.pending, (state, action) => {
       state.status = "loading";
@@ -121,24 +137,26 @@ const manufacturerSlice = createSlice({
     builder.addCase(fetchManufacturer.fulfilled, (state, action) => {
       state.status = "succeeded";
       state.error = null;
-      state.manufacturer = action.payload.makeList;
+      state.manufacturer = action.payload.manufacturer;
     });
     builder.addCase(fetchManufacturer.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });
-    builder.addCase(putManufacturer.pending, (state) => {
+    builder.addCase(updateManufacturer.pending, (state) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(putManufacturer.fulfilled, (state, action) => {
+    builder.addCase(updateManufacturer.fulfilled, (state, action) => {
       state.status = "updated";
       state.error = null;
       state.manufacturer = state.manufacturer.map((item) =>
-        item._id === action.payload.data._id ? action.payload.data : item,
+        item._id === action.payload.manufacturer._id
+          ? action.payload.manufacturer
+          : item
       );
     });
-    builder.addCase(putManufacturer.rejected, (state, action) => {
+    builder.addCase(updateManufacturer.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });
@@ -150,7 +168,7 @@ const manufacturerSlice = createSlice({
       state.status = "deleted";
       state.error = null;
       state.manufacturer = state.manufacturer.filter(
-        (item) => item._id !== action.payload.id,
+        (item) => item._id !== action.payload.id
       );
       state.message = action.payload.message;
     });
@@ -164,4 +182,8 @@ const manufacturerSlice = createSlice({
 
 export const selectManufacturer = (state) => state.manufacturer.manufacturer;
 export default manufacturerSlice.reducer;
-export { putManufacturer };
+export { updateManufacturer };
+export const { updatetManufacturerById, cleanManfacturer } =
+  manufacturerSlice.actions;
+export const status = (state) => state.manufacturer.status;
+export const getManufacturer = (state) => state.manufacturer.selectManufacturer;

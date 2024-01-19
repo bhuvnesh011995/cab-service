@@ -84,6 +84,11 @@ export default function VehicleTypeManagement() {
         size: 40
       },
       {
+        accessorFn: (row) => row.createdAt?.slice(0, 10),
+        id: "createdAt",
+        header: "Created At",
+      },
+      {
         accessorKey: "status",
         header: "status",
         size: 80,
@@ -176,6 +181,8 @@ export default function VehicleTypeManagement() {
       <MaterialReactTable
         columns={columns}
         data={vehicleTypeData || []}
+        enableRowNumbers= {true} 
+        rowNumberDisplayMode= 'static'
         enableRowActions
         positionActionsColumn={'last'}
         renderRowActions={({ row, table }) => (

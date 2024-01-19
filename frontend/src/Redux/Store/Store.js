@@ -11,7 +11,7 @@ import fareReducer from "../features/individualFareReducer";
 import deleteModalReducer from "../features/deleteModalReducer";
 import vehicleTypeReducer from "../features/vehicleTypeReducer";
 import packageReducer from "../features/packageReducer";
-
+import promotionReducer from "../features/promotionReducer";
 export default configureStore({
   reducer: {
     admins: adminReducer,
@@ -26,5 +26,6 @@ export default configureStore({
     delete: deleteModalReducer,
     vehicleType: vehicleTypeReducer,
     package: packageReducer,
+    promotion: promotionReducer,
   },
 });

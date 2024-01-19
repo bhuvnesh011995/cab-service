@@ -34,13 +34,11 @@ import { toast } from "react-toastify";
         });
     }, []);
     
-    const selectVehicleType = useSelector(getVehicleType)
+    const selectVehicleType = useSelector(getVehicleType)        
     console.log("selectVehicleType",selectVehicleType)
     useEffect(() => {
       if (selectVehicleType) {
         reset(selectVehicleType)
-        setValue("runMode", selectVehicleType.runMode);
-
       }
     }, [selectVehicleType])
     const vehicleTypeStatus = useSelector(
@@ -121,7 +119,7 @@ import { toast } from "react-toastify";
                       <Controller
   name="runMode"
   control={control}
-  defaultValue={[]}
+  defaultValue={options ? [] : undefined} 
   rules={{
     required: "this is required field", 
     validate: (value) => value.length > 0, 

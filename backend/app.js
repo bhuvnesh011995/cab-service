@@ -124,7 +124,7 @@ require("./routes/avaialibilityManagement.route")(app);
 require("./routes/vehicleCategory.route")(app);
 require("./routes/fares.route")(app);
 require("./routes/package.route")(app);
-
+require("./routes/manufacturer.route")(app);
 app.use(ErrorHandler);
 
 module.exports = app;

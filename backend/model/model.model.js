@@ -26,7 +26,7 @@ let schema = new Schema({
         immutable:true,
         default:Date.now()
     },
-    make:{type: mongoose.Types.ObjectId, ref: "Make"}
+    manufacturer:{type: mongoose.Types.ObjectId, ref: "manufacturer"}
 },{
     collection:"Model"
 })

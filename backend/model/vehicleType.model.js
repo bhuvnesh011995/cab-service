@@ -22,9 +22,9 @@ let schema = new Schema({
     },
     runMode:[{type:Schema.Types.ObjectId,ref:"RunMode"}]
 },{
-    collection:"VehicleType"
-})
+    collection:"VehicleType",
+    timestamps:true
 
-schema.index({ name: 1 }, { unique: false });
+})
 
 module.exports = model("VehicleType",schema);
