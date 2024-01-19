@@ -1,97 +1,60 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Management_container from "../../Common/Management_container";
-import { useNavigate } from "react-router-dom";
 import Filter_Option from "../../Common/Filter_option";
-import BASE_URL from "../../../config/config";
-import { toast } from "react-toastify";
 import DeleteModal from "../../DeleteModel/DeleteModel";
-
 import { CommonDataTable } from "../../../Common/commonDataTable";
 import { packageTableHeaders } from "../../../constants/table.contants";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  addPackageReducer,
+  deletePackageReducer,
   getAllPackages,
+  getPackages,
 } from "../../../Redux/features/packageReducer";
+import AddRentalPackage from "./AddRentalPackage";
 
 const initialFilter = {
   name: "",
   status: "",
 };
-const url = BASE_URL + "/rentalPackage/filter/";
+
 export default function RentalPackageManagement() {
   const dispatch = useDispatch();
   const [filter, setFilter] = useState(initialFilter);
-  const navigate = useNavigate();
-  const [list, setList] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
   const [id, setId] = useState(null);
   const [deleteInfo, setDeleteInfo] = useState(null);
+  const packages = useSelector(getPackages);
+  const [viewPackage, setViewPackage] = useState(false);
+  const [deletePackage, setDeletePackage] = useState(false);
+  const [packageModal, setPackageModal] = useState(false);
 
   useEffect(() => {
     dispatch(getAllPackages(filter));
-  }, []);
+  }, [filter]);
 
-  function handleClick(e) {
-    e.preventDefault();
-    navigate("/addPackage");
-  }
-
-  function handleSubmit(e) {
-    e.preventDefault();
-
-    fetch(`${url}?name=${filter.name}&status=${filter.status}`, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = [];
-          data?.packages?.map((ele, i) => {
-            arr.push({
-              index: i + 1,
-              name: ele.name,
-              maxDuration: ele.maxDuration,
-              maxDistance: ele.maxDistance.$numberDecimal,
-              status: ele.status,
-              createdAt: ele.createdAt || "",
-            });
-          });
-          setList(arr);
-        }
-      });
-  }
-
-  const deleteModel = (rowId) => {
-    const deleteUrl = BASE_URL + "/rentalPackage/" + rowId;
-
-    fetch(deleteUrl, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          const filterModel = list.filter((data) => data.id !== rowId);
-          setList(filterModel);
-          setIsOpen(false);
-          return response.json();
-        }
-      })
-      .then((item) => {
-        if (item.success) toast.success(item.message);
-        else toast.error.apply(item.message);
-      })
-      .catch((error) => {
-        console.error("Error occurred while deleting admin:", error);
-      });
+  const deleteModel = () => {
+    dispatch(deletePackageReducer(id));
+    setDeletePackage(false);
   };
 
   function handleClick2(e) {
-    e.preventDefault();
+    setFilter(initialFilter);
   }
 
   const updatePackages = (data, type, index) => {
-    console.log(data, type, index);
+    setId(data?._id);
+    if (type == "view") {
+      setViewPackage(true);
+      setDeletePackage(false);
+    } else if (type == "delete") {
+      setViewPackage(false);
+      setDeletePackage(true);
+      setDeleteInfo(data);
+    } else {
+      setViewPackage(false);
+      setDeletePackage(false);
+    }
+    if (type !== "delete") setPackageModal(true);
   };
 
   return (
@@ -101,8 +64,8 @@ export default function RentalPackageManagement() {
           <div class='card'>
             <DeleteModal
               info={deleteInfo}
-              show={isOpen}
-              setShow={setIsOpen}
+              show={deletePackage}
+              setShow={setDeletePackage}
               handleDelete={deleteModel}
               arg={id}
             />
@@ -114,14 +77,15 @@ export default function RentalPackageManagement() {
                   zIndex: "2",
                 }}
               >
-                <BtnDark handleClick={handleClick} title={"Add New"} />
+                <BtnDark
+                  handleClick={() => updatePackages()}
+                  title={"Add New"}
+                />
               </div>
               <Filter_Option
                 input={filter}
                 setInput={setFilter}
                 initialInput={initialFilter}
-                btn1_title={"Search"}
-                handleClick1={handleSubmit}
                 handleClick2={handleClick2}
                 btn2_title={"reset"}
                 options={["name", "status"]}
@@ -133,13 +97,21 @@ export default function RentalPackageManagement() {
 
       <CommonDataTable
         tableHeaders={packageTableHeaders}
-        data={list}
+        data={packages}
         actionButtons
         deleteButton
         editButton
         viewButton
         callback={(data, type, index) => updatePackages(data, type, index)}
       />
+      {packageModal && (
+        <AddRentalPackage
+          setIsOpen={setPackageModal}
+          isOpen={packageModal}
+          id={id}
+          viewModal={viewPackage}
+        />
+      )}
     </Management_container>
   );
 }
