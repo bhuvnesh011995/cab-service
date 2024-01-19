@@ -134,6 +134,9 @@ const adminsSlice = createSlice({
       state.admin = null;
       state.error = null;
     },
+    clearAdminStatus: (state, action) => {
+      state.status = "OK";
+    },
   },
   extraReducers(builder) {
     builder.addCase(fetchAdmins.pending, (state, action) => {
@@ -210,7 +213,7 @@ const adminsSlice = createSlice({
 });
 
 export default adminsSlice.reducer;
-export const { clearAdmin } = adminsSlice.actions;
+export const { clearAdmin, clearAdminStatus } = adminsSlice.actions;
 
 export const getAllAdmins = (state) => state.admins.admins;
 

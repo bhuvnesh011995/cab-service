@@ -1,104 +1,112 @@
-import { useEffect, useState } from "react"
-import Management_container from "../../Common/Management_container"
-import Selection_Input from "../../Common/Inputs/Selection_input";
-import Text_Input from "../../Common/Inputs/Text_Input";
-import BtnDark from "../../Common/Buttons/BtnDark";
-import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../../config/config";
+import { useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchCountries,
+  getCountries,
+} from "../../../Redux/features/countryReducer";
+import { Controller, useForm } from "react-hook-form";
 
+export default function AddState({ show, setShow }) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    watch,
+    setValue,
+    formState: { errors, dirtyFields, isDirty },
+  } = useForm();
+  const [ready, setReady] = useState(false);
+  const dispatch = useDispatch();
+  const countries = useSelector(getCountries);
 
-let initialState = {
-    country:"",
-    name:"",
-    status:"",
-    stateCode:"",
-}
-const url = BASE_URL+"/state/"
+  useEffect(() => {
+    if (ready) {
+      dispatch(fetchCountries());
+    } else setReady(true);
+  }, [ready]);
 
-export default function AddState({show,setShow}){
-    const [state,setState] = useState(initialState);
-    const [options,setOptions] = useState();
-    const [successMsg,setSuccessMsg] = useState("")
-    const navigate = useNavigate();
+  function onSubmit(data) {
+    console.log(data);
+  }
+  return (
+    <Modal size="lg" show={show} onHide={() => setShow(false)}>
+      <Modal.Header closeButton>
+        <Modal.Title>Add New State </Modal.Title>
+      </Modal.Header>
 
-
-    useEffect(()=>{
-        fetch(BASE_URL+"/country/",{
-        method:"GET"
-      }).then(res=>res.json())
-      .then(data=>{
-        let arr = [];
-        data.forEach(ele=>arr.push(ele.name))
-        setOptions(arr)
-      }
-      )
-    },[])
-
-    function handleSubmit(e){
-        e.preventDefault();
-        fetch(url,{
-            method:"POST",
-            body:JSON.stringify(state),
-            headers: {
-                "Content-type": "application/json; charset=UTF-8",
-              },
-        }).then(res=>res.json())
-        .then(data=>{
-            if(data.success) setSuccessMsg(
-                <div style={{backgroundColor:"lightgreen"}}>{data.message}</div>
-            )
-            else setSuccessMsg(
-                <div style={{backgroundColor:"red"}}>{data.message}</div>
-            )
-        })
-        .catch(e=>
-            setSuccessMsg(<div style={{backgroundColor:"red"}}>{e.message}</div>))
-    }
-    return(
-        <Modal size="lg" show={show} onHide={() => setShow(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New VehicleCategory </Modal.Title>
-        </Modal.Header>
-  
-        <Modal.Body>  
-            <form>
-                <Selection_Input
-                options={options}
-                setInput={setState}
-                input={state}
-                lebel_text={"Country : "}
-                setKey={"country"}
+      <Modal.Body>
+        <form onSubmit={handleSubmit(onsubmit)}>
+          <div className="row">
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="form-label">Country :</label>
+                <Controller
+                  name="country"
+                  rules={{ required: "this is required field" }}
+                  control={control}
+                  render={({ field }) => (
+                    <select {...field} className="form-control">
+                      <option value={""}>Choose...</option>
+                      {countries.map((country) => (
+                        <option key={country._id} value={country._id}>
+                          {country.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 />
-                <Text_Input 
-                input={state}
-                lebel_text={"Name : "}
-                setKey={"name"}
-                setInput={setState}
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="form-label">Name :</label>
+                <input
+                  {...register("name", { required: "this is required field" })}
+                  placeholder="Enter State Name"
+                  className="form-control"
                 />
-                <Text_Input 
-                input={state}
-                lebel_text={"State Code : "}
-                setKey={"stateCode"}
-                setInput={setState}
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="form-label">State Code</label>
+                <input
+                  {...register("stateCode", {
+                    required: "this is required field",
+                  })}
+                  placeholder="Enter State Code"
+                  className="form-control"
                 />
-                <Selection_Input
-                options={["ACTIVE","INACTIVE"]}
-                setInput={setState}
-                input={state}
-                lebel_text={"Status : "}
-                setKey={"status"}
-                />
-                <div>
-                   <BtnDark
-                title={"Add"}
-                handleClick={handleSubmit}
-                />
-                {successMsg} 
-                </div>
-                
-            </form>   </Modal.Body>
-       </Modal>
-          
-    )
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="form-label">Status :</label>
+                <select
+                  {...register("status", {
+                    required: "this is required field",
+                  })}
+                  className="form-control"
+                >
+                  <option value={""}>Choose...</option>
+                  <option value={"ACTIVE"}>Active</option>
+                  <option value={"INACTIVE"}>Inactive</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div className="text-right">
+            <button type="submit" className="btn btn-primary">
+              Add State
+            </button>
+          </div>
+        </form>{" "}
+      </Modal.Body>
+    </Modal>
+  );
 }

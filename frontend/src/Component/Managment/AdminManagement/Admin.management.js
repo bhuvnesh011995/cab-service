@@ -17,6 +17,7 @@ import moment from "moment/moment";
 import AddNew from "./AddNew";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  clearAdminStatus,
   deleteAdmin,
   fetchAdminById,
   fetchAdmins,
@@ -54,12 +55,15 @@ export default function AdminManagement() {
     if (status === "idle") dispatch(fetchAdmins());
     else if (status === "added") {
       toast.success("admin added successfully");
+      dispatch(clearAdminStatus());
       setAdminModalOpen(false);
     } else if (status === "updated") {
       toast.success("admin updated succeeful");
+      dispatch(clearAdminStatus());
       setAdminModalOpen(false);
     } else if (status === "deleted") {
       toast.success("admin deleted successfully");
+      dispatch(clearAdminStatus());
       dispatch(closeModal());
     }
   }, [status, error]);

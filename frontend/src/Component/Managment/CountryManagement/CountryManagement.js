@@ -16,6 +16,7 @@ import {
 import { Box, IconButton } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  clearCountryStatus,
   clearStatus,
   deleteCountry,
   error,
@@ -59,14 +60,18 @@ export default function CountryManagement() {
   useEffect(() => {
     if (countryStatus === "updated") {
       toast.success(countryError?.message || "country Updated successfully");
+      dispatch(clearCountryStatus());
       setIsOpen(false);
     } else if (countryStatus === "error") {
       toast.error(countryError?.message || "some error occured");
+      dispatch(clearCountryStatus());
     } else if (countryStatus === "added") {
       toast.success("country added successfully");
+      dispatch(clearCountryStatus());
       setIsOpen(false);
     } else if (countryStatus === "deleted") {
       toast.success("country deleted successfully");
+      dispatch(clearCountryStatus());
       dispatch(closeModal());
     } else if (countryStatus === "error") {
       toast.error(error.message || "some error occured");
