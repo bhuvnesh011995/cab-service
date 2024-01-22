@@ -287,6 +287,60 @@ exports.filterCity = async function (req, res, next) {
   }
 };
 
+exports.filterCities = async (req, res, next) => {
+  let { text } = req.query;
+  if (!text) text = "";
+  try {
+    let query = [
+      {
+        $lookup: {
+          from: "Country",
+          localField: "country",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "country",
+        },
+      },
+      { $unwind: "$country" },
+      {
+        $lookup: {
+          from: "State",
+          localField: "state",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "state",
+        },
+      },
+      { $unwind: "$state" },
+      {
+        $lookup: {
+          from: "Territory",
+          localField: "territory",
+          foreignField: "_id",
+          as: "territory",
+        },
+      },
+      { $unwind: "$territory" },
+      {
+        $match: {
+          $or: [
+            { "country.name": { $regex: text, $options: "i" } },
+            { "state.name": { $regex: text, $options: "i" } },
+            { name: { $regex: text, $options: "i" } },
+          ],
+        },
+      },
+    ];
+
+    let cities = await db.city.aggregate(query);
+
+    res.status(200).json(cities);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};
+
 exports.getcityBystateAndCountry = async function (req, res, next) {
   try {
     const country = req.params.country;

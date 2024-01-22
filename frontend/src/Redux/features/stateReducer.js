@@ -81,10 +81,10 @@ export const updateStateById = createAsyncThunk(
   async (updateState, { rejectWithValue }) => {
     try {
       const response = await axios.put(
-        `${BASE_URL}/country/${updateState.id}`,
+        `${BASE_URL}/state/${updateState.id}`,
         updateState.data
       );
-
+      console.log(response);
       if (response.status === 200) return response.data;
       else
         rejectWithValue({
@@ -128,7 +128,7 @@ const stateSlice = createSlice({
   initialState,
   reducers: {
     emptyStates: (state, action) => initialState,
-    countryForUpdate: (state, action) => {
+    stateForUpdate: (state, action) => {
       let obj = state.states.find((state) => state._id === action.payload.id);
       obj.country = obj.country?._id;
       state.state = obj;
@@ -223,5 +223,5 @@ export const stateById = (state, id) => {
 export const stateError = (state) => state.states.error;
 export const getStates = (state) => state.states.states;
 export const getstate = (state) => state.states.state;
-export const { emptyStates, countryForUpdate, clearState, clearStateStatus } =
+export const { emptyStates, stateForUpdate, clearState, clearStateStatus } =
   stateSlice.actions;

@@ -73,7 +73,7 @@ export const fetchCountries = createAsyncThunk(
         message: error.response?.data?.message,
       });
     }
-  },
+  }
 );
 
 export const updateCountryById = createAsyncThunk(

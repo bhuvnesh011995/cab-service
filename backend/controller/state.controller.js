@@ -5,31 +5,23 @@ const { default: mongoose } = require("mongoose");
 
 exports.addState = async function (req, res, next) {
   try {
-    const { name, country, status, stateCode } = req.body;
+    let state = await State.create(req.body);
 
-    const countryDoc = await Country.findOne({ name: country });
-
-    const state = await State.create({
-      name: name,
-      status: status,
-      stateCode: stateCode,
-      country: countryDoc._id,
-    });
-
-    await Country.updateOne(
-      { name: country },
+    state = await db.state.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(state._id) } },
       {
-        $push: { state: state._id },
-      }
-    );
+        $lookup: {
+          from: "Country",
+          localField: "country",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "country",
+        },
+      },
+      { $unwind: "$country" },
+    ]);
 
-    res
-      .status(202)
-      .json({
-        success: true,
-        message: "state added",
-      })
-      .end();
+    res.status(201).json(state[0]);
   } catch (error) {
     next(error);
   }
@@ -173,36 +165,35 @@ exports.deleteState = async function (req, res) {
   try {
     const result = await db.state.deleteOne({ _id: id });
     if (result.deletedCount === 1) {
-      return res.status(200).json({ message: "state delete successfully" });
+      return res.status(204).end();
     } else {
       return res.status(400).json({ message: "delete state not found" });
     }
   } catch (error) {
     console.log(error);
-    return res.status(5000).json({ message: "Internal Server Error" });
+    next(error);
   }
 };
 exports.updateState = async function (req, res, next) {
   try {
-    const { id } = req.params;
-    console.log("id", req.body);
-    console.log(id);
+    await db.state.updateOne({ _id: req.params.id }, { $set: req.body });
+    let state = await db.state.aggregate([
+      { $match: { _id: new mongoose.Types.ObjectId(req.params.id) } },
+      {
+        $lookup: {
+          from: "Country",
+          localField: "country",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "country",
+        },
+      },
+      { $unwind: "$country" },
+    ]);
 
-    let obj = {};
-
-    if (req.body.name) obj.name = req.body.name;
-    if (req.body.status) obj.status = req.body.status;
-    if (req.body.countryCode) obj.countryCode = req.body.countryCode;
-    if (req.body.dialCode) obj.dialCode = req.body.dialCode;
-    await db.state.updateOne({ _id: id }, { $set: obj });
-
-    res.status(200).json({ message: "update successfully" });
+    res.status(200).json(state[0]);
   } catch (error) {
     console.log(error);
-
-    res.status(500).json({
-      success: false,
-      message: "Internal error occurred",
-    });
+    next(error);
   }
 };
