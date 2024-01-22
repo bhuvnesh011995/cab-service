@@ -15,10 +15,16 @@ export default function DeleteModal({
       <Modal.Body>
         <span>{info?.message ?? "Do you really want to delete"}</span>
         <Modal.Footer>
-          <button className="btn btn-primary" onClick={() => setShow(false)}>
+          <button className='btn btn-primary' onClick={() => setShow(false)}>
             Cancel
           </button>
-          <button className="btn btn-danger" onClick={() => handleDelete(arg)}>
+          <button
+            className='btn btn-danger'
+            onClick={() => {
+              handleDelete(arg);
+              setShow(false);
+            }}
+          >
             Delete
           </button>
         </Modal.Footer>

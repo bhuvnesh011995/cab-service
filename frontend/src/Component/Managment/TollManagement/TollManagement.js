@@ -1,225 +1,79 @@
-import { useState ,useMemo, useEffect} from "react"
-import BASE_URL from "../../../config/config"
-import BtnDark from "../../Common/Buttons/BtnDark"
-import Text_Input from "../../Common/Inputs/Text_Input"
-import Selection_Input from "../../Common/Inputs/Selection_input"
-import { useNavigate } from "react-router-dom"
-import { MaterialReactTable } from "material-react-table";
-import { toast } from "react-toastify";
+import { useState, useEffect } from "react";
+import BtnDark from "../../Common/Buttons/BtnDark";
+import Text_Input from "../../Common/Inputs/Text_Input";
+import Selection_Input from "../../Common/Inputs/Selection_input";
 import DeleteModal from "../../DeleteModel/DeleteModel";
-import {
-  RemoveRedEye,
-  Lock,
-  ModeEditOutline,
-  DeleteForever,
-} from "@mui/icons-material/";
-import { Box, IconButton } from "@mui/material";
 import Management_container from "../../Common/Management_container";
-import MapService from "./MapService"
-
-
-
-
+import MapService from "./MapService";
+import { CommonDataTable } from "../../../Common/commonDataTable";
+import { tollTableHeaders } from "../../../constants/table.contants";
+import AddToll from "./AddToll";
+import moment from "moment";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteTollReducer,
+  getAllTollReducer,
+  getAllTolls,
+} from "../../../Redux/features/tollReducer";
 
 const initialFilter = {
-    title:"",
-    status:""
-}
+  title: "",
+  status: "",
+};
 export default function TollManagement() {
-    const [filter,setFilter] = useState(initialFilter)
-    const [list,setList] = useState([])
-    const navigate = useNavigate()
-    const [isOpen ,setIsOpen] = useState(false)
-    const [id, setId] = useState(null)
-    const [deleteInfo, setDeleteInfo] = useState(null)
+  const dispatch = useDispatch();
+  const [filter, setFilter] = useState(initialFilter);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [id, setId] = useState(null);
+  const [deleteInfo, setDeleteInfo] = useState(null);
+  const [showTollModal, setShowTollModal] = useState(false);
+  const [viewModal, setViewModal] = useState(false);
 
+  const allTolls = useSelector(getAllTolls);
 
+  useEffect(() => {
+    dispatch(getAllTollReducer(filter));
+  }, [filter]);
 
-    useEffect(()=>{
-        fetch(BASE_URL+"/toll/filter",{
-            method:"GET"
-        }).then(res=>res.json())
-        .then(data=>{
-            if(data.success){
-                let arr = data.tolls.map(ele=>{
-                    return {
-                      id:ele._id,
-                        title:ele.title,
-                        amount:ele.amount.$numberDecimal,
-                        location:ele.location,
-                        status:ele.status,
-                        createdAt:ele.createdAt
-                    }
-                })
-                setList(arr)
-            }
-        })
+  const deleteModel = () => {
+    dispatch(deleteTollReducer(id));
+  };
 
-    },[])
+  function reset() {
+    setFilter(initialFilter);
+  }
 
-   
-
-    const columns = useMemo(
-        () => [
-          {
-            accessorKey: "title",
-            header: "Toll Name",
-            size: 100,
-            Cell: ({ renderedCellValue }) => (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "1rem",
-                }}
-              >
-                {renderedCellValue}
-              </Box>
-            ),
-            muiTableHeadCellProps: {
-              align: "center", //change head cell props
-            },
-          },
-          
-        {
-            accessorKey: "amount",
-            header: "Amount",
-            enableColumnActions: false,
-            enableColumnFilter: false,
-            size: 100,
-            Cell: ({ renderedCellValue }) => (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "1rem",
-                }}
-              >
-                {renderedCellValue}
-              </Box>
-            ),
-            muiTableHeadCellProps: {
-              align: "center", //change head cell props
-            },
-          },
-          
-          {
-            accessorKey: "status",
-            enableColumnFilter: false,
-            header: "status",
-            enableColumnActions: false,
-            size: 80,
-            muiTableHeadCellProps: {
-              align: "center", //change head cell props
-            },
-            Cell: ({ renderedCellValue }) => (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "1rem",
-                }}
-              >
-                {renderedCellValue}
-              </Box>
-            ),
-          },{
-            accessorFn: (row) => row.createdAt.slice(0, 10),
-            id: "createdAt",
-            enableColumnFilter: false,
-            enableColumnActions: false,
-            header: "Created At",
-            size: 100,
-            Cell: ({ renderedCellValue }) => (
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "1rem",
-                }}
-              >
-                {renderedCellValue}
-              </Box>
-            ),
-            muiTableHeadCellProps: {
-              align: "center", //change head cell props
-            },
-          },
-        ],
-        []
-      );
-
-    function handleSubmit(){
-        fetch(BASE_URL+"/toll/filter",{method:"GET"})
-        .then(res=>res.json())
-        .then(data=>{
-            if(data.success){
-                let arr = data.tolls.map(ele=>{
-                    return {
-                        title:ele.title,
-                        amount:ele.amount.$numberDecimal,
-                        location:ele.location,
-                        status:ele.status,
-                        createdAt:ele.createdAt
-                    }
-                })
-                setList(arr)
-            }
-        })
+  const updateTollData = (data, type, index) => {
+    setId(data?._id);
+    if (type == "view") {
+      setViewModal(true);
+      setDeleteModal(false);
+    } else if (type == "delete") {
+      setViewModal(false);
+      setDeleteModal(true);
+      setDeleteInfo(data);
+    } else {
+      setViewModal(false);
+      setDeleteModal(false);
+      setDeleteInfo(data);
     }
+    if (type !== "delete") setShowTollModal(true);
+  };
 
-    const deleteModel=(rowId)=>{
-      const deleteUrl = BASE_URL + "/toll/" + rowId;
-  
-    fetch(deleteUrl, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        if (response.status === 200) {
-        const filterModel = list.filter((data)=> data.id !== rowId)
-        setList(filterModel)
-        setIsOpen(false)
-        return response.json()
-        } 
-      })
-      .then((item)=>{
-        if(item.success) toast.success(item.message) 
-        else toast.error.apply(item.message)
-      })
-      .catch((error) => {
-        console.error("Error occurred while deleting admin:", error);
-      });
-  
-    }
-
-    function handleClick(){
-        navigate("/addToll")
-    }
-
-    function reset(){
-
-    }
-
-
-
-    return(
-        <Management_container title={"Toll Management"}>
-        <div class="row">
-        <div class="col-lg-13">
-          <div class="card">
-          <DeleteModal
-        info={deleteInfo}
-        show={isOpen}
-        setShow={setIsOpen}
-        handleDelete={deleteModel}
-        arg={id}
-      />
-            <div class="card-body">
-            <MapService data={list} />
+  return (
+    <Management_container title={"Toll Management"}>
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
+            <DeleteModal
+              info={deleteInfo}
+              show={deleteModal}
+              setShow={setDeleteModal}
+              handleDelete={deleteModel}
+              arg={id}
+            />
+            <div class='card-body'>
+              {/* <MapService data={list} /> */}
               <div
                 style={{
                   display: "flex",
@@ -227,78 +81,67 @@ export default function TollManagement() {
                   zIndex: "2",
                 }}
               >
-                <BtnDark handleClick={handleClick} title={"Add Toll"} />
+                <BtnDark
+                  handleClick={() => updateTollData()}
+                  title={"Add Toll"}
+                />
               </div>
-              <form style={{margin:"50px"}}>
-              <div className="row">
-                <div className="col-lg-2 inputField">
-                <Text_Input
-                input={filter}
-                setInput={setFilter}
-                lebel_text={"Title"}
-                setKey={"title"}
-                />
-                <Selection_Input
-                input={filter}
-                setInput={setFilter}
-                setKey={"status"}
-                lebel_text={"Status :"}
-                options={["ACTIVE","INACTIVE"]}
-                />
+              <div className='row'>
+                <div className='col-lg-2 inputField'>
+                  <Text_Input
+                    input={filter}
+                    setInput={setFilter}
+                    lebel_text={"Title"}
+                    setKey={"title"}
+                  />
+                  <Selection_Input
+                    input={filter}
+                    setInput={setFilter}
+                    setKey={"status"}
+                    lebel_text={"Status :"}
+                    options={["ACTIVE", "INACTIVE"]}
+                  />
 
-                <div>
-                    <BtnDark handleClick={handleSubmit} title={"Search"}/>
-                    <BtnDark handleClick={reset} title={"reset"}/>
+                  <div>
+                    <BtnDark handleClick={reset} title={"reset"} />
+                  </div>
                 </div>
-
-
-                </div></div></form>
-                <MaterialReactTable
-      columns={columns}
-      data={list || []}
-      enableRowActions
-      enableRowNumbers
-      displayColumnDefOptions={{ 'mrt-row-actions': { 
-        size: 100,
-        muiTableHeadCellProps: {
-        align: 'center', //change head cell props
-      },},
-      'mrt-row-numbers': {
-        header:"Sr No",
-        // enableColumnOrdering: true, //turn on some features that are usually off
-        muiTableHeadCellProps: {
-          sx: {
-            fontSize: '1.2rem',
-          },
-        },
-      },
-     }}
-      positionActionsColumn={'last'}
-      renderRowActions={({row,table})=>(
-        <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '1px' }}>
-          <IconButton>
-            <RemoveRedEye />
-          </IconButton>
-          <IconButton>
-            <ModeEditOutline />
-          </IconButton>
-          <IconButton  onClick={() => {
-            setDeleteInfo({
-              message: `Do You Really Want To Delete ${row.original?.id}`,
-              header: "Delete Model",
-            });
-            setIsOpen(true);
-            setId(row.original.id);
-          }}
-          >
-            <DeleteForever />
-          </IconButton>
-        </Box>
+              </div>
+              <CommonDataTable
+                data={allTolls}
+                tableHeaders={tollTableHeaders}
+                actionButtons
+                editButton
+                deleteButton
+                viewButton
+                callback={(data, type, index) =>
+                  updateTollData(data, type, index)
+                }
+                changeSelectedColumnDataDesign={["createdAt"]}
+                changedDataCellColumn={(header, accessor) => {
+                  return {
+                    accessorKey: accessor,
+                    header: header,
+                    Cell: ({ row }) => (
+                      <div>
+                        {moment(row.original.createdAt).format("YYYY-DD-MM")}
+                      </div>
+                    ),
+                  };
+                }}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+      {showTollModal && (
+        <AddToll
+          isOpen={showTollModal}
+          setIsOpen={setShowTollModal}
+          tollId={id}
+          viewToll={viewModal}
+        />
       )}
-      />
-
-              </div></div></div></div>
-        </Management_container>
-        
-    )
-};
+    </Management_container>
+  );
+}

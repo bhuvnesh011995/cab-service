@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import "./AddIndividualFare.css";
 import BtnDark from "../../Common/Buttons/BtnDark";
-import * as RiIcons from "react-icons/ri";
 import { IconContext } from "react-icons";
 import { Modal } from "react-bootstrap";
 import { useForm } from "react-hook-form";

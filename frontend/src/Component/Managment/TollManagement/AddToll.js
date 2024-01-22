@@ -1,86 +1,196 @@
-import { GoogleMap, useJsApiLoader,Marker } from '@react-google-maps/api';
-import Management_container from '../../Common/Management_container';
-import AddTollMap from './AddTollMap';
-import Text_Input from '../../Common/Inputs/Text_Input';
-import { useState } from 'react';
-import Number_Input from '../../Common/Inputs/Number_Input';
-import Selection_Input from '../../Common/Inputs/Selection_input';
-import BtnDark from '../../Common/Buttons/BtnDark';
-import BASE_URL from '../../../config/config';
-import { useNavigate } from 'react-router-dom';
+import AddTollMap from "./AddTollMap";
+import { useEffect, useState } from "react";
+import { Modal } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import {
+  addTollReducer,
+  emptySelectedToll,
+  getSelectedToll,
+  getSelectedTollReducer,
+} from "../../../Redux/features/tollReducer";
+import { useDispatch, useSelector } from "react-redux";
 
-const initialToll = {
-    title:"",
-    status:"",
-    amount:null
+export default function AddToll({ isOpen, setIsOpen, tollId, viewToll }) {
+  const {
+    register,
+    handleSubmit,
+    watch,
+    reset,
+    setValue,
+    setError,
+    formState: { errors, dirtyFields },
+  } = useForm();
+  const [marker, setMarker] = useState(null);
+  const dispatch = useDispatch();
+  const selectedToll = useSelector(getSelectedToll);
 
-}
-
-
-
-export default function AddToll() {
-    const [marker,setMarker] = useState(null)
-    const [toll,setToll] = useState(initialToll);
-    const navigate = useNavigate()
-
-
-    function handleSubmit(){
-        fetch(BASE_URL+"/toll/",{
-            method:"POST",
-            body:JSON.stringify({...toll,location:marker}),
-            headers:{
-                "Content-type": "application/json; charset=UTF-8"
-            }
-        }).then(res=>res.json())
-        .then(data=>{
-            if(data.success) navigate(-1)
-            else console.log(data)
-        }).catch(error=>console.log(error))
+  useEffect(() => {
+    if (marker) {
+      setValue("lat", marker?.lat);
+      setValue("lng", marker?.lng);
     }
+    if (tollId) {
+      dispatch(getSelectedTollReducer(tollId));
+    }
+  }, [marker]);
 
+  useEffect(() => {
+    if (selectedToll) {
+      if (!marker) reset(selectedToll);
+    }
+  }, [selectedToll]);
 
-    return(
-        <Management_container title={"Add Toll"}>
-            <div className='row'>
-                <div className='col-lg-13'>
-                    <div className='card'>
-                        <div className='card-body'>
-                        <AddTollMap market= {marker} setMarker={setMarker} />
+  const handleClose = () => {
+    setIsOpen(false);
+    dispatch(emptySelectedToll());
+  };
 
-                        <div className='row'>
-                        <form>
-                        <div>
-                        <Text_Input input={toll} setInput={setToll} setKey={"title"} lebel_text={"Title :"} />
-                        <div className='row'>
+  const addToll = async (data) => {
+    const dataObj = { ...data, ...marker };
+    dispatch(addTollReducer(dataObj));
+    handleClose();
+  };
+
+  return (
+    <Modal show={isOpen} onHide={handleClose} size='lg'>
+      <Modal.Header closeButton>
+        <Modal.Title>
+          {" "}
+          {tollId ? (viewToll ? "View " : "Update ") : "Add "}Toll
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <div className='row'>
+          <div className='col-lg-13'>
+            <div className='card'>
+              <div className='card-body'>
+                {!viewToll && (
+                  <AddTollMap market={marker} setMarker={setMarker} />
+                )}
+                <div className='row'>
+                  <form onSubmit={handleSubmit(addToll)}>
+                    <div>
+                      <div className='m-3'>
+                        <label className='form-label'>Title :</label>
+                        <input
+                          disabled={viewToll}
+                          className='form-control'
+                          type={"text"}
+                          {...register("title", {
+                            required: "Please Enter Title",
+                          })}
+                          placeholder={"title"}
+                        />
+                        {errors?.title && (
+                          <span className='text-danger'>
+                            {errors.title.message}
+                          </span>
+                        )}
+                      </div>
+                      <div className='row'>
                         <div className='col-md-6'>
-                            <div className='row'>
-                            <label className='col-md-4 ms-3'>Latitude</label>
-                            <input disabled className='col-md-6 ms-3' value={marker?.lat} />
+                          <div className='row'>
+                            <div className='m-3'>
+                              <label className='form-label'>Latitude :</label>
+                              <input
+                                disabled
+                                // value={marker?.lat}
+                                className='form-control'
+                                type={"text"}
+                                {...register("lat", {
+                                  required: "Please Select Latitude",
+                                })}
+                                placeholder={"latitude"}
+                              />
+                              {errors?.lat && (
+                                <span className='text-danger'>
+                                  {errors.lat.message}
+                                </span>
+                              )}
                             </div>
+                          </div>
                         </div>
                         <div className='col-md-6'>
-                            <div className='row'>
-                            <label className='col-md-4 ms-3'>Longitude</label>
-                            <input disabled className='col-md-6 ms-3' value={marker?.lng} />
+                          <div className='row'>
+                            <div className='m-3'>
+                              <label className='form-label'>Longitude :</label>
+                              <input
+                                disabled
+                                // value={marker?.lng}
+                                className='form-control'
+                                type={"text"}
+                                {...register("lng", {
+                                  required: "Please Select Longitude",
+                                })}
+                                placeholder={"longitude"}
+                              />
+                              {errors?.lng && (
+                                <span className='text-danger'>
+                                  {errors.lng.message}
+                                </span>
+                              )}
                             </div>
+                          </div>
                         </div>
-                        </div>
-                        </div>
-                            
-                            <Number_Input input={toll} setInput={setToll} lebel_text={"Amount :"} setKey={"amount"} />
-                            <Selection_Input input={toll} setInput={setToll} setKey={"status"} lebel_text={"Status :"} options={["ACTIVE","INACTIVE"]} />
-
-                            <BtnDark handleClick={handleSubmit} title={"Add Toll"} />
-                        </form>    
-                        
-                        </div>
-                        </div>
-
+                      </div>
                     </div>
+
+                    <div className='m-3'>
+                      <label className='form-label'>Amount :</label>
+                      <input
+                        disabled={viewToll}
+                        className='form-control'
+                        type={"number"}
+                        {...register("amount", {
+                          required: "Please Enter Amount",
+                        })}
+                        placeholder={"amount"}
+                      />
+                      {errors?.amount && (
+                        <span className='text-danger'>
+                          {errors.amount.message}
+                        </span>
+                      )}
+                    </div>
+
+                    <div className='m-3'>
+                      <label className='form-label'>Status : </label>
+                      <select
+                        disabled={viewToll}
+                        style={{ width: "200px" }}
+                        name='selectedStatus'
+                        {...register("status")}
+                        className='form-select'
+                      >
+                        <option value=''>select</option>
+                        <option value='INACTIVE'>Inactive</option>
+                        <option value='ACTIVE'>Active</option>
+                      </select>
+                    </div>
+                    <Modal.Footer>
+                      {!viewToll && (
+                        <button
+                          type='submit'
+                          className='btn me-3 btn-outline-primary waves-effect waves-light'
+                          disabled={viewToll}
+                        >
+                          {tollId ? "Update " : "Add "}Toll
+                        </button>
+                      )}
+                      <button
+                        type='button'
+                        className='btn me-3 btn-outline-danger waves-effect waves-light'
+                      >
+                        Cancel
+                      </button>
+                    </Modal.Footer>
+                  </form>
                 </div>
+              </div>
             </div>
-        
-        
-        </Management_container>
-    )
-};
+          </div>
+        </div>
+      </Modal.Body>
+    </Modal>
+  );
+}

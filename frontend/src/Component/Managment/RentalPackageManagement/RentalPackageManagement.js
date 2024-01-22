@@ -12,6 +12,7 @@ import {
   getPackages,
 } from "../../../Redux/features/packageReducer";
 import AddRentalPackage from "./AddRentalPackage";
+import moment from "moment";
 
 const initialFilter = {
   name: "",
@@ -103,6 +104,16 @@ export default function RentalPackageManagement() {
         editButton
         viewButton
         callback={(data, type, index) => updatePackages(data, type, index)}
+        changeSelectedColumnDataDesign={["createdAt"]}
+        changedDataCellColumn={(header, accessor) => {
+          return {
+            accessorKey: accessor,
+            header: header,
+            Cell: ({ row }) => (
+              <div>{moment(row.original.createdAt).format("YYYY-DD-MM")}</div>
+            ),
+          };
+        }}
       />
       {packageModal && (
         <AddRentalPackage

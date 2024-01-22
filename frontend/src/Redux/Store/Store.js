@@ -12,6 +12,9 @@ import deleteModalReducer from "../features/deleteModalReducer";
 import vehicleTypeReducer from "../features/vehicleTypeReducer";
 import packageReducer from "../features/packageReducer";
 import promotionReducer from "../features/promotionReducer";
+
+import tollReducer from "../features/tollReducer";
+
 export default configureStore({
   reducer: {
     admins: adminReducer,
@@ -26,6 +29,7 @@ export default configureStore({
     delete: deleteModalReducer,
     vehicleType: vehicleTypeReducer,
     package: packageReducer,
+    toll: tollReducer,
     promotion: promotionReducer,
   },
 });
