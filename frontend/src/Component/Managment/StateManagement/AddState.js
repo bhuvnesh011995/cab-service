@@ -6,6 +6,12 @@ import {
   getCountries,
 } from "../../../Redux/features/countryReducer";
 import { Controller, useForm } from "react-hook-form";
+import {
+  addState,
+  getstate,
+  updateStateById,
+} from "../../../Redux/features/stateReducer";
+import { toast } from "react-toastify";
 
 export default function AddState({ show, setShow }) {
   const {
@@ -20,15 +26,23 @@ export default function AddState({ show, setShow }) {
   const [ready, setReady] = useState(false);
   const dispatch = useDispatch();
   const countries = useSelector(getCountries);
-
+  const state = useSelector(getstate);
   useEffect(() => {
     if (ready) {
+      if (state) reset(state);
       dispatch(fetchCountries());
     } else setReady(true);
-  }, [ready]);
+  }, [ready, state]);
 
   function onSubmit(data) {
-    console.log(data);
+    if (!state) dispatch(addState(data));
+    else {
+      let arr = Object.keys(dirtyFields);
+      if (!arr.length) return toast.info("change some field first");
+      let obj = {};
+      arr.forEach((field) => (obj[field] = data[field]));
+      dispatch(updateStateById({ id: state._id, data: obj }));
+    }
   }
   return (
     <Modal size="lg" show={show} onHide={() => setShow(false)}>
@@ -37,7 +51,7 @@ export default function AddState({ show, setShow }) {
       </Modal.Header>
 
       <Modal.Body>
-        <form onSubmit={handleSubmit(onsubmit)}>
+        <form onSubmit={handleSubmit(onSubmit)}>
           <div className="row">
             <div className="col-md-6">
               <div className="mb-3">

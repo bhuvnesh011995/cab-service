@@ -37,9 +37,10 @@ export default function AddCity() {
     })
       .then((res) => res.json())
       .then((data) => {
+        console.log(data);
         if (data.success) {
-          let arr = data.data.map((ele, i) => {
-            let runMode = ele.runMode.map((ele, i) => {
+          let arr = data.vehicleType?.map((ele, i) => {
+            let runMode = ele.runMode?.map((ele, i) => {
               return (
                 <div key={i} class="form-check form-check-primary mb-3">
                   <input class="form-check-input" type="checkbox" />

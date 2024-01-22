@@ -3,16 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   closeModal,
   showDeleteModal,
-  url as deleteUrl,
-  status as modalStatus,
   deleteSuccess,
-  doneDelete,
 } from "../Redux/features/deleteModalReducer";
-import { useEffect } from "react";
-import {
-  deleteAdmin,
-  status as deleteStatus,
-} from "../Redux/features/adminReducer";
 
 export default function DeleteModalAdv() {
   const dispatch = useDispatch();

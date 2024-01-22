@@ -9,6 +9,8 @@ module.exports = function (app) {
     cityController.getcityBystateAndCountry
   );
   app.get("/test/api/v1/city/", cityController.filterCity);
+
+  app.get("/test/api/v1/cities/filter", cityController.filterCities);
   app.get("/test/api/v1/city/:stateId", [], cityController.getCityByStateId);
   app.get("/test/api/v1/cities/:stateId", cityController.getCitiesByState);
   app.delete("/test/api/v1/city/:id", [], cityController.deleteCity);
