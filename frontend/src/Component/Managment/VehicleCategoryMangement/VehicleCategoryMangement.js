@@ -21,14 +21,16 @@ import DeleteModal from "../../DeleteModel/DeleteModel";
 import { toast } from "react-toastify";
 import { getPermissions } from "../../../Redux/features/authReducer";
 import {
+  cleanVehicleCategoryStatus,
   deleteVehicleCategory,
   fetchVehicleCategory,
+  filterVehicleCategory,
   getAllVehicleCategory,
   updateVehicleCategoryById,
 } from "../../../Redux/features/vehicleCategoryReducer";
 import { useDispatch, useSelector } from "react-redux";
 let initialFilter = {
-  name: "",
+  vehicleCategory: "",
   status: "",
 };
 export default function VehicleCategoryManagement() {
@@ -43,6 +45,7 @@ export default function VehicleCategoryManagement() {
   const navigate = useNavigate();
   const url = BASE_URL + "/make/filter/";
   const [updateData, setUpdateData] = useState(null);
+  const [ready, setReady] = useState(false);
   const permissions = useSelector(getPermissions);
 
   const api = BASE_URL + "/vehicleCategory/";
@@ -50,6 +53,11 @@ export default function VehicleCategoryManagement() {
   useEffect(() => {
     dispatch(fetchVehicleCategory());
   }, []);
+  useEffect(() => {
+    if (ready) {
+      dispatch(filterVehicleCategory(filter));
+    } else setReady(true);
+  }, [ready]);
 
   const vehicleCategoryData = useSelector(getAllVehicleCategory);
   const vehicleCategoryStatus = useSelector(
@@ -61,12 +69,15 @@ export default function VehicleCategoryManagement() {
     if (vehicleCategoryStatus === "deleted") {
       setIsOpen(false);
       toast.success(message);
+      dispatch(cleanVehicleCategoryStatus());
     } else if (vehicleCategoryStatus === "added") {
       setShow(false);
       toast.success(message);
+      dispatch(cleanVehicleCategoryStatus());
     } else if (vehicleCategoryStatus === "update") {
       setShow(false);
       toast.success("updated");
+      dispatch(cleanVehicleCategoryStatus());
     }
   }, [vehicleCategoryStatus]);
 
@@ -119,28 +130,13 @@ export default function VehicleCategoryManagement() {
     dispatch(deleteVehicleCategory(rowId));
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    fetch(`${url}?name=${filter.name}&status=${filter.status}`, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        let arr = [];
-        data?.makeList?.map((ele, i) => {
-          arr.push({
-            index: i + 1,
-            name: ele.name,
-            status: ele.status,
-            createdAt: ele.createdAt,
-          });
-        });
-        setList(arr);
-      });
+  function handleSubmit() {
+    dispatch(filterVehicleCategory(filter));
   }
-  // function handleClick(data){
-  //   navigate('/addVehicleCategory',{state:{id:data._id,vehicleCategory:data.vehicleCategory,status:data.status}})
-  //   }
+
+  function handleClick2() {
+    setFilter(initialFilter);
+  }
 
   return (
     <Management_container title={"VehicleCategory"}>
@@ -186,9 +182,9 @@ export default function VehicleCategoryManagement() {
                 initialInput={initialFilter}
                 btn1_title={"Search"}
                 handleClick1={handleSubmit}
-                handleClick2={handleReset}
+                handleClick2={handleClick2}
                 btn2_title={"Reset"}
-                options={["name", "status"]}
+                options={["vehicleCategory", "status"]}
               />
             </div>
           </div>
@@ -211,11 +207,11 @@ export default function VehicleCategoryManagement() {
               <IconButton>
                 <Lock />
               </IconButton>
-              <IconButton  
-             onClick={()=>{
-            dispatch(updateVehicleCategoryById({id:row.original._id}))
-            setShow(true)
-             }}
+              <IconButton
+                onClick={() => {
+                  dispatch(updateVehicleCategoryById({ id: row.original._id }));
+                  setShow(true);
+                }}
               >
                 <ModeEditOutline />
               </IconButton>

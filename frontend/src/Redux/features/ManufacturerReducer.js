@@ -9,14 +9,37 @@ let initialState = {
   message: "",
   selectManufacturer: null,
 };
+export const filterManufacturer = createAsyncThunk(
+  "manufacturer/filterManufacturer",
+  async ({ name, status } = {}, { rejectWithValue }) => {
+    try {
+      let url = new URL("/test/api/v1/manufacturer/filter", BASE_URL);
+      if (name) url.searchParams.set("name", name);
+      if (status) url.searchParams.set("status", status);
+      let response = await axios.get(url.href);
+      if (response.status === 200) return response.data;
+      else
+        return rejectWithValue({
+          status: "error",
+          data: response?.data?.message,
+        });
+    } catch (error) {
+      console.log(error.response);
+      return rejectWithValue({
+        status: "error",
+        message:
+          error?.response?.data?.message || "error while fetching contry",
+      });
+    }
+  }
+);
 
 export const addManufacturer = createAsyncThunk(
   "manufacturer/addManufacturer",
   async (data, { rejectWithValue }) => {
     try {
       let response = await axios.post(BASE_URL + "/manufacturer", data);
-      if (response.status === 201 && response.data.success)
-        return response.data;
+      if (response.status === 201) return response.data;
       else
         return rejectWithValue({
           status: response.status,
@@ -111,6 +134,9 @@ const manufacturerSlice = createSlice({
     cleanManfacturer: (state, action) => {
       state.selectManufacturer = null;
     },
+    cleanManufaturerStatus: (state, action) => {
+      state.status = "Ok";
+    },
   },
 
   extraReducers(builder) {
@@ -121,9 +147,7 @@ const manufacturerSlice = createSlice({
     builder.addCase(addManufacturer.fulfilled, (state, action) => {
       state.status = "added";
       state.error = null;
-      state.manufacturer = state.manufacturer.concat(
-        action.payload.manufacturer
-      );
+      state.manufacturer = state.manufacturer.concat(action.payload);
       state.message = action.payload.message;
     });
     builder.addCase(addManufacturer.rejected, (state, action) => {
@@ -177,13 +201,28 @@ const manufacturerSlice = createSlice({
       state.status = "error";
       state.error = action.payload;
     });
+    builder.addCase(filterManufacturer.fulfilled, (state, action) => {
+      state.status = "filtered";
+      state.manufacturer = action.payload;
+    });
+    builder.addCase(filterManufacturer.pending, (state, action) => {
+      state.status = "loading";
+      state.error = null;
+    });
+    builder.addCase(filterManufacturer.rejected, (state, action) => {
+      state.status = "error";
+      state.error = action.payload;
+    });
   },
 });
 
 export const selectManufacturer = (state) => state.manufacturer.manufacturer;
 export default manufacturerSlice.reducer;
 export { updateManufacturer };
-export const { updatetManufacturerById, cleanManfacturer } =
-  manufacturerSlice.actions;
+export const {
+  updatetManufacturerById,
+  cleanManfacturer,
+  cleanManufaturerStatus,
+} = manufacturerSlice.actions;
 export const status = (state) => state.manufacturer.status;
 export const getManufacturer = (state) => state.manufacturer.selectManufacturer;

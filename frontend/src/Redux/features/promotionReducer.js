@@ -12,7 +12,6 @@ let initialState = {
 const addPromotion = createAsyncThunk(
   "promotion/addPromotion",
   async (data, { rejectWithValue }) => {
-    console.log("data", data);
     try {
       let response = await axios.post(BASE_URL + "/promotion/self", data);
       if (response.status === 201) return response.data;
@@ -51,7 +50,6 @@ const fetchPromotion = createAsyncThunk(
 const updatePromotion = createAsyncThunk(
   "promotion/updatePromotion",
   async (data, { rejectWithValue }) => {
-    console.log("dddddddddata", data);
     try {
       let response = await axios.put(
         BASE_URL + "/promotion/" + data.id,
@@ -67,6 +65,26 @@ const updatePromotion = createAsyncThunk(
       return rejectWithValue({
         status: error.response.status,
         message: error.response.data.message,
+      });
+    }
+  }
+);
+
+export const deletePromotion = createAsyncThunk(
+  "delete/deletePromotion",
+  async ({ url, id }, { rejectWithValue }) => {
+    try {
+      let response = await axios.delete(url);
+      if (response.status === 200) return { ...response.data, id };
+      else
+        return rejectWithValue({
+          status: response.status,
+          message: response.data.message,
+        });
+    } catch (error) {
+      return rejectWithValue({
+        status: error.response.status,
+        message: error.data.message,
       });
     }
   }
@@ -134,6 +152,23 @@ const promotionSlice = createSlice({
       state.error = null;
     });
     builder.addCase(updatePromotion.rejected, (state, action) => {
+      state.status = "error";
+      state.error = action.payload;
+    });
+    builder.addCase(deletePromotion.pending, (state, action) => {
+      state.status = "loading";
+      state.error = null;
+    });
+    builder.addCase(deletePromotion.fulfilled, (state, action) => {
+      state.status = "deleted";
+      state.error = null;
+      state.promotion = state.promotion.filter(
+        (item) => item._id !== action.payload.id
+      );
+      state.message = action.payload.message;
+    });
+
+    builder.addCase(deletePromotion.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });

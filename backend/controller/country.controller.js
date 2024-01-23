@@ -69,7 +69,6 @@ exports.filterContries = async (req, res, next) => {
 
     if (!query[0].$match.$or.length) query[0].$match = {};
     let countries = await db.country.aggregate(query);
-
     res.status(200).json(countries);
   } catch (error) {
     next(error);
