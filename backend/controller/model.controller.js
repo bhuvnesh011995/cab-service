@@ -57,26 +57,23 @@ exports.addModel = async function (req, res, next) {
   }
 };
 
-exports.addModels = async function (req,res,next) {
-  let obj = { ...req.body }; 
-  try{
-    let model = await Model.create(obj)
-      model = await Model.findById(model._id).populate({ path: "manufacturer", select: "name" });
-    return res.status(201).send({
-      models: model,
-      message: "model added successfully", 
-      success: true 
+exports.addModels = async function (req, res, next) {
+  let obj = { ...req.body };
+  try {
+    let model = await Model.create(obj);
+    model = await Model.findById(model._id).populate({
+      path: "manufacturer",
+      select: "name",
     });
-  }
-  
-  catch(error){
-    console.log(error)
+    return res.status(201).send(model);
+  } catch (error) {
+    console.log(error);
     return res.status(500).json({
       success: false,
       error: error.message,
     });
   }
-} 
+};
 
 exports.addState = async function (req, res, next) {
   try {
@@ -125,24 +122,25 @@ exports.getModel = async function (req, res, next) {
   }
 };
 
-exports.getModels = async function (req, res,next){
-  try{
-    const models = await Model.find({}).populate({ path: "manufacturer", select: "name" });
+exports.getModels = async function (req, res, next) {
+  try {
+    const models = await Model.find({}).populate({
+      path: "manufacturer",
+      select: "name",
+    });
     return res.status(200).json({
       success: true,
       models: models,
-      message :"get Models"
-    })
-
-  }
-  catch(error){
+      message: "get Models",
+    });
+  } catch (error) {
     return res.status(500).json({
-      success : false,
+      success: false,
       error: false,
       error: error.message,
     });
   }
-}
+};
 
 exports.filterModel = async function (req, res, next) {
   let { name, make, status } = req.query;
@@ -177,41 +175,84 @@ exports.filterModel = async function (req, res, next) {
   });
 };
 
-
 exports.deleteModel = async function (req, res) {
-    const id = req.params.id;
-    console.log(id);
+  const id = req.params.id;
+  console.log(id);
 
-    try {
-        const result = await Model.deleteOne({ _id: id });
+  try {
+    const result = await Model.deleteOne({ _id: id });
 
-        if (result.deletedCount === 1) {
-            return res.status(200).json({ message: "Delete successfully", success: true });
-        } else {
-            return res.status(400).json({ message: "Model not found" });
-        }
-    } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Internal server error" });
+    if (result.deletedCount === 1) {
+      return res
+        .status(200)
+        .json({ message: "Delete successfully", success: true });
+    } else {
+      return res.status(400).json({ message: "Model not found" });
     }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
 };
 
+exports.updateModel = async function (req, res) {
+  try {
+    const { id } = req.params;
+    let obj = {};
+    if (req.body._id) obj._id = req.body._id;
+    if (req.body.name) obj.name = req.body.name;
+    if (req.body.manufacturer) obj.manufacturer = req.body.manufacturer;
+    if (req.body.status) obj.status = req.body.status;
+    let model = await Model.findOneAndUpdate(
+      { _id: id },
+      { $set: obj },
+      { new: true }
+    );
+    model = await Model.findById(model._id).populate({
+      path: "manufacturer",
+      select: "name",
+    });
 
-
-exports.updateModel = async function(req,res){
-  try{
-    const {id} = req.params
-     let obj = {};
-     if(req.body._id) obj._id  = req.body._id
-     if(req.body.name) obj.name  = req.body.name
-     if(req.body.manufacturer) obj.manufacturer  = req.body.manufacturer
-     if(req.body.status) obj.status  = req.body.status
-     let model = await Model.findOneAndUpdate({ _id:id}, { $set: obj},{new:true});
-     model = await Model.findById(model._id).populate({ path: "manufacturer", select: "name" });
-
-     res.status(200).json({models:model})
+    res.status(200).json(model);
+  } catch (error) {
+    next(error);
   }
-  catch(error){
-  next(error)
+};
+
+exports.modelFilter = async (req, res, next) => {
+  try {
+    const { name, manufacturer, status } = req.query;
+    let query = [];
+
+    query.push({
+      $lookup: {
+        from: "manufacturer",
+        localField: "manufacturer",
+        foreignField: "_id",
+        pipeline: [{ $project: { name: true } }],
+        as: "manufacturer",
+      },
+    });
+
+    query.push({ $unwind: "$manufacturer" });
+
+    query.push({ $match: { $or: [] } });
+
+    if (name)
+      query[2].$match.$or.push({ name: { $regex: name, $options: "i" } });
+    if (status)
+      query[2].$match.$or.push({ status: { $regex: status, $options: "i" } });
+    if (manufacturer)
+      query[2].$match.$or.push({
+        "manufacturer.name": { $regex: manufacturer, $options: "i" },
+      });
+
+    if (!query[2].$match.$or.length) query[2] = { $match: {} };
+
+    let model = await Model.aggregate(query);
+
+    res.status(200).json(model);
+  } catch (error) {
+    next(error);
   }
-}
+};

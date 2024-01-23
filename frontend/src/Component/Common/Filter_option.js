@@ -25,6 +25,10 @@ import {
   fetchVehicleType,
   getAllVehicleType,
 } from "../../Redux/features/vehicleTypeReducer";
+import {
+  fetchManufacturer,
+  selectManufacturer,
+} from "../../Redux/features/ManufacturerReducer";
 
 export default function Filter_Option({
   input,
@@ -44,7 +48,9 @@ export default function Filter_Option({
   const states = useSelector(getStates);
   const cities = useSelector(getCities);
   const vehicles = useSelector(getAllVehicleType);
+  const manufacturerData = useSelector(selectManufacturer);
 
+  const manufacturer = useSelector(selectManufacturer);
   useEffect(() => {
     if (options.includes("country")) {
       dispatch(fetchCountries());
@@ -52,6 +58,9 @@ export default function Filter_Option({
 
     if (options.includes("vehicleType")) {
       dispatch(fetchVehicleType());
+    }
+    if (options.includes("manufacturer")) {
+      dispatch(fetchManufacturer());
     }
 
     if (options.includes("package")) {
@@ -80,11 +89,12 @@ export default function Filter_Option({
       dispatch(emptyCities());
     }
   }, [input?.country, input?.state]);
+  console.log("man", manufacturer);
 
   return (
     <form>
-      <div className='row'>
-        <div className='col-lg-2 inputField'>
+      <div className="row">
+        <div className="col-lg-2 inputField">
           {options.includes("package") && (
             <Selection_Input
               options={packages}
@@ -149,12 +159,13 @@ export default function Filter_Option({
               setInput={setInput}
             />
           )}
-          {options.includes("make") && (
-            <Text_Input
+          {options.includes("manufacturer") && (
+            <Selection_Input
+              options={manufacturer}
               input={input}
-              lebel_text={"make :"}
-              setKey={"make"}
               setInput={setInput}
+              lebel_text={"manufacturer : "}
+              setKey={"manufacturer"}
             />
           )}
           {options.includes("status") && (
@@ -174,6 +185,16 @@ export default function Filter_Option({
               lebel_text={"From :"}
             />
           )}
+
+          {options.includes("vehicleCategory") && (
+            <Text_Input
+              input={input}
+              lebel_text={"vehicleCategory :"}
+              setKey={"vehicleCategory"}
+              setInput={setInput}
+            />
+          )}
+
           {options.includes("to") && (
             <Date_input setKey={"to"} setInput={setInput} lebel_text={"To :"} />
           )}

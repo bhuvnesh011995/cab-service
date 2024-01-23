@@ -19,12 +19,22 @@ import BASE_URL from "../../../config/config";
 import AddPromotion from "./AddPromotion";
 import {
   cleanPromotionStatus,
+  deletePromotion,
   error,
   fetchPromotion,
   getAllPromotion,
   status,
   updatePromotionById,
 } from "../../../Redux/features/promotionReducer";
+import {
+  doneDelete,
+  openModal,
+  showDeleteModal,
+  status as deleteModalStatus,
+  closeModal,
+  url,
+} from "../../../Redux/features/deleteModalReducer";
+import DeleteModalAdv from "../../../Common/deleteModalRedux";
 
 const initialFilter = {
   title: "",
@@ -37,11 +47,11 @@ const initialFilter = {
 export default function PromotionManagement() {
   const [filter, setFilter] = useState(initialFilter);
   const [list, setList] = useState([]);
-  const navigate = useNavigate();
-  const [isOpen, setIsOpen] = useState(false);
-  const [id, setId] = useState(null);
-  const [deleteInfo, setDeleteInfo] = useState(null);
+  const isOpen = useSelector(showDeleteModal);
   const [show, setShow] = useState(false);
+  const deleteStatus = useSelector(deleteModalStatus);
+  const id = useSelector((state) => state.delete.id);
+  const URL = useSelector(url);
   const dispatch = useDispatch();
   useEffect(() => {
     fetch(BASE_URL + "/promotion/self/filter", { method: "GET" })
@@ -73,7 +83,6 @@ export default function PromotionManagement() {
   }, []);
   const promotion = useSelector(getAllPromotion);
   const promotionStatus = useSelector(status);
-  const promotionError = useSelector(error);
   console.log("promotionStatus", promotionStatus);
   useEffect(() => {
     if (promotionStatus === "added") {
@@ -83,6 +92,10 @@ export default function PromotionManagement() {
     } else if (promotionStatus === "update") {
       toast.success("promotion update successfully");
       setShow(false);
+      dispatch(cleanPromotionStatus());
+    } else if (promotionStatus === "deleted") {
+      toast.success("promotion delete successfully");
+      dispatch(closeModal());
       dispatch(cleanPromotionStatus());
     }
   }, [promotionStatus]);
@@ -145,28 +158,12 @@ export default function PromotionManagement() {
       });
   }
 
-  const deleteModel = (rowId) => {
-    const deleteUrl = BASE_URL + "/promotion/" + rowId;
-
-    fetch(deleteUrl, {
-      method: "DELETE",
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          const filterModel = list.filter((data) => data.id !== rowId);
-          setList(filterModel);
-          setIsOpen(false);
-          return response.json();
-        }
-      })
-      .then((item) => {
-        if (item.success) toast.success(item.message);
-        else toast.error.apply(item.message);
-      })
-      .catch((error) => {
-        console.error("Error occurred while deleting admin:", error);
-      });
-  };
+  useEffect(() => {
+    if (deleteStatus === "delete") {
+      dispatch(deletePromotion({ url: URL, id }));
+      dispatch(doneDelete());
+    }
+  }, [deleteStatus, URL, id]);
 
   function reset() {}
   return (
@@ -174,13 +171,7 @@ export default function PromotionManagement() {
       <div class="row">
         <div class="col-lg-13">
           <div class="card">
-            <DeleteModal
-              info={deleteInfo}
-              show={isOpen}
-              setShow={setIsOpen}
-              handleDelete={deleteModel}
-              arg={id}
-            />
+            {isOpen && <DeleteModalAdv />}
             {show && <AddPromotion show={show} setShow={setShow} />}
             <div class="card-body">
               <div
@@ -266,12 +257,12 @@ export default function PromotionManagement() {
                     </IconButton>
                     <IconButton
                       onClick={() => {
-                        setDeleteInfo({
-                          message: `Do You Really Want To Delete ${row.original?.id}`,
-                          header: "Delete Model",
-                        });
-                        setIsOpen(true);
-                        setId(row.original._id);
+                        dispatch(
+                          openModal({
+                            url: `${BASE_URL}/promotion/${row.original._id}`,
+                            id: row.original._id,
+                          })
+                        );
                       }}
                     >
                       <DeleteForever />

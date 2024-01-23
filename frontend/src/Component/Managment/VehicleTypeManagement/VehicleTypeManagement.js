@@ -24,6 +24,7 @@ import {
   getAllVehicleType,
   deleteVehicleType,
   updateVehicleTypeById,
+  cleanVehicleTypeStatus,
 } from "../../../Redux/features/vehicleTypeReducer";
 let url = BASE_URL + "/vehicletype/filter/";
 
@@ -70,6 +71,7 @@ export default function VehicleTypeManagement() {
     if (vehicleTypeStatus === "deleted") {
       setIsOpen(false);
       toast.success(message);
+      dispatch(cleanVehicleTypeStatus);
     } else if (vehicleTypeStatus === "added") {
       setShow(false);
       toast.success(message);
@@ -197,7 +199,10 @@ export default function VehicleTypeManagement() {
           </div>
         </div>
       </div>
-
+      {/* <Table
+        heading={["Sr no", "Name","Run Mode","Seating Capacity","Image selected", "Status", "Action"]}
+        list={list}
+      /> */}
       <MaterialReactTable
         columns={columns}
         data={vehicleTypeData || []}
