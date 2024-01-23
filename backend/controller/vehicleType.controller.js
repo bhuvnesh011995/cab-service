@@ -60,8 +60,7 @@ exports.filterVehicleType = async function (req, res, next) {
         .find({
           $or: [{ name: name }, { runMode: runMode }],
         })
-        .select({ name: 1, _id: 0, seatingCapacity: 1, img: 1, status: 1 })
-        .populate({ path: "runMode", select: { name: 1, _id: 0 } });
+        .select({ name: 1, seatingCapacity: 1, img: 1, status: 1, runMode: 1 });
     }
 
     res.status(200).json({
@@ -94,9 +93,7 @@ exports.deleteVehicleType = async function (req, res) {
 };
 exports.getAllVehicleType = async function (req, res, next) {
   try {
-    const vehicleType = await db.vehicleType
-      .find({})
-      .populate({ path: "runMode", select: "name" });
+    const vehicleType = await db.vehicleType.find({});
     return res.status(200).json({
       success: true,
       vehicleType: vehicleType,
@@ -140,5 +137,16 @@ exports.updateVehicleType = async function (req, res, next) {
       success: false,
       message: "Internal error occurred",
     });
+  }
+};
+
+exports.vehicleTypes = async (req, res, next) => {
+  try {
+    let vehicleTypes = await db.vehicleType.aggregate([
+      { $project: { runMode: 1, name: 1 } },
+    ]);
+    res.status(200).json(vehicleTypes);
+  } catch (error) {
+    next(error);
   }
 };

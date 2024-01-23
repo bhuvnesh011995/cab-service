@@ -18,6 +18,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { filterCities, getCities } from "../../../Redux/features/cityReducer";
 import moment from "moment/moment";
 import { useForm } from "react-hook-form";
+import { AddNewCity } from "./AddCity";
 const initialFilter = {
   text: "",
 };
@@ -142,6 +143,7 @@ export default function CityManagement() {
 
   return (
     <Management_container title={"City Management"}>
+      <AddNewCity show={isOpen} setShow={setIsOpen} />
       <MapService
         setData={setList}
         polygon={polygons}
@@ -151,16 +153,19 @@ export default function CityManagement() {
       <div class="row">
         <div class="col-lg-13">
           <div class="card">
-            <DeleteModal
+            {/* <DeleteModal
               info={deleteInfo}
               show={isOpen}
               setShow={setIsOpen}
               handleDelete={handleDelete}
               arg={id}
-            />
+            /> */}
             <div class="card-body">
               <div className="text-right">
-                <button onClick={handleClick} className="btn btn-primary">
+                <button
+                  onClick={() => setIsOpen(true)}
+                  className="btn btn-primary"
+                >
                   Add City
                 </button>
               </div>

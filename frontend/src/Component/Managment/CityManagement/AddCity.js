@@ -5,6 +5,8 @@ import Text_Input from "../../Common/Inputs/Text_Input";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import VehicletypeCheckbox from "./VehicleTypeCheckbox";
 import BASE_URL from "../../../config/config";
+import { Modal, Row } from "react-bootstrap";
+import { Controller, useForm } from "react-hook-form";
 
 let initialInput = {
   name: "",
@@ -165,3 +167,123 @@ export default function AddCity() {
     </Management_container>
   );
 }
+
+let countries = [];
+let states = [];
+
+export const AddNewCity = function ({ show, setShow }) {
+  const {
+    register,
+    control,
+    watch,
+    setValue,
+    formState: { errors, dirtyFields, isDirty },
+  } = useForm();
+  return (
+    <Modal size="lg" show={show} onHide={() => setShow(false)}>
+      <form>
+        <Modal.Header closeButton>
+          <Modal.Title>Add City</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className="row">
+            <div className="col-md-6">
+              <Row className="align-items-center mb-3">
+                <div className="col-sm-4">
+                  <label htmlFor="name" className="form-label">
+                    Name :
+                  </label>{" "}
+                </div>
+                <div className="col-sm-8">
+                  <input
+                    type="text"
+                    placeholder="Enter City Name"
+                    className="form-control"
+                  />
+                </div>
+              </Row>
+              <Row className="align-items-center mb-3">
+                <div className="col-sm-4">
+                  <label className="form-label" htmlFor="state">
+                    State :
+                  </label>
+                </div>
+                <div className="col-sm-8">
+                  <Controller
+                    name="state"
+                    control={control}
+                    rules={{ required: "this is required field" }}
+                    render={({ field }) => (
+                      <select {...field} className="form-control">
+                        <option value={""}>Choose...</option>
+                        {states.map((state) => (
+                          <option key={state._id} value={state._id}>
+                            {state.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  />
+                </div>
+                {errors.state && (
+                  <span style={{ color: "red" }}>{errors.state.message}</span>
+                )}
+              </Row>
+              <Row className="align-items-center mb-3">
+                <div className="col-sm-4">
+                  <label className="form-label" htmlFor="country">
+                    Country :
+                  </label>
+                </div>
+                <div className="col-sm-8">
+                  <Controller
+                    name="country"
+                    control={control}
+                    rules={{ required: "this is required field" }}
+                    render={({ field }) => (
+                      <select {...field} className="form-control">
+                        <option value={""}>Choose...</option>
+                        {countries.map((country) => (
+                          <option key={country._id} value={country._id}>
+                            {country.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  />
+                </div>
+                {errors.country && (
+                  <span style={{ color: "red" }}>{errors.country.message}</span>
+                )}
+              </Row>
+              <Row className="align-items-center mb-3">
+                <div className="col-sm-4">
+                  <label htmlFor="name" className="form-label">
+                    UTC Offset :
+                  </label>{" "}
+                </div>
+                <div className="col-sm-8">
+                  <input type="number" className="form-control" />
+                </div>
+              </Row>
+            </div>
+            <div className="col-md-6">
+              <div
+                style={{
+                  height: "200px",
+                  backgroundColor: "red",
+                }}
+              ></div>
+            </div>
+          </div>
+        </Modal.Body>
+        <Modal.Footer>
+          <button className="btn btn-danger">Cancel</button>
+          <button type="submit" className="btn btn-success">
+            Add City
+          </button>
+        </Modal.Footer>
+      </form>
+    </Modal>
+  );
+};
