@@ -23,3 +23,14 @@ export const tollTableHeaders = {
   status: "Status",
   createdAt: "Created On",
 };
+
+export const rentalTableHeaders = {
+  index: "Sr No",
+  country: "Country",
+  state: "State",
+  city: "City",
+  package: "Package",
+  vehicleType: "Vehicle Type",
+  status: "status",
+  createdAt: "Created At",
+};
