@@ -9,6 +9,7 @@ let initialState = {
   model: [],
   message: "",
   selectModel: null,
+  viewModel: null,
 };
 
 export const addModel = createAsyncThunk(
@@ -74,24 +75,25 @@ const updateModels = createAsyncThunk(
 
 export const deleteModels = createAsyncThunk(
   "model/deleteModels",
-  async (id, { rejectWithValue }) => {
+  async ({ url, id }, { rejectWithValue }) => {
     try {
-      let response = await axios.delete(BASE_URL + "/model/" + id);
-      if (response.status === 200) return { ...response.data, id };
+      let response = await axios.delete(url);
+      if (response.status === 200) return { id };
       else
         return rejectWithValue({
-          status: response.status,
-          message: response.data.message,
+          status: "error",
+          message: response.data.message ?? "error while deleting country",
         });
     } catch (error) {
+      console.log(error);
+      console.log(error.response);
       return rejectWithValue({
-        status: error.response.status,
-        message: error.data.message,
+        status: "error",
+        message: error.response.data.message ?? "error while deleting country",
       });
     }
   }
 );
-
 export const filterModel = createAsyncThunk(
   "manufacturer/filterManufacturer",
   async ({ name, status, manufacturer } = {}, { rejectWithValue }) => {
@@ -131,11 +133,21 @@ const modelSlice = createSlice({
       state.selectModel = { ...obj, manufacturer: obj.manufacturer._id };
       state.status = "fetched";
     },
+    getViewModel: (state, action) => {
+      state.viewModel = state.model.find(
+        (viewModel) => viewModel._id === action.payload.id
+      );
+      state.status = "view";
+    },
+
+    cleanViewModel: (state, action) => {
+      state.viewModel = null;
+    },
     cleanModel: (state, action) => {
       state.selectModel = null;
     },
-    cleanModlStatus: (state, action) => {
-      state.model = "ok";
+    cleanModelStatus: (state, action) => {
+      state.status = "ok";
     },
   },
 
@@ -172,7 +184,7 @@ const modelSlice = createSlice({
       state.error = null;
     });
     builder.addCase(updateModels.fulfilled, (state, action) => {
-      state.status = "update";
+      state.status = "updated";
       state.model = state.model.map((item) =>
         item._id === action.payload._id ? action.payload : item
       );
@@ -218,7 +230,8 @@ const getAllModel = (state) => state.model.model;
 export { getAllModel, fetchModel, updateModels };
 
 export default modelSlice.reducer;
-export const { updateModelById, cleanModel, cleanModlStatus } =
+export const { updateModelById, cleanModel, cleanModelStatus, getViewModel } =
   modelSlice.actions;
 export const status = (state) => state.model.status;
 export const getModel = (state) => state.model.selectModel;
+export const viewAllModel = (state) => state.model.viewModel;

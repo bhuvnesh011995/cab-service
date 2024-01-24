@@ -26,9 +26,11 @@ import {
   fetchVehicleCategory,
   filterVehicleCategory,
   getAllVehicleCategory,
+  getViewVehicleCategory,
   updateVehicleCategoryById,
 } from "../../../Redux/features/vehicleCategoryReducer";
 import { useDispatch, useSelector } from "react-redux";
+import ViewVehicleCategory from "./ViewVehicleCategory";
 let initialFilter = {
   vehicleCategory: "",
   status: "",
@@ -39,10 +41,10 @@ export default function VehicleCategoryManagement() {
 
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
+  const [openView, setOpenView] = useState(false);
   const [id, setId] = useState(null);
   const [deleteInfo, setDeleteInfo] = useState(null);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const url = BASE_URL + "/make/filter/";
   const [updateData, setUpdateData] = useState(null);
   const [ready, setReady] = useState(false);
@@ -158,6 +160,9 @@ export default function VehicleCategoryManagement() {
                 setViewData={setUpdateData}
               />
             )}
+            {openView && (
+              <ViewVehicleCategory show={openView} setShow={setOpenView} />
+            )}
             <div class="card-body">
               <div
                 style={{
@@ -201,7 +206,12 @@ export default function VehicleCategoryManagement() {
           positionActionsColumn={"last"}
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-              <IconButton>
+              <IconButton
+                onClick={() => {
+                  dispatch(getViewVehicleCategory({ id: row.original._id }));
+                  setOpenView(true);
+                }}
+              >
                 <RemoveRedEye />
               </IconButton>
               <IconButton>

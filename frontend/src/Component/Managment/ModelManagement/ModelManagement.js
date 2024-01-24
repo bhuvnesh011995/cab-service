@@ -2,23 +2,28 @@ import { useEffect, useMemo, useState } from "react";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Filter_Option from "../../Common/Filter_option";
 import Management_container from "../../Common/Management_container";
-import Table from "../../Common/Table";
-import { useNavigate } from "react-router-dom";
 import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
 import { toast } from "react-toastify";
 import AddModel from "./AddModel";
-import DeleteModal from "../../DeleteModel/DeleteModel";
-import ModelUpdate from "../ModelManagement/ModelUpdate";
 import { useSelector, useDispatch } from "react-redux";
 import {
   fetchModel,
   getAllModel,
   deleteModels,
   updateModelById,
-  cleanModlStatus,
+  cleanModelStatus,
   filterModel,
+  getViewModel,
 } from "../../../Redux/features/ModelReducer";
+import {
+  openModal,
+  showDeleteModal,
+  url,
+  status as deleteModalStatus,
+  closeModal,
+  doneDelete,
+} from "../../../Redux/features/deleteModalReducer";
 import {
   RemoveRedEye,
   Lock,
@@ -27,6 +32,8 @@ import {
 } from "@mui/icons-material/";
 import { Box, IconButton } from "@mui/material";
 import moment from "moment";
+import DeleteModalAdv from "../../../Common/deleteModalRedux";
+import ViewModel from "./ViewModel";
 let initialFilter = {
   manufacturer: "",
   name: "",
@@ -35,11 +42,17 @@ let initialFilter = {
 
 export default function ModelManagement() {
   const [filter, setFilter] = useState(initialFilter);
-  const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
-  const [id, setId] = useState(null);
-  const [deleteInfo, setDeleteInfo] = useState(null);
   const [ready, setReady] = useState(false);
+  const [openView, setOpenView] = useState(false);
+
+  const showDelete = useSelector(showDeleteModal);
+  const id = useSelector((state) => state.delete.id);
+  const deleteStatus = useSelector(deleteModalStatus);
+  const modelData = useSelector(getAllModel);
+  const modelstatus = useSelector((state) => state.model.status);
+  const error = useSelector((state) => state.model.error);
+  const URL = useSelector(url);
 
   const dispatch = useDispatch();
 
@@ -47,24 +60,22 @@ export default function ModelManagement() {
     dispatch(fetchModel());
   }, []);
 
-  const modelData = useSelector(getAllModel);
-  const modelstatus = useSelector((state) => state.model.status);
-  const message = useSelector((state) => state.model.message);
-
   useEffect(() => {
-    if (modelstatus === "deleted") {
-      setIsOpen(false);
-      toast.success(message);
-      dispatch(cleanModlStatus());
-    } else if (modelstatus === "added") {
+    if (modelstatus === "idle") dispatch(fetchModel());
+    else if (modelstatus === "added") {
+      toast.success("admin added successfully");
       setShow(false);
-      toast.success("added succesfully");
-    } else if (modelstatus === "update") {
+      dispatch(cleanModelStatus());
+    } else if (modelstatus === "updated") {
+      toast.success("model updated succeefully");
+      dispatch(cleanModelStatus());
       setShow(false);
-      toast.success("updated");
-      dispatch(cleanModlStatus());
+    } else if (modelstatus === "deleted") {
+      toast.success("admin deleted successfully");
+      dispatch(cleanModelStatus());
+      dispatch(closeModal());
     }
-  }, [modelstatus]);
+  }, [modelstatus, error]);
 
   const columns = useMemo(
     () => [
@@ -83,14 +94,21 @@ export default function ModelManagement() {
         header: "status",
         size: 80,
       },
-      // {
-      //   accessorFn: (row) => moment(row?.createdAt)?.format("ll"),
-      //   id: "createdAt",
-      //   header: "Created At",
-      // },
+      {
+        accessorFn: (row) => moment(row?.createdAt)?.format("ll"),
+        id: "createdAt",
+        header: "Created At",
+      },
     ],
     []
   );
+
+  useEffect(() => {
+    if (deleteStatus === "delete") {
+      dispatch(deleteModels({ url: URL, id }));
+      dispatch(doneDelete());
+    }
+  }, [deleteStatus, URL, id]);
 
   useEffect(() => {
     dispatch(filterModel(filter));
@@ -99,10 +117,6 @@ export default function ModelManagement() {
   function handleSubmit() {
     dispatch(filterModel(filter));
   }
-
-  const deleteModel = (id) => {
-    dispatch(deleteModels(id));
-  };
 
   function handleClick2() {
     setFilter(initialFilter);
@@ -113,14 +127,10 @@ export default function ModelManagement() {
       <div class="row">
         <div class="col-lg-13">
           <div class="card">
-            <DeleteModal
-              info={deleteInfo}
-              show={isOpen}
-              setShow={setIsOpen}
-              handleDelete={deleteModel}
-              arg={id}
-            />
             {show && <AddModel show={show} setShow={setShow} />}
+            {showDelete && <DeleteModalAdv />}
+            {openView && <ViewModel show={openView} setShow={setOpenView} />}
+
             <div class="card-body">
               <div
                 style={{
@@ -163,7 +173,12 @@ export default function ModelManagement() {
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
           <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-            <IconButton>
+            <IconButton
+              onClick={() => {
+                dispatch(getViewModel({ id: row.original._id }));
+                setOpenView(true);
+              }}
+            >
               <RemoveRedEye />
             </IconButton>
             <IconButton>
@@ -179,12 +194,12 @@ export default function ModelManagement() {
             </IconButton>
             <IconButton
               onClick={() => {
-                setDeleteInfo({
-                  message: `Do You Really Want To Delete ${row.original?.name}`,
-                  header: "Delete Model",
-                });
-                setIsOpen(true);
-                setId(row.original._id);
+                dispatch(
+                  openModal({
+                    url: `${BASE_URL}/model/${row.original._id}`,
+                    id: row.original._id,
+                  })
+                );
               }}
             >
               <DeleteForever />

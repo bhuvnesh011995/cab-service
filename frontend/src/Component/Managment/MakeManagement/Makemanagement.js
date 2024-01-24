@@ -11,6 +11,7 @@ import {
   DeleteForever,
 } from "@mui/icons-material/";
 import { Box, IconButton } from "@mui/material";
+import ViewManufacturer from "./viewManufacturer";
 import AddManufacturer from "./AddManufacturer";
 import {
   selectManufacturer,
@@ -20,12 +21,12 @@ import {
   status,
   cleanManufaturerStatus,
   filterManufacturer,
+  viewManufacturer,
 } from "../../../Redux/features/ManufacturerReducer";
 import { useSelector, useDispatch } from "react-redux";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import { getPermissions } from "../../../Redux/features/authReducer";
 import { toast } from "react-toastify";
-
 let initialFilter = {
   name: "",
   status: "",
@@ -39,6 +40,7 @@ export default function MakeManagement() {
   const [deleteInfo, setDeleteInfo] = useState(null);
   const url = BASE_URL + "/make/filter/";
   const permissions = useSelector(getPermissions);
+  const [viewModel, setViewModel] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -112,6 +114,9 @@ export default function MakeManagement() {
               arg={id}
             />
             {isOpen && <AddManufacturer show={isOpen} setShow={setIsOpen} />}
+            {viewModel && (
+              <ViewManufacturer show={viewModel} setShow={setViewModel} />
+            )}
 
             <div class="card-body">
               <div
@@ -160,7 +165,12 @@ export default function MakeManagement() {
           positionActionsColumn={"last"}
           renderRowActions={({ row, table }) => (
             <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-              <IconButton>
+              <IconButton
+                onClick={() => {
+                  dispatch(viewManufacturer({ id: row.original._id }));
+                  setViewModel(true);
+                }}
+              >
                 <RemoveRedEye />
               </IconButton>
               <IconButton>

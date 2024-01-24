@@ -8,6 +8,7 @@ let initialState = {
   manufacturer: [],
   message: "",
   selectManufacturer: null,
+  viewManufacturer: null,
 };
 export const filterManufacturer = createAsyncThunk(
   "manufacturer/filterManufacturer",
@@ -134,6 +135,15 @@ const manufacturerSlice = createSlice({
     cleanManfacturer: (state, action) => {
       state.selectManufacturer = null;
     },
+    viewManufacturer: (state, action) => {
+      state.viewManufacturer = state.manufacturer.find(
+        (viewManufacturer) => viewManufacturer._id === action.payload.id
+      );
+      state.status = "fetched";
+    },
+    cleanViewManfacturer: (state, action) => {
+      state.viewManufacturer = null;
+    },
     cleanManufaturerStatus: (state, action) => {
       state.status = "Ok";
     },
@@ -223,6 +233,10 @@ export const {
   updatetManufacturerById,
   cleanManfacturer,
   cleanManufaturerStatus,
+  viewManufacturer,
+  cleanViewManfacturer,
 } = manufacturerSlice.actions;
 export const status = (state) => state.manufacturer.status;
 export const getManufacturer = (state) => state.manufacturer.selectManufacturer;
+export const viewAllManufacturer = (state) =>
+  state.manufacturer.viewManufacturer;
