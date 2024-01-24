@@ -5,8 +5,23 @@ import Text_Input from "../../Common/Inputs/Text_Input";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import VehicletypeCheckbox from "./VehicleTypeCheckbox";
 import BASE_URL from "../../../config/config";
-import { Modal, Row } from "react-bootstrap";
+import { Col, Modal, Row } from "react-bootstrap";
 import { Controller, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getAllVehicleType,
+  getVehicleTypes,
+} from "../../../Redux/features/vehicleTypeReducer";
+import {
+  fetchCountries,
+  getCountries,
+} from "../../../Redux/features/countryReducer";
+import {
+  emptyStates,
+  fetchStates,
+  getStates,
+} from "../../../Redux/features/stateReducer";
+import Map from "./Map";
 
 let initialInput = {
   name: "",
@@ -41,7 +56,7 @@ export default function AddCity() {
       .then((data) => {
         console.log(data);
         if (data.success) {
-          let arr = data.vehicleType?.map((ele, i) => {
+          let arr = data?.vehicleType?.map((ele, i) => {
             let runMode = ele.runMode?.map((ele, i) => {
               return (
                 <div key={i} class="form-check form-check-primary mb-3">
@@ -179,6 +194,31 @@ export const AddNewCity = function ({ show, setShow }) {
     setValue,
     formState: { errors, dirtyFields, isDirty },
   } = useForm();
+  const [ready, setReady] = useState();
+  const dispatch = useDispatch();
+  const vehicleTypes = useSelector(
+    (state) => state?.vehicleType?.vehicleType || []
+  );
+
+  const countries = useSelector(getCountries);
+  const states = useSelector(getStates);
+
+  useEffect(() => {
+    if (ready) {
+      if (watch("country")) {
+        dispatch(fetchStates(watch("country")));
+      } else {
+        dispatch(emptyStates());
+      }
+    }
+  }, [watch("country"), ready]);
+
+  useEffect(() => {
+    if (ready) {
+      dispatch(fetchCountries());
+      dispatch(getVehicleTypes());
+    } else setReady(true);
+  }, [ready]);
   return (
     <Modal size="lg" show={show} onHide={() => setShow(false)}>
       <form>
@@ -201,6 +241,34 @@ export const AddNewCity = function ({ show, setShow }) {
                     className="form-control"
                   />
                 </div>
+              </Row>
+
+              <Row className="align-items-center mb-3">
+                <div className="col-sm-4">
+                  <label className="form-label" htmlFor="country">
+                    Country :
+                  </label>
+                </div>
+                <div className="col-sm-8">
+                  <Controller
+                    name="country"
+                    control={control}
+                    rules={{ required: "this is required field" }}
+                    render={({ field }) => (
+                      <select {...field} className="form-control">
+                        <option value={""}>Choose...</option>
+                        {countries.map((country) => (
+                          <option key={country._id} value={country._id}>
+                            {country.name}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  />
+                </div>
+                {errors.country && (
+                  <span style={{ color: "red" }}>{errors.country.message}</span>
+                )}
               </Row>
               <Row className="align-items-center mb-3">
                 <div className="col-sm-4">
@@ -231,33 +299,6 @@ export const AddNewCity = function ({ show, setShow }) {
               </Row>
               <Row className="align-items-center mb-3">
                 <div className="col-sm-4">
-                  <label className="form-label" htmlFor="country">
-                    Country :
-                  </label>
-                </div>
-                <div className="col-sm-8">
-                  <Controller
-                    name="country"
-                    control={control}
-                    rules={{ required: "this is required field" }}
-                    render={({ field }) => (
-                      <select {...field} className="form-control">
-                        <option value={""}>Choose...</option>
-                        {countries.map((country) => (
-                          <option key={country._id} value={country._id}>
-                            {country.name}
-                          </option>
-                        ))}
-                      </select>
-                    )}
-                  />
-                </div>
-                {errors.country && (
-                  <span style={{ color: "red" }}>{errors.country.message}</span>
-                )}
-              </Row>
-              <Row className="align-items-center mb-3">
-                <div className="col-sm-4">
                   <label htmlFor="name" className="form-label">
                     UTC Offset :
                   </label>{" "}
@@ -268,13 +309,19 @@ export const AddNewCity = function ({ show, setShow }) {
               </Row>
             </div>
             <div className="col-md-6">
-              <div
-                style={{
-                  height: "200px",
-                  backgroundColor: "red",
-                }}
-              ></div>
+              <Map />
             </div>
+            <Row>
+              <div className="text-center col-md-3">
+                <div className="mb-3 fw-bold">Vehicle Type</div>
+              </div>
+
+              <div className="text-center fw-bold col-md-9">Services</div>
+            </Row>
+            <VehicletypeCheckbox />
+            <VehicletypeCheckbox />
+            <VehicletypeCheckbox />
+            <VehicletypeCheckbox />
           </div>
         </Modal.Body>
         <Modal.Footer>

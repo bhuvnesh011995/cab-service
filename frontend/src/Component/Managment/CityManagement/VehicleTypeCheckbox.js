@@ -1,49 +1,31 @@
 import { useState } from "react";
+import { Row } from "react-bootstrap";
 
-export default function VehicletypeCheckbox({city,setCity, ele, i }) {
-  const [checked, setChecked] = useState(false);
-  const [ service, setService ] = useState([]);
-
-  let runMode = ele.runMode.map((ele, i) => {
-    return (
-      <div key={i} className="form-check form-check-primary mb-3">
-        <input disabled={!checked} value={ele.name} className="form-check-input" type="checkbox" />
-        <label className="form-check-label">{ele.name}</label>
-      </div>
-    );
-  });
-
-  function handleChange(e) {
-    setChecked(!checked)
-    if(e.target.checked){
-      console.log(city)
-        setCity(preVal=>({...preVal,vehicleService:[...preVal.vehicleService,{[ele.name]:service}]}))
-        
-    }else{
-        console.log(city)
-        let arr = city.vehicleService?.filter((ele)=>{
-            
-            console.log(Object.keys(ele)[0])
-            console.log(e.target.value)
-            return e.target.value!=Object.keys(ele)[0]
-        })
-        setCity(preVal=>({...preVal,vehicleService:arr}))
-    }
-  }
-
+export default function VehicletypeCheckbox() {
   return (
-    <div style={{margin:"20px" }} key={i}>
-      <div>
-        <div className="form-check form-check-primary mb-3">
-          <input
-            onChange={e=>handleChange(e)}
-            className="form-check-input"
-            type="checkbox"
-          />
-          <label className="form-check-label">{ele.name}</label>
+    <Row className="mb-3">
+      <div className=" col-md-3">
+        <div className="text-center form-check">
+          <input type="checkbox" className="form-check-input" />
+          <label className="form-check-label">sedan</label>
         </div>
       </div>
-      <div style={{margin:"20px", display:"flex"}}>{runMode}</div>
-    </div>
+      <div className=" col-md-9">
+        <div className="d-flex justify-content-center">
+          <div className=" form-check d-flex align-items-center me-2">
+            <input type="checkbox" className="form-check-input" />
+            <label className="form-check-label">Indvidual</label>
+          </div>
+          <div className=" form-check d-flex align-items-center me-2">
+            <input type="checkbox" className="form-check-input " />
+            <label className="form-check-label">Rental</label>
+          </div>
+          <div className=" form-check d-flex align-items-center me-2">
+            <input type="checkbox" className="form-check-input" />
+            <label className="form-check-label">Outstation</label>
+          </div>
+        </div>
+      </div>
+    </Row>
   );
 }
