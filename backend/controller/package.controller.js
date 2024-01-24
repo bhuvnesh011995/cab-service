@@ -29,10 +29,10 @@ exports.getAllPackages = async (req, res) => {
   try {
     const packageAggregateQuery = {};
 
-    if (req.query.name.length) {
+    if (req.query.name?.length) {
       packageAggregateQuery["name"] = { $regex: req.query.name };
     }
-    if (req.query.status.length) {
+    if (req.query.status?.length) {
       packageAggregateQuery["status"] = req.query.status;
     }
 
