@@ -32,7 +32,6 @@ export default function AddRentalPackage({ isOpen, setIsOpen, id, viewModal }) {
   }, []);
 
   useEffect(() => {
-    console.log(selectedPackage, "hhhhhhh");
     if (selectedPackage) reset(selectedPackage);
     else reset({});
   }, [selectedPackage]);

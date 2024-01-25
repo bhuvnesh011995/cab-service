@@ -14,6 +14,7 @@ import packageReducer from "../features/packageReducer";
 import promotionReducer from "../features/promotionReducer";
 
 import tollReducer from "../features/tollReducer";
+import rentalFareReducer from "../features/rentalFareReducer";
 
 export default configureStore({
   reducer: {
@@ -31,5 +32,6 @@ export default configureStore({
     package: packageReducer,
     toll: tollReducer,
     promotion: promotionReducer,
+    rentalFare: rentalFareReducer,
   },
 });
