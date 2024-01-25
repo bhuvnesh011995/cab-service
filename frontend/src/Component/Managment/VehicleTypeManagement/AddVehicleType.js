@@ -24,7 +24,6 @@ export default function AddVehicleType({ show, setShow }) {
   } = useForm();
 
   const selectVehicleType = useSelector(getVehicleType);
-  console.log("selectVehicleType", selectVehicleType);
   useEffect(() => {
     if (selectVehicleType) {
       reset(selectVehicleType);

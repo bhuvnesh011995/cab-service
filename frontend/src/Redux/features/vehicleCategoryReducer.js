@@ -8,6 +8,7 @@ let initialState = {
   vehicleCategory: [],
   message: "",
   selectVehicleCategory: null,
+  viewVehicleCategory: null,
 };
 
 export const addVehicleCategory = createAsyncThunk(
@@ -135,6 +136,16 @@ const vehicleCategorySlice = createSlice({
       );
       state.status = "fetched";
     },
+    getViewVehicleCategory: (state, action) => {
+      state.viewVehicleCategory = state.vehicleCategory.find(
+        (viewVehicleCategory) => viewVehicleCategory._id === action.payload.id
+      );
+      state.status = "view";
+    },
+
+    cleanViewVehicleCategory: (state, action) => {
+      state.viewVehicleCategory = null;
+    },
     cleanVehicleCategory: (state, action) => {
       state.selectVehicleCategory = null;
     },
@@ -231,6 +242,10 @@ export const {
   updateVehicleCategoryById,
   cleanVehicleCategory,
   cleanVehicleCategoryStatus,
+  getViewVehicleCategory,
+  cleanViewVehicleCategory,
 } = vehicleCategorySlice.actions;
 export const getVehicleCategory = (state) =>
   state.vehicleCategory.selectVehicleCategory;
+export const getAllViewVehicleCategory = (state) =>
+  state.vehicleCategory.viewVehicleCategory;

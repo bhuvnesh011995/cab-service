@@ -1,8 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import Management_container from "../../Common/Management_container";
-import { useNavigate } from "react-router-dom";
 import BtnDark from "../../Common/Buttons/BtnDark";
-import Table from "../../Common/Table";
 import Text_Input from "../../Common/Inputs/Text_Input";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import BASE_URL from "../../../config/config";
@@ -17,7 +15,6 @@ import {
 import { toast } from "react-toastify";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import AddVehicleType from "../VehicleTypeManagement/AddVehicleType";
-import UpdateVehicleType from "./UpdateVehicleType";
 import { useDispatch, useSelector } from "react-redux";
 import {
   fetchVehicleType,
@@ -25,40 +22,31 @@ import {
   deleteVehicleType,
   updateVehicleTypeById,
   cleanVehicleTypeStatus,
+  getViewVehicleType,
+  filterVehicleType,
 } from "../../../Redux/features/vehicleTypeReducer";
+import ViewVehicleType from "./ViewVehicleType";
+import Filter_Option from "../../Common/Filter_option";
 let url = BASE_URL + "/vehicletype/filter/";
 
 const initialFilter = {
   name: "",
   runMode: "",
+  state: "",
 };
 
 export default function VehicleTypeManagement() {
   const [filter, setFilter] = useState(initialFilter);
   const [options, setOptions] = useState([]);
   const [list, setList] = useState();
-  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
-  const [isTrue, setIsTrue] = useState(false);
+  const [openView, setOpenView] = useState(false);
   const [id, setId] = useState(null);
   const [deleteInfo, setDeleteInfo] = useState(null);
   const [updateData, setUpdateData] = useState(null);
   const dispatch = useDispatch();
-  useEffect(() => {
-    fetch(BASE_URL + "/runMode/", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = [];
-          console.log(data);
-          data.data?.map((ele) => arr.push(ele.name));
-          setOptions(arr);
-        }
-      });
-  }, []);
+
   useEffect(() => {
     dispatch(fetchVehicleType());
   }, []);
@@ -108,32 +96,8 @@ export default function VehicleTypeManagement() {
     []
   );
 
-  function handleSubmit(e) {
-    fetch(url + "?name=" + filter.name + "&runMode=" + filter.runMode, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          setList(
-            data.data.map((ele, i) => {
-              let mode = [];
-              ele.runMode?.map((ele) => mode.push(ele.name));
-              return (
-                <tr key={i}>
-                  <td>{i + 1}</td>
-                  <td>{ele.name}</td>
-                  <td>{mode.join()}</td>
-                  <td>{ele.seatingCapacity}</td>
-                  <td>{ele.img}</td>
-                  <td>{ele.status}</td>
-                  <td>""</td>
-                </tr>
-              );
-            })
-          );
-        }
-      });
+  function handleSubmit() {
+    dispatch(filterVehicleType(filter));
   }
 
   function handleDelete(rowId) {
@@ -157,6 +121,10 @@ export default function VehicleTypeManagement() {
               arg={id}
             />
             {show && <AddVehicleType show={show} setShow={setShow} />}
+            {openView && (
+              <ViewVehicleType show={openView} setShow={setOpenView} />
+            )}
+
             <div class="card-body">
               <div
                 style={{
@@ -172,6 +140,7 @@ export default function VehicleTypeManagement() {
                   title={"Add New"}
                 />
               </div>
+
               <form style={{ margin: "50px" }}>
                 <div className="row">
                   <div className="col-lg-2 inputField">
@@ -212,7 +181,12 @@ export default function VehicleTypeManagement() {
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
           <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-            <IconButton>
+            <IconButton
+              onClick={() => {
+                dispatch(getViewVehicleType({ id: row.original._id }));
+                setOpenView(true);
+              }}
+            >
               <RemoveRedEye />
             </IconButton>
             <IconButton>

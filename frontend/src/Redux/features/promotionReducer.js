@@ -7,6 +7,7 @@ let initialState = {
   error: null,
   promotion: [],
   selectPromotion: null,
+  viewPromotion: null,
 };
 
 const addPromotion = createAsyncThunk(
@@ -106,6 +107,16 @@ const promotionSlice = createSlice({
         city: obj.city._id,
       };
     },
+    getViewPromotion: (state, action) => {
+      state.viewPromotion = state.promotion.find(
+        (viewPromotion) => viewPromotion._id === action.payload.id
+      );
+      state.status = "view";
+    },
+
+    cleanViewPromotion: (state, action) => {
+      state.viewVehicleType = null;
+    },
     cleanPromotion: (state, action) => {
       state.selectPromotion = null;
     },
@@ -181,6 +192,7 @@ export { addPromotion, fetchPromotion, updatePromotion };
 export const getAllPromotion = (state) => state.promotion.promotion;
 export const status = (state) => state.promotion.status;
 export const error = (state) => state.promotion.error;
-export const { cleanPromotionStatus, updatePromotionById, cleanPromotion } =
+export const { cleanPromotionStatus, updatePromotionById, cleanPromotion ,getViewPromotion} =
   promotionSlice.actions;
 export const getPromotion = (state) => state.promotion.selectPromotion;
+export const getAllViewPromotion = (state) => state.promotion.viewPromotion;

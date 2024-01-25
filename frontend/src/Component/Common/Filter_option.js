@@ -48,7 +48,6 @@ export default function Filter_Option({
   const states = useSelector(getStates);
   const cities = useSelector(getCities);
   const vehicles = useSelector(getAllVehicleType);
-  const manufacturerData = useSelector(selectManufacturer);
 
   const manufacturer = useSelector(selectManufacturer);
   useEffect(() => {
@@ -159,15 +158,7 @@ export default function Filter_Option({
               setInput={setInput}
             />
           )}
-          {options.includes("manufacturer") && (
-            <Selection_Input
-              options={manufacturer}
-              input={input}
-              setInput={setInput}
-              lebel_text={"manufacturer : "}
-              setKey={"manufacturer"}
-            />
-          )}
+
           {options.includes("status") && (
             <Selection_Input
               options={["ACTIVE", "INACTIVE"]}

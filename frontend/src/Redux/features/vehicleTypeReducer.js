@@ -7,6 +7,7 @@ let initialState = {
   error: null,
   vehicleType: [],
   selectVehicleType: null,
+  viewVehicleType: null,
   message: "",
 };
 
@@ -122,6 +123,32 @@ const updateVehicleType = createAsyncThunk(
   }
 );
 
+export const filterVehicleType = createAsyncThunk(
+  "vehicleType/filterVehicleType",
+  async ({ runMode, name, status } = {}, { rejectWithValue }) => {
+    try {
+      let url = new URL("/test/api/v1/vehicleType/filter", BASE_URL);
+      if (name) url.searchParams.set("name", name);
+      if (runMode) url.searchParams.set("runmode", runMode);
+      if (status) url.searchParams.set("status", status);
+      let response = await axios.get(url.href);
+      if (response.status === 200) return response.data;
+      else
+        return rejectWithValue({
+          status: "error",
+          data: response?.data?.message,
+        });
+    } catch (error) {
+      console.log(error.response);
+      return rejectWithValue({
+        status: "error",
+        message:
+          error?.response?.data?.message || "error while fetching contry",
+      });
+    }
+  }
+);
+
 const vehicleTypeSlice = createSlice({
   name: "vehicleType",
   initialState,
@@ -135,6 +162,16 @@ const vehicleTypeSlice = createSlice({
         obj.runMode[i] = { value: item._id, label: item.name };
       });
       state.selectVehicleType = obj;
+    },
+    getViewVehicleType: (state, action) => {
+      state.viewVehicleType = state.vehicleType.find(
+        (viewVehicleType) => viewVehicleType._id === action.payload.id
+      );
+      state.status = "view";
+    },
+
+    cleanViewVehicleType: (state, action) => {
+      state.viewVehicleType = null;
     },
     cleanSelectVehicleType: (state, action) => {
       state.selectVehicleType = null;
@@ -219,6 +256,18 @@ const vehicleTypeSlice = createSlice({
         message: "error while fetching vehcleType",
       };
     });
+    builder.addCase(filterVehicleType.fulfilled, (state, action) => {
+      state.status = "filtered";
+      state.vehicleType = action.payload;
+    });
+    builder.addCase(filterVehicleType.pending, (state, action) => {
+      state.status = "loading";
+      state.error = null;
+    });
+    builder.addCase(filterVehicleType.rejected, (state, action) => {
+      state.status = "error";
+      state.error = action.payload;
+    });
   },
 });
 
@@ -234,5 +283,11 @@ export const {
   updateVehicleTypeById,
   cleanSelectVehicleType,
   cleanVehicleTypeStatus,
+  viewVehicleType,
+  getViewVehicleType,
+  cleanViewVehicleType,
 } = vehicleTypeSlice.actions;
-export const getVehicleType = (state) => state?.vehicleType?.selectVehicleType;
+
+export const getVehicleType = (state) => state.vehicleType.selectVehicleType;
+export const getAllViewVehicleType = (state) =>
+  state.vehicleType.viewVehicleType;
