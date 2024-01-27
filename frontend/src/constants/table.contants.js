@@ -34,3 +34,12 @@ export const rentalTableHeaders = {
   status: "status",
   createdAt: "Created At",
 };
+
+export const emailTamplateTableHeaders = {
+  title: "Title",
+  subject: "Subject",
+  forUsers: "For User",
+  status: "Status",
+  createdAt: "Created At",
+  updatedAt: "Modified At",
+};

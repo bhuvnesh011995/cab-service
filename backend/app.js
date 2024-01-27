@@ -127,6 +127,7 @@ require("./routes/package.route")(app);
 require("./routes/tolls.route.js")(app);
 require("./routes/manufacturer.route")(app);
 require("./routes/rentalFares.route.js")(app);
+require("./routes/emailTemplate.route.js")(app);
 
 app.use(ErrorHandler);
 
