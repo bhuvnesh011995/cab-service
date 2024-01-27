@@ -3,79 +3,58 @@ const db = require("../model/index");
 
 exports.addCity = async function (req, res, next) {
   try {
-    const {
-      name,
-      state,
-      country,
-      status,
-      vehicleService,
-      utcOffset,
-      territory,
-    } = req.body;
+    const { name, state, country, cityService, utcOffset, territory } =
+      req.body;
 
-    const countryDoc = await db.country
-      .findOne({
-        name: country,
-      })
-      .populate({ path: "state", match: { name: state } });
-    if (!countryDoc.state.length) {
-      res.status(501).json({
-        success: false,
-        message: "no state found",
-      });
-      return;
-    }
-    let stateId = countryDoc.state[0]._id;
+    const territorieDoc = await db.territory.create({ area: territory });
 
-    const serviceArr = [];
-
-    for (let i = 0; i < vehicleService.length; i++) {
-      const vehicleTypeName = Object.keys(vehicleService[i]);
-      const vehicleTypeDoc = await db.vehicleType.findOne({
-        name: vehicleTypeName[0],
-      });
-      const vehicleTypeId = vehicleTypeDoc._id;
-      const runModes = vehicleService[i][vehicleTypeName[0]];
-      let runMode = [];
-      for (j = 0; j < runModes.length; j++) {
-        let runmode = await db.runMode.findOne({ name: runModes[j] });
-        runMode.push(runmode._id);
-      }
-      serviceArr.push({
-        vehicleType: vehicleTypeId,
-        runMode: runMode,
-      });
-    }
-
-    let territorieDoc = await db.territory.create({ area: territory });
-
-    const city = await db.city.create({
+    let city = await db.city.create({
       name: name,
-      status: status,
-      country: countryDoc._id,
-      state: countryDoc.state[0]._id,
+      cityService,
+      country,
+      state,
       utcOffset: utcOffset,
       territory: territorieDoc._id,
     });
 
-    await db.state.updateOne(
-      { _id: stateId },
+    let query = [
       {
-        $push: { city: city._id },
-      }
-    );
+        $match: { _id: new mongoose.Types.ObjectId(city._id) },
+      },
+      {
+        $lookup: {
+          from: "Country",
+          localField: "country",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "country",
+        },
+      },
+      { $unwind: "$country" },
+      {
+        $lookup: {
+          from: "State",
+          localField: "state",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "state",
+        },
+      },
+      { $unwind: "$state" },
+      {
+        $lookup: {
+          from: "Territory",
+          localField: "territory",
+          foreignField: "_id",
+          as: "territory",
+        },
+      },
+      { $unwind: "$territory" },
+    ];
 
-    serviceArr.forEach(async (ele) => {
-      await db.city.updateOne(
-        { _id: city._id },
-        {
-          $push: { cityService: ele },
-        }
-      );
-    });
-    res.status(200).json({
-      success: true,
-    });
+    city = await db.city.aggregate(query);
+
+    res.status(201).json(city[0]);
   } catch (error) {
     next(error);
   }

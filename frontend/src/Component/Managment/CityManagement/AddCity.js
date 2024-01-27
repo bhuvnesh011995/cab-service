@@ -1,8 +1,4 @@
-import { useEffect, useState } from "react";
-import Selection_Input from "../../Common/Inputs/Selection_input";
-import Management_container from "../../Common/Management_container";
-import Text_Input from "../../Common/Inputs/Text_Input";
-import BtnDark from "../../Common/Buttons/BtnDark";
+import { useCallback, useEffect, useState } from "react";
 import VehicletypeCheckbox from "./VehicleTypeCheckbox";
 import BASE_URL from "../../../config/config";
 import { Col, Modal, Row } from "react-bootstrap";
@@ -12,6 +8,10 @@ import {
   getAllVehicleType,
   getVehicleTypes,
 } from "../../../Redux/features/vehicleTypeReducer";
+import { Modal, Row } from "react-bootstrap";
+import { Controller, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import { getVehicleTypes } from "../../../Redux/features/vehicleTypeReducer";
 import {
   fetchCountries,
   getCountries,
@@ -22,6 +22,8 @@ import {
   getStates,
 } from "../../../Redux/features/stateReducer";
 import Map from "./Map";
+import { toast } from "react-toastify";
+import { addCity } from "../../../Redux/features/cityReducer";
 
 let initialInput = {
   name: "",
@@ -31,6 +33,10 @@ let initialInput = {
   utcOffset: "",
   vehicleService: [],
 };
+
+let countries = [];
+let states = [];
+
 export default function AddCity() {
   const [options, setOptions] = useState([]);
   const [city, setCity] = useState(initialInput);
@@ -183,13 +189,12 @@ export default function AddCity() {
   );
 }
 
-let countries = [];
-let states = [];
-
 export const AddNewCity = function ({ show, setShow }) {
+  const [path, setPath] = useState([]);
   const {
     register,
     control,
+    handleSubmit,
     watch,
     setValue,
     formState: { errors, dirtyFields, isDirty },
@@ -202,6 +207,41 @@ export const AddNewCity = function ({ show, setShow }) {
 
   const countries = useSelector(getCountries);
   const states = useSelector(getStates);
+
+  const onSubmit = useCallback(
+    (data) => {
+      let hasRunMode = false;
+
+      let cityService = data.runMode.map((item) => {
+        let vehiTypeId = Object.keys(item)[0];
+        let runMode = [];
+        let runModes = Object.keys(item[vehiTypeId]);
+        runModes.forEach((ele) => {
+          if (item[vehiTypeId][ele]) {
+            runMode.push(ele);
+            hasRunMode = true;
+          }
+        });
+        return {
+          vehicleType: vehiTypeId,
+          runMode,
+        };
+      });
+
+      let newData = {
+        name: data.name,
+        cityService,
+        country: data.country,
+        state: data.state,
+        utcOffset: data.utcOffset,
+        territory: path,
+      };
+      if (!hasRunMode) return toast.error("selct at least one service");
+      if (path.length < 3) return toast.error("set city territory");
+      dispatch(addCity(newData));
+    },
+    [dirtyFields, isDirty, path]
+  );
 
   useEffect(() => {
     if (ready) {
@@ -219,9 +259,10 @@ export const AddNewCity = function ({ show, setShow }) {
       dispatch(getVehicleTypes());
     } else setReady(true);
   }, [ready]);
+
   return (
     <Modal size="lg" show={show} onHide={() => setShow(false)}>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Modal.Header closeButton>
           <Modal.Title>Add City</Modal.Title>
         </Modal.Header>
@@ -236,11 +277,17 @@ export const AddNewCity = function ({ show, setShow }) {
                 </div>
                 <div className="col-sm-8">
                   <input
+                    {...register("name", {
+                      required: "this is required field",
+                    })}
                     type="text"
                     placeholder="Enter City Name"
                     className="form-control"
                   />
                 </div>
+                {errors.name && (
+                  <span style={{ color: "red" }}>{errors.name.message}</span>
+                )}
               </Row>
 
               <Row className="align-items-center mb-3">
@@ -304,12 +351,18 @@ export const AddNewCity = function ({ show, setShow }) {
                   </label>{" "}
                 </div>
                 <div className="col-sm-8">
-                  <input type="number" className="form-control" />
+                  <input
+                    {...register("utcOffset", {
+                      required: "this is required field",
+                    })}
+                    type="number"
+                    className="form-control"
+                  />
                 </div>
               </Row>
             </div>
             <div className="col-md-6">
-              <Map />
+              <Map setPath={setPath} path={path} />
             </div>
             <Row>
               <div className="text-center col-md-3">
@@ -318,10 +371,17 @@ export const AddNewCity = function ({ show, setShow }) {
 
               <div className="text-center fw-bold col-md-9">Services</div>
             </Row>
-            <VehicletypeCheckbox />
-            <VehicletypeCheckbox />
-            <VehicletypeCheckbox />
-            <VehicletypeCheckbox />
+            {vehicleTypes.map((vehicleType, i) => (
+              <VehicletypeCheckbox
+                key={vehicleType._id}
+                index={i}
+                id={vehicleType._id}
+                vehicleType={vehicleType}
+                register={register}
+                setValue={setValue}
+                watch={watch}
+              />
+            ))}
           </div>
         </Modal.Body>
         <Modal.Footer>

@@ -10,7 +10,7 @@ const schema = new Schema(
     status: {
       type: String,
       enum: ["ACTIVE", "INACTIVE"],
-      default: "INACTIVE",
+      default: "ACTIVE",
     },
     utcOffset: {
       type: String,
@@ -27,7 +27,7 @@ const schema = new Schema(
     cityService: [
       {
         vehicleType: { type: Schema.Types.ObjectId, ref: "VehicleType" },
-        runMode: [{ type: Schema.Types.ObjectId, ref: "runMode" }],
+        runMode: [{ type: String }],
       },
     ],
   },

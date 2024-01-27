@@ -28,9 +28,9 @@ const drawingManagerOptions = {
   },
 };
 
-export default function Map() {
+export default function Map({ path, setPath }) {
   const [polygon, setPolygon] = useState(null);
-  const [path, setPath] = useState([]);
+
   const mapRef = useRef();
   const drawingManagerRef = useRef();
   const onLoadMap = (map) => {
