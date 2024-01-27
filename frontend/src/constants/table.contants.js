@@ -43,3 +43,12 @@ export const emailTamplateTableHeaders = {
   createdAt: "Created At",
   updatedAt: "Modified At",
 };
+
+export const sosTableHeaders = {
+  bookingId: "Booking ID",
+  userType: "User Type",
+  firstName: "User",
+  lat: "Latitude",
+  lng: "Longitude",
+  createdAt: "Created At",
+};

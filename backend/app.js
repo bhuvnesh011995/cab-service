@@ -128,6 +128,7 @@ require("./routes/tolls.route.js")(app);
 require("./routes/manufacturer.route")(app);
 require("./routes/rentalFares.route.js")(app);
 require("./routes/emailTemplate.route.js")(app);
+require("./routes/SOSs.route.js")(app);
 
 app.use(ErrorHandler);
 
