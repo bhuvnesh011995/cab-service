@@ -13,12 +13,14 @@ export const filterEmailTemplate = createAsyncThunk(
   "emailTemplate/filter",
   async ({ title, forUsers, status }, { rejectWithValue }) => {
     try {
-      let url = new URL(BASE_URL, "/test/api/v1/emailTemplate/");
-      if (title) url.searchParams("title", title);
-      if (forUsers) url.searchParams("forUsers", forUsers);
-      if (status) url.searchParams("status", status);
+      let url = new URL("/test/api/v1/template/email/filter/", BASE_URL);
+
+      if (title) url.searchParams.set("title", title);
+      if (forUsers) url.searchParams.set("forUsers", forUsers);
+      if (status) url.searchParams.set("status", status);
 
       let response = await axios.get(url.href);
+
       if (response.status === 200) return response.data;
       else
         return rejectWithValue({
@@ -26,7 +28,7 @@ export const filterEmailTemplate = createAsyncThunk(
           message: "error while fetching templates",
         });
     } catch (error) {
-      console.log(error.response);
+      console.log(error);
       return rejectWithValue({
         status: "error",
         message: "error while fetching templates",
