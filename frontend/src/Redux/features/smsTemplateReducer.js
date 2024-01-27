@@ -3,10 +3,10 @@ import BASE_URL from "../../config/config";
 import axios from "axios";
 
 const initialState = {
-  smsTamplates: [],
+  smsTemplates: [],
   status: "idle",
   error: null,
-  smsTamplate: null,
+  smsTemplate: null,
 };
 
 export const filterSmsTemplate = createAsyncThunk(
@@ -48,7 +48,7 @@ const smsTemplateSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder.addCase(filterSmsTemplate.fulfilled, (state, action) => {
-      state.tamplates = action.payload;
+      state.templates = action.payload;
       state.status = "filtered";
       state.error = null;
     });
@@ -77,6 +77,6 @@ export const { clearSmsTemplateStatus } = smsTemplateSlice.actions;
 
 export const smsTemplateStatus = (state) => state.smsTemplate.status;
 
-export const getSmsTemplates = (state) => state.smsTemplate.tamplates;
+export const getSmsTemplates = (state) => state.smsTemplate.smsTemplates;
 
 export const getSmsTemplateError = (state) => state.smsTemplate.error;

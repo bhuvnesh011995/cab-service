@@ -36,5 +36,6 @@ export default configureStore({
     promotion: promotionReducer,
     rentalFare: rentalFareReducer,
     smsTemplate: smsTemplateReducer,
+    emailTemplate: emailTemplateReducer,
   },
 });
