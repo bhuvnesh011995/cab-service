@@ -1,49 +1,76 @@
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { Row } from "react-bootstrap";
 
-export default function VehicletypeCheckbox({city,setCity, ele, i }) {
-  const [checked, setChecked] = useState(false);
-  const [ service, setService ] = useState([]);
-
-  let runMode = ele.runMode.map((ele, i) => {
-    return (
-      <div key={i} className="form-check form-check-primary mb-3">
-        <input disabled={!checked} value={ele.name} className="form-check-input" type="checkbox" />
-        <label className="form-check-label">{ele.name}</label>
-      </div>
-    );
-  });
-
-  function handleChange(e) {
-    setChecked(!checked)
-    if(e.target.checked){
-      console.log(city)
-        setCity(preVal=>({...preVal,vehicleService:[...preVal.vehicleService,{[ele.name]:service}]}))
-        
-    }else{
-        console.log(city)
-        let arr = city.vehicleService?.filter((ele)=>{
-            
-            console.log(Object.keys(ele)[0])
-            console.log(e.target.value)
-            return e.target.value!=Object.keys(ele)[0]
-        })
-        setCity(preVal=>({...preVal,vehicleService:arr}))
-    }
-  }
-
+export default function VehicletypeCheckbox({
+  index,
+  vehicleType,
+  id,
+  register,
+  setValue,
+  watch,
+  errors,
+}) {
+  const [ready, setReady] = useState(false);
+  useEffect(() => {
+    if (ready) {
+      if (
+        watch(`runMode[${index}].${id}.RENTAL`) ||
+        watch(`runMode[${index}].${id}.INDIVIDUAL`) ||
+        watch(`runMode[${index}].${id}.OUTSTATION`)
+      )
+        setValue(`${id}`, true);
+      else setValue(`${id}`, false);
+    } else setReady(true);
+  }, [
+    watch(`runMode[${index}].${id}.RENTAL`),
+    watch(`runMode[${index}].${id}.INDIVIDUAL`),
+    watch(`runMode[${index}].${id}.OUTSTATION`),
+    ready,
+  ]);
   return (
-    <div style={{margin:"20px" }} key={i}>
-      <div>
-        <div className="form-check form-check-primary mb-3">
+    <Row className="mb-3">
+      <div className=" col-md-3">
+        <div className="text-center form-check">
           <input
-            onChange={e=>handleChange(e)}
-            className="form-check-input"
+            {...register(`${id}`, {
+              onChange: (e) => {
+                if (e.target.checked) {
+                  vehicleType.runMode.includes("RENTAL") &&
+                    setValue(`runMode[${index}].${id}.RENTAL`, true);
+                  vehicleType.runMode.includes("INDIVIDUAL") &&
+                    setValue(`runMode[${index}].${id}.INDIVIDUAL`, true);
+                  vehicleType.runMode.includes("OUTSTATION") &&
+                    setValue(`runMode[${index}].${id}.OUTSTATION`, true);
+                } else {
+                  vehicleType.runMode.includes("RENTAL") &&
+                    setValue(`runMode[${index}].${id}.RENTAL`, false);
+                  vehicleType.runMode.includes("INDIVIDUAL") &&
+                    setValue(`runMode[${index}].${id}.INDIVIDUAL`, false);
+                  vehicleType.runMode.includes("OUTSTATION") &&
+                    setValue(`runMode[${index}].${id}.OUTSTATION`, false);
+                }
+              },
+            })}
             type="checkbox"
+            className="form-check-input"
           />
-          <label className="form-check-label">{ele.name}</label>
+          <label className="form-check-label">{vehicleType.name}</label>
         </div>
       </div>
-      <div style={{margin:"20px", display:"flex"}}>{runMode}</div>
-    </div>
+      <div className=" col-md-9">
+        <div className="d-flex justify-content-center">
+          {vehicleType.runMode.map((item) => (
+            <div className=" form-check d-flex align-items-center me-2">
+              <input
+                {...register(`runMode[${index}].${id}.${item}`)}
+                type="checkbox"
+                className="form-check-input"
+              />
+              <label className="form-check-label">{item}</label>
+            </div>
+          ))}
+        </div>
+      </div>
+    </Row>
   );
 }

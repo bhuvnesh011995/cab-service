@@ -14,7 +14,6 @@ import Addcountry from "./Component/Managment/CountryManagement/AddCountry";
 import StateManagement from "./Component/Managment/StateManagement/StateManagement";
 import AddState from "./Component/Managment/StateManagement/AddState";
 import CityManagement from "./Component/Managment/CityManagement/CityManageMent";
-import AddCity from "./Component/Managment/CityManagement/AddCity";
 import IndividualFareManagement from "./Component/Managment/IndividualFareManagement/IndividualFareManagement";
 import AddIndividualFare from "./Component/Managment/IndividualFareManagement/AddIndividualFare";
 import RentalPackageManagement from "./Component/Managment/RentalPackageManagement/RentalPackageManagement";
@@ -86,7 +85,6 @@ const router = createBrowserRouter([
       { path: "stateManagement", element: <StateManagement /> },
       { path: "addState", element: <AddState /> },
       { path: "cityManagement", element: <CityManagement /> },
-      { path: "addCity", element: <AddCity /> },
       { path: "vehicleTypeManagement", element: <VehicleTypeManagement /> },
       { path: "addVehicleType", element: <AddVehicleType /> },
       {
@@ -190,7 +188,7 @@ root.render(
         {/* </AuthProvider> */}
       </QueryClientProvider>
     </Provider>
-  </>,
+  </>
 );
 
 // If you want to start measuring performance in your app, pass a function
