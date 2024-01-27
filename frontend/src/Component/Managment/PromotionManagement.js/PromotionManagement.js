@@ -23,6 +23,8 @@ import {
   error,
   fetchPromotion,
   getAllPromotion,
+  getAllViewPromotion,
+  getViewPromotion,
   status,
   updatePromotionById,
 } from "../../../Redux/features/promotionReducer";
@@ -35,6 +37,7 @@ import {
   url,
 } from "../../../Redux/features/deleteModalReducer";
 import DeleteModalAdv from "../../../Common/deleteModalRedux";
+import ViewPromotion from "./ViewPromotion";
 
 const initialFilter = {
   title: "",
@@ -49,6 +52,7 @@ export default function PromotionManagement() {
   const [list, setList] = useState([]);
   const isOpen = useSelector(showDeleteModal);
   const [show, setShow] = useState(false);
+  const [openView, setOpenView] = useState(false);
   const deleteStatus = useSelector(deleteModalStatus);
   const id = useSelector((state) => state.delete.id);
   const URL = useSelector(url);
@@ -173,6 +177,10 @@ export default function PromotionManagement() {
           <div class="card">
             {isOpen && <DeleteModalAdv />}
             {show && <AddPromotion show={show} setShow={setShow} />}
+            {openView && (
+              <ViewPromotion show={openView} setShow={setOpenView} />
+            )}
+
             <div class="card-body">
               <div
                 style={{
@@ -244,7 +252,12 @@ export default function PromotionManagement() {
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
                   <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-                    <IconButton>
+                    <IconButton
+                      onClick={() => {
+                        dispatch(getViewPromotion({ id: row.original._id }));
+                        setOpenView(true);
+                      }}
+                    >
                       <RemoveRedEye />
                     </IconButton>
                     <IconButton

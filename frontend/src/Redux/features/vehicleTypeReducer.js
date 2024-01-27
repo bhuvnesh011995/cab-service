@@ -7,8 +7,32 @@ let initialState = {
   error: null,
   vehicleType: [],
   selectVehicleType: null,
+  viewVehicleType: null,
   message: "",
 };
+
+export const getVehicleTypes = createAsyncThunk(
+  "vehicleType/getVehicleType",
+  async (_, { rejectWithValue }) => {
+    try {
+      const url = BASE_URL + "/runMode/vehicleType/";
+      let response = await axios.get(url);
+      if (response.status === 200) {
+        return response.data;
+      } else
+        return rejectWithValue({
+          status: "error",
+          message: "error while fetching vehicleTypes",
+        });
+    } catch (error) {
+      console.log(error?.response);
+      return rejectWithValue({
+        status: "error",
+        message: "error while fetching vehicleTypes",
+      });
+    }
+  }
+);
 
 const addVehicleType = createAsyncThunk(
   "vehicleType/addVehicleType",
@@ -18,7 +42,6 @@ const addVehicleType = createAsyncThunk(
       const response = await axios.post(BASE_URL + "/vehicleType/", data, {
         headers: { "Content-Type": "multipart/form-data" },
       });
-
       if (response.status === 201) {
         return response.data;
       } else {
@@ -100,6 +123,32 @@ const updateVehicleType = createAsyncThunk(
   }
 );
 
+export const filterVehicleType = createAsyncThunk(
+  "vehicleType/filterVehicleType",
+  async ({ runMode, name, status } = {}, { rejectWithValue }) => {
+    try {
+      let url = new URL("/test/api/v1/vehicleType/filter", BASE_URL);
+      if (name) url.searchParams.set("name", name);
+      if (runMode) url.searchParams.set("runmode", runMode);
+      if (status) url.searchParams.set("status", status);
+      let response = await axios.get(url.href);
+      if (response.status === 200) return response.data;
+      else
+        return rejectWithValue({
+          status: "error",
+          data: response?.data?.message,
+        });
+    } catch (error) {
+      console.log(error.response);
+      return rejectWithValue({
+        status: "error",
+        message:
+          error?.response?.data?.message || "error while fetching contry",
+      });
+    }
+  }
+);
+
 const vehicleTypeSlice = createSlice({
   name: "vehicleType",
   initialState,
@@ -113,6 +162,16 @@ const vehicleTypeSlice = createSlice({
         obj.runMode[i] = { value: item._id, label: item.name };
       });
       state.selectVehicleType = obj;
+    },
+    getViewVehicleType: (state, action) => {
+      state.viewVehicleType = state.vehicleType.find(
+        (viewVehicleType) => viewVehicleType._id === action.payload.id
+      );
+      state.status = "view";
+    },
+
+    cleanViewVehicleType: (state, action) => {
+      state.viewVehicleType = null;
     },
     cleanSelectVehicleType: (state, action) => {
       state.selectVehicleType = null;
@@ -186,11 +245,34 @@ const vehicleTypeSlice = createSlice({
       state.status = "error";
       state.error = action.payload;
     });
+    builder.addCase(getVehicleTypes.fulfilled, (state, action) => {
+      state.vehicleType = action.payload;
+      state.error = null;
+      state.status = "fetched";
+    });
+    builder.addCase(getVehicleTypes.rejected, (state, action) => {
+      state.status = action.payload || {
+        status: "error",
+        message: "error while fetching vehcleType",
+      };
+    });
+    builder.addCase(filterVehicleType.fulfilled, (state, action) => {
+      state.status = "filtered";
+      state.vehicleType = action.payload;
+    });
+    builder.addCase(filterVehicleType.pending, (state, action) => {
+      state.status = "loading";
+      state.error = null;
+    });
+    builder.addCase(filterVehicleType.rejected, (state, action) => {
+      state.status = "error";
+      state.error = action.payload;
+    });
   },
 });
 
 export default vehicleTypeSlice.reducer;
-const getAllVehicleType = (state) => state.vehicleType.vehicleType;
+const getAllVehicleType = (state) => state.vehicleType?.vehicleType;
 export {
   addVehicleType,
   getAllVehicleType,
@@ -201,5 +283,11 @@ export const {
   updateVehicleTypeById,
   cleanSelectVehicleType,
   cleanVehicleTypeStatus,
+  viewVehicleType,
+  getViewVehicleType,
+  cleanViewVehicleType,
 } = vehicleTypeSlice.actions;
+
 export const getVehicleType = (state) => state.vehicleType.selectVehicleType;
+export const getAllViewVehicleType = (state) =>
+  state.vehicleType.viewVehicleType;

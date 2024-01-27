@@ -6,14 +6,12 @@ import {
   useJsApiLoader,
 } from "@react-google-maps/api";
 import * as AiIcons from "react-icons/ai";
+import { useSelector } from "react-redux";
+import { getCitiesTerritory } from "../../../Redux/features/cityReducer";
 
 const libraries = ["places", "drawing"];
-const MapService = ({ polygon, setPolygon, setData }) => {
+const MapService = () => {
   const mapRef = useRef();
-  const polygonRefs = useRef([]);
-  const activePolygonIndex = useRef();
-  const autocompleteRef = useRef();
-  const drawingManagerRef = useRef();
   // useEffect(() => {
   //    // Get the user's location using Geolocation API
   //   if ("geolocation" in navigator) {
@@ -37,11 +35,7 @@ const MapService = ({ polygon, setPolygon, setData }) => {
     nonce: "nonce-691d29db-ab00-4bf6-94fa-168373d2fb7e",
   });
 
-  const [polygons, setPolygons] = useState(polygon);
-
-  useEffect(() => {
-    setPolygons(polygon);
-  }, [polygon]);
+  const territories = useSelector(getCitiesTerritory);
 
   const defaultCenter = {
     lat: 27.626137,
@@ -63,75 +57,8 @@ const MapService = ({ polygon, setPolygon, setData }) => {
     editable: true,
   };
 
-  const drawingManagerOptions = {
-    polygonOptions: polygonOptions,
-    drawingControl: true,
-    drawingControlOptions: {
-      position: window.google?.maps?.ControlPosition?.TOP_CENTER,
-      drawingModes: [window.google?.maps?.drawing?.OverlayType?.POLYGON],
-    },
-  };
-
   const onLoadMap = (map) => {
     mapRef.current = map;
-  };
-
-  const onLoadPolygon = (polygon, index) => {
-    polygonRefs.current[index] = { id: polygons[index]._id, ref: polygon };
-  };
-
-  const onClickPolygon = (index) => {
-    activePolygonIndex.current = index;
-  };
-
-  const onLoadDrawingManager = (drawingManager) => {
-    drawingManagerRef.current = drawingManager;
-  };
-
-  const onOverlayComplete = ($overlayEvent) => {
-    drawingManagerRef.current.setDrawingMode(null);
-    if ($overlayEvent.type === window.google.maps.drawing.OverlayType.POLYGON) {
-      const newPolygon = $overlayEvent.overlay
-        .getPath()
-        .getArray()
-        .map((latLng) => ({ lat: latLng.lat(), lng: latLng.lng() }));
-
-      // start and end point should be same for valid geojson
-      const startPoint = newPolygon[0];
-      newPolygon.push(startPoint);
-      $overlayEvent.overlay?.setMap(null);
-      setPolygons([...polygons, { area: newPolygon }]);
-    }
-  };
-
-  const onDeleteDrawing = () => {
-    const filtered = polygons.filter(
-      (polygon, index) => index !== activePolygonIndex.current
-    );
-    setPolygons(filtered);
-  };
-
-  const onEditPolygon = (index) => {
-    const polygonRef = polygonRefs.current[index];
-    if (polygonRef) {
-      const coordinates = polygonRef.ref
-        .getPath()
-        .getArray()
-        .map((latLng) => ({ lat: latLng.lat(), lng: latLng.lng() }));
-
-      const allPolygons = [...polygons];
-      allPolygons[index].area = coordinates;
-      setPolygon(allPolygons);
-      console.log(coordinates);
-      setData((preVal) =>
-        preVal.map((ele) => {
-          if (ele._id === polygonRef.id) {
-            ele.update = true;
-          }
-          return ele;
-        })
-      );
-    }
   };
 
   return isLoaded ? (
@@ -143,21 +70,11 @@ const MapService = ({ polygon, setPolygon, setData }) => {
         mapContainerStyle={containerStyle}
         onTilesLoaded={() => setCenter(null)}
       >
-        <DrawingManager
-          onLoad={onLoadDrawingManager}
-          options={drawingManagerOptions}
-        />
-        {polygons.map((iterator, index) => (
+        {territories.map((iterator, index) => (
           <Polygon
             key={iterator._id}
-            onLoad={(event) => onLoadPolygon(event, index)}
-            onMouseDown={() => onClickPolygon(index)}
-            onMouseUp={() => onEditPolygon(index)}
-            onDragEnd={() => onEditPolygon(index)}
             options={polygonOptions}
             paths={iterator.area}
-            draggable
-            editable
           />
         ))}
       </GoogleMap>

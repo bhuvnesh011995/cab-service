@@ -8,8 +8,30 @@ let initialState = {
   status: "idle",
   error: null,
   city: null,
+  territories: [],
 };
 
+export const addCity = createAsyncThunk(
+  "city/addCity",
+  async (data, { rejectWithValue }) => {
+    try {
+      let url = BASE_URL + "/city";
+      let response = await axios.post(url, data);
+      if (response.status === 201) return response.data;
+      else
+        return rejectWithValue({
+          status: "error",
+          message: "error while adding city",
+        });
+    } catch (error) {
+      console.log(error.response);
+      return rejectWithValue({
+        status: "error",
+        message: "error while adding city",
+      });
+    }
+  }
+);
 export const filterCities = createAsyncThunk(
   "cities/filter",
   async ({ text }, { rejectWithValue }) => {
@@ -29,27 +51,6 @@ export const filterCities = createAsyncThunk(
       return rejectWithValue({
         status: "error",
         message: error.response.data?.message || "error while fetching cities",
-      });
-    }
-  }
-);
-
-export const AddCity = createAsyncThunk(
-  "city/addCity",
-  async (cityData, { rejectWithValue }) => {
-    try {
-      const response = await axios.post(`${BASE_URL}/city`, cityData);
-      if (response.status === 201) return response.data;
-      else
-        return rejectWithValue({
-          status: "error",
-          message: response.data?.message || "error while adding city",
-        });
-    } catch (error) {
-      console.log(error.response);
-      return rejectWithValue({
-        status: "error",
-        message: error.response?.data?.message || "error while adding city",
       });
     }
   }
@@ -160,6 +161,7 @@ const citySlice = createSlice({
     builder.addCase(filterCities.fulfilled, (state, action) => {
       state.status = "filtered";
       state.cities = action.payload;
+      state.territories = action.payload.map((city) => city.territory);
     });
     builder.addCase(filterCities.pending, (state, action) => {
       state.status = "loading";
@@ -172,16 +174,16 @@ const citySlice = createSlice({
         message: "error while fetching cities",
       };
     });
-    builder.addCase(AddCity.fulfilled, (state, action) => {
+    builder.addCase(addCity.fulfilled, (state, action) => {
       state.status = "added";
-      state.countries.push(action.payload);
+      state.cities.push(action.payload);
       state.error = null;
     });
-    builder.addCase(AddCity.pending, (state, action) => {
+    builder.addCase(addCity.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(AddCity.rejected, (state, action) => {
+    builder.addCase(addCity.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload || { message: "some error occured" };
     });
@@ -233,3 +235,4 @@ export const { emptyCities, clearCityStatus, updateCityData, clearCity } =
   citySlice.actions;
 export const cityError = (state) => state.cities.error;
 export const getCity = (state) => state.cities.city;
+export const getCitiesTerritory = (state) => state.cities.territories;
