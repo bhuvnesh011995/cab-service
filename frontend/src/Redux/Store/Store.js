@@ -16,6 +16,7 @@ import promotionReducer from "../features/promotionReducer";
 import tollReducer from "../features/tollReducer";
 import rentalFareReducer from "../features/rentalFareReducer";
 import emailTemplateReducer from "../features/emailTemplateReducer";
+import smsTemplateReducer from "../features/smsTemplateReducer";
 
 export default configureStore({
   reducer: {
@@ -34,6 +35,6 @@ export default configureStore({
     toll: tollReducer,
     promotion: promotionReducer,
     rentalFare: rentalFareReducer,
-    emailTemplate: emailTemplateReducer,
+    smsTemplate: smsTemplateReducer,
   },
 });
