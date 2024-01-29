@@ -3,8 +3,7 @@ const { Schema, model, trusted } = require("mongoose");
 const schema = new Schema(
   {
     profilePhoto: {
-      data: Buffer,
-      contentType: String,
+      type: String,
     },
     firstName: {
       type: String,
@@ -22,32 +21,30 @@ const schema = new Schema(
     },
     password: {
       type: String,
-      required:true
+      required: true,
     },
     DOB: {
       type: Date,
     },
 
-    status:{
-        type:String,
-        required:true,
-        default:"INACTIVE",
-        enum:["ACTIVE","INACTIVE"]
+    status: {
+      type: String,
+      required: true,
+      default: "INACTIVE",
+      enum: ["ACTIVE", "INACTIVE"],
     },
 
     wallet: { type: Schema.Types.ObjectId, ref: "Wallet" },
 
-    address: {
-        place:{ type: String, required: true },
+    place: { type: String, required: true },
 
-        country: { type: Schema.Types.ObjectId, ref: "Country", required:true },
+    country: { type: Schema.Types.ObjectId, ref: "Country", required: true },
 
-        state: { type: Schema.Types.ObjectId, ref: "State", required:true },
-    
-        city: { type: Schema.Types.ObjectId, ref: "City", required: true },
+    state: { type: Schema.Types.ObjectId, ref: "State", required: true },
 
-        pincode: { type: Number, required: true },
-    },
+    city: { type: Schema.Types.ObjectId, ref: "City", required: true },
+
+    pincode: { type: Number, required: true },
 
     gender: { type: String, required: true, enum: ["MALE", "FEMALE"] },
 
@@ -65,12 +62,12 @@ const schema = new Schema(
       type: Boolean,
       default: false,
     },
-    varifiedBy:{type:Schema.Types.ObjectId,ref:"Admin"}
+    varifiedBy: { type: Schema.Types.ObjectId, ref: "Admin" },
   },
   {
     timestamps: true,
     collection: "Rider",
-  }
+  },
 );
 
 schema.index({
