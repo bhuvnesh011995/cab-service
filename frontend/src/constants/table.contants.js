@@ -52,3 +52,14 @@ export const sosTableHeaders = {
   lng: "Longitude",
   createdAt: "Created At",
 };
+
+export const riderTableHeaders = {
+  index: "Sr No",
+  profilePhoto: "Photo",
+  firstName: "Name",
+  email: "Email",
+  mobile: "Mobile",
+  wallet: "Wallet",
+  status: "status",
+  verified: "Verified",
+};
