@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import JoditEditor from "jodit-react";
 import "react-quill/dist/quill.snow.css";
 import Select from "react-select";
@@ -58,7 +58,9 @@ export default function AddEmailTemplate({ show, setShow, viewModal, id }) {
   return (
     <Modal show={show} size='lg' onHide={handleClose}>
       <Modal.Header closeButton>
-        <Modal.Title>Add Email Template</Modal.Title>
+        <Modal.Title>
+          {id ? (viewModal ? "View" : "Update") : "Add"} Email Template
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div
@@ -153,12 +155,14 @@ export default function AddEmailTemplate({ show, setShow, viewModal, id }) {
                   }
                 />
                 <Modal.Footer>
-                  <button
-                    type='submit'
-                    className='btn me-3 btn-outline-primary waves-effect waves-light'
-                  >
-                    Add Template
-                  </button>
+                  {!viewModal && (
+                    <button
+                      type='submit'
+                      className='btn me-3 btn-outline-primary waves-effect waves-light'
+                    >
+                      {id ? "Update" : "Add"} Template
+                    </button>
+                  )}
                   <button
                     onClick={handleClose}
                     type='button'

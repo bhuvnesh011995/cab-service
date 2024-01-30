@@ -1,21 +1,13 @@
-import { useNavigate } from "react-router-dom";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Management_container from "../../Common/Management_container";
 import Text_Input from "../../Common/Inputs/Text_Input";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import Selection_Input from "../../Common/Inputs/Selection_input";
-import Table from "../../Common/Table";
-import BASE_URL from "../../../config/config";
-import * as tiIcons from "react-icons/ti";
-import * as rsIcons from "react-icons/rx";
-import { MaterialReactTable } from "material-react-table";
-import {
-  RemoveRedEye,
-  Lock,
-  ModeEditOutline,
-  DeleteForever,
-} from "@mui/icons-material/";
-import { Box, IconButton } from "@mui/material";
+import { CommonDataTable } from "../../../Common/commonDataTable";
+import { riderTableHeaders } from "../../../constants/table.contants";
+import AddRider from "./AddRider";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllRiders, getRiders } from "../../../Redux/features/riderReducer";
 
 const initialState = {
   name: "",
@@ -24,148 +16,45 @@ const initialState = {
   status: "",
 };
 export default function RiderManagement() {
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [filter, setFilter] = useState(initialState);
-  const [list, setList] = useState();
+  const [id, setId] = useState(null);
+  const [viewRiderManagement, setViewRiderManagement] = useState(false);
+  const [deleteRiderManagement, setDeleteRiderManagement] = useState(false);
+  const [deleteInfo, setDeleteInfo] = useState(null);
+  const [riderManagementModal, setRiderManagementModal] = useState(false);
+  const riders = useSelector(getRiders);
 
   useEffect(() => {
-    fetch(BASE_URL + "/rider/filter/", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) =>{
-        let arr = [];
-        data?.riders?.map((ele, i) => {
-          arr.push({
-            index: i + 1,
-            firstName: ele.firstName,
-            lastName: ele.lastName,
-            photo: ele.firstName,
-            email: ele.email,
-            mobile: ele.mobile,
-            wallet: ele.wallet.balance,
-            status: ele.status,
-            verified:ele.verified ? <tiIcons.TiTick /> : <rsIcons.RxCross2 />
-          });
-        });
-        setList(arr);
-      }
-        // setList(
-        //   data.riders.map((ele, i) => {
-        //     return (
-        //       <tr key={i}>
-        //         <td>{i + 1}</td>
-        //         <td>{ele.firstName + " " + ele.lastName}</td>
-        //         <td>{ele.firstName + " " + ele.lastName}</td>
-        //         <td>{ele.email}</td>
-        //         <td>{ele.mobile}</td>
-        //         <td>{ele.wallet.balance}</td>
-        //         <td>{ele.status}</td>
-        //         <td>
-        //           {ele.varified ? <tiIcons.TiTick /> : <rsIcons.RxCross2 />}
-        //         </td>
-        //         <td>""</td>
-        //       </tr>
-        //     );
-        //   })
-        // )
-      );
-  }, []);
+    dispatch(getAllRiders(filter));
+  }, [filter]);
 
+  const updateRiderManagement = (data, type, index) => {
+    setId(data?._id);
+    if (type == "view") {
+      setViewRiderManagement(true);
+      setDeleteRiderManagement(false);
+    } else if (type == "delete") {
+      setViewRiderManagement(false);
+      setDeleteRiderManagement(true);
+      setDeleteInfo(data);
+    } else {
+      setViewRiderManagement(false);
+      setDeleteRiderManagement(false);
+    }
+    if (type !== "delete") setRiderManagementModal(true);
+  };
 
-  const columns = useMemo(
-    () => [
-      {
-        accessorKey: "index",
-        header: "Sr No",
-        size: 50,
-      },
-      {
-        accessorKey: "photo",
-        header: "Photo",
-        size: 20,
-      },
-      {
-        accessorFn: (row) => `${row.firstName} ${row.lastName}`,
-        id: 'name',
-        header: 'Name',
-      },
-      {
-        accessorKey:"email",
-        header:"Email",
-      },
-      {
-        accessorKey:"mobile",
-        header:"Mobile",
-        size:100
-      },
-      {
-        accessorKey:"wallet",
-        header:"Wallet",
-        size:20
-      },
-      {
-        accessorKey: "status",
-        header: "status",
-        size: 80,
-      },
-      {
-        accessorKey: "verified",
-        header: "Verified",
-        size:20
-      },
-    ],
-    []
-  );
-
-  function handleClick() {
-    navigate("/addRider");
+  function reset() {
+    setFilter({ ...initialState });
   }
-
-  function handleSubmit() {
-    fetch(
-      BASE_URL +
-        "/rider/filter?name=" +
-        filter.name +
-        "&email=" +
-        filter.email +
-        "&mobile=" +
-        filter.mobile +
-        "&status=" +
-        filter.status,
-      {
-        method: "GET",
-      }
-    ).then(res=>res.json())
-    .then(data=>{
-        if(data.success){
-          let arr = [];
-          data?.riders?.map((ele, i) => {
-            arr.push({
-              index: i + 1,
-              firstname: ele.firstName,
-              lastname: ele.lastName,
-              photo: ele.firstName,
-              email: ele.email,
-              mobile: ele.mobile,
-              wallet: ele.wallet.balance,
-              status: ele.status,
-              verified:ele.varified ? <tiIcons.TiTick /> : <rsIcons.RxCross2 />
-            });
-          });
-          setList(arr);
-        }
-    })
-  }
-
-  function reset() {}
 
   return (
     <Management_container title={"Rider Management"}>
-      <div class="row">
-        <div class="col-lg-13">
-          <div class="card">
-            <div class="card-body">
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
+            <div class='card-body'>
               <div
                 style={{
                   display: "flex",
@@ -173,11 +62,14 @@ export default function RiderManagement() {
                   zIndex: "2",
                 }}
               >
-                <BtnDark handleClick={handleClick} title={"Add Rider"} />
+                <BtnDark
+                  handleClick={() => updateRiderManagement()}
+                  title={"Add Rider"}
+                />
               </div>
               <form style={{ margin: "50px" }}>
-                <div className="row">
-                  <div className="col-lg-2 inputField">
+                <div className='row'>
+                  <div className='col-lg-2 inputField'>
                     <Text_Input
                       input={filter}
                       setInput={setFilter}
@@ -205,40 +97,45 @@ export default function RiderManagement() {
                     />
 
                     <div style={{ margin: "20px", marginTop: "50px" }}>
-                      <BtnDark handleClick={handleSubmit} title={"Search"} />
-
                       <BtnDark handleClick={reset} title={"Reset"} />
                     </div>
                   </div>
                 </div>
               </form>
 
-              <MaterialReactTable
-      columns={columns}
-      data={list || []}
-      enableRowActions
-      positionActionsColumn={'last'}
-      renderRowActions={({row,table})=>(
-        <Box sx={{ display: 'flex', flexWrap: 'nowrap', gap: '1px' }}>
-          <IconButton>
-            <RemoveRedEye />
-          </IconButton>
-          <IconButton>
-            <Lock />
-          </IconButton>
-          <IconButton>
-            <ModeEditOutline />
-          </IconButton>
-          <IconButton>
-            <DeleteForever />
-          </IconButton>
-        </Box>
-      )}
-      />
+              <CommonDataTable
+                data={riders}
+                tableHeaders={riderTableHeaders}
+                actionButtons
+                editButton
+                deleteButton
+                viewButton
+                callback={(data, type, index) =>
+                  updateRiderManagement(data, type, index)
+                }
+                // changeSelectedColumnDataDesign={["profilePhoto"]}
+                // changedDataCellColumn={(header,accesor) => {
+                //   return {
+                //     header:header,
+                //     Cell:({row}) => <div>
+                //       <img src={}/>
+                //     </div>
+                //   }
+
+                // }}
+              />
             </div>
           </div>
         </div>
       </div>
+      {riderManagementModal && (
+        <AddRider
+          show={riderManagementModal}
+          setShow={setRiderManagementModal}
+          viewModal={viewRiderManagement}
+          id={id}
+        />
+      )}
     </Management_container>
   );
 }

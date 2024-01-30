@@ -1,4 +1,5 @@
-const app = require("express")();
+const express = require("express");
+const app = express();
 const { admin, service, setting } = require("./model/index");
 const dbConfig = require("./config/db.config");
 const mongoose = require("mongoose");
@@ -9,6 +10,7 @@ const dbs = require("./model/index");
 const runmodeConstant = require("./constant/runmode.constant");
 const cors = require("cors");
 const { ErrorHandler } = require("./middleware/errorHandler");
+const path = require("path");
 
 //database connection with confirmation
 
@@ -28,6 +30,7 @@ db.once("open", () => {
   init();
 });
 
+app.use(express.static(path.join(__dirname, "uploads")));
 //initialize with active admin if not present create one
 async function init() {
   //   await service.insertMany([{
@@ -129,6 +132,8 @@ require("./routes/tolls.route.js")(app);
 require("./routes/manufacturer.route")(app);
 require("./routes/rentalFares.route.js")(app);
 require("./routes/emailTemplate.route.js")(app);
+require("./routes/SOSs.route.js")(app);
+require("./routes/riders.route.js")(app);
 
 app.use(ErrorHandler);
 
