@@ -37,6 +37,28 @@ export const filterSmsTemplate = createAsyncThunk(
   }
 );
 
+export const deleteSmsTemplate = createAsyncThunk(
+  "smsTemplate/deleteSmsTemplate",
+  async ({ url, id }, { rejectWithValue }) => {
+    try {
+      let response = await axios.delete(url);
+      if (response.status === 204) return { id };
+      else
+        return rejectWithValue({
+          status: "error",
+          message: response.data.message ?? "error while deleting sms template",
+        });
+    } catch (error) {
+      console.log(error, "err");
+      return rejectWithValue({
+        status: "error",
+        message:
+          error.response.data.message ?? "error while deleting sms template",
+      });
+    }
+  }
+);
+
 const smsTemplateSlice = createSlice({
   name: "smsTemplate",
   initialState,
@@ -66,6 +88,57 @@ const smsTemplateSlice = createSlice({
       state.error = action.payload || {
         status: "error",
         message: "error while fetching templete",
+      };
+    });
+
+    builder.addCase(addSms.fulfilled, (state, action) => {
+      state.smsTemplates.push(action.payload);
+      state.status = "added";
+      state.error = null;
+    });
+
+    builder.addCase(addSms.pending, (state, action) => {
+      state.status = "loading";
+      state.error = null;
+    });
+    builder.addCase(addSms.rejected, (state, action) => {
+      state.status = "error";
+      state.error = action.payload || {
+        status: "error",
+        message: "error while adding sms template",
+      };
+    });
+    builder.addCase(updateSmsTemplate.fulfilled, (state, action) => {
+      state.smsTemplates = state.smsTemplates.map((item) =>
+        item._id === action.payload._id ? action.payload : item
+      );
+      state.status = "updated";
+      state.error = null;
+    });
+    builder.addCase(updateSmsTemplate.pending, (state, action) => {
+      state.status = "loading";
+      state.error = null;
+    });
+    builder.addCase(updateSmsTemplate.rejected, (state, action) => {
+      state.status = "error";
+      state.error = action.payload || {
+        status: "error",
+        message: "error while updating sms template",
+      };
+    });
+
+    builder.addCase(deleteSmsTemplate.fulfilled, (state, action) => {
+      state.smsTemplates = state.smsTemplates.filter(
+        (item) => item._id !== action.payload.id
+      );
+      state.status = "deleted";
+    });
+
+    builder.addCase(deleteSmsTemplate.rejected, (state, action) => {
+      state.status = "error";
+      state.error = action.payload || {
+        status: "error",
+        message: "error while deleting sms template",
       };
     });
   },

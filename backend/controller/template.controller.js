@@ -78,3 +78,13 @@ exports.filterSmsTemplate = async function (req, res, next) {
     next(error);
   }
 };
+
+exports.deleteSmsTemplate = async (req, res, next) => {
+  try {
+    await db.smsTemplate.deleteOne({ _id: req.params.id });
+
+    res.status(204).end();
+  } catch (error) {
+    next(error);
+  }
+};
