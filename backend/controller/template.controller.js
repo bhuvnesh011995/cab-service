@@ -40,19 +40,9 @@ exports.filterEmailTemplate = async function (req, res, next) {
 
 exports.addSmsTemplate = async function (req, res, next) {
   try {
-    let { title, body, forUsers, status } = req.body;
+    let template = await db.smsTemplate.create(req.body);
 
-    await db.smsTemplate.create({
-      title,
-      body,
-      forUsers,
-      status,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "Template Created Successfully",
-    });
+    res.status(201).json(template);
   } catch (error) {
     next(error);
   }
@@ -60,20 +50,49 @@ exports.addSmsTemplate = async function (req, res, next) {
 
 exports.filterSmsTemplate = async function (req, res, next) {
   try {
-    let { title, status, forUsers } = req.query;
+    const { title, forUsers, status } = req.query;
 
-    if (!title && !status && !forUsers) {
-      var templates = await db.smsTemplate.find({});
-    } else {
-      templates = await db.smsTemplate.find({
-        $or: [{ title }, { status }, { forUsers }],
+    let query = [{ $match: { $or: [] } }];
+
+    if (title)
+      query[0].$match.$or.push({ title: { $regex: title, $options: "i" } });
+    if (forUsers)
+      query[0].$match.$or.push({
+        forUsers: { $regex: forUsers, $options: "i" },
       });
+    if (status) query[0].$match.$or.push({ status });
+
+    if (!title && !forUsers && !status) {
+      query[0].$match = {};
     }
 
-    res.status(200).json({
-      success: true,
-      templates,
-    });
+    let templates = await db.smsTemplate.aggregate(query);
+
+    res.status(200).json(templates);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateSmsTemplate = async (req, res, next) => {
+  try {
+    let smsTemplate = await db.smsTemplate.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: req.body },
+      { new: true }
+    );
+
+    res.status(200).json(smsTemplate);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.deleteSmsTemplate = async (req, res, next) => {
+  try {
+    await db.smsTemplate.deleteOne({ _id: req.params.id });
+
+    res.status(204).end();
   } catch (error) {
     next(error);
   }
