@@ -2,6 +2,7 @@ import { useForm } from "react-hook-form";
 import { Modal } from "react-bootstrap";
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 import {
   fetchCountries,
   getCountries,
@@ -16,8 +17,13 @@ import {
   fetchCities,
   getCities,
 } from "../../../Redux/features/cityReducer";
-import { addRiderReducer } from "../../../Redux/features/riderReducer";
-import BASE_URL, { IMAGE_URL } from "../../../config/config";
+import {
+  addRiderReducer,
+  emptySelectedReducer,
+  getSelectedRider,
+  getSelectedRiderReducer,
+} from "../../../Redux/features/riderReducer";
+import { IMAGE_URL } from "../../../config/config";
 
 export default function AddRider({ viewModal, show, setShow, id }) {
   const dispatch = useDispatch();
@@ -27,18 +33,23 @@ export default function AddRider({ viewModal, show, setShow, id }) {
     handleSubmit,
     formState: { errors },
     reset,
+    setValue,
   } = useForm();
   const cities = useSelector(getCities);
   const states = useSelector(getStates);
   const countries = useSelector(getCountries);
+  const selectedRider = useSelector(getSelectedRider);
 
   useEffect(() => {
     dispatch(fetchCountries());
+    if (id) dispatch(getSelectedRiderReducer(id));
   }, []);
 
   useEffect(() => {
-    dispatch(fetchCountries());
-  }, []);
+    if (selectedRider) {
+      reset(selectedRider);
+    }
+  }, [selectedRider]);
 
   useEffect(() => {
     dispatch(emptyStates());
@@ -55,6 +66,7 @@ export default function AddRider({ viewModal, show, setShow, id }) {
 
   const handleCancel = () => {
     setShow(false);
+    dispatch(emptySelectedReducer());
   };
 
   const addNewRider = (data) => {
@@ -62,6 +74,7 @@ export default function AddRider({ viewModal, show, setShow, id }) {
     formData.append("data", JSON.stringify(data));
     formData.append("file", data.userImage[0]);
     dispatch(addRiderReducer(formData));
+    handleCancel();
   };
 
   return (
@@ -94,23 +107,29 @@ export default function AddRider({ viewModal, show, setShow, id }) {
                     className='row'
                     style={{ height: "100px", width: "100px" }}
                     src={
-                      watch("userImage")?.length &&
-                      URL.createObjectURL(watch("userImage")[0])
-                      // : process.env.GET_IMAGE_URL +
-                      //   "dixxi1707096954835tongaG.png"
+                      watch("userImage")?.length
+                        ? watch("userImage")[0]?.name
+                          ? URL.createObjectURL(watch("userImage")[0])
+                          : IMAGE_URL + watch("userImage")
+                        : ""
                     }
                   />
-                  <input
-                    type='file'
-                    {...register("userImage", {
-                      required: "Please Select Your Image",
-                    })}
-                  />
-                  {errors?.userImage && (
+                  {!viewModal && (
+                    <input
+                      type={"file"}
+                      {...register(
+                        "userImage",
+                        // {
+                        //   required: "Please Select Your Image",
+                        // }
+                      )}
+                    />
+                  )}
+                  {/* {errors?.userImage && (
                     <span className='text-danger'>
                       {errors.userImage.message}
                     </span>
-                  )}
+                  )} */}
                 </div>
                 <div className='m-3'>
                   <label className='form-label'>First Name :</label>
@@ -210,6 +229,8 @@ export default function AddRider({ viewModal, show, setShow, id }) {
                       required: "Please Enter Date Of Birth",
                     })}
                     type='date'
+                    value={moment(watch("DOB")).format("YYYY-MM-DD")}
+                    onChange={({ target }) => setValue("DOB", target.value)}
                   />
                   {errors?.DOB && (
                     <span className='text-danger'>{errors.DOB.message}</span>
@@ -227,7 +248,14 @@ export default function AddRider({ viewModal, show, setShow, id }) {
                   >
                     <option value=''>select</option>
                     {countries.map((country) => (
-                      <option value={country._id}>{country.name}</option>
+                      <option
+                        value={country._id}
+                        selected={
+                          watch("country") == country._id && country._id
+                        }
+                      >
+                        {country.name}
+                      </option>
                     ))}
                   </select>
                   {errors?.country && (
@@ -248,7 +276,12 @@ export default function AddRider({ viewModal, show, setShow, id }) {
                   >
                     <option value=''>select</option>
                     {states.map((state) => (
-                      <option value={state._id}>{state.name}</option>
+                      <option
+                        value={state._id}
+                        selected={watch("state") == state._id && state._id}
+                      >
+                        {state.name}
+                      </option>
                     ))}
                   </select>
                   {errors?.state && (
@@ -267,7 +300,12 @@ export default function AddRider({ viewModal, show, setShow, id }) {
                   >
                     <option value=''>select</option>
                     {cities.map((city) => (
-                      <option value={city._id}>{city.name}</option>
+                      <option
+                        value={city._id}
+                        selected={watch("city") == city._id && city._id}
+                      >
+                        {city.name}
+                      </option>
                     ))}
                   </select>
                   {errors?.city && (
@@ -370,25 +408,22 @@ export default function AddRider({ viewModal, show, setShow, id }) {
                   <input class='form-control' disabled='true' type={"text"} />
                 </div>
                 <Modal.Footer>
-                  <div
-                    className='mb-3'
-                    style={{ display: "flex", justifyContent: "center" }}
-                  >
+                  {!viewModal && (
                     <button
                       type='submit'
                       className='btn me-3 btn-outline-primary waves-effect waves-light'
                       disabled={viewModal}
                     >
-                      Add Rider
+                      {id ? "Update " : "Add"} Rider
                     </button>
-                    <button
-                      onClick={handleCancel}
-                      type='button'
-                      className='btn me-3 btn-outline-danger waves-effect waves-light'
-                    >
-                      Cancel
-                    </button>
-                  </div>
+                  )}
+                  <button
+                    onClick={handleCancel}
+                    type='button'
+                    className='btn me-3 btn-outline-danger waves-effect waves-light'
+                  >
+                    Cancel
+                  </button>
                 </Modal.Footer>
               </form>
             </div>

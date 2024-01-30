@@ -7,7 +7,12 @@ import { CommonDataTable } from "../../../Common/commonDataTable";
 import { riderTableHeaders } from "../../../constants/table.contants";
 import AddRider from "./AddRider";
 import { useDispatch, useSelector } from "react-redux";
-import { getAllRiders, getRiders } from "../../../Redux/features/riderReducer";
+import {
+  deleteRiderReducer,
+  getAllRiders,
+  getRiders,
+} from "../../../Redux/features/riderReducer";
+import DeleteModal from "../../DeleteModel/DeleteModel";
 
 const initialState = {
   name: "",
@@ -48,6 +53,10 @@ export default function RiderManagement() {
   function reset() {
     setFilter({ ...initialState });
   }
+
+  const deleteModel = () => {
+    dispatch(deleteRiderReducer(id));
+  };
 
   return (
     <Management_container title={"Rider Management"}>
@@ -136,6 +145,13 @@ export default function RiderManagement() {
           id={id}
         />
       )}
+      <DeleteModal
+        info={deleteInfo}
+        show={deleteRiderManagement}
+        setShow={setDeleteRiderManagement}
+        handleDelete={deleteModel}
+        arg={id}
+      />
     </Management_container>
   );
 }

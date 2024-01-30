@@ -2,7 +2,7 @@ const { Schema, model, trusted } = require("mongoose");
 
 const schema = new Schema(
   {
-    profilePhoto: {
+    userImage: {
       type: String,
     },
     firstName: {
