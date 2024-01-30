@@ -3,7 +3,7 @@ const db = require("../model/index");
 exports.addRider = async (req, res, next) => {
   try {
     const body = JSON.parse(req.body.data);
-    body["profilePhoto"] = req.file.filename;
+    body["userImage"] = req.file.filename;
     if (body?._id) {
       const findRider = await db.rider.findOne({ _id: body?._id });
       if (findRider) {
@@ -30,7 +30,7 @@ exports.getAllRiders = async (req, res, next) => {
   try {
     const riderQuery = {};
     if (req.query.name.length) {
-      riderQuery["name"] = { $regex: req.query.name };
+      riderQuery["firstName"] = { $regex: req.query.name };
     }
     if (req.query.email.length) {
       riderQuery["email"] = { $regex: req.query.email };
