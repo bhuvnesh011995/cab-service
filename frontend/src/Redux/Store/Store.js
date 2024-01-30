@@ -18,6 +18,7 @@ import rentalFareReducer from "../features/rentalFareReducer";
 import emailTemplateReducer from "../features/emailTemplateReducer";
 import smsTemplateReducer from "../features/smsTemplateReducer";
 import riderReducer from "../features/riderReducer";
+import pageReducer from "../features/pageReducer";
 
 export default configureStore({
   reducer: {
@@ -39,5 +40,6 @@ export default configureStore({
     smsTemplate: smsTemplateReducer,
     emailTemplate: emailTemplateReducer,
     rider: riderReducer,
+    pages: pageReducer,
   },
 });

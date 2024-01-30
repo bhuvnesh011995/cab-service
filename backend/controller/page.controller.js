@@ -15,19 +15,9 @@ exports.getAllPages = async function (req, res, next) {
 
 exports.addPage = async function (req, res, next) {
   try {
-    const { name, description, key } = req.body;
+    let page = await db.page.create(req.body);
 
-    let page = await db.page.create({
-      name: name,
-      metaDescription: description,
-      metaKey: key,
-    });
-
-    res.status(200).json({
-      success: true,
-      message: "page Created",
-      page: page,
-    });
+    res.status(201).json(page);
   } catch (error) {
     next(error);
   }
@@ -36,26 +26,19 @@ exports.addPage = async function (req, res, next) {
 exports.filterPage = async function (req, res, next) {
   try {
     const { search } = req.query;
-
-    if (!search) {
-      let allPages = await db.page.find({});
-
-      res.status(200).json({
-        success: true,
-        pages: allPages,
-      });
-    } else {
-      let pages = await db.page.find({
-        $text: {
-          $search: search,
+    let query = [];
+    if (!search) query.push({ $match: {} });
+    else
+      query.push({
+        $match: {
+          $text: {
+            $search: search,
+          },
         },
       });
+    let pages = await db.page.aggregate(query);
 
-      res.status(200).json({
-        success: true,
-        pages: pages,
-      });
-    }
+    res.status(200).json(pages);
   } catch (error) {
     next(error);
   }

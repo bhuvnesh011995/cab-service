@@ -6,6 +6,8 @@ import BASE_URL from "../../../config/config";
 import { useNavigate } from "react-router-dom";
 import { Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
+import { useDispatch } from "react-redux";
+import { addPage } from "../../../Redux/features/pageReducer";
 
 const initialState = {
   name: "",
@@ -108,12 +110,16 @@ export const AddNewPage = ({ show, setShow }) => {
     control,
     formState: { errors, dirtyFields, isDirty },
   } = useForm();
+  const dispatch = useDispatch();
+  function onSubmit(data) {
+    dispatch(addPage(data));
+  }
   return (
     <Modal size="md" show={show} onHide={() => setShow(false)}>
       <Modal.Header closeButton>
         <Modal.Title>Add New Page</Modal.Title>
       </Modal.Header>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Modal.Body>
           <Row>
             <div className="col-md-3 mb-3">
@@ -134,7 +140,7 @@ export const AddNewPage = ({ show, setShow }) => {
 
             <div className="col-md-3 mb-3">
               <label className="form-label" htmlFor="name">
-                Name :{" "}
+                Meta Description :{" "}
               </label>
             </div>
             <div className="col-md-9 mb-3">
@@ -154,7 +160,7 @@ export const AddNewPage = ({ show, setShow }) => {
 
             <div className="col-md-3 mb-3">
               <label className="form-label" htmlFor="name">
-                Name :{" "}
+                Meta Key :{" "}
               </label>
             </div>
             <div className="col-md-9 mb-3">
