@@ -43,3 +43,31 @@ exports.filterPage = async function (req, res, next) {
     next(error);
   }
 };
+
+exports.deletePage = async (req, res, next) => {
+  try {
+    let result = await db.page.deleteOne({ _id: req.params.id });
+
+    if (result.deletedCount === 1) return res.status(204).end();
+    else
+      return res
+        .status(400)
+        .json({ message: "some error occured, no page deleted" });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updatePage = async (req, res, next) => {
+  try {
+    let page = await db.page.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: req.body },
+      { new: true }
+    );
+
+    res.status(200).json(page);
+  } catch (error) {
+    next(error);
+  }
+};

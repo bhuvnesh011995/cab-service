@@ -13,13 +13,25 @@ import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import {
   clearPageStatus,
+  deletePage,
   filterPage,
   getPageError,
   getPageStatus,
   getPages,
+  pageToUpdate,
 } from "../../../Redux/features/pageReducer";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
+import {
+  showDeleteModal,
+  status as deleteModalStatus,
+  url,
+  doneDelete,
+  openModal,
+  closeModal,
+} from "../../../Redux/features/deleteModalReducer";
+import DeleteModalAdv from "../../../Common/deleteModalRedux";
+import BASE_URL from "../../../config/config";
 
 export default function PageManagement() {
   const { register, handleSubmit } = useForm();
@@ -29,6 +41,17 @@ export default function PageManagement() {
   const pages = useSelector(getPages);
   const error = useSelector(getPageError);
   const status = useSelector(getPageStatus);
+
+  const show = useSelector(showDeleteModal);
+  const deleteStatus = useSelector(deleteModalStatus);
+  const id = useSelector((state) => state.delete.id);
+  const URL = useSelector(url);
+  useEffect(() => {
+    if (deleteStatus === "delete") {
+      dispatch(deletePage({ url: URL, id }));
+      dispatch(doneDelete());
+    }
+  }, [deleteStatus, URL, id]);
 
   useEffect(() => {
     if (ready) dispatch(filterPage({}));
@@ -42,10 +65,12 @@ export default function PageManagement() {
       dispatch(clearPageStatus());
     } else if (status === "updated") {
       toast.success("page updated successfully");
+      setIsOpen(false);
       dispatch(clearPageStatus);
     } else if (status === "deleted") {
       toast.success("page deleted successfully");
       dispatch(clearPageStatus());
+      dispatch(closeModal());
     } else if (status === "error") {
       toast.error(error.message || "some error occured");
       dispatch(clearPageStatus());
@@ -80,6 +105,7 @@ export default function PageManagement() {
 
   return (
     <Management_container title={"Page Management"}>
+      {show && <DeleteModalAdv />}
       {isOpen && <AddNewPage show={isOpen} setShow={setIsOpen} />}
       <div class="row">
         <div class="col-lg-12">
@@ -125,10 +151,24 @@ export default function PageManagement() {
                   <IconButton>
                     <Lock />
                   </IconButton>
-                  <IconButton>
+                  <IconButton
+                    onClick={() => {
+                      dispatch(pageToUpdate({ id: row.original._id }));
+                      setIsOpen(true);
+                    }}
+                  >
                     <ModeEditOutline />
                   </IconButton>
-                  <IconButton>
+                  <IconButton
+                    onClick={() => {
+                      dispatch(
+                        openModal({
+                          url: `${BASE_URL}/page/${row.original._id}`,
+                          id: row.original._id,
+                        })
+                      );
+                    }}
+                  >
                     <DeleteForever />
                   </IconButton>
                 </Box>

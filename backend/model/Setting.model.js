@@ -1,210 +1,208 @@
-const {Schema,model} = require("mongoose")
+const { Schema, model } = require("mongoose");
 
-const schema = new Schema({
-    fromEmail:{
-        type:String,
-       
-        default:""
+const schema = new Schema(
+  {
+    fromEmail: {
+      type: String,
+
+      default: "",
     },
 
-    siteTitle:{
-        type:String,
-     
-        default:""
+    siteTitle: {
+      type: String,
+
+      default: "",
     },
 
-    copyRightText:{
-        type:String,
-   
-        default:""
+    copyRightText: {
+      type: String,
+
+      default: "",
     },
 
-    fackbookURL:{
-        type:String,
- 
-        default:""
+    fackbookURL: {
+      type: String,
+
+      default: "",
     },
 
-    twitterURL:{
-        type:String,
-     
-        default:""
+    twitterURL: {
+      type: String,
+
+      default: "",
     },
 
-    contactAddress:{
-        type:String,
-     
-        default:""
+    contactAddress: {
+      type: String,
+
+      default: "",
     },
 
-    phone:{
-        type:String,
-   
-        default:""
+    phone: {
+      type: String,
+
+      default: "",
     },
 
-    googglePlusURL:{
-        type:String,
-    
-        default:""
+    googglePlusURL: {
+      type: String,
+
+      default: "",
     },
 
-    youtubeURL:{
-        type:String,
-  
-        default:""
+    youtubeURL: {
+      type: String,
+
+      default: "",
     },
 
-    fromName:{
-        type:String,
+    fromName: {
+      type: String,
 
-        default:""
+      default: "",
     },
 
-    bccEmail:{
-        type:String,
+    bccEmail: {
+      type: String,
 
-        default:""
+      default: "",
     },
 
-    minDistance:{
-        type:String,
+    minDistance: {
+      type: String,
 
-        default:""
+      default: "",
     },
 
-    maxNoOfDriver:{
-        type:String,
-     
-        default:""
+    maxNoOfDriver: {
+      type: String,
+
+      default: "",
     },
 
-    cancelTimeDuration:{
-        type:String,
-  
-        default:""
+    cancelTimeDuration: {
+      type: String,
+
+      default: "",
     },
 
-    minWalletAmountIndiBooking:{
-        type:String,
+    minWalletAmountIndiBooking: {
+      type: String,
 
-        default:""
+      default: "",
     },
 
-    minWallatAmountSharingBooking:{
-        type:String,
-    
-        default:""
+    minWallatAmountSharingBooking: {
+      type: String,
+
+      default: "",
     },
 
-    forgetPasswordEmail:{
-        type:String,
-     
-        default:""
+    forgetPasswordEmail: {
+      type: String,
+
+      default: "",
     },
 
-    driverMaxGoHome:{
-        type:String,
-       
-        default:""
+    driverMaxGoHome: {
+      type: String,
+
+      default: "",
     },
 
-    driverGoHomeExpireTime:{
-        type:String,
-      
-        default:""
+    driverGoHomeExpireTime: {
+      type: String,
+
+      default: "",
     },
 
-    driverGoHomeSearchingDistance:{
-        type:String,
-     
-        default:""
+    driverGoHomeSearchingDistance: {
+      type: String,
+
+      default: "",
     },
 
-    outstationDriverAllowanceOneway:{
-        type:String,
-    
+    outstationDriverAllowanceOneway: {
+      type: String,
 
-          
-
-        default:""
+      default: "",
     },
 
-    outstationDriverAllowanceRoundTrip:{
-        type:String,
-     
-        default:""
+    outstationDriverAllowanceRoundTrip: {
+      type: String,
+
+      default: "",
     },
 
-    outstationNightChargeOneway:{
-        type:String,
-       
-        default:""
+    outstationNightChargeOneway: {
+      type: String,
+
+      default: "",
     },
 
-    outstationNightChargesRoundTrip:{
-        type:String,
-       
-        default:""
+    outstationNightChargesRoundTrip: {
+      type: String,
+
+      default: "",
     },
 
-    outstaionNightFromTime:{
-        type:String,
-       
-        default:""
+    outstaionNightFromTime: {
+      type: String,
+
+      default: "",
     },
 
-    outstaionNightToTime:{
-        type:String,
-      
-        default:""
+    outstaionNightToTime: {
+      type: String,
+
+      default: "",
     },
 
-    outstationDriverAllowanceOnewayTime:{
-        type:String,
-    
-        default:""
+    outstationDriverAllowanceOnewayTime: {
+      type: String,
+
+      default: "",
     },
 
-    outstationDriverAllowanceRoundTripTime:{
-        type:String,
-      
-        default:""
+    outstationDriverAllowanceRoundTripTime: {
+      type: String,
+
+      default: "",
     },
 
-    outstationOnewayTripBaseKMPH:{
-        type:String,
-        
-        default:""
+    outstationOnewayTripBaseKMPH: {
+      type: String,
+
+      default: "",
     },
 
-    outstationOnewayTripBaseTime:{
-        type:String,
-    
-        default:""
+    outstationOnewayTripBaseTime: {
+      type: String,
+
+      default: "",
     },
 
-    outstationRoundTripBaseKMPH:{
-        type:String,
+    outstationRoundTripBaseKMPH: {
+      type: String,
 
-        default:""
+      default: "",
     },
 
-    outstationRoundTripBaseTime:{
-        type:String,
-      
-        default:""
+    outstationRoundTripBaseTime: {
+      type: String,
+
+      default: "",
     },
 
-    outstaionIncreaseKM:{
-        type:String,
-     
-        default:""
+    outstaionIncreaseKM: {
+      type: String,
+
+      default: "",
     },
+  },
+  {
+    collection: "Setting",
+  }
+);
 
-},{
-    collection:"Setting"
-})
-
-
-module.exports = model("Setting",schema)
+module.exports = model("Setting", schema);

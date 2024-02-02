@@ -19,6 +19,7 @@ import emailTemplateReducer from "../features/emailTemplateReducer";
 import smsTemplateReducer from "../features/smsTemplateReducer";
 import riderReducer from "../features/riderReducer";
 import pageReducer from "../features/pageReducer";
+import settingReducer from "../features/settingReducer";
 
 export default configureStore({
   reducer: {
@@ -41,5 +42,6 @@ export default configureStore({
     emailTemplate: emailTemplateReducer,
     rider: riderReducer,
     pages: pageReducer,
+    setting: settingReducer,
   },
 });

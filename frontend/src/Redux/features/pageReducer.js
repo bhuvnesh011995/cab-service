@@ -108,6 +108,12 @@ const pageSlice = createSlice({
       state.error = null;
       state.status = "OK";
     },
+    pageToUpdate: (state, action) => {
+      state.page = state.pages.find((page) => page._id === action.payload.id);
+    },
+    clearPage: (state, action) => {
+      state.page = null;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(filterPage.fulfilled, (state, aciton) => {
@@ -185,7 +191,7 @@ const pageSlice = createSlice({
 
 export default pageSlice.reducer;
 
-export const { clearPageStatus } = pageSlice.actions;
+export const { clearPageStatus, pageToUpdate, clearPage } = pageSlice.actions;
 
 export const getPages = (state) => state.pages.pages;
 

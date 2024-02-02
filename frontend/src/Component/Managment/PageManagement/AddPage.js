@@ -6,8 +6,14 @@ import BASE_URL from "../../../config/config";
 import { useNavigate } from "react-router-dom";
 import { Modal, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { addPage } from "../../../Redux/features/pageReducer";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addPage,
+  clearPage,
+  getPage,
+  updatePage,
+} from "../../../Redux/features/pageReducer";
+import { toast } from "react-toastify";
 
 const initialState = {
   name: "",
@@ -101,9 +107,11 @@ export default function AddPage() {
 }
 
 export const AddNewPage = ({ show, setShow }) => {
+  const [ready, setReady] = useState(false);
   const {
     register,
     handleSubmit,
+    reset,
     watch,
     setValue,
     setError,
@@ -111,9 +119,26 @@ export const AddNewPage = ({ show, setShow }) => {
     formState: { errors, dirtyFields, isDirty },
   } = useForm();
   const dispatch = useDispatch();
+  const page = useSelector(getPage);
   function onSubmit(data) {
-    dispatch(addPage(data));
+    if (!page) dispatch(addPage(data));
+    else {
+      let updatedFields = Object.keys(dirtyFields);
+      if (!updatedFields.length) return toast.info("change some field first");
+      let updatedData = {};
+      updatedFields.forEach((field) => (updatedData[field] = data[field]));
+      dispatch(updatePage({ id: page._id, data: updatedData }));
+    }
   }
+
+  useEffect(() => {
+    if (ready && page) reset(page);
+    else setReady(true);
+
+    return () => {
+      if (ready && page) dispatch(clearPage());
+    };
+  }, [ready, page]);
   return (
     <Modal size="md" show={show} onHide={() => setShow(false)}>
       <Modal.Header closeButton>
