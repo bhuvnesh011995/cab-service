@@ -1,28 +1,28 @@
-const {Schema,model} = require("mongoose")
+const { Schema, model } = require("mongoose");
 
-
-const schema = new Schema({
-    title:{
-        type:String,
-        required:true
+const schema = new Schema(
+  {
+    title: {
+      type: String,
+      required: true,
     },
-    value:{
-        type:Schema.Types.Decimal128,
-        required:true
+    value: {
+      type: String,
+      required: true,
     },
-    status:{
-        type:String,
-        required:true,
-        enum:["ACTIVE","INACTIVE"],
-        default:"INACTIVE"
+    status: {
+      type: String,
+      required: true,
+      enum: ["ACTIVE", "INACTIVE"],
+      default: "INACTIVE",
     },
-    
-    taxType:String
-},{
-    timestamps:true,
-    collection:"Tax"
-})
 
+    taxType: String,
+  },
+  {
+    timestamps: true,
+    collection: "Tax",
+  }
+);
 
-
-module.exports = model("Tax",schema)
+module.exports = model("Tax", schema);

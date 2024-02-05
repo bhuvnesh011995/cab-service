@@ -6,7 +6,14 @@ import SettingFeilds from "./SettingFeilds";
 import BtnDark from "../Common/Buttons/BtnDark";
 import { useForm } from "react-hook-form";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchSetting, getSettings } from "../../Redux/features/settingReducer";
+import {
+  clearSettingStatus,
+  fetchSetting,
+  getSettings,
+  settingStatus,
+  updateSetting,
+} from "../../Redux/features/settingReducer";
+import { toast } from "react-toastify";
 
 export default function Setting() {
   const [list, setList] = useState();
@@ -121,6 +128,7 @@ export const Settings = () => {
   const {
     register,
     handleSubmit,
+    resetField,
     watch,
     reset,
     formState: { errors, dirtyFields, isDirty },
@@ -128,19 +136,35 @@ export const Settings = () => {
   const [ready, setReady] = useState(false);
   const settings = useSelector(getSettings);
   const dispatch = useDispatch();
-
+  const status = useSelector(settingStatus);
   useEffect(() => {
     if (ready) dispatch(fetchSetting());
   }, [ready]);
   useEffect(() => {
-    if (ready && settings) reset(settings);
-    else setReady(true);
+    if (ready && settings) {
+      console.log("hi");
+      reset(settings);
+    } else setReady(true);
   }, [ready, settings]);
 
+  useEffect(() => {
+    if (ready && status === "updated") {
+      toast.success("setting updated");
+      // resetField();
+      dispatch(clearSettingStatus());
+    }
+  }, [ready, status]);
+
   const onSubmit = (data) => {
-    console.log(data, "data");
+    console.log(dirtyFields, "dirty");
     console.log(isDirty, "isdirty");
-    console.log(dirtyFields, "dirtyfields");
+    const updatedFields = Object.keys(dirtyFields);
+    if (!isDirty || !updatedFields.length)
+      return toast.info("change some field first");
+
+    let updatedData = {};
+    updatedFields.forEach((field) => (updatedData[field] = data[field]));
+    dispatch(updateSetting(updatedData));
   };
   return (
     <div className="main-content">
@@ -172,10 +196,18 @@ export const Settings = () => {
                   ))}
                 </div>
 
-                {isDirty && (
+                {isDirty && Object.keys(dirtyFields).length && (
                   <div className="d-flex justify-content-center">
-                    <button className="btn btn-primary" type="submit">
-                      Save
+                    <button className="btn btn-primary me-3" type="submit">
+                      Update
+                    </button>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => {
+                        reset(settings);
+                      }}
+                    >
+                      Cancel
                     </button>
                   </div>
                 )}
