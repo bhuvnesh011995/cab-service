@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Management_container from "../../Common/Management_container";
-import Filter_Option from "../../Common/Filter_option";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import { CommonDataTable } from "../../../Common/commonDataTable";
 import { packageTableHeaders } from "../../../constants/table.contants";
@@ -13,10 +12,10 @@ import {
 } from "../../../Redux/features/packageReducer";
 import AddRentalPackage from "./AddRentalPackage";
 import moment from "moment";
+import Text_Input from "../../Common/Inputs/Text_Input";
 
 const initialFilter = {
-  name: "",
-  status: "",
+  search: "",
 };
 
 export default function RentalPackageManagement() {
@@ -30,6 +29,7 @@ export default function RentalPackageManagement() {
   const [packageModal, setPackageModal] = useState(false);
 
   useEffect(() => {
+    console.log(filter);
     dispatch(getAllPackages(filter));
   }, [filter]);
 
@@ -37,10 +37,6 @@ export default function RentalPackageManagement() {
     dispatch(deletePackageReducer(id));
     setDeletePackage(false);
   };
-
-  function handleClick2(e) {
-    setFilter(initialFilter);
-  }
 
   const updatePackages = (data, type, index) => {
     setId(data?._id);
@@ -83,13 +79,11 @@ export default function RentalPackageManagement() {
                   title={"Add New"}
                 />
               </div>
-              <Filter_Option
+              <Text_Input
                 input={filter}
                 setInput={setFilter}
-                initialInput={initialFilter}
-                handleClick2={handleClick2}
-                btn2_title={"reset"}
-                options={["name", "status"]}
+                setKey={"search"}
+                lebel_text={"Search :"}
               />
             </div>
           </div>

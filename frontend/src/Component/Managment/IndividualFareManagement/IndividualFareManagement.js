@@ -1,19 +1,6 @@
-import { useNavigate } from "react-router-dom";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Management_container from "../../Common/Management_container";
-// import Table from "../../Common/Table";
 import { useEffect, useState } from "react";
-import Filter_Option from "../../Common/Filter_option";
-import BASE_URL from "../../../config/config";
-// import { MaterialReactTable } from "material-react-table";
-// import { Box, IconButton } from "@mui/material";
-// import {
-//   RemoveRedEye,
-//   Lock,
-//   ModeEditOutline,
-//   DeleteForever,
-// } from "@mui/icons-material/";
-import { toast } from "react-toastify";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import { CommonDataTable } from "../../../Common/commonDataTable";
 import { fareManagementTableHeaders } from "../../../constants/table.contants";
@@ -25,13 +12,10 @@ import {
 } from "../../../Redux/features/individualFareReducer";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import Text_Input from "../../Common/Inputs/Text_Input";
 
 const initialFilter = {
-  country: "",
-  state: "",
-  city: "",
-  vehicleType: "",
-  status: "",
+  search: "",
 };
 
 export default function IndividualFareManagement() {
@@ -47,10 +31,6 @@ export default function IndividualFareManagement() {
   useEffect(() => {
     dispatch(fetchAllFares(filter));
   }, [filter]);
-
-  function handleSubmit(e) {
-    e.preventDefault();
-  }
 
   const deleteModel = () => {
     dispatch(deleteFare(id));
@@ -73,9 +53,6 @@ export default function IndividualFareManagement() {
     if (type != "delete") setFareModal(true);
   };
 
-  function handleClick2() {
-    setFilter(initialFilter);
-  }
   return (
     <Management_container title={"Individual Fare Management"}>
       <div class='row'>
@@ -101,14 +78,11 @@ export default function IndividualFareManagement() {
                   title={"Add New"}
                 />
               </div>
-              <Filter_Option
+              <Text_Input
                 input={filter}
                 setInput={setFilter}
-                initialInput={initialFilter}
-                handleClick1={handleSubmit}
-                handleClick2={handleClick2}
-                btn2_title={"reset"}
-                options={["country", "state", "city", "status", "vehicleType"]}
+                setKey={"search"}
+                lebel_text={"Search :"}
               />
             </div>
           </div>

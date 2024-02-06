@@ -14,9 +14,8 @@ import {
 } from "../../../Redux/features/emailTemplateReducer";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 const initialfilter = {
-  title: "",
-  status: "",
-  forUsers: "",
+  search: "",
+  user: "",
 };
 export default function EmailTemplateManagement() {
   const dispatch = useDispatch();
@@ -81,23 +80,16 @@ export default function EmailTemplateManagement() {
                   <Text_Input
                     input={filter}
                     setInput={setFilter}
-                    lebel_text={"Title"}
-                    setKey={"title"}
+                    lebel_text={"Search"}
+                    setKey={"search"}
                   />
-                  <Selection_Input
+                  {/* <Selection_Input
                     options={["ADMIN", "DRIVER", "RIDER"]}
                     input={filter}
                     setInput={setFilter}
-                    lebel_text={"For Users"}
-                    setKey={"forUsers"}
-                  />
-                  <Selection_Input
-                    options={["ACTIVE", "INACTIVE"]}
-                    input={filter}
-                    setInput={setFilter}
-                    lebel_text={"Status :"}
-                    setKey={"status"}
-                  />
+                    setKey={"user"}
+                    lebel_text={"User :"}
+                  /> */}
                   <div style={{ margin: "20px", marginTop: "50px" }}>
                     <BtnDark handleClick={reset} title={"Reset"} />
                   </div>

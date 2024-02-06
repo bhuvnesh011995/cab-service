@@ -26,15 +26,45 @@ exports.addEmail = async (req, res, next) => {
 exports.fetchEmailTemplates = async (req, res, next) => {
   try {
     const { query } = req;
-    const fetchEmailQuery = {};
-    if (query.title.length) {
-      fetchEmailQuery["title"] = { $regex: query.title };
-    }
-    if (query.status.length) {
-      fetchEmailQuery["status"] = query.status;
-    }
+    const emailTemplateQuery = [];
 
-    const emailTemplatesResponse = await db.emailTemplate.find(fetchEmailQuery);
+    emailTemplateQuery.push({
+      $match: {
+        $or: [
+          {
+            $expr: {
+              $regexMatch: {
+                input: { $toLower: "$title" },
+                regex: { $toLower: query.search },
+                options: "i",
+              },
+            },
+          },
+          {
+            $expr: {
+              $regexMatch: {
+                input: { $toLower: "$subject" },
+                regex: { $toLower: query.search },
+                options: "i",
+              },
+            },
+          },
+          {
+            $expr: {
+              $regexMatch: {
+                input: { $toLower: "$status" },
+                regex: { $toLower: query.search },
+                options: "i",
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    const emailTemplatesResponse = await db.emailTemplate.aggregate(
+      emailTemplateQuery,
+    );
     return res.status(200).send(emailTemplatesResponse);
   } catch (err) {
     next(err);

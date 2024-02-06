@@ -56,10 +56,18 @@ export const sosTableHeaders = {
 export const riderTableHeaders = {
   index: "Sr No",
   profilePhoto: "Photo",
-  firstName: "Name",
+  name: "Name",
   email: "Email",
   mobile: "Mobile",
   wallet: "Wallet",
   status: "status",
   verified: "Verified",
+};
+
+export const taxTableHeaders = {
+  title: "Title",
+  taxType: "Tax Type",
+  value: "Value(%)",
+  status: "Status",
+  createdAt: "Created At",
 };
