@@ -20,6 +20,7 @@ import smsTemplateReducer from "../features/smsTemplateReducer";
 import riderReducer from "../features/riderReducer";
 import pageReducer from "../features/pageReducer";
 import settingReducer from "../features/settingReducer";
+import promoCodeReducer from "../features/promoCodeReducer";
 
 export default configureStore({
   reducer: {
@@ -43,5 +44,6 @@ export default configureStore({
     rider: riderReducer,
     pages: pageReducer,
     setting: settingReducer,
+    promoCode: promoCodeReducer,
   },
 });

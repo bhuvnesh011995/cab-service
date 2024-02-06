@@ -12,7 +12,6 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
 export default function AddVehicleType({ show, setShow }) {
-  const [options, setOptions] = useState();
   const dispatch = useDispatch();
   const {
     register,
@@ -22,6 +21,11 @@ export default function AddVehicleType({ show, setShow }) {
     setValue,
     formState: { errors, dirtyFields, isDirty },
   } = useForm();
+  const options = [
+    { value: "INDIVIDUAL", label: "INDIVIDUAL" },
+    { value: "RENTAL", label: "RENTAL" },
+    { value: "OUTSTATION", label: "OUTSTATION" },
+  ];
 
   const selectVehicleType = useSelector(getVehicleType);
   useEffect(() => {
@@ -38,6 +42,7 @@ export default function AddVehicleType({ show, setShow }) {
 
   const onSubmit = useCallback(
     async (formData) => {
+      console.log("form", formData);
       let runMode = formData.runMode?.map((option) => option.value);
       let formDataWithIds = {
         ...formData,
@@ -116,15 +121,7 @@ export default function AddVehicleType({ show, setShow }) {
                     validate: (value) => value.length > 0,
                   }}
                   render={({ field }) => (
-                    <ReactSelect
-                      options={[
-                        { value: "INDIVIDUAL", label: "INDIVIDUAL" },
-                        { value: "RENTAL", label: "RENTAL" },
-                        { value: "OUTSTATION", label: "OUTSTATION" },
-                      ]}
-                      isMulti
-                      {...field}
-                    />
+                    <ReactSelect options={options} isMulti {...field} />
                   )}
                 />
                 {errors.runMode && (
