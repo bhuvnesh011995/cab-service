@@ -6,9 +6,9 @@ let initialState = {
   status: "idle",
   error: null,
   promotion: [],
-  promoCode: [],
-  selectPromotion: null,
+  selectPromoCode: null,
   viewPromotion: null,
+  promoCode: [],
 };
 
 const addPromoCode = createAsyncThunk(
@@ -30,11 +30,11 @@ const addPromoCode = createAsyncThunk(
     }
   }
 );
-const fetchPromotion = createAsyncThunk(
-  "promotion/fetchPromotion",
+const fetchPromoCode = createAsyncThunk(
+  "PromoCode/fetchPromoCode",
   async (_, { rejectWithValue }) => {
     try {
-      let response = await axios.get(BASE_URL + "/promotion/");
+      let response = await axios.get(BASE_URL + "/promoCode/");
       if (response.status === 200) return response.data;
       else
         return rejectWithValue({
@@ -72,8 +72,8 @@ const updatePromotion = createAsyncThunk(
   }
 );
 
-export const deletePromotion = createAsyncThunk(
-  "delete/deletePromotion",
+export const deletePromoCode = createAsyncThunk(
+  "promoCode/deletePromoCode",
   async ({ url, id }, { rejectWithValue }) => {
     try {
       let response = await axios.delete(url);
@@ -93,15 +93,15 @@ export const deletePromotion = createAsyncThunk(
 );
 
 const promotionSlice = createSlice({
-  name: "promotion",
+  name: "promoCode",
   initialState,
   reducers: {
-    updatePromotionById: (state, action) => {
-      let obj = state.promotion.find(
-        (selectPromotion) => selectPromotion._id === action.payload.id
+    updatePromoCodeById: (state, action) => {
+      let obj = state.promoCode.find(
+        (selectPromoCode) => selectPromoCode._id === action.payload.id
       );
       state.status = "fetched";
-      state.selectPromotion = {
+      state.selectPromoCode = {
         ...obj,
         country: obj.country._id,
         state: obj.state._id,
@@ -118,8 +118,8 @@ const promotionSlice = createSlice({
     cleanViewPromotion: (state, action) => {
       state.viewVehicleType = null;
     },
-    cleanPromotion: (state, action) => {
-      state.selectPromotion = null;
+    cleanPromoCode: (state, action) => {
+      state.selectPromoCode = null;
     },
     cleanPromotionStatus: (state, action) => {
       state.status = "Ok";
@@ -137,20 +137,20 @@ const promotionSlice = createSlice({
     });
     builder.addCase(addPromoCode.rejected, (state, action) => {
       state.status = "error";
-      state.promotion = action.payload;
+      state.promoCode = action.payload;
     });
-    builder.addCase(fetchPromotion.pending, (state, action) => {
+    builder.addCase(fetchPromoCode.pending, (state, action) => {
       state.status = "loading";
-      state.promotion = action.payload;
+      state.promoCode = action.payload;
       state.error = null;
     });
-    builder.addCase(fetchPromotion.fulfilled, (state, action) => {
+    builder.addCase(fetchPromoCode.fulfilled, (state, action) => {
       state.status = "successed";
-      state.promotion = action.payload;
+      state.promoCode = action.payload;
     });
-    builder.addCase(fetchPromotion.rejected, (state, action) => {
+    builder.addCase(fetchPromoCode.rejected, (state, action) => {
       state.status = "error";
-      state.promotion = action.payload;
+      state.promoCode = action.payload;
     });
     builder.addCase(updatePromotion.pending, (state, action) => {
       state.status = "loading";
@@ -167,20 +167,20 @@ const promotionSlice = createSlice({
       state.status = "error";
       state.error = action.payload;
     });
-    builder.addCase(deletePromotion.pending, (state, action) => {
+    builder.addCase(deletePromoCode.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(deletePromotion.fulfilled, (state, action) => {
+    builder.addCase(deletePromoCode.fulfilled, (state, action) => {
       state.status = "deleted";
       state.error = null;
-      state.promotion = state.promotion.filter(
+      state.promoCode = state.promoCode.filter(
         (item) => item._id !== action.payload.id
       );
       state.message = action.payload.message;
     });
 
-    builder.addCase(deletePromotion.rejected, (state, action) => {
+    builder.addCase(deletePromoCode.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });
@@ -189,15 +189,15 @@ const promotionSlice = createSlice({
 
 export default promotionSlice.reducer;
 
-export { addPromoCode, fetchPromotion, updatePromotion };
-export const getAllPromotion = (state) => state.promotion.promotion;
-export const status = (state) => state.promotion.status;
+export { addPromoCode, fetchPromoCode, updatePromotion };
+export const getAllPromoCode = (state) => state.promoCode.promoCode;
+export const statusPromoCode = (state) => state.promoCode.status;
 export const error = (state) => state.promotion.error;
 export const {
   cleanPromotionStatus,
-  updatePromotionById,
+  updatePromoCodeById,
   cleanPromotion,
   getViewPromotion,
 } = promotionSlice.actions;
-export const getPromotion = (state) => state.promotion.selectPromotion;
+export const getPromoCode = (state) => state.promoCode.selectPromoCode;
 export const getAllViewPromotion = (state) => state.promotion.viewPromotion;

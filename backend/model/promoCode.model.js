@@ -1,16 +1,14 @@
 const { Schema, model } = require("mongoose");
+
 const schema = new Schema(
   {
     country: { type: Schema.Types.ObjectId, ref: "Country" },
-
     state: { type: Schema.Types.ObjectId, ref: "State" },
-
     city: { type: Schema.Types.ObjectId, ref: "City" },
     vehicleType: { type: Schema.Types.ObjectId, ref: "VehicleType" },
-
     discountType: { type: String },
     discountValue: { type: String },
-    promocode: { type: Number },
+    promoCode: { type: Number },
     validFrom: { type: Date },
     validTo: { type: Date },
     status: {
@@ -22,12 +20,17 @@ const schema = new Schema(
       type: String,
       enum: ["true", "false"],
     },
-    forUsers: { type: String },
-
-    selectUser: [
-      { type: Schema.Types.ObjectId, ref: "Rider" },
-      { type: Schema.Types.ObjectId, ref: "Admin" },
-    ],
+    forUser: {
+      type: String,
+      enum: ["Admin", "Rider"],
+    },
+    selectUser: {
+      type: Schema.Types.ObjectId,
+      ref: function () {
+        return this.forUser === "Admin" ? "Admin" : "Rider";
+      },
+      required: true,
+    },
   },
   {
     timestamps: true,

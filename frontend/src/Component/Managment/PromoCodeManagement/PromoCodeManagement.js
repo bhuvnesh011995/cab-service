@@ -34,6 +34,13 @@ import {
   url,
 } from "../../../Redux/features/deleteModalReducer";
 import DeleteModalAdv from "../../../Common/deleteModalRedux";
+import {
+  deletePromoCode,
+  fetchPromoCode,
+  getAllPromoCode,
+  statusPromoCode,
+  updatePromoCodeById,
+} from "../../../Redux/features/promoCodeReducer";
 
 const initialFilter = {
   title: "",
@@ -79,39 +86,29 @@ export default function PromoCodeManagement() {
   }, []);
 
   useEffect(() => {
-    dispatch(fetchPromotion());
+    dispatch(fetchPromoCode());
   }, []);
-  const promotion = useSelector(getAllPromotion);
-  const promotionStatus = useSelector(status);
-  console.log("promotionStatus", promotionStatus);
+  const promoCode = useSelector(getAllPromoCode);
+  const promoCodeStatus = useSelector(statusPromoCode);
+  console.log("promoCodeStatus", promoCodeStatus);
   useEffect(() => {
-    if (promotionStatus === "added") {
+    if (promoCodeStatus === "added") {
       toast.success("promotion added successfully");
       setShow(false);
       dispatch(cleanPromotionStatus());
-    } else if (promotionStatus === "update") {
+    } else if (promoCodeStatus === "update") {
       toast.success("promotion update successfully");
       setShow(false);
       dispatch(cleanPromotionStatus());
-    } else if (promotionStatus === "deleted") {
-      toast.success("promotion delete successfully");
+    } else if (promoCodeStatus === "deleted") {
+      toast.success("promoCode delete successfully");
       dispatch(closeModal());
       dispatch(cleanPromotionStatus());
     }
-  }, [promotionStatus]);
+  }, [promoCodeStatus]);
 
   const columns = useMemo(
     () => [
-      {
-        accessorKey: "name",
-        header: "title",
-        size: 100,
-      },
-      {
-        accessorKey: "name",
-        header: "Model",
-        size: 100,
-      },
       {
         accessorKey: "status",
         header: "status",
@@ -160,7 +157,7 @@ export default function PromoCodeManagement() {
 
   useEffect(() => {
     if (deleteStatus === "delete") {
-      dispatch(deletePromotion({ url: URL, id }));
+      dispatch(deletePromoCode({ url: URL, id }));
       dispatch(doneDelete());
     }
   }, [deleteStatus, URL, id]);
@@ -223,7 +220,7 @@ export default function PromoCodeManagement() {
 
               <MaterialReactTable
                 columns={columns}
-                data={promotion || []}
+                data={promoCode || []}
                 enableRowActions
                 enableRowNumbers
                 displayColumnDefOptions={{
@@ -255,7 +252,7 @@ export default function PromoCodeManagement() {
                     </IconButton>
                     <IconButton
                       onClick={() => {
-                        dispatch(updatePromotionById({ id: row.original._id }));
+                        dispatch(updatePromoCodeById({ id: row.original._id }));
                         setShow(true);
                       }}
                     >
@@ -265,7 +262,7 @@ export default function PromoCodeManagement() {
                       onClick={() => {
                         dispatch(
                           openModal({
-                            url: `${BASE_URL}/promotion/${row.original._id}`,
+                            url: `${BASE_URL}/promoCode/${row.original._id}`,
                             id: row.original._id,
                           })
                         );

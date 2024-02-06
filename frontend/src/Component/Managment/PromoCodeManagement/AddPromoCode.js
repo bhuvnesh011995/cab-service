@@ -34,7 +34,10 @@ import {
   fetchAdmins,
 } from "../../../Redux/features/adminReducer";
 import { getAllRiders, getRiders } from "../../../Redux/features/riderReducer";
-import { addPromoCode } from "../../../Redux/features/promoCodeReducer";
+import {
+  addPromoCode,
+  getPromoCode,
+} from "../../../Redux/features/promoCodeReducer";
 const initialState = {
   name: "",
   email: "",
@@ -84,26 +87,25 @@ export default function AddPromoCode({ setShow, show }) {
 
   const selectUserValue = watch("forUser");
   let dynamicOptions = [];
-  if (selectUserValue === "ADMIN") {
-    dynamicOptions = [...adminOptions];
-  } else if (selectUserValue === "RIDER") {
-    dynamicOptions = [...riderOptions];
-  }
 
+  if (selectUserValue === "Admin") {
+    dynamicOptions = [...adminOptions];
+  } else if (selectUserValue === "Rider") {
+    dynamicOptions = [...riderOptions];
+  } else {
+    dynamicOptions = [];
+  }
   const forUsersOption = [{ value: "", label: "Choose..." }, ...dynamicOptions];
 
-  // ... ( code)
-
-  console.log("rider", riders);
-  const promotion = useSelector(getPromotion);
+  const promoCode = useSelector(getPromoCode);
   useEffect(() => {
-    if (promotion) {
-      reset(promotion);
-      setValue("country", promotion.country);
-      setValue("state", promotion.state);
-      setValue("city", promotion.city);
+    if (promoCode) {
+      reset(promoCode);
+      setValue("country", promoCode.country);
+      setValue("state", promoCode.state);
+      setValue("city", promoCode.city);
     }
-  }, [promotion]);
+  }, [promoCode]);
 
   useEffect(() => {
     if (ready) {
@@ -113,7 +115,7 @@ export default function AddPromoCode({ setShow, show }) {
         dispatch(emptyCities());
       }
     }
-  }, [watch("state"), ready, promotion]);
+  }, [watch("state"), ready, promoCode]);
   useEffect(() => {
     if (ready) {
       if (watch("country")) {
@@ -122,7 +124,7 @@ export default function AddPromoCode({ setShow, show }) {
         dispatch(emptyStates());
       }
     }
-  }, [watch("country"), ready, promotion]);
+  }, [watch("country"), ready, promoCode]);
   useEffect(() => {
     return () => {
       if (promotionStatus === "fetched") dispatch(cleanPromotion());
@@ -257,15 +259,12 @@ export default function AddPromoCode({ setShow, show }) {
                 <Controller
                   name="forUser"
                   control={control}
-                  {...register("forUser", {
-                    required: "this is Required field",
-                  })}
                   render={({ field }) => (
                     <select {...field} className="form-control">
                       <option value={""}>Choose...</option>
-                      <option value={"ADMIN"}>ADMIN</option>
+                      <option value={"Admin"}>ADMIN</option>
                       <option value={"DRIVER"}>DRIVER</option>
-                      <option value={"RIDER"}>RIDER</option>
+                      <option value={"Rider"}>RIDER</option>
                     </select>
                   )}
                 />

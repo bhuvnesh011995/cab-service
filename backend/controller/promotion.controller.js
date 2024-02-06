@@ -58,7 +58,6 @@ exports.filterPromotion = async function (req, res, next) {
 
 exports.deletePromotion = async function (req, res) {
   const id = req.params.id;
-  console.log(id);
 
   try {
     const result = await db.promotion.deleteOne({ _id: id });
