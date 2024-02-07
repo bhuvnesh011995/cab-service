@@ -21,6 +21,7 @@ import pageReducer from "../features/pageReducer";
 import settingReducer from "../features/settingReducer";
 import promoCodeReducer from "../features/promoCodeReducer";
 import taxReducer from "../features/taxReducer";
+import rentalPromotionReducer from "../features/rentalPromotionReducer";
 
 export default configureStore({
   reducer: {
@@ -46,5 +47,6 @@ export default configureStore({
     setting: settingReducer,
     tax: taxReducer,
     promoCode: promoCodeReducer,
+    rentalPromotion: rentalPromotionReducer,
   },
 });

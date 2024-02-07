@@ -6,7 +6,7 @@ import Text_Input from "../../Common/Inputs/Text_Input";
 import { toast } from "react-toastify";
 import { MaterialReactTable } from "material-react-table";
 import { useDispatch, useSelector } from "react-redux";
-import AddPromoCode from "./AddPromoCode";
+import AddRentalPromotion from "./AddRentalPromotion";
 import {
   RemoveRedEye,
   Lock,
@@ -36,6 +36,15 @@ import {
   statusPromoCode,
   updatePromoCodeById,
 } from "../../../Redux/features/promoCodeReducer";
+import {
+  cleanRentalPromotion,
+  cleanRentalPromotionStatus,
+  deleteRentalPromotion,
+  fetchRentalPromotion,
+  getAllRentalPromotion,
+  status,
+  updateRentalPromotionById,
+} from "../../../Redux/features/rentalPromotionReducer";
 
 const initialFilter = {
   title: "",
@@ -45,7 +54,7 @@ const initialFilter = {
   cityId: "",
   status: "",
 };
-export default function PromoCodeManagement() {
+export default function RentalPromotionManagement() {
   const [filter, setFilter] = useState(initialFilter);
   const [list, setList] = useState([]);
   const isOpen = useSelector(showDeleteModal);
@@ -81,27 +90,27 @@ export default function PromoCodeManagement() {
   }, []);
 
   useEffect(() => {
-    dispatch(fetchPromoCode());
+    dispatch(fetchRentalPromotion());
   }, []);
-  const promoCode = useSelector(getAllPromoCode);
-  const promoCodeStatus = useSelector(statusPromoCode);
+  const rentalPromotion = useSelector(getAllRentalPromotion);
+  const rentalPromotionStatus = useSelector(status);
   useEffect(() => {
-    if (promoCodeStatus === "added") {
-      toast.success("promotion added successfully");
+    if (rentalPromotionStatus === "added") {
+      toast.success("rentalPromotion added successfully");
       setShow(false);
-      dispatch(cleanPromotionStatus());
-    } else if (promoCodeStatus === "update") {
-      toast.success("promoCode update successfully");
+      dispatch(cleanRentalPromotionStatus());
+    } else if (rentalPromotionStatus === "update") {
+      toast.success("rentalPromotion update successfully");
       setShow(false);
-      dispatch(cleanPromoCodeStatus());
-    } else if (promoCodeStatus === "deleted") {
-      toast.success("promoCode delete successfully");
+      dispatch(cleanRentalPromotionStatus());
+    } else if (rentalPromotionStatus === "deleted") {
+      toast.success("rentalPromotion delete successfully");
       dispatch(closeModal());
-      dispatch(cleanPromoCodeStatus());
+      dispatch(cleanRentalPromotionStatus());
     }
-  }, [promoCodeStatus]);
+  }, [rentalPromotionStatus]);
 
-  console.log("promo", promoCode);
+  console.log("rentalPromotionStatus", rentalPromotionStatus);
 
   const columns = useMemo(
     () => [
@@ -109,6 +118,11 @@ export default function PromoCodeManagement() {
         accessorKey: "promoCode",
         header: "code",
         size: 80,
+      },
+      {
+        accessorFn: (row) => row.package?.name,
+        id: "package",
+        header: "package",
       },
       {
         accessorFn: (row) => row.state?.name,
@@ -180,19 +194,19 @@ export default function PromoCodeManagement() {
 
   useEffect(() => {
     if (deleteStatus === "delete") {
-      dispatch(deletePromoCode({ url: URL, id }));
+      dispatch(deleteRentalPromotion({ url: URL, id }));
       dispatch(doneDelete());
     }
   }, [deleteStatus, URL, id]);
 
   function reset() {}
   return (
-    <Management_container title={"PromoCode Management"}>
+    <Management_container title={"Rental Promotion Management"}>
       <div class="row">
         <div class="col-lg-13">
           <div class="card">
             {isOpen && <DeleteModalAdv />}
-            {show && <AddPromoCode show={show} setShow={setShow} />}
+            {show && <AddRentalPromotion show={show} setShow={setShow} />}
 
             <div class="card-body">
               <div
@@ -243,7 +257,7 @@ export default function PromoCodeManagement() {
 
               <MaterialReactTable
                 columns={columns}
-                data={promoCode || []}
+                data={rentalPromotion || []}
                 enableRowActions
                 enableRowNumbers
                 displayColumnDefOptions={{
@@ -275,7 +289,9 @@ export default function PromoCodeManagement() {
                     </IconButton>
                     <IconButton
                       onClick={() => {
-                        dispatch(updatePromoCodeById({ id: row.original._id }));
+                        dispatch(
+                          updateRentalPromotionById({ id: row.original._id })
+                        );
                         setShow(true);
                       }}
                     >
@@ -285,7 +301,7 @@ export default function PromoCodeManagement() {
                       onClick={() => {
                         dispatch(
                           openModal({
-                            url: `${BASE_URL}/promoCode/${row.original._id}`,
+                            url: `${BASE_URL}/rentalPromotion/${row.original._id}`,
                             id: row.original._id,
                           })
                         );
