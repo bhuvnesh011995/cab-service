@@ -71,7 +71,7 @@ export default [
       isOpen: false,
       listArray: [
         { to: "promotionManagement", name: "Promotion" },
-        { to: "promocodeManagement", name: "Promocode Management" },
+        { to: "promoCodeManagement", name: "Promocode Management" },
         {
           to: "rentalPromocodeManagement",
           name: "Rental Promocode Management",

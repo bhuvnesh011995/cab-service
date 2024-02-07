@@ -159,7 +159,7 @@ const vehicleTypeSlice = createSlice({
       );
       state.status = "fetched";
       obj.runMode.forEach((item, i) => {
-        obj.runMode[i] = { value: item._id, label: item.name };
+        obj.runMode[i] = { value: item, label: item };
       });
       state.selectVehicleType = obj;
     },

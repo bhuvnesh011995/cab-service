@@ -5,11 +5,6 @@ exports.addVehicleType = async function (req, res, next) {
     if (req.file) req.body.file = req.file.filename;
 
     let vehicleType = await db.vehicleType.create(req.body);
-
-    // Populate the runMode field
-    vehicleType = await db.vehicleType
-      .findById(vehicleType._id)
-      .populate({ path: "runMode" });
     res.status(201).json({
       success: true,
       message: "Vehicle type added",

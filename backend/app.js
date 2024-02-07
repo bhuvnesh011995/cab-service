@@ -134,6 +134,7 @@ require("./routes/rentalFares.route.js")(app);
 require("./routes/emailTemplate.route.js")(app);
 require("./routes/SOSs.route.js")(app);
 require("./routes/riders.route.js")(app);
+require("./routes/promoCode.route.js")(app);
 
 app.use(ErrorHandler);
 

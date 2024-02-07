@@ -45,6 +45,7 @@ import AddEmailTemplate from "./Component/Managment/TemplateManagement.js/AddEma
 import SmsTemplateManagement from "./Component/Managment/TemplateManagement.js/Sms.TemplateManagement";
 import AddSmsTemplate from "./Component/Managment/TemplateManagement.js/AddSmsTemplate";
 import PromotionManagement from "./Component/Managment/PromotionManagement.js/PromotionManagement";
+import PromoCodeManagement from "./Component/Managment/PromoCodeManagement/PromoCodeManagement.js";
 import AddPromotion from "./Component/Managment/PromotionManagement.js/AddPromotion";
 import ReferralManagement from "./Component/Managment/ReferralManagement/ReferralManagement";
 import AddReferral from "./Component/Managment/ReferralManagement/AddReferral";
@@ -116,6 +117,8 @@ const router = createBrowserRouter([
       { path: "smsTemplate", element: <SmsTemplateManagement /> },
       { path: "addSmsTemplate", element: <AddSmsTemplate /> },
       { path: "promotionManagement", element: <PromotionManagement /> },
+      { path: "promoCodeManagement", element: <PromoCodeManagement /> },
+
       { path: "addPromotion", element: <AddPromotion /> },
       { path: "referralManagement", element: <ReferralManagement /> },
       { path: "addReferral", element: <AddReferral /> },
