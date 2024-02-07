@@ -1,87 +1,130 @@
 import { useState } from "react";
-import Management_container from "../../Common/Management_container";
-import Number_Input from "../../Common/Inputs/Number_Input";
-import Text_Input from "../../Common/Inputs/Text_Input";
-import BASE_URL from "../../../config/config";
-import BtnDark from "../../Common/Buttons/BtnDark";
-import Selection_Input from "../../Common/Inputs/Selection_input";
-import { useNavigate } from "react-router-dom";
+import { Modal } from "react-bootstrap";
+import { useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addTax,
+  clearTax,
+  getTax,
+  updateTax,
+} from "../../../Redux/features/taxReducer";
+import { useEffect } from "react";
+import { toast } from "react-toastify";
 
-const initialTax = {
-    title:"",
-    status:"",
-    value:0,
-    taxType:""
-}
-export default function AddTax() {
-    const [tax,setTax] = useState(initialTax)
-    const navigate = useNavigate()
-
-
-    function handleSubmit(){
-        fetch(BASE_URL+"/tax/",{
-            method:"POST",
-            body:JSON.stringify(tax),
-            headers:{
-                "Content-type":"application/json; charset=UTF-8"
-            }
-        }).then(res=>res.json())
-        .then(data=>{
-            if(data.success){
-                navigate(-1)
-            }
-        })
+export const AddNew = ({ show, setShow }) => {
+  const {
+    register,
+    watch,
+    control,
+    reset,
+    handleSubmit,
+    formState: { errors, dirtyFields, isDirty },
+  } = useForm();
+  const [ready, setReady] = useState(false);
+  const tax = useSelector(getTax);
+  const dispatch = useDispatch();
+  const onSubmit = function (data) {
+    if (!tax) dispatch(addTax(data));
+    else {
+      const updatedFields = Object.keys(dirtyFields);
+      if (!updatedFields.length) return toast.info("change some field first");
+      let updatedData = {};
+      updatedFields.forEach((field) => (updatedData[field] = data[field]));
+      dispatch(updateTax({ id: tax._id, data: updatedData }));
     }
-    return(
-        <Management_container title={"Add Tax"}>
-        <div
-        class="row"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-body">
-              <form className="w-100">
-                <Text_Input
-                  input={tax}
-                  setInput={setTax}
-                  lebel_text={"Title"}
-                  setKey={"title"}
-                />
+  };
+  useEffect(() => {
+    if (ready && tax) reset(tax);
+    else setReady(true);
+    return () => {
+      if (ready) dispatch(clearTax());
+    };
+  }, [ready, tax]);
+  return (
+    <Modal show={show} onHide={() => setShow(false)}>
+      <Modal.Header closeButton>
+        <Modal.Title>Add Tax</Modal.Title>
+      </Modal.Header>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Modal.Body>
+          <div className="row">
+            <div className="col-md-3 mb-3">
+              <label className="form-label">Title :</label>
+            </div>
+            <div className="col-md-9 mb-3">
+              <input
+                {...register("title", { required: "this is required field" })}
+                className="form-control"
+                placeholder="Enter Tilte"
+              />
+              {errors.title && (
+                <span style={{ color: "red" }}>{errors.title.message}</span>
+              )}
+            </div>
 
-                <Number_Input
-                input={tax}
-                setInput={setTax}
-                setKey={"value"}
-                lebel_text={"Value(%)"}
-                />
+            <div className="col-md-3 mb-3">
+              <label className="form-label">Tax Type :</label>
+            </div>
+            <div className="col-md-9 mb-3">
+              <input
+                {...register("taxType", { required: "this is required field" })}
+                className="form-control"
+                placeholder="Enter Tax Type"
+              />
+              {errors.taxType && (
+                <span style={{ color: "red" }}>{errors.taxType.message}</span>
+              )}
+            </div>
 
-                <Text_Input
-                input={tax}
-                setInput={setTax}
-                setKey={"taxType"}
-                lebel_text={"Tax Type :"}
-                />
-                    
-                <Selection_Input
-                  options={["ACTIVE", "INACTIVE"]}
-                  input={tax}
-                  setInput={setTax}
-                  setKey={"status"}
-                  lebel_text={"Status :"}
-                />
+            <div className="col-md-3 mb-3">
+              <label className="form-label">Value :</label>
+            </div>
+            <div className="col-md-9 mb-3">
+              <input
+                {...register("value", {
+                  required: "this is required field",
+                  pattern: {
+                    value: /^(?:[1-9]|[1-9][0-9]|0)(?:\.\d{1,2})?$/,
+                    message: "please enter a valid value in between 0-99",
+                  },
+                })}
+                className="form-control"
+                placeholder="Enter Tax Value"
+              />
+              {errors.value && (
+                <span style={{ color: "red" }}>{errors.value.message}</span>
+              )}
+            </div>
+            <div className="col-md-3">
+              <label className="form-label">Status :</label>{" "}
+            </div>
+            <div className="col-md-9">
+              <select
+                {...register("status", {
+                  required: "this is required field",
+                })}
+                className="form-control"
+              >
+                <option value={""}>Choose...</option>
+                <option value={"ACTIVE"}>Active</option>
+                <option value={"INACTIVE"}>Inactive</option>
+              </select>
 
-                
-                <BtnDark handleClick={handleSubmit} title={"Add Tax"} />
-              </form>
+              {errors.status && (
+                <span style={{ color: "red" }}>{errors.status.message}</span>
+              )}
             </div>
           </div>
-        </div>
-      </div>
-        </Management_container>
-    )
+        </Modal.Body>
+        <Modal.Footer className="text-right">
+          <button className="btn btn-danger" onClick={() => setShow(false)}>
+            Cancel
+          </button>
+          <button className="btn btn-primary" type="submit">
+            Add
+          </button>
+        </Modal.Footer>
+      </form>
+    </Modal>
+  );
 };
