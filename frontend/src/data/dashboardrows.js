@@ -92,7 +92,7 @@ export default [
     children: {
       isOpen: false,
       listArray: [
-        { to: "promotionManagement", name: "Notification to Rider" },
+        { to: "notificationToRider", name: "Notification to Rider" },
         {
           to: "notificationToDriverManagement",
           name: "Notification to Driver",

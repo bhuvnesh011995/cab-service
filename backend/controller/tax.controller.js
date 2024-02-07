@@ -2,12 +2,9 @@ const db = require("../model/index");
 
 exports.addTax = async function (req, res, next) {
   try {
-    await db.tax.create(req.body);
+    let tax = await db.tax.create(req.body);
 
-    res.status(200).json({
-      success: true,
-      message: "tax added successfully",
-    });
+    res.status(201).json(tax);
   } catch (error) {
     next(error);
   }
@@ -47,6 +44,33 @@ exports.filterTaxes = async (req, res, next) => {
     let taxes = await db.tax.aggregate(query);
 
     res.status(200).json(taxes);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.updateTax = async (req, res, next) => {
+  try {
+    let tax = await db.tax.findOneAndUpdate(
+      { _id: req.params.id },
+      { $set: req.body },
+      { new: true }
+    );
+
+    res.status(200).json(tax);
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.deleteTax = async (req, res, next) => {
+  try {
+    let result = await db.tax.deleteOne({ _id: req.params.id });
+    if (result.deletedCount !== 1)
+      return res
+        .status(400)
+        .json({ message: "delete unsuccessfull , id not found" });
+    res.status(204).end();
   } catch (error) {
     next(error);
   }
