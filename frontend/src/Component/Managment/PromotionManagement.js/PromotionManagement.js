@@ -1,16 +1,10 @@
-import { useNavigate } from "react-router-dom";
 import Management_container from "../../Common/Management_container";
-import BtnDark from "../../Common/Buttons/BtnDark";
 import { useEffect, useMemo, useState } from "react";
-import Selection_Input from "../../Common/Inputs/Selection_input";
-import Text_Input from "../../Common/Inputs/Text_Input";
 import { toast } from "react-toastify";
-import DeleteModal from "../../DeleteModel/DeleteModel";
 import { MaterialReactTable } from "material-react-table";
 import { useDispatch, useSelector } from "react-redux";
 import {
   RemoveRedEye,
-  Lock,
   ModeEditOutline,
   DeleteForever,
 } from "@mui/icons-material/";
@@ -20,10 +14,8 @@ import AddPromotion from "./AddPromotion";
 import {
   cleanPromotionStatus,
   deletePromotion,
-  error,
   fetchPromotion,
   getAllPromotion,
-  getAllViewPromotion,
   getViewPromotion,
   status,
   updatePromotionById,
@@ -39,17 +31,7 @@ import {
 import DeleteModalAdv from "../../../Common/deleteModalRedux";
 import ViewPromotion from "./ViewPromotion";
 
-const initialFilter = {
-  title: "",
-  forUsers: "",
-  countryId: "",
-  stateId: "",
-  cityId: "",
-  status: "",
-};
 export default function PromotionManagement() {
-  const [filter, setFilter] = useState(initialFilter);
-  const [list, setList] = useState([]);
   const isOpen = useSelector(showDeleteModal);
   const [show, setShow] = useState(false);
   const [openView, setOpenView] = useState(false);
@@ -58,36 +40,10 @@ export default function PromotionManagement() {
   const URL = useSelector(url);
   const dispatch = useDispatch();
   useEffect(() => {
-    fetch(BASE_URL + "/promotion/self/filter", { method: "GET" })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = data.promotions.map((ele) => {
-            let obj = {};
-            obj.id = ele._id;
-            obj.title = ele.title;
-            obj.country = ele.country?.name;
-            obj.state = ele.state?.name;
-            obj.city = ele.city?.name;
-            // obj.forUsers = ele?.forUsers.join();
-            obj.status = ele?.status;
-            obj.description = ele?.description;
-            obj.createdAt = ele?.createdAt;
-            obj.updatedAt = ele?.updatedAt;
-            return obj;
-          });
-
-          setList(arr);
-        }
-      });
-  }, []);
-
-  useEffect(() => {
     dispatch(fetchPromotion());
   }, []);
   const promotion = useSelector(getAllPromotion);
   const promotionStatus = useSelector(status);
-  console.log("promotionStatus", promotionStatus);
   useEffect(() => {
     if (promotionStatus === "added") {
       toast.success("promotion added successfully");
@@ -130,38 +86,6 @@ export default function PromotionManagement() {
     []
   );
 
-  function handleSubmit() {
-    fetch(
-      BASE_URL +
-        "/promotion/self/filter/?title=" +
-        filter.title +
-        "&status=" +
-        filter.status +
-        "&forUsers=" +
-        filter.forUsers,
-      { method: "GET" }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = data.promotions.map((ele) => {
-            let obj = {};
-            obj.title = ele.title;
-            obj.country = ele.country?.name;
-            obj.state = ele.state?.name;
-            obj.city = ele.city?.name;
-            obj.forUsers = ele.forUsers.join();
-            obj.status = ele.status;
-            obj.description = ele.description;
-            obj.createdAt = ele.createdAt;
-            obj.updatedAt = ele.updatedAt;
-            return obj;
-          });
-          setList(arr);
-        }
-      });
-  }
-
   useEffect(() => {
     if (deleteStatus === "delete") {
       dispatch(deletePromotion({ url: URL, id }));
@@ -169,65 +93,45 @@ export default function PromotionManagement() {
     }
   }, [deleteStatus, URL, id]);
 
-  function reset() {}
   return (
     <Management_container title={"Promotion Management"}>
+      {isOpen && <DeleteModalAdv />}
+      {show && <AddPromotion show={show} setShow={setShow} />}
+      {openView && <ViewPromotion show={openView} setShow={setOpenView} />}
       <div class="row">
-        <div class="col-lg-13">
+        <div class="col-lg-12">
           <div class="card">
-            {isOpen && <DeleteModalAdv />}
-            {show && <AddPromotion show={show} setShow={setShow} />}
-            {openView && (
-              <ViewPromotion show={openView} setShow={setOpenView} />
-            )}
-
             <div class="card-body">
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "right",
-                  zIndex: "2",
-                }}
-              >
-                <BtnDark
-                  handleClick={() => {
-                    setShow(true);
-                  }}
-                  title={"Add Promotion"}
-                />
-              </div>
-              <form style={{ margin: "50px" }}>
-                <div className="row">
-                  <div className="col-lg-2 inputField">
-                    <Text_Input
-                      input={filter}
-                      lebel_text={"Title :"}
-                      setKey={"title"}
-                      setInput={setFilter}
-                    />
-                    <Selection_Input
-                      options={["ACTIVE", "INACTIVE"]}
-                      input={filter}
-                      setInput={setFilter}
-                      lebel_text={"Status : "}
-                      setKey={"status"}
-                    />
-                    <Selection_Input
-                      options={["ADMIN", "DRIVER", "RIDER"]}
-                      input={filter}
-                      setInput={setFilter}
-                      lebel_text={"User Type : "}
-                      setKey={"forUsers"}
-                    />
-
-                    <div>
-                      <BtnDark handleClick={handleSubmit} title={"Search"} />
-                      <BtnDark handleClick={reset} title={"reset"} />
-                    </div>
-                  </div>
+              <div class="row">
+                <div class="col-md-12 text-right">
+                  <button class="btn btn-primary" onClick={() => setShow(true)}>
+                    Add New
+                  </button>
                 </div>
-              </form>
+                <div
+                  class="justify-content-center row align-items-end mb-5"
+                  style={{ alignItems: "end" }}
+                >
+                  <div class="col-md-3">
+                    {" "}
+                    <label class="form-label">Title</label>
+                    <input className="form-control" placeholder="Enter Title" />
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-control">
+                      <option>Choose...</option>
+                      <option value="ACTIVE">Active</option>
+                      <option value="INACTIVE">Inactive</option>
+                    </select>
+                  </div>
 
+                  <div class="col-md-3">
+                    <button class="btn btn-primary me-3">Search</button>
+                    <button class="btn btn-danger me-3">Reset</button>
+                  </div>
+                </div>{" "}
+              </div>
               <MaterialReactTable
                 columns={columns}
                 data={promotion || []}

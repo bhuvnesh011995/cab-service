@@ -13,8 +13,9 @@ const schema = new Schema(
 
     forUsers: [
       {
-        value: { type: String, enum: ["ADMIN", "DRIVER", "RIDER"] },
-        label: { type: String },
+        type: String,
+        enum: ["ADMIN", "DRIVER", "RIDER"],
+        required: true,
       },
     ],
 

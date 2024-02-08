@@ -33,21 +33,13 @@ import {
   deletePromoCode,
   fetchPromoCode,
   getAllPromoCode,
+  getViewPromoCode,
   statusPromoCode,
   updatePromoCodeById,
 } from "../../../Redux/features/promoCodeReducer";
+import ViewPromoCode from "./ViewPromoCode";
 
-const initialFilter = {
-  title: "",
-  forUsers: "",
-  countryId: "",
-  stateId: "",
-  cityId: "",
-  status: "",
-};
 export default function PromoCodeManagement() {
-  const [filter, setFilter] = useState(initialFilter);
-  const [list, setList] = useState([]);
   const isOpen = useSelector(showDeleteModal);
   const [show, setShow] = useState(false);
   const [openView, setOpenView] = useState(false);
@@ -55,31 +47,6 @@ export default function PromoCodeManagement() {
   const id = useSelector((state) => state.delete.id);
   const URL = useSelector(url);
   const dispatch = useDispatch();
-  useEffect(() => {
-    fetch(BASE_URL + "/promotion/self/filter", { method: "GET" })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = data.promotions.map((ele) => {
-            let obj = {};
-            obj.id = ele._id;
-            obj.title = ele.title;
-            obj.country = ele.country?.name;
-            obj.state = ele.state?.name;
-            obj.city = ele.city?.name;
-            // obj.forUsers = ele?.forUsers.join();
-            obj.status = ele?.status;
-            obj.description = ele?.description;
-            obj.createdAt = ele?.createdAt;
-            obj.updatedAt = ele?.updatedAt;
-            return obj;
-          });
-
-          setList(arr);
-        }
-      });
-  }, []);
-
   useEffect(() => {
     dispatch(fetchPromoCode());
   }, []);
@@ -100,8 +67,6 @@ export default function PromoCodeManagement() {
       dispatch(cleanPromoCodeStatus());
     }
   }, [promoCodeStatus]);
-
-  console.log("promo", promoCode);
 
   const columns = useMemo(
     () => [
@@ -146,38 +111,6 @@ export default function PromoCodeManagement() {
     []
   );
 
-  function handleSubmit() {
-    fetch(
-      BASE_URL +
-        "/promotion/self/filter/?title=" +
-        filter.title +
-        "&status=" +
-        filter.status +
-        "&forUsers=" +
-        filter.forUsers,
-      { method: "GET" }
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = data.promotions.map((ele) => {
-            let obj = {};
-            obj.title = ele.title;
-            obj.country = ele.country?.name;
-            obj.state = ele.state?.name;
-            obj.city = ele.city?.name;
-            obj.forUsers = ele.forUsers.join();
-            obj.status = ele.status;
-            obj.description = ele.description;
-            obj.createdAt = ele.createdAt;
-            obj.updatedAt = ele.updatedAt;
-            return obj;
-          });
-          setList(arr);
-        }
-      });
-  }
-
   useEffect(() => {
     if (deleteStatus === "delete") {
       dispatch(deletePromoCode({ url: URL, id }));
@@ -185,61 +118,45 @@ export default function PromoCodeManagement() {
     }
   }, [deleteStatus, URL, id]);
 
-  function reset() {}
   return (
     <Management_container title={"PromoCode Management"}>
+      {isOpen && <DeleteModalAdv />}
+      {show && <AddPromoCode show={show} setShow={setShow} />}
+      {openView && <ViewPromoCode show={openView} setShow={setOpenView} /> }
       <div class="row">
-        <div class="col-lg-13">
+        <div class="col-lg-12">
           <div class="card">
-            {isOpen && <DeleteModalAdv />}
-            {show && <AddPromoCode show={show} setShow={setShow} />}
-
             <div class="card-body">
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "right",
-                  zIndex: "2",
-                }}
-              >
-                <BtnDark
-                  handleClick={() => {
-                    setShow(true);
-                  }}
-                  title={"Add Promotion"}
-                />
-              </div>
-              <form style={{ margin: "50px" }}>
-                <div className="row">
-                  <div className="col-lg-2 inputField">
-                    <Text_Input
-                      input={filter}
-                      lebel_text={"Title :"}
-                      setKey={"title"}
-                      setInput={setFilter}
-                    />
-                    <Selection_Input
-                      options={["ACTIVE", "INACTIVE"]}
-                      input={filter}
-                      setInput={setFilter}
-                      lebel_text={"Status : "}
-                      setKey={"status"}
-                    />
-                    <Selection_Input
-                      options={["ADMIN", "DRIVER", "RIDER"]}
-                      input={filter}
-                      setInput={setFilter}
-                      lebel_text={"User Type : "}
-                      setKey={"forUsers"}
-                    />
-
-                    <div>
-                      <BtnDark handleClick={handleSubmit} title={"Search"} />
-                      <BtnDark handleClick={reset} title={"reset"} />
-                    </div>
-                  </div>
+              <div class="row">
+                <div class="col-md-12 text-right">
+                  <button class="btn btn-primary" onClick={() => setShow(true)}>
+                    Add New
+                  </button>
                 </div>
-              </form>
+                <div
+                  class="justify-content-center row align-items-end mb-5"
+                  style={{ alignItems: "end" }}
+                >
+                  <div class="col-md-3">
+                    {" "}
+                    <label class="form-label">Title</label>
+                    <input className="form-control" placeholder="Enter Title" />
+                  </div>
+                  <div class="col-md-3">
+                    <label class="form-label">Status</label>
+                    <select class="form-control">
+                      <option>Choose...</option>
+                      <option value="ACTIVE">Active</option>
+                      <option value="INACTIVE">Inactive</option>
+                    </select>
+                  </div>
+
+                  <div class="col-md-3">
+                    <button class="btn btn-primary me-3">Search</button>
+                    <button class="btn btn-danger me-3">Reset</button>
+                  </div>
+                </div>{" "}
+              </div>
 
               <MaterialReactTable
                 columns={columns}
@@ -267,7 +184,7 @@ export default function PromoCodeManagement() {
                   <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
                     <IconButton
                       onClick={() => {
-                        dispatch(getViewPromotion({ id: row.original._id }));
+                        dispatch(getViewPromoCode({ id: row.original._id }));
                         setOpenView(true);
                       }}
                     >

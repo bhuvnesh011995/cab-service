@@ -76,7 +76,9 @@ export default function AddVehicleType({ show, setShow }) {
       }}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Add New Vehicle Type</Modal.Title>
+        <Modal.Title>
+          {selectVehicleType ? "update Vehicle Type" : "Add New Vehicle Type"}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit((formData) => onSubmit(formData))}>

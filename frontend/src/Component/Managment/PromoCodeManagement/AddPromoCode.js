@@ -162,7 +162,9 @@ export default function AddPromoCode({ setShow, show }) {
       }}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Add New Promocode</Modal.Title>
+        <Modal.Title>
+          {promoCode ? "update PromoCode" : "Add New Promocode"}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit((formData) => onSubmit(formData))}>

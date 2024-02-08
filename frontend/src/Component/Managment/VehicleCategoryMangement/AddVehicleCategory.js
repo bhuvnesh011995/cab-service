@@ -68,7 +68,11 @@ export default function AddVehicleCategory({ show, setShow }) {
   return (
     <Modal size="lg" show={show} onHide={() => setShow(false)}>
       <Modal.Header closeButton>
-        <Modal.Title>Add New VehicleCategory </Modal.Title>
+        <Modal.Title>
+          {selectVehicleCategory
+            ? "update Vehicle Category"
+            : "Add New VehicleCategory "}
+        </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>

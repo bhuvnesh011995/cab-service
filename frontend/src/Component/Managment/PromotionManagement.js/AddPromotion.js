@@ -27,9 +27,9 @@ import {
 import ReactSelect from "react-select";
 import { toast } from "react-toastify";
 const forUsersOption = [
-  { value: "ADMIN", label: "Admin" },
-  { value: "DRIVER", label: "Driver" },
-  { value: "RIDER", label: "Rider" },
+  { value: "ADMIN", label: "ADMIN" },
+  { value: "DRIVER", label: "DRIVER" },
+  { value: "RIDER", label: "RIDER" },
 ];
 
 export default function AddPromotion({ setShow, show }) {
@@ -90,14 +90,19 @@ export default function AddPromotion({ setShow, show }) {
 
   const onSubmit = useCallback(
     async (data) => {
+      let forUsers = data.forUsers?.map((option) => option.value);
+      let formData = {
+        ...data,
+        forUsers,
+      };
       if (!promotion) {
-        dispatch(addPromotion(data));
+        dispatch(addPromotion(formData));
       } else {
         let changedField = Object.keys(dirtyFields);
         if (!changedField.length) return toast.info("change some field first");
         else {
           let obj = {};
-          changedField.forEach((field) => (obj[field] = data[field]));
+          changedField.forEach((field) => (obj[field] = formData[field]));
           dispatch(updatePromotion({ id: promotion._id, newData: obj }));
         }
       }
@@ -114,7 +119,10 @@ export default function AddPromotion({ setShow, show }) {
       }}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Add New Promotion</Modal.Title>
+        <Modal.Title>
+          {" "}
+          {promotion ? "Update Promotion" : " Add New Promotion"}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit((formData) => onSubmit(formData))}>

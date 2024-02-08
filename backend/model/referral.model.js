@@ -1,45 +1,46 @@
-const {Schema,model} = require("mongoose")
+const { Schema, model } = require("mongoose");
 
-let schema = new Schema({
-    title:{
-        type:String,
-        required:true
+let schema = new Schema(
+  {
+    name: {
+      type: String,
     },
-    forUsers:[{
-        type:String,
-        required:true,
-        enum:["ADMIN","DRIVER","RIDER"]
-    }],
-    status:{
-        type:String,
-        required:true,
-        enum:["ACTIVE","INACTIVE"]
+    forUsers: [
+      {
+        type: String,
+        enum: ["ADMIN", "DRIVER", "RIDER"],
+      },
+    ],
+    status: {
+      type: String,
+      enum: ["ACTIVE", "INACTIVE"],
     },
 
-    country:{type:Schema.Types.ObjectId,ref:"Country"},
-    state:{type:Schema.Types.ObjectId,ref:"State"},
-    city:{type:Schema.Types.ObjectId,ref:"City"},
+    country: { type: Schema.Types.ObjectId, ref: "Country" },
+    state: { type: Schema.Types.ObjectId, ref: "State" },
+    city: { type: Schema.Types.ObjectId, ref: "City" },
 
-    freeRideToReferrer:Boolean,
+    freeRideToReferrer: Boolean,
 
-    maxFreeRideToReferrer:Number,
+    maxFreeRideToReferrer: Number,
 
-    amountToReferrer:Schema.Types.Decimal128,
+    amountToReferrer: Schema.Types.Decimal128,
 
-    maxAmountToReferrer:Schema.Types.Decimal128,
+    maxAmountToReferrer: Schema.Types.Decimal128,
 
-    freeRideToApplier:Boolean,
+    freeRideToApplier: Boolean,
 
-    amountToApplier:Schema.Types.Decimal128,
+    amountToApplier: Schema.Types.Decimal128,
 
-    image:{
-        data:Buffer,
-        contentType:String
-    }
-},{
-    timestamps:true,
-    collection:"Referral"
-})
+    image: {
+      data: Buffer,
+      contentType: String,
+    },
+  },
+  {
+    timestamps: true,
+    collection: "Referral",
+  }
+);
 
-
-module.exports = model("Referral",schema)
+module.exports = model("Referral", schema);
