@@ -93,7 +93,7 @@ export default function VehicleTypeManagement() {
         size: 80,
       },
     ],
-    []
+    [],
   );
 
   function handleSubmit() {
@@ -110,9 +110,9 @@ export default function VehicleTypeManagement() {
 
   return (
     <Management_container title={"Vehicle Management"}>
-      <div class="row">
-        <div class="col-lg-13">
-          <div class="card">
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
             <DeleteModal
               info={deleteInfo}
               show={isOpen}
@@ -125,7 +125,7 @@ export default function VehicleTypeManagement() {
               <ViewVehicleType show={openView} setShow={setOpenView} />
             )}
 
-            <div class="card-body">
+            <div class='card-body'>
               <div
                 style={{
                   display: "flex",
@@ -141,9 +141,9 @@ export default function VehicleTypeManagement() {
                 />
               </div>
 
-              <form style={{ margin: "50px" }}>
-                <div className="row">
-                  <div className="col-lg-2 inputField">
+              <form>
+                <div className='row'>
+                  <div className='col-lg-2 inputField'>
                     <Text_Input
                       input={filter}
                       lebel_text={"Name :"}
@@ -176,31 +176,30 @@ export default function VehicleTypeManagement() {
         columns={columns}
         data={vehicleTypeData || []}
         enableRowNumbers={true}
-        rowNumberDisplayMode="static"
+        rowNumberDisplayMode='static'
         enableRowActions
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
-          <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-            <IconButton
+          <div className='hstack gap-2 fs-1'>
+            <button
               onClick={() => {
                 dispatch(getViewVehicleType({ id: row.original._id }));
                 setOpenView(true);
               }}
+              className='btn btn-icon btn-sm btn-warning rounded-pill'
             >
-              <RemoveRedEye />
-            </IconButton>
-            <IconButton>
-              <Lock />
-            </IconButton>
-            <IconButton
+              <i className='mdi mdi-eye'></i>
+            </button>
+            <button
               onClick={() => {
                 dispatch(updateVehicleTypeById({ id: row.original._id }));
                 setShow(true);
               }}
+              className='btn btn-icon btn-sm btn-info rounded-pill'
             >
-              <ModeEditOutline />
-            </IconButton>
-            <IconButton
+              <i className='bx bxs-edit-alt' />
+            </button>
+            <button
               onClick={() => {
                 setDeleteInfo({
                   message: `Do You Really Want To Delete ${row.original?.name}`,
@@ -209,11 +208,60 @@ export default function VehicleTypeManagement() {
                 setIsOpen(true);
                 setId(row.original._id);
               }}
+              className='btn btn-icon btn-sm btn-danger rounded-pill'
             >
-              <DeleteForever />
-            </IconButton>
-          </Box>
+              <i className='bx bxs-trash' />
+            </button>
+          </div>
+          // <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
+          //   <IconButton
+          //     onClick={() => {
+          //       dispatch(getViewVehicleType({ id: row.original._id }));
+          //       setOpenView(true);
+          //     }}
+          //   >
+          //     <RemoveRedEye />
+          //   </IconButton>
+          //   <IconButton>
+          //     <Lock />
+          //   </IconButton>
+          //   <IconButton
+          //     onClick={() => {
+          //       dispatch(updateVehicleTypeById({ id: row.original._id }));
+          //       setShow(true);
+          //     }}
+          //   >
+          //     <ModeEditOutline />
+          //   </IconButton>
+          //   <IconButton
+          //     onClick={() => {
+          //       setDeleteInfo({
+          //         message: `Do You Really Want To Delete ${row.original?.name}`,
+          //         header: "Delete Model",
+          //       });
+          //       setIsOpen(true);
+          //       setId(row.original._id);
+          //     }}
+          //   >
+          //     <DeleteForever />
+          //   </IconButton>
+          // </Box>
         )}
+        muiTableProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableHeadCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableBodyCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
       />
     </Management_container>
   );

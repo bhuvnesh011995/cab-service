@@ -492,7 +492,7 @@ export default function DriverManagement() {
                   Approved Drivers
                 </button>
               </div>
-              <form style={{ margin: "50px" }}>
+              <form>
                 <div className='row'>
                   <div className='col-lg-2 inputField'>
                     <Text_Input
@@ -552,25 +552,41 @@ export default function DriverManagement() {
                     },
                   },
                 }}
+                muiTableProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
+                muiTableHeadCellProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
+                muiTableBodyCellProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
-                  <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-                    <IconButton
+                  <div className='hstack gap-2 fs-1'>
+                    <button
                       onClick={() => {
                         setIsOpen(!isOpen);
                         setDriver({ ...row.original });
                       }}
+                      className='btn btn-icon btn-sm btn-warning rounded-pill'
                     >
-                      <RemoveRedEye />
-                    </IconButton>
-                    <IconButton>
-                      <Lock />
-                    </IconButton>
-                    <IconButton>
-                      <ModeEditOutline />
-                    </IconButton>
-                    <IconButton
-                      onClick={(e) => {
+                      <i className='mdi mdi-eye'></i>
+                    </button>
+                    <button
+                      onClick={() => {}}
+                      className='btn btn-icon btn-sm btn-info rounded-pill'
+                    >
+                      <i className='bx bxs-edit-alt' />
+                    </button>
+                    <button
+                      onClick={() => {
                         navigate("/vehicleManagement", {
                           state: {
                             id: row.original.id,
@@ -578,13 +594,11 @@ export default function DriverManagement() {
                           },
                         });
                       }}
+                      className='btn btn-icon btn-sm btn-danger rounded-pill'
                     >
-                      <DriveEta />
-                    </IconButton>
-                    <IconButton>
-                      <DeleteForever />
-                    </IconButton>
-                  </Box>
+                      <i className='bx bxs-trash' />
+                    </button>
+                  </div>
                 )}
               />
             </div>

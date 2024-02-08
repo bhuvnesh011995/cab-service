@@ -143,7 +143,7 @@ export default function PromoCodeManagement() {
         header: "validFrom",
       },
     ],
-    []
+    [],
   );
 
   function handleSubmit() {
@@ -155,7 +155,7 @@ export default function PromoCodeManagement() {
         filter.status +
         "&forUsers=" +
         filter.forUsers,
-      { method: "GET" }
+      { method: "GET" },
     )
       .then((res) => res.json())
       .then((data) => {
@@ -188,13 +188,13 @@ export default function PromoCodeManagement() {
   function reset() {}
   return (
     <Management_container title={"PromoCode Management"}>
-      <div class="row">
-        <div class="col-lg-13">
-          <div class="card">
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
             {isOpen && <DeleteModalAdv />}
             {show && <AddPromoCode show={show} setShow={setShow} />}
 
-            <div class="card-body">
+            <div class='card-body'>
               <div
                 style={{
                   display: "flex",
@@ -209,9 +209,9 @@ export default function PromoCodeManagement() {
                   title={"Add Promotion"}
                 />
               </div>
-              <form style={{ margin: "50px" }}>
-                <div className="row">
-                  <div className="col-lg-2 inputField">
+              <form>
+                <div className='row'>
+                  <div className='col-lg-2 inputField'>
                     <Text_Input
                       input={filter}
                       lebel_text={"Title :"}
@@ -264,37 +264,55 @@ export default function PromoCodeManagement() {
                 }}
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
-                  <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-                    <IconButton
+                  <div className='hstack gap-2 fs-1'>
+                    <button
                       onClick={() => {
                         dispatch(getViewPromotion({ id: row.original._id }));
                         setOpenView(true);
                       }}
+                      className='btn btn-icon btn-sm btn-warning rounded-pill'
                     >
-                      <RemoveRedEye />
-                    </IconButton>
-                    <IconButton
+                      <i className='mdi mdi-eye'></i>
+                    </button>
+                    <button
                       onClick={() => {
                         dispatch(updatePromoCodeById({ id: row.original._id }));
                         setShow(true);
                       }}
+                      className='btn btn-icon btn-sm btn-info rounded-pill'
                     >
-                      <ModeEditOutline />
-                    </IconButton>
-                    <IconButton
+                      <i className='bx bxs-edit-alt' />
+                    </button>
+                    <button
                       onClick={() => {
                         dispatch(
                           openModal({
                             url: `${BASE_URL}/promoCode/${row.original._id}`,
                             id: row.original._id,
-                          })
+                          }),
                         );
                       }}
+                      className='btn btn-icon btn-sm btn-danger rounded-pill'
                     >
-                      <DeleteForever />
-                    </IconButton>
-                  </Box>
+                      <i className='bx bxs-trash' />
+                    </button>
+                  </div>
                 )}
+                muiTableProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
+                muiTableHeadCellProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
+                muiTableBodyCellProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
               />
             </div>
           </div>

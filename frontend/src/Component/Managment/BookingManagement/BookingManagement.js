@@ -6,7 +6,7 @@ import BASE_URL from "../../../config/config";
 import Text_Input from "../../Common/Inputs/Text_Input";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import { MaterialReactTable } from "material-react-table";
-import BookingService from './BookingService';
+import BookingService from "./BookingService";
 import {
   RemoveRedEye,
   Lock,
@@ -30,7 +30,7 @@ export default function BookingManagement() {
   const [list, setList] = useState([]);
   const [filter, setFilter] = useState(initialFilter);
   const navigate = useNavigate();
-  const [isOpen,setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     fetch(BASE_URL + "/booking/filter", {
@@ -75,38 +75,39 @@ export default function BookingManagement() {
         filter.status +
         "&bookingType=" +
         filter.bookingType,
-      { method: "GET" }
-    ).then(res=>res.json())
-    .then(data=>{
-      if (data.success) {
-        let arr = [];
-        data.bookings?.map((ele, i) => {
-          let obj = {
-            bookingId: ele._id,
-            pickUpAddress: ele.bookingInfo.pickUp.address,
-            dropAddress: ele.bookingInfo.drop.address,
-            runMode: ele.runMode.name,
-            dfirstName: ele.driver.firstName,
-            dlastName: ele.driver.lastName,
-            rfirstName: ele.rider.firstName,
-            rlastName: ele.rider.lastName,
-            rMobile: ele.rider.mobile,
-            rEmail: ele.rider.email,
-            status: ele.status,
-            createdAt: ele.createdAt,
-          };
-          arr.push(obj);
-        });
-        setList(arr);
-      }
-    });
+      { method: "GET" },
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          let arr = [];
+          data.bookings?.map((ele, i) => {
+            let obj = {
+              bookingId: ele._id,
+              pickUpAddress: ele.bookingInfo.pickUp.address,
+              dropAddress: ele.bookingInfo.drop.address,
+              runMode: ele.runMode.name,
+              dfirstName: ele.driver.firstName,
+              dlastName: ele.driver.lastName,
+              rfirstName: ele.rider.firstName,
+              rlastName: ele.rider.lastName,
+              rMobile: ele.rider.mobile,
+              rEmail: ele.rider.email,
+              status: ele.status,
+              createdAt: ele.createdAt,
+            };
+            arr.push(obj);
+          });
+          setList(arr);
+        }
+      });
   }
 
   function handleClick2() {
     return;
   }
   function handleClick() {
-    window.open("http://localhost:3000/newBooking",'_blank', 'noreferrer')
+    window.open("http://localhost:3000/newBooking", "_blank", "noreferrer");
   }
 
   const columns = useMemo(
@@ -322,15 +323,15 @@ export default function BookingManagement() {
         },
       },
     ],
-    []
+    [],
   );
 
   return (
     <Management_container title={"Booking Management"}>
-      <div class="row">
-        <div class="col-lg-13">
-          <div class="card">
-            <div class="card-body">
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
+            <div class='card-body'>
               <div
                 style={{
                   display: "flex",
@@ -340,10 +341,10 @@ export default function BookingManagement() {
               >
                 <BtnDark handleClick={handleClick} title={"New Booking"} />
               </div>
-              {isOpen && <BookingService show={isOpen} setIsOpen={setIsOpen}/>}
-              <form style={{ margin: "50px" }}>
-                <div className="row">
-                  <div className="col-lg-2 inputField">
+              {isOpen && <BookingService show={isOpen} setIsOpen={setIsOpen} />}
+              <form>
+                <div className='row'>
+                  <div className='col-lg-2 inputField'>
                     <Text_Input
                       input={filter}
                       setInput={setFilter}
@@ -375,11 +376,16 @@ export default function BookingManagement() {
                       lebel_text={"Booking Type"}
                       setKey={"bookingType"}
                     />
-
-                    <div>
-                      <BtnDark handleClick={handleSubmit} title={"Search"} />
-                      <BtnDark handleClick={handleClick2} title={"Reset"} />
-                    </div>
+                  </div>
+                  <div
+                    style={{
+                      margin: "15px",
+                      display: "flex",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <BtnDark handleClick={handleSubmit} title={"Search"} />
+                    <BtnDark handleClick={handleClick2} title={"Reset"} />
                   </div>
                 </div>
               </form>
@@ -408,21 +414,46 @@ export default function BookingManagement() {
                 }}
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
-                  <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-                    <IconButton onClick={()=>{navigate("/bookingDetails",{state:{bookingId:row.original.bookingId}})}}>
-                      <RemoveRedEye />
-                    </IconButton>
-                    <IconButton>
-                      <Lock />
-                    </IconButton>
-                    <IconButton>
-                      <ModeEditOutline />
-                    </IconButton>
-                    <IconButton>
-                      <DeleteForever />
-                    </IconButton>
-                  </Box>
+                  <div className='hstack gap-2 fs-1'>
+                    <button
+                      onClick={() => {
+                        navigate("/bookingDetails", {
+                          state: { bookingId: row.original.bookingId },
+                        });
+                      }}
+                      className='btn btn-icon btn-sm btn-warning rounded-pill'
+                    >
+                      <i className='mdi mdi-eye'></i>
+                    </button>
+                    <button
+                      onClick={() => {}}
+                      className='btn btn-icon btn-sm btn-info rounded-pill'
+                    >
+                      <i className='bx bxs-edit-alt' />
+                    </button>
+                    <button
+                      onClick={() => {}}
+                      className='btn btn-icon btn-sm btn-danger rounded-pill'
+                    >
+                      <i className='bx bxs-trash' />
+                    </button>
+                  </div>
                 )}
+                muiTableProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
+                muiTableHeadCellProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
+                muiTableBodyCellProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
               />
             </div>
           </div>

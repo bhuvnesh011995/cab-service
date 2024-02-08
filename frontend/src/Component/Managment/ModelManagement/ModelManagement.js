@@ -100,7 +100,7 @@ export default function ModelManagement() {
         header: "Created At",
       },
     ],
-    []
+    [],
   );
 
   useEffect(() => {
@@ -124,14 +124,14 @@ export default function ModelManagement() {
 
   return (
     <Management_container title={"Model Management"}>
-      <div class="row">
-        <div class="col-lg-13">
-          <div class="card">
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
             {show && <AddModel show={show} setShow={setShow} />}
             {showDelete && <DeleteModalAdv />}
             {openView && <ViewModel show={openView} setShow={setOpenView} />}
 
-            <div class="card-body">
+            <div class='card-body'>
               <div
                 style={{
                   display: "flex",
@@ -168,43 +168,58 @@ export default function ModelManagement() {
         columns={columns}
         data={modelData || []}
         enableRowNumbers={true}
-        rowNumberDisplayMode="static"
+        rowNumberDisplayMode='static'
         enableRowActions
+        muiTableProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableHeadCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableBodyCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
-          <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-            <IconButton
+          <div className='hstack gap-2 fs-1'>
+            <button
               onClick={() => {
                 dispatch(getViewModel({ id: row.original._id }));
                 setOpenView(true);
               }}
+              className='btn btn-icon btn-sm btn-warning rounded-pill'
             >
-              <RemoveRedEye />
-            </IconButton>
-            <IconButton>
-              <Lock />
-            </IconButton>
-            <IconButton
+              <i className='mdi mdi-eye'></i>
+            </button>
+            <button
               onClick={() => {
                 dispatch(updateModelById({ id: row.original._id }));
                 setShow(true);
               }}
+              className='btn btn-icon btn-sm btn-info rounded-pill'
             >
-              <ModeEditOutline />
-            </IconButton>
-            <IconButton
+              <i className='bx bxs-edit-alt' />
+            </button>
+            <button
               onClick={() => {
                 dispatch(
                   openModal({
                     url: `${BASE_URL}/model/${row.original._id}`,
                     id: row.original._id,
-                  })
+                  }),
                 );
               }}
+              className='btn btn-icon btn-sm btn-danger rounded-pill'
             >
-              <DeleteForever />
-            </IconButton>
-          </Box>
+              <i className='bx bxs-trash' />
+            </button>
+          </div>
         )}
       />
     </Management_container>

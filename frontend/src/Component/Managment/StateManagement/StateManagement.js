@@ -113,7 +113,7 @@ export default function StateManagement() {
         header: "Created At",
       },
     ],
-    []
+    [],
   );
 
   function handleSubmit() {
@@ -126,13 +126,13 @@ export default function StateManagement() {
 
   return (
     <Management_container title={"STATE MANAGEMENT"}>
-      <div class="row">
-        <div class="col-lg-13">
-          <div class="card">
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
             {show && <DeleteModalAdv />}
 
             {open && <AddState show={open} setShow={setOpen} />}
-            <div class="card-body">
+            <div class='card-body'>
               <div
                 style={{
                   display: "flex",
@@ -166,39 +166,56 @@ export default function StateManagement() {
         columns={columns}
         data={states}
         enableRowNumbers
-        rowNumberMode="static"
+        rowNumberMode='static'
         enableRowActions
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
-          <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-            <IconButton>
-              <RemoveRedEye />
-            </IconButton>
-            <IconButton>
-              <Lock />
-            </IconButton>
-            <IconButton
+          <div className='hstack gap-2 fs-1'>
+            <button
               onClick={() => {
                 dispatch(stateForUpdate({ id: row.original._id }));
                 setOpen(true);
               }}
+              className='btn btn-icon btn-sm btn-warning rounded-pill'
             >
-              <ModeEditOutline />
-            </IconButton>
-            <IconButton>
-              <DeleteForever
-                onClick={() => {
-                  dispatch(
-                    openModal({
-                      url: `${BASE_URL}/state/${row.original._id}`,
-                      id: row.original._id,
-                    })
-                  );
-                }}
-              />
-            </IconButton>
-          </Box>
+              <i className='mdi mdi-eye'></i>
+            </button>
+            <button
+              onClick={() => {}}
+              className='btn btn-icon btn-sm btn-info rounded-pill'
+            >
+              <i className='bx bxs-edit-alt' />
+            </button>
+            <button
+              onClick={() => {
+                dispatch(
+                  openModal({
+                    url: `${BASE_URL}/state/${row.original._id}`,
+                    id: row.original._id,
+                  }),
+                );
+              }}
+              className='btn btn-icon btn-sm btn-danger rounded-pill'
+            >
+              <i className='bx bxs-trash' />
+            </button>
+          </div>
         )}
+        muiTableProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableHeadCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableBodyCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
       />
     </Management_container>
   );
