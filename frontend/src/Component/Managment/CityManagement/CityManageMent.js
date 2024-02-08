@@ -70,7 +70,7 @@ export default function CityManagement() {
         header: "Created At",
       },
     ],
-    []
+    [],
   );
 
   function onSubmit(data) {
@@ -82,14 +82,14 @@ export default function CityManagement() {
       {isOpen && <AddNewCity show={isOpen} setShow={setIsOpen} />}
       <MapService />
 
-      <div class="row">
-        <div class="col-lg-13">
-          <div class="card">
-            <div class="card-body">
-              <div className="text-right">
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
+            <div class='card-body'>
+              <div className='text-right'>
                 <button
                   onClick={() => setIsOpen(true)}
-                  className="btn btn-primary"
+                  className='btn btn-primary'
                 >
                   Add City
                 </button>
@@ -98,12 +98,12 @@ export default function CityManagement() {
                 <div style={{ display: "flex", justifyContent: "center" }}>
                   <input
                     {...register("text")}
-                    className="form-control-lg me-3 rounded-pill"
-                    placeholder="Search..."
+                    className='form-control-lg me-3 rounded-pill'
+                    placeholder='Search...'
                   />
                   <button
-                    type="submit"
-                    className="btn btn-lg btn-primary rounded-pill"
+                    type='submit'
+                    className='btn btn-lg btn-primary rounded-pill'
                   >
                     Search
                   </button>
@@ -117,25 +117,46 @@ export default function CityManagement() {
         columns={columns}
         data={cities}
         enableRowNumbers
-        rowNumberMode="static"
+        rowNumberMode='static'
         enableRowActions
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
-          <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-            <IconButton>
-              <RemoveRedEye />
-            </IconButton>
-            <IconButton>
-              <Lock />
-            </IconButton>
-            <IconButton>
-              <ModeEditOutline />
-            </IconButton>
-            <IconButton onClick={() => {}}>
-              <DeleteForever />
-            </IconButton>
-          </Box>
+          <div className='hstack gap-2 fs-1'>
+            <button
+              onClick={() => {}}
+              className='btn btn-icon btn-sm btn-warning rounded-pill'
+            >
+              <i className='mdi mdi-eye'></i>
+            </button>
+            <button
+              onClick={() => {}}
+              className='btn btn-icon btn-sm btn-info rounded-pill'
+            >
+              <i className='bx bxs-edit-alt' />
+            </button>
+            <button
+              onClick={() => {}}
+              className='btn btn-icon btn-sm btn-danger rounded-pill'
+            >
+              <i className='bx bxs-trash' />
+            </button>
+          </div>
         )}
+        muiTableProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableHeadCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableBodyCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
       />
     </Management_container>
   );

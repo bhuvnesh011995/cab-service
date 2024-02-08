@@ -80,7 +80,7 @@ export default function AvaialibilityManagement() {
         header: "Created At",
       },
     ],
-    []
+    [],
   );
 
   function handleSubmit(e) {
@@ -99,7 +99,7 @@ export default function AvaialibilityManagement() {
         filter.vehicleType,
       {
         method: "GET",
-      }
+      },
     )
       .then((res) => res.json())
       .then((data) => {
@@ -131,10 +131,10 @@ export default function AvaialibilityManagement() {
 
   return (
     <Management_container title={"AvaialibilityManagement"}>
-      <div class="row">
-        <div class="col-lg-13">
-          <div class="card">
-            <div class="card-body">
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
+            <div class='card-body'>
               <div
                 style={{
                   display: "flex",
@@ -168,21 +168,42 @@ export default function AvaialibilityManagement() {
         enableRowActions
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
-          <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-            <IconButton>
-              <RemoveRedEye />
-            </IconButton>
-            <IconButton>
-              <Lock />
-            </IconButton>
-            <IconButton>
-              <ModeEditOutline />
-            </IconButton>
-            <IconButton>
-              <DeleteForever />
-            </IconButton>
-          </Box>
+          <div className='hstack gap-2 fs-1'>
+            <button
+              onClick={() => {}}
+              className='btn btn-icon btn-sm btn-warning rounded-pill'
+            >
+              <i className='mdi mdi-eye'></i>
+            </button>
+            <button
+              onClick={() => {}}
+              className='btn btn-icon btn-sm btn-info rounded-pill'
+            >
+              <i className='bx bxs-edit-alt' />
+            </button>
+            <button
+              onClick={() => {}}
+              className='btn btn-icon btn-sm btn-danger rounded-pill'
+            >
+              <i className='bx bxs-trash' />
+            </button>
+          </div>
         )}
+        muiTableProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableHeadCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableBodyCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
       />
     </Management_container>
   );

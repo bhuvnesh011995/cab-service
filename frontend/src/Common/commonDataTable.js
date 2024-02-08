@@ -1,5 +1,4 @@
 import { MaterialReactTable } from "material-react-table";
-import { FormattedMessage } from "react-intl";
 
 export const CommonDataTable = ({
   data,

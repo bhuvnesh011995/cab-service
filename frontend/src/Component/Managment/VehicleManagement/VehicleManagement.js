@@ -340,14 +340,14 @@ export default function VehicleManagement() {
         },
       },
     ],
-    []
+    [],
   );
   return (
     <Management_container title={"Vehicle Managment"}>
-      <div class="row">
-        <div class="col-lg-13">
-          <div class="card">
-            <div class="card-body">
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
+            <div class='card-body'>
               <div
                 style={{
                   display: "flex",
@@ -389,27 +389,46 @@ export default function VehicleManagement() {
                 }}
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
-                  <Box sx={{ display: "flex", flexWrap: "nowrap" }}>
-                    <IconButton
-                      onClick={() =>
+                  <div className='hstack gap-2 fs-1'>
+                    <button
+                      onClick={() => {
                         navigate("/vehicleDetails", {
                           state: { id: row.original.id },
-                        })
-                      }
+                        });
+                      }}
+                      className='btn btn-icon btn-sm btn-warning rounded-pill'
                     >
-                      <RemoveRedEye />
-                    </IconButton>
-                    <IconButton>
-                      <Lock />
-                    </IconButton>
-                    <IconButton>
-                      <ModeEditOutline />
-                    </IconButton>
-                    <IconButton>
-                      <DeleteForever />
-                    </IconButton>
-                  </Box>
+                      <i className='mdi mdi-eye'></i>
+                    </button>
+                    <button
+                      onClick={() => {}}
+                      className='btn btn-icon btn-sm btn-info rounded-pill'
+                    >
+                      <i className='bx bxs-edit-alt' />
+                    </button>
+                    <button
+                      onClick={() => {}}
+                      className='btn btn-icon btn-sm btn-danger rounded-pill'
+                    >
+                      <i className='bx bxs-trash' />
+                    </button>
+                  </div>
                 )}
+                muiTableProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
+                muiTableHeadCellProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
+                muiTableBodyCellProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
               />
             </div>
           </div>

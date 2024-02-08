@@ -92,8 +92,8 @@ export default function Filter_Option({
 
   return (
     <form>
-      <div className="row">
-        <div className="col-lg-2 inputField">
+      <div className='row'>
+        <div className='col-lg-2 inputField'>
           {options.includes("package") && (
             <Selection_Input
               options={packages}

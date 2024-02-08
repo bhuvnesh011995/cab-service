@@ -115,9 +115,44 @@ export default function RentalPromotionManagement() {
         header: "validFrom",
       },
     ],
-    []
+    [],
   );
 
+<<<<<<< HEAD
+=======
+  function handleSubmit() {
+    fetch(
+      BASE_URL +
+        "/promotion/self/filter/?title=" +
+        filter.title +
+        "&status=" +
+        filter.status +
+        "&forUsers=" +
+        filter.forUsers,
+      { method: "GET" },
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          let arr = data.promotions.map((ele) => {
+            let obj = {};
+            obj.title = ele.title;
+            obj.country = ele.country?.name;
+            obj.state = ele.state?.name;
+            obj.city = ele.city?.name;
+            obj.forUsers = ele.forUsers.join();
+            obj.status = ele.status;
+            obj.description = ele.description;
+            obj.createdAt = ele.createdAt;
+            obj.updatedAt = ele.updatedAt;
+            return obj;
+          });
+          setList(arr);
+        }
+      });
+  }
+
+>>>>>>> 7eac9678185526962a904fe6dbf12e91b13ff24a
   useEffect(() => {
     if (deleteStatus === "delete") {
       dispatch(deleteRentalPromotion({ url: URL, id }));
@@ -127,6 +162,7 @@ export default function RentalPromotionManagement() {
 
   return (
     <Management_container title={"Rental Promotion Management"}>
+<<<<<<< HEAD
       {isOpen && <DeleteModalAdv />}
       {show && <AddRentalPromotion show={show} setShow={setShow} />}
       <div class="row">
@@ -157,6 +193,57 @@ export default function RentalPromotionManagement() {
                   <div class="col-md-3">
                     <button class="btn btn-primary me-3">Search</button>
                     <button class="btn btn-danger me-3">Reset</button>
+=======
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
+            {isOpen && <DeleteModalAdv />}
+            {show && <AddRentalPromotion show={show} setShow={setShow} />}
+
+            <div class='card-body'>
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "right",
+                  zIndex: "2",
+                }}
+              >
+                <BtnDark
+                  handleClick={() => {
+                    setShow(true);
+                  }}
+                  title={"Add Promotion"}
+                />
+              </div>
+              <form>
+                <div className='row'>
+                  <div className='col-lg-2 inputField'>
+                    <Text_Input
+                      input={filter}
+                      lebel_text={"Title :"}
+                      setKey={"title"}
+                      setInput={setFilter}
+                    />
+                    <Selection_Input
+                      options={["ACTIVE", "INACTIVE"]}
+                      input={filter}
+                      setInput={setFilter}
+                      lebel_text={"Status : "}
+                      setKey={"status"}
+                    />
+                    <Selection_Input
+                      options={["ADMIN", "DRIVER", "RIDER"]}
+                      input={filter}
+                      setInput={setFilter}
+                      lebel_text={"User Type : "}
+                      setKey={"forUsers"}
+                    />
+
+                    <div>
+                      <BtnDark handleClick={handleSubmit} title={"Search"} />
+                      <BtnDark handleClick={reset} title={"reset"} />
+                    </div>
+>>>>>>> 7eac9678185526962a904fe6dbf12e91b13ff24a
                   </div>
                 </div>
               </div>
@@ -184,39 +271,57 @@ export default function RentalPromotionManagement() {
                 }}
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
-                  <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-                    <IconButton
+                  <div className='hstack gap-2 fs-1'>
+                    <button
                       onClick={() => {
                         dispatch(getViewPromotion({ id: row.original._id }));
                         setOpenView(true);
                       }}
+                      className='btn btn-icon btn-sm btn-warning rounded-pill'
                     >
-                      <RemoveRedEye />
-                    </IconButton>
-                    <IconButton
+                      <i className='mdi mdi-eye'></i>
+                    </button>
+                    <button
                       onClick={() => {
                         dispatch(
-                          updateRentalPromotionById({ id: row.original._id })
+                          updateRentalPromotionById({ id: row.original._id }),
                         );
                         setShow(true);
                       }}
+                      className='btn btn-icon btn-sm btn-info rounded-pill'
                     >
-                      <ModeEditOutline />
-                    </IconButton>
-                    <IconButton
+                      <i className='bx bxs-edit-alt' />
+                    </button>
+                    <button
                       onClick={() => {
                         dispatch(
                           openModal({
                             url: `${BASE_URL}/rentalPromotion/${row.original._id}`,
                             id: row.original._id,
-                          })
+                          }),
                         );
                       }}
+                      className='btn btn-icon btn-sm btn-danger rounded-pill'
                     >
-                      <DeleteForever />
-                    </IconButton>
-                  </Box>
+                      <i className='bx bxs-trash' />
+                    </button>
+                  </div>
                 )}
+                muiTableProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
+                muiTableHeadCellProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
+                muiTableBodyCellProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
               />
             </div>
           </div>

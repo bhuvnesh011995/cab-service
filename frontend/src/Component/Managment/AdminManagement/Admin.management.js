@@ -98,7 +98,7 @@ export default function AdminManagement() {
         size: 100,
       },
     ],
-    []
+    [],
   );
 
   function handleSubmit(e) {
@@ -111,10 +111,10 @@ export default function AdminManagement() {
         <AddNew show={adminModalOpen} setShow={setAdminModalOpen} />
       )}
       {show && <DeleteModalAdv />}
-      <div class="row">
-        <div class="col-lg-13">
-          <div class="card">
-            <div class="card-body">
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
+            <div class='card-body'>
               <div
                 style={{
                   display: "flex",
@@ -146,35 +146,52 @@ export default function AdminManagement() {
         enableRowActions
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
-          <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-            <IconButton>
-              <RemoveRedEye />
-            </IconButton>
-            <IconButton>
-              <Lock />
-            </IconButton>
-            <IconButton
+          <div className='hstack gap-2 fs-1'>
+            <button
+              onClick={() => {}}
+              className='btn btn-icon btn-sm btn-warning rounded-pill'
+            >
+              <i className='mdi mdi-eye'></i>
+            </button>
+            <button
               onClick={() => {
                 dispatch(fetchAdminById(row.original._id));
                 setAdminModalOpen(true);
               }}
+              className='btn btn-icon btn-sm btn-info rounded-pill'
             >
-              <ModeEditOutline />
-            </IconButton>
-            <IconButton
+              <i className='bx bxs-edit-alt' />
+            </button>
+            <button
               onClick={() => {
                 dispatch(
                   openModal({
                     url: `${BASE_URL}/admin/${row.original._id}`,
                     id: row.original._id,
-                  })
+                  }),
                 );
               }}
+              className='btn btn-icon btn-sm btn-danger rounded-pill'
             >
-              <DeleteForever />
-            </IconButton>
-          </Box>
+              <i className='bx bxs-trash' />
+            </button>
+          </div>
         )}
+        muiTableProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableHeadCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableBodyCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
       />
     </Management_container>
   );

@@ -107,7 +107,7 @@ export default function CountryManagement() {
         size: 80,
       },
     ],
-    []
+    [],
   );
   function handleSubmit() {
     dispatch(filterCountries(filter));
@@ -119,13 +119,13 @@ export default function CountryManagement() {
 
   return (
     <Management_container title={"Country Management"}>
-      <div class="row">
-        <div class="col-lg-13">
-          <div class="card">
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
             {show && <DeleteModalAdv />}
             {isOpen && <AddCountry show={isOpen} setShow={setIsOpen} />}
 
-            <div class="card-body">
+            <div class='card-body'>
               <div
                 style={{
                   display: "flex",
@@ -134,7 +134,7 @@ export default function CountryManagement() {
                 }}
               >
                 <button
-                  className="btn btn-primary"
+                  className='btn btn-primary'
                   onClick={() => setIsOpen(true)}
                 >
                   Add Country
@@ -159,39 +159,56 @@ export default function CountryManagement() {
         columns={columns}
         data={contries}
         enableRowNumbers
-        rowNumberMode="static"
+        rowNumberMode='static'
         enableRowActions
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
-          <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-            <IconButton>
-              <RemoveRedEye />
-            </IconButton>
-            <IconButton>
-              <Lock />
-            </IconButton>
-            <IconButton
+          <div className='hstack gap-2 fs-1'>
+            <button
+              onClick={() => {}}
+              className='btn btn-icon btn-sm btn-warning rounded-pill'
+            >
+              <i className='mdi mdi-eye'></i>
+            </button>
+            <button
               onClick={() => {
                 dispatch(updateCountry({ id: row.original._id }));
                 setIsOpen(true);
               }}
+              className='btn btn-icon btn-sm btn-info rounded-pill'
             >
-              <ModeEditOutline />
-            </IconButton>
-            <IconButton
+              <i className='bx bxs-edit-alt' />
+            </button>
+            <button
               onClick={() => {
                 dispatch(
                   openModal({
                     url: `${BASE_URL}/country/${row.original._id}`,
                     id: row.original._id,
-                  })
+                  }),
                 );
               }}
+              className='btn btn-icon btn-sm btn-danger rounded-pill'
             >
-              <DeleteForever />
-            </IconButton>
-          </Box>
+              <i className='bx bxs-trash' />
+            </button>
+          </div>
         )}
+        muiTableProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableHeadCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableBodyCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
       />
     </Management_container>
   );
