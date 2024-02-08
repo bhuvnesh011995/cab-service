@@ -254,7 +254,8 @@ exports.addRental = async (req, res) => {
 };
 exports.getAllRentals = async (req, res) => {
   try {
-    const { country, state, city, vehicleType, status } = req.query;
+    console.log(req.query);
+
     const rentalFareAggregateQuery = [];
     rentalFareAggregateQuery.push(
       {
@@ -342,57 +343,70 @@ exports.getAllRentals = async (req, res) => {
         },
       },
       { $unwind: "$RentalPackageDetails" },
+      {
+        $addFields: {
+          coutryName: "$countryDetails.name",
+          cityName: "$cityDetails.name",
+          stateName: "$stateDetails.name",
+          vehicleTypeName: "$vehicleTypeDetails.name",
+        },
+      },
     );
 
-    if (country?.length) {
+    if (req.query.search.length) {
       rentalFareAggregateQuery.push({
         $match: {
-          $expr: {
-            $eq: [{ $toString: "$countryDetails._id" }, country],
-          },
+          $or: [
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$coutryName" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$stateName" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$cityName" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$vehicleTypeName" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$status" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+          ],
         },
       });
     }
 
-    if (state?.length) {
-      rentalFareAggregateQuery.push({
-        $match: {
-          $expr: {
-            $eq: [{ $toString: "$stateDetails._id" }, state],
-          },
-        },
-      });
-    }
-
-    if (city?.length) {
-      rentalFareAggregateQuery.push({
-        $match: {
-          $expr: {
-            $eq: [{ $toString: "$cityDetails._id" }, city],
-          },
-        },
-      });
-    }
-
-    if (vehicleType?.length) {
-      rentalFareAggregateQuery.push({
-        $match: {
-          $expr: {
-            $eq: [{ $toString: "$vehicleTypeDetails._id" }, vehicleType],
-          },
-        },
-      });
-    }
-
-    if (status?.length) {
-      rentalFareAggregateQuery.push({
-        $match: {
-          $expr: {
-            $eq: ["$status", status],
-          },
-        },
-      });
-    }
     rentalFareAggregateQuery.push({
       $project: {
         _id: 1,

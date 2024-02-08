@@ -17,12 +17,7 @@ const forUsersOption = [
   { value: "DRIVER", label: "Driver" },
   { value: "RIDER", label: "Rider" },
 ];
-const initialTemplate = {
-  title: "",
-  status: "",
-  forUsers: [],
-  subject: "",
-};
+
 export default function AddEmailTemplate({ show, setShow, viewModal, id }) {
   const dispatch = useDispatch();
   const selectedEmailTemplate = useSelector(getSelectedEmail);

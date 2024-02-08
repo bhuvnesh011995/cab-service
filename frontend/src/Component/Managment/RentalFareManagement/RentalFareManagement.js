@@ -13,14 +13,10 @@ import {
   getAllRentals,
   getRentals,
 } from "../../../Redux/features/rentalFareReducer";
+import Text_Input from "../../Common/Inputs/Text_Input";
 
 const initialFilter = {
-  package: "",
-  country: "",
-  state: "",
-  city: "",
-  vehicleType: "",
-  status: "",
+  search: "",
 };
 export default function RentalFareManagement() {
   const dispatch = useDispatch();
@@ -85,13 +81,11 @@ export default function RentalFareManagement() {
                 />
               </div>
 
-              <Filter_Option
+              <Text_Input
                 input={filter}
                 setInput={setFilter}
-                initialInput={initialFilter}
-                handleClick2={handleClick2}
-                btn2_title={"reset"}
-                options={["country", "state", "city", "status", "vehicleType"]}
+                setKey={"search"}
+                lebel_text={"Search :"}
               />
             </div>
           </div>

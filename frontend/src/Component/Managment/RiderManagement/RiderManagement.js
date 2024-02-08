@@ -13,12 +13,10 @@ import {
   getRiders,
 } from "../../../Redux/features/riderReducer";
 import DeleteModal from "../../DeleteModel/DeleteModel";
+import { IMAGE_URL } from "../../../config/config";
 
 const initialState = {
-  name: "",
-  email: "",
-  mobile: "",
-  status: "",
+  search: "",
 };
 export default function RiderManagement() {
   const dispatch = useDispatch();
@@ -50,10 +48,6 @@ export default function RiderManagement() {
     if (type !== "delete") setRiderManagementModal(true);
   };
 
-  function reset() {
-    setFilter({ ...initialState });
-  }
-
   const deleteModel = () => {
     dispatch(deleteRiderReducer(id));
   };
@@ -78,36 +72,13 @@ export default function RiderManagement() {
               </div>
               <form style={{ margin: "50px" }}>
                 <div className='row'>
-                  <div className='col-lg-2 inputField'>
+                  <div className='col-lg-6'>
                     <Text_Input
                       input={filter}
                       setInput={setFilter}
-                      setKey={"name"}
-                      lebel_text={"Name :"}
+                      setKey={"search"}
+                      lebel_text={"Search :"}
                     />
-                    <Text_Input
-                      input={filter}
-                      setInput={setFilter}
-                      setKey={"email"}
-                      lebel_text={"Email :"}
-                    />
-                    <Text_Input
-                      input={filter}
-                      setInput={setFilter}
-                      setKey={"mobile"}
-                      lebel_text={"Mobile :"}
-                    />
-                    <Selection_Input
-                      options={["ACTIVE", "INACTIVE"]}
-                      input={filter}
-                      setInput={setFilter}
-                      lebel_text={"Status : "}
-                      setKey={"status"}
-                    />
-
-                    <div style={{ margin: "20px", marginTop: "50px" }}>
-                      <BtnDark handleClick={reset} title={"Reset"} />
-                    </div>
                   </div>
                 </div>
               </form>
@@ -122,16 +93,32 @@ export default function RiderManagement() {
                 callback={(data, type, index) =>
                   updateRiderManagement(data, type, index)
                 }
-                // changeSelectedColumnDataDesign={["profilePhoto"]}
-                // changedDataCellColumn={(header,accesor) => {
-                //   return {
-                //     header:header,
-                //     Cell:({row}) => <div>
-                //       <img src={}/>
-                //     </div>
-                //   }
-
-                // }}
+                changeSelectedColumnDataDesign={["profilePhoto", "name"]}
+                changedDataCellColumn={(header, accessor) => {
+                  if (accessor == "profilePhoto")
+                    return {
+                      header: header,
+                      Cell: ({ row }) => (
+                        <div className='d-flex align-items-center justify-content-center'>
+                          <img
+                            width={"50px"}
+                            height={"50px"}
+                            style={{ borderRadius: "50%" }}
+                            src={IMAGE_URL + row.original.userImage}
+                          />
+                        </div>
+                      ),
+                    };
+                  else if (accessor == "name")
+                    return {
+                      header: header,
+                      Cell: ({ row }) => (
+                        <div>
+                          {row.original.firstName + " " + row.original.lastName}
+                        </div>
+                      ),
+                    };
+                }}
               />
             </div>
           </div>

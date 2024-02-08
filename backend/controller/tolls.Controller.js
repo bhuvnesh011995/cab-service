@@ -26,14 +26,41 @@ exports.addToll = async (req, res, next) => {
 
 exports.getAllTolls = async (req, res, next) => {
   try {
-    const tollQuery = {};
-    if (req.query.title.length) {
-      tollQuery["title"] = { $regex: req.query.title };
-    }
-    if (req.query.status.length) {
-      tollQuery["status"] = req.query.status;
-    }
-    const tollResponse = await db.location.find(tollQuery);
+    const tollResponse = await db.location.aggregate([
+      {
+        $match: {
+          $or: [
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$title" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$amount" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$status" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+          ],
+        },
+      },
+    ]);
     return res.status(200).send(tollResponse);
   } catch (err) {
     next(err);

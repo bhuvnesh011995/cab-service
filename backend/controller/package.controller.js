@@ -27,16 +27,50 @@ exports.addPackage = async (req, res) => {
 
 exports.getAllPackages = async (req, res) => {
   try {
-    const packageAggregateQuery = {};
-
-    if (req.query.name?.length) {
-      packageAggregateQuery["name"] = { $regex: req.query.name };
-    }
-    if (req.query.status?.length) {
-      packageAggregateQuery["status"] = req.query.status;
-    }
-
-    const packageResponse = await db.rentalPackage.find(packageAggregateQuery);
+    const packageResponse = await db.rentalPackage.aggregate([
+      {
+        $match: {
+          $or: [
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$name" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$status" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$maxDuration" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$minDuration" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+          ],
+        },
+      },
+    ]);
     return res.status(200).send(packageResponse);
   } catch (err) {
     console.error(err);

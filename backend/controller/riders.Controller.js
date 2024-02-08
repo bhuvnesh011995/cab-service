@@ -28,20 +28,55 @@ exports.addRider = async (req, res, next) => {
 
 exports.getAllRiders = async (req, res, next) => {
   try {
-    const riderQuery = {};
-    if (req.query.name.length) {
-      riderQuery["firstName"] = { $regex: req.query.name };
-    }
-    if (req.query.email.length) {
-      riderQuery["email"] = { $regex: req.query.email };
-    }
-    if (req.query.mobile.length) {
-      riderQuery["mobile"] = { $regex: req.query.mobile };
-    }
-    if (req.query.status.length) {
-      riderQuery["status"] = req.query.status;
-    }
-    const riderResponse = await db.rider.find(riderQuery);
+    const riderResponse = await db.rider.aggregate([
+      {
+        $addFields: {
+          fullName: { $concat: ["$firstName", " ", "$lastName"] },
+        },
+      },
+      {
+        $match: {
+          $or: [
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$email" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$mobile" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$status" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$fullName" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+          ],
+        },
+      },
+    ]);
     return res.status(200).send(riderResponse);
   } catch (err) {
     next(err);

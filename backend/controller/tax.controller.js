@@ -2,14 +2,7 @@ const db = require("../model/index");
 
 exports.addTax = async function (req, res, next) {
   try {
-    const { title, value, status, taxType } = req.body;
-
-    await db.tax.create({
-      title,
-      value,
-      status,
-      taxType,
-    });
+    await db.tax.create(req.body);
 
     res.status(200).json({
       success: true,
@@ -36,6 +29,24 @@ exports.filterTax = async function (req, res, next) {
       success: true,
       taxes,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.filterTaxes = async (req, res, next) => {
+  try {
+    const { title, status } = req.query;
+    let query = [{ $match: { $or: [] } }];
+    if (title)
+      query[0].$match.$or.push({ title: { $regex: title, $options: "i" } });
+    if (status) query[0].$match.$or.push({ status });
+
+    if (!status && !title) query[0].$match = {};
+
+    let taxes = await db.tax.aggregate(query);
+
+    res.status(200).json(taxes);
   } catch (error) {
     next(error);
   }

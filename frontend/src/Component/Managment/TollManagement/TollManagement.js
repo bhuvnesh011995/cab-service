@@ -1,10 +1,8 @@
 import { useState, useEffect } from "react";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Text_Input from "../../Common/Inputs/Text_Input";
-import Selection_Input from "../../Common/Inputs/Selection_input";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import Management_container from "../../Common/Management_container";
-import MapService from "./MapService";
 import { CommonDataTable } from "../../../Common/commonDataTable";
 import { tollTableHeaders } from "../../../constants/table.contants";
 import AddToll from "./AddToll";
@@ -17,8 +15,7 @@ import {
 } from "../../../Redux/features/tollReducer";
 
 const initialFilter = {
-  title: "",
-  status: "",
+  search: "",
 };
 export default function TollManagement() {
   const dispatch = useDispatch();
@@ -38,10 +35,6 @@ export default function TollManagement() {
   const deleteModel = () => {
     dispatch(deleteTollReducer(id));
   };
-
-  function reset() {
-    setFilter(initialFilter);
-  }
 
   const updateTollData = (data, type, index) => {
     setId(data?._id);
@@ -87,24 +80,13 @@ export default function TollManagement() {
                 />
               </div>
               <div className='row'>
-                <div className='col-lg-2 inputField'>
+                <div className='col-lg-6 '>
                   <Text_Input
                     input={filter}
                     setInput={setFilter}
-                    lebel_text={"Title"}
-                    setKey={"title"}
+                    lebel_text={"Search"}
+                    setKey={"search"}
                   />
-                  <Selection_Input
-                    input={filter}
-                    setInput={setFilter}
-                    setKey={"status"}
-                    lebel_text={"Status :"}
-                    options={["ACTIVE", "INACTIVE"]}
-                  />
-
-                  <div>
-                    <BtnDark handleClick={reset} title={"reset"} />
-                  </div>
                 </div>
               </div>
               <CommonDataTable
