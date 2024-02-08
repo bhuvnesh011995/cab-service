@@ -2,25 +2,36 @@ import { useEffect, useMemo, useState } from "react";
 import Text_Input from "../../Common/Inputs/Text_Input";
 import Management_container from "../../Common/Management_container";
 import Selection_Input from "../../Common/Inputs/Selection_input";
-import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../../config/config";
-import BtnDark from "../../Common/Buttons/BtnDark";
 import { MaterialReactTable } from "material-react-table";
 import {
   RemoveRedEye,
-  Lock,
   ModeEditOutline,
   DeleteForever,
 } from "@mui/icons-material/";
 import { Box, IconButton } from "@mui/material";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  clearTaxStatus,
+  deleteTax,
   filterTax,
   getTaxes,
   taxError,
   taxStatus,
+  taxToUpdate,
 } from "../../../Redux/features/taxReducer";
 import moment from "moment";
+import { AddNew } from "./AddTax";
+import { toast } from "react-toastify";
+import {
+  showDeleteModal,
+  url,
+  status as deleteModalStatus,
+  closeModal,
+  doneDelete,
+  openModal,
+} from "../../../Redux/features/deleteModalReducer";
+import BASE_URL from "../../../config/config";
+import DeleteModalAdv from "../../../Common/deleteModalRedux";
 const initialTax = {
   title: "",
   value: 0,
@@ -29,18 +40,46 @@ const initialTax = {
 };
 
 export default function TaxManagement() {
+  const [isOpen, setIsOpen] = useState(false);
   const [tax, setTax] = useState(initialTax);
-  const navigate = useNavigate();
-  const [list, setList] = useState([]);
   const dispatch = useDispatch();
   const taxes = useSelector(getTaxes);
   const status = useSelector(taxStatus);
   const error = useSelector(taxError);
   const [ready, setReady] = useState(false);
+  const show = useSelector(showDeleteModal);
+  const deleteStatus = useSelector(deleteModalStatus);
+  const id = useSelector((state) => state.delete.id);
+  const URL = useSelector(url);
+  useEffect(() => {
+    if (deleteStatus === "delete") {
+      dispatch(deleteTax({ url: URL, id }));
+      dispatch(doneDelete());
+    }
+  }, [deleteStatus, URL, id]);
   useEffect(() => {
     if (ready) dispatch(filterTax({}));
     else setReady(true);
   }, [ready]);
+
+  useEffect(() => {
+    if (status === "added") {
+      toast.success("tax added successfully");
+      dispatch(clearTaxStatus());
+      setIsOpen(false);
+    } else if (status === "updated") {
+      toast.success("tax updated successfully");
+      setIsOpen(false);
+      dispatch(clearTaxStatus());
+    } else if (status === "deleted") {
+      toast.success("tax deleted successfully");
+      dispatch(clearTaxStatus());
+      dispatch(closeModal());
+    } else if (status === "error") {
+      toast.error(error.message || "some error occured");
+      dispatch(clearTaxStatus());
+    }
+  }, [status, error]);
 
   const columns = useMemo(
     () => [
@@ -160,16 +199,14 @@ export default function TaxManagement() {
     []
   );
 
-  function handleClick() {
-    navigate("/addTax");
-  }
-
   function handleSubmit(tax) {
     dispatch(filterTax(tax));
   }
 
   return (
     <Management_container title={"Tax Management"}>
+      {show && <DeleteModalAdv />}
+      {isOpen && <AddNew show={isOpen} setShow={setIsOpen} />}
       <div class="row">
         <div class="col-lg-13">
           <div class="card">
@@ -181,7 +218,12 @@ export default function TaxManagement() {
                   zIndex: "2",
                 }}
               >
-                <BtnDark handleClick={handleClick} title={"Add Tax"} />
+                <button
+                  className="btn btn-primary"
+                  onClick={() => setIsOpen(true)}
+                >
+                  Add Tax
+                </button>
               </div>
               <form style={{ margin: "50px" }}>
                 <div className="row">
@@ -203,8 +245,10 @@ export default function TaxManagement() {
                     <div>
                       <button
                         className="btn btn-primary me-2"
-                        onClick={() => handleSubmit(tax)}
-                        type=""
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleSubmit(tax);
+                        }}
                       >
                         Search
                       </button>
@@ -247,10 +291,24 @@ export default function TaxManagement() {
                     <IconButton>
                       <RemoveRedEye />
                     </IconButton>
-                    <IconButton>
+                    <IconButton
+                      onClick={() => {
+                        dispatch(taxToUpdate({ id: row.original._id }));
+                        setIsOpen(true);
+                      }}
+                    >
                       <ModeEditOutline />
                     </IconButton>
-                    <IconButton>
+                    <IconButton
+                      onClick={() => {
+                        dispatch(
+                          openModal({
+                            url: `${BASE_URL}/tax/${row.original._id}`,
+                            id: row.original._id,
+                          })
+                        );
+                      }}
+                    >
                       <DeleteForever />
                     </IconButton>
                   </Box>

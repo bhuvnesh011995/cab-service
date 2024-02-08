@@ -20,13 +20,7 @@ import {
   fetchVehicleType,
   getAllVehicleType,
 } from "../../../Redux/features/vehicleTypeReducer";
-import {
-  addPromotion,
-  cleanPromotion,
-  getPromotion,
-  status,
-  updatePromotion,
-} from "../../../Redux/features/promotionReducer";
+
 import ReactSelect from "react-select";
 import { toast } from "react-toastify";
 import {
@@ -41,13 +35,24 @@ import {
   statusPromoCode,
   updatePromoCode,
 } from "../../../Redux/features/promoCodeReducer";
+import {
+  getAllPackages,
+  getPackages,
+} from "../../../Redux/features/packageReducer";
+import {
+  addRentalPromotion,
+  cleanRentalPromotion,
+  getRentalPromotion,
+  status,
+  updateRentalPromotion,
+} from "../../../Redux/features/rentalPromotionReducer";
 const initialState = {
   name: "",
   email: "",
   mobile: "",
   status: "",
 };
-export default function AddPromoCode({ setShow, show }) {
+export default function AddRentalPromotion({ setShow, show }) {
   const {
     register,
     handleSubmit,
@@ -61,9 +66,12 @@ export default function AddPromoCode({ setShow, show }) {
   const countries = useSelector(getCountries);
   const states = useSelector(getStates);
   const cities = useSelector(getCities);
-  const promoCodeStatus = useSelector(statusPromoCode);
+  const rentalPromotionStatus = useSelector(status);
   const vehicleTypes = useSelector(getAllVehicleType);
+  const packages = useSelector(getPackages);
+
   const [filter, setFilter] = useState(initialState);
+
   const dispatch = useDispatch();
   useEffect(() => {
     if (ready) {
@@ -74,6 +82,7 @@ export default function AddPromoCode({ setShow, show }) {
   }, [ready]);
   useEffect(() => {
     dispatch(getAllRiders(filter));
+    dispatch(getAllPackages(filter));
   }, [filter]);
 
   const admin = useSelector(getAllAdmins) || [];
@@ -99,16 +108,16 @@ export default function AddPromoCode({ setShow, show }) {
   }
   const forUsersOption = [{ value: "", label: "Choose..." }, ...dynamicOptions];
 
-  const promoCode = useSelector(getPromoCode);
+  const rentalPromotion = useSelector(getRentalPromotion);
   useEffect(() => {
-    if (promoCode) {
-      reset(promoCode);
-      setValue("country", promoCode.country);
-      setValue("state", promoCode.state);
-      setValue("city", promoCode.city);
-      setValue("vehicleType", promoCode.vehicleType);
+    if (rentalPromotion) {
+      reset(rentalPromotion);
+      setValue("country", rentalPromotion.country);
+      setValue("state", rentalPromotion.state);
+      setValue("city", rentalPromotion.city);
+      setValue("vehicleType", rentalPromotion.vehicleType);
     }
-  }, [promoCode]);
+  }, [rentalPromotion]);
 
   useEffect(() => {
     if (ready) {
@@ -118,7 +127,7 @@ export default function AddPromoCode({ setShow, show }) {
         dispatch(emptyCities());
       }
     }
-  }, [watch("state"), ready, promoCode]);
+  }, [watch("state"), ready, rentalPromotion]);
   useEffect(() => {
     if (ready) {
       if (watch("country")) {
@@ -127,31 +136,35 @@ export default function AddPromoCode({ setShow, show }) {
         dispatch(emptyStates());
       }
     }
-  }, [watch("country"), ready, promoCode]);
+  }, [watch("country"), ready, rentalPromotion]);
   useEffect(() => {
     return () => {
-      if (promoCodeStatus === "fetched") dispatch(cleanPromoCode());
+      if (rentalPromotionStatus === "fetched") dispatch(cleanRentalPromotion());
     };
-  }, [promoCodeStatus]);
+  }, [rentalPromotionStatus]);
 
   const onSubmit = useCallback(
     async (data) => {
       const userIds = data.selectUser.map((user) => user.value);
       const newData = { ...data, selectUser: userIds };
-      if (!promoCode) {
-        dispatch(addPromoCode(newData));
+      if (!rentalPromotion) {
+        dispatch(addRentalPromotion(newData));
       } else {
         let changedField = Object.keys(dirtyFields);
         if (!changedField.length) return toast.info("change some field first");
         else {
           let obj = {};
           changedField.forEach((field) => (obj[field] = newData[field]));
-          dispatch(updatePromoCode({ id: promoCode._id, newData: obj }));
+          dispatch(
+            updateRentalPromotion({ id: rentalPromotion._id, newData: obj })
+          );
         }
       }
     },
     [isDirty, dirtyFields]
   );
+
+  console.log("packages", packages);
 
   return (
     <Modal
@@ -162,7 +175,7 @@ export default function AddPromoCode({ setShow, show }) {
       }}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Add New Promocode</Modal.Title>
+        <Modal.Title>Add New Rental Promotion</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit((formData) => onSubmit(formData))}>
@@ -242,7 +255,6 @@ export default function AddPromoCode({ setShow, show }) {
                 )}
               </div>
             </div>
-
             <div className="col-md-6">
               <div className="mb-3">
                 <label>vehicleType</label>
@@ -266,6 +278,31 @@ export default function AddPromoCode({ setShow, show }) {
                   <span style={{ color: "red" }}>
                     {errors.vehicleType.message}
                   </span>
+                )}
+              </div>
+            </div>
+
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label>packages</label>
+                <Controller
+                  name="package"
+                  control={control}
+                  rules={{ required: "this is required field" }}
+                  render={({ field }) => (
+                    <select {...field} className="form-control">
+                      <option value={""}>Choose...</option>
+                      {packages.map((packages) => (
+                        <option key={packages._id} value={packages._id}>
+                          {packages.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
+                />
+
+                {errors.package && (
+                  <span style={{ color: "red" }}>{errors.package.message}</span>
                 )}
               </div>
             </div>

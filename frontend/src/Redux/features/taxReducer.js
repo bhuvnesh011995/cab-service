@@ -110,6 +110,12 @@ const taxSlice = createSlice({
       state.status = "OK";
       state.error = null;
     },
+    taxToUpdate: (state, action) => {
+      state.tax = state.taxes.find((tax) => tax._id === action.payload.id);
+    },
+    clearTax: (state, action) => {
+      state.tax = null;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(filterTax.fulfilled, (state, action) => {
@@ -150,7 +156,7 @@ const taxSlice = createSlice({
       state.taxes = state.taxes.map((tax) =>
         tax._id === action.payload._id ? action.payload : tax
       );
-      state.tax = "updated";
+      state.status = "updated";
     });
     builder.addCase(updateTax.rejected, (state, action) => {
       state.status = "error";
@@ -176,7 +182,7 @@ const taxSlice = createSlice({
 
 export default taxSlice.reducer;
 
-export const { clearTaxStatus } = taxSlice.actions;
+export const { clearTaxStatus, taxToUpdate, clearTax } = taxSlice.actions;
 
 export const taxStatus = (state) => state.tax.status;
 

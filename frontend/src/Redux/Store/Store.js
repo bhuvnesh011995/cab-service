@@ -12,7 +12,6 @@ import deleteModalReducer from "../features/deleteModalReducer";
 import vehicleTypeReducer from "../features/vehicleTypeReducer";
 import packageReducer from "../features/packageReducer";
 import promotionReducer from "../features/promotionReducer";
-
 import tollReducer from "../features/tollReducer";
 import rentalFareReducer from "../features/rentalFareReducer";
 import emailTemplateReducer from "../features/emailTemplateReducer";
@@ -22,6 +21,7 @@ import pageReducer from "../features/pageReducer";
 import settingReducer from "../features/settingReducer";
 import promoCodeReducer from "../features/promoCodeReducer";
 import taxReducer from "../features/taxReducer";
+import rentalPromotionReducer from "../features/rentalPromotionReducer";
 
 export default configureStore({
   reducer: {
@@ -45,7 +45,8 @@ export default configureStore({
     rider: riderReducer,
     pages: pageReducer,
     setting: settingReducer,
-    promoCode: promoCodeReducer,
     tax: taxReducer,
+    promoCode: promoCodeReducer,
+    rentalPromotion: rentalPromotionReducer,
   },
 });

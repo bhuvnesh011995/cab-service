@@ -5,17 +5,16 @@ import BASE_URL from "../../config/config";
 let initialState = {
   status: "idle",
   error: null,
-  promotion: [],
-  selectPromoCode: null,
+  rentalPromotion: [],
+  selectRentalPromotion: null,
   viewPromotion: null,
-  promoCode: [],
 };
 
-const addPromoCode = createAsyncThunk(
-  "promoCode/addPromoCode",
+const addRentalPromotion = createAsyncThunk(
+  "rentalPromotion/addRentalPromotion",
   async (data, { rejectWithValue }) => {
     try {
-      let response = await axios.post(BASE_URL + "/promoCode", data);
+      let response = await axios.post(BASE_URL + "/rentalPromotion", data);
       if (response.status === 201) return response.data;
       else
         return rejectWithValue({
@@ -30,11 +29,11 @@ const addPromoCode = createAsyncThunk(
     }
   }
 );
-const fetchPromoCode = createAsyncThunk(
-  "PromoCode/fetchPromoCode",
+const fetchRentalPromotion = createAsyncThunk(
+  "rentalPromotion/fetchRentalPromotion",
   async (_, { rejectWithValue }) => {
     try {
-      let response = await axios.get(BASE_URL + "/promoCode/");
+      let response = await axios.get(BASE_URL + "/rentalPromotion/");
       if (response.status === 200) return response.data;
       else
         return rejectWithValue({
@@ -49,12 +48,12 @@ const fetchPromoCode = createAsyncThunk(
     }
   }
 );
-const updatePromoCode = createAsyncThunk(
-  "promoCode/updatePromoCode",
+const updateRentalPromotion = createAsyncThunk(
+  "rentalPromotion/updateRentalPromotion",
   async (data, { rejectWithValue }) => {
     try {
       let response = await axios.put(
-        BASE_URL + "/promoCode/" + data.id,
+        BASE_URL + "/rentalPromotion/" + data.id,
         data.newData
       );
       if (response.status === 200) return response.data;
@@ -72,8 +71,8 @@ const updatePromoCode = createAsyncThunk(
   }
 );
 
-export const deletePromoCode = createAsyncThunk(
-  "promoCode/deletePromoCode",
+export const deleteRentalPromotion = createAsyncThunk(
+  "rentalPromotion/deleteRentalPromotion",
   async ({ url, id }, { rejectWithValue }) => {
     try {
       let response = await axios.delete(url);
@@ -92,34 +91,36 @@ export const deletePromoCode = createAsyncThunk(
   }
 );
 
-const promoCodeSlice = createSlice({
-  name: "promoCode",
+const rentalPromotionSlice = createSlice({
+  name: "rentalPromotion",
   initialState,
   reducers: {
-    updatePromoCodeById: (state, action) => {
-      const promoCodeToUpdate = state.promoCode.find(
-        (selectPromoCode) => selectPromoCode._id === action.payload.id
+    updateRentalPromotionById: (state, action) => {
+      const obj = state.rentalPromotion.find(
+        (selectRentalPromotion) =>
+          selectRentalPromotion._id === action.payload.id
       );
 
-      if (promoCodeToUpdate) {
+      if (obj) {
         state.status = "fetched";
 
-        const updatedSelectUser = promoCodeToUpdate.selectUser.map((item) => ({
+        const updatedSelectUser = obj.selectUser.map((item) => ({
           value: item._id,
           label: `${item.name ? item.name : ""} ${
             item.firstName ? item.firstName : ""
           }`,
         }));
 
-        state.selectPromoCode = {
-          ...promoCodeToUpdate,
-          country: promoCodeToUpdate.country._id,
-          state: promoCodeToUpdate.state._id,
-          city: promoCodeToUpdate.city._id,
-          vehicleType: promoCodeToUpdate.vehicleType._id,
+        state.selectRentalPromotion = {
+          ...obj,
+          country: obj.country._id,
+          state: obj.state._id,
+          city: obj.city._id,
+          vehicleType: obj.vehicleType._id,
+          package: obj.package._id,
           selectUser: updatedSelectUser,
-          validFrom: promoCodeToUpdate.validFrom.slice(0, 10),
-          validTo: promoCodeToUpdate.validTo.slice(0, 10),
+          validFrom: obj.validFrom.slice(0, 10),
+          validTo: obj.validTo.slice(0, 10),
         };
       } else {
         console.error("Promo code with ID", action.payload.id, "not found.");
@@ -135,86 +136,88 @@ const promoCodeSlice = createSlice({
     cleanViewPromotion: (state, action) => {
       state.viewVehicleType = null;
     },
-    cleanPromoCode: (state, action) => {
-      state.selectPromoCode = null;
+    cleanRentalPromotion: (state, action) => {
+      state.selectRentalPromotion = null;
     },
-    cleanPromoCodeStatus: (state, action) => {
+    cleanRentalPromotionStatus: (state, action) => {
       state.status = "Ok";
     },
   },
 
   extraReducers: (builder) => {
-    builder.addCase(addPromoCode.pending, (state, action) => {
+    builder.addCase(addRentalPromotion.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(addPromoCode.fulfilled, (state, action) => {
+    builder.addCase(addRentalPromotion.fulfilled, (state, action) => {
       state.status = "added";
-      state.promoCode = (state.promoCode || []).concat(action.payload);
+      state.rentalPromotion.push(action.payload);
     });
-    builder.addCase(addPromoCode.rejected, (state, action) => {
+    builder.addCase(addRentalPromotion.rejected, (state, action) => {
       state.status = "error";
-      state.promoCode = action.payload;
+      state.rentalPromotion = action.payload;
     });
-    builder.addCase(fetchPromoCode.pending, (state, action) => {
+    builder.addCase(fetchRentalPromotion.pending, (state, action) => {
       state.status = "loading";
-      state.promoCode = action.payload;
+      state.rentalPromotion = action.payload;
       state.error = null;
     });
-    builder.addCase(fetchPromoCode.fulfilled, (state, action) => {
+    builder.addCase(fetchRentalPromotion.fulfilled, (state, action) => {
       state.status = "successed";
-      state.promoCode = action.payload;
+      state.rentalPromotion = action.payload;
     });
-    builder.addCase(fetchPromoCode.rejected, (state, action) => {
+    builder.addCase(fetchRentalPromotion.rejected, (state, action) => {
       state.status = "error";
-      state.promoCode = action.payload;
+      state.rentalPromotion = action.payload;
     });
-    builder.addCase(updatePromoCode.pending, (state, action) => {
+    builder.addCase(updateRentalPromotion.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(updatePromoCode.fulfilled, (state, action) => {
+    builder.addCase(updateRentalPromotion.fulfilled, (state, action) => {
       state.status = "update";
-      state.promoCode = state.promoCode.map((item) =>
+      state.rentalPromotion = state.rentalPromotion.map((item) =>
         item._id === action.payload._id ? action.payload : item
       );
       state.error = null;
     });
-    builder.addCase(updatePromoCode.rejected, (state, action) => {
+    builder.addCase(updateRentalPromotion.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });
-    builder.addCase(deletePromoCode.pending, (state, action) => {
+    builder.addCase(deleteRentalPromotion.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(deletePromoCode.fulfilled, (state, action) => {
+    builder.addCase(deleteRentalPromotion.fulfilled, (state, action) => {
       state.status = "deleted";
       state.error = null;
-      state.promoCode = state.promoCode.filter(
+      state.rentalPromotion = state.rentalPromotion.filter(
         (item) => item._id !== action.payload.id
       );
       state.message = action.payload.message;
     });
 
-    builder.addCase(deletePromoCode.rejected, (state, action) => {
+    builder.addCase(deleteRentalPromotion.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });
   },
 });
 
-export default promoCodeSlice.reducer;
+export default rentalPromotionSlice.reducer;
 
-export { addPromoCode, fetchPromoCode, updatePromoCode };
-export const getAllPromoCode = (state) => state.promoCode.promoCode;
-export const statusPromoCode = (state) => state.promoCode.status;
-export const error = (state) => state.promotion.error;
+export { addRentalPromotion, fetchRentalPromotion, updateRentalPromotion };
+export const getAllRentalPromotion = (state) =>
+  state.rentalPromotion.rentalPromotion;
+export const status = (state) => state.rentalPromotion.status;
+export const error = (state) => state.rentalPromotion.error;
 export const {
-  cleanPromoCodeStatus,
-  updatePromoCodeById,
-  cleanPromoCode,
+  cleanRentalPromotionStatus,
+  updateRentalPromotionById,
+  cleanRentalPromotion,
   getViewPromotion,
-} = promoCodeSlice.actions;
-export const getPromoCode = (state) => state.promoCode.selectPromoCode;
-export const getAllViewPromotion = (state) => state.promotion.viewPromotion;
+} = rentalPromotionSlice.actions;
+export const getRentalPromotion = (state) =>
+  state.rentalPromotion.selectRentalPromotion;
+// export const getAllViewPromotion = (state) => state.promotion.viewPromotion;

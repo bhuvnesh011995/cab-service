@@ -50,7 +50,6 @@ import AddPromotion from "./Component/Managment/PromotionManagement.js/AddPromot
 import ReferralManagement from "./Component/Managment/ReferralManagement/ReferralManagement";
 import AddReferral from "./Component/Managment/ReferralManagement/AddReferral";
 import TaxManagement from "./Component/Managment/TaxManagement/TaxManagement";
-import AddTax from "./Component/Managment/TaxManagement/AddTax";
 import TollManagement from "./Component/Managment/TollManagement/TollManagement";
 import AddToll from "./Component/Managment/TollManagement/AddToll";
 import SOSManagement from "./Component/Managment/SOSManagement/SOSManagement";
@@ -71,6 +70,8 @@ import UpdateState from "./Component/Managment/StateManagement/UpdateState.js";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import Store from "./Redux/Store/Store.js";
+import RiderNotification from "./Component/Managment/Notifications.js/Rider/Rider.js";
+import RentalPromotionManagement from "./Component/Managment/RentalPromotionManagement/RentalPromotionManagement.js";
 
 const router = createBrowserRouter([
   {
@@ -118,12 +119,16 @@ const router = createBrowserRouter([
       { path: "addSmsTemplate", element: <AddSmsTemplate /> },
       { path: "promotionManagement", element: <PromotionManagement /> },
       { path: "promoCodeManagement", element: <PromoCodeManagement /> },
+      {
+        path: "rentalPromotionManagement",
+        element: <RentalPromotionManagement />,
+      },
 
       { path: "addPromotion", element: <AddPromotion /> },
       { path: "referralManagement", element: <ReferralManagement /> },
       { path: "addReferral", element: <AddReferral /> },
       { path: "taxManagement", element: <TaxManagement /> },
-      { path: "addTax", element: <AddTax /> },
+
       { path: "tollManagement", element: <TollManagement /> },
       { path: "addToll", element: <AddToll /> },
       { path: "sosService", element: <SOSManagement /> },
@@ -161,6 +166,10 @@ const router = createBrowserRouter([
       {
         path: "updateState",
         element: <UpdateState />,
+      },
+      {
+        path: "notificationToRider",
+        element: <RiderNotification />,
       },
     ],
   },
