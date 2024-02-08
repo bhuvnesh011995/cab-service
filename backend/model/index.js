@@ -38,4 +38,5 @@ module.exports = {
   vehicleCategory: require("./VehicleCategory.model"),
   manufacturer: require("./manufacturer.model"),
   promoCode: require("./promoCode.model"),
+  riderNotification: require("./notification/rider.model"),
 };

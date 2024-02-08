@@ -241,7 +241,6 @@ export default function TaxManagement() {
                       lebel_text={"Status :"}
                       options={["ACTIVE", "INACTIVE"]}
                     />
-
                     <div>
                       <button
                         className="btn btn-primary me-2"
@@ -277,7 +276,6 @@ export default function TaxManagement() {
                   },
                   "mrt-row-numbers": {
                     header: "Sr No",
-                    // enableColumnOrdering: true, //turn on some features that are usually off
                     muiTableHeadCellProps: {
                       sx: {
                         fontSize: "1.2rem",
