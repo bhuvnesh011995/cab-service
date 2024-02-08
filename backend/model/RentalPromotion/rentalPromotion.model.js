@@ -6,6 +6,7 @@ const schema = new Schema(
     state: { type: Schema.Types.ObjectId, ref: "State" },
     city: { type: Schema.Types.ObjectId, ref: "City" },
     vehicleType: { type: Schema.Types.ObjectId, ref: "VehicleType" },
+    package: { type: Schema.Types.ObjectId, ref: "RentalPackage" },
     discountType: { type: String },
     discountValue: { type: String },
     promoCode: { type: Number },
@@ -36,8 +37,8 @@ const schema = new Schema(
   },
   {
     timestamps: true,
-    collection: "promoCode",
+    collection: "rentalPromotion",
   }
 );
 
-module.exports = model("promoCode", schema);
+module.exports = model("rentalPromotion", schema);

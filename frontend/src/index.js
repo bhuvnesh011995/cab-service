@@ -71,6 +71,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Provider } from "react-redux";
 import Store from "./Redux/Store/Store.js";
 import RiderNotification from "./Component/Managment/Notifications.js/Rider/Rider.js";
+import RentalPromotionManagement from "./Component/Managment/RentalPromotionManagement/RentalPromotionManagement.js";
 
 const router = createBrowserRouter([
   {
@@ -118,6 +119,10 @@ const router = createBrowserRouter([
       { path: "addSmsTemplate", element: <AddSmsTemplate /> },
       { path: "promotionManagement", element: <PromotionManagement /> },
       { path: "promoCodeManagement", element: <PromoCodeManagement /> },
+      {
+        path: "rentalPromotionManagement",
+        element: <RentalPromotionManagement />,
+      },
 
       { path: "addPromotion", element: <AddPromotion /> },
       { path: "referralManagement", element: <ReferralManagement /> },

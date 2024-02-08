@@ -73,12 +73,8 @@ export default [
         { to: "promotionManagement", name: "Promotion" },
         { to: "promoCodeManagement", name: "Promocode Management" },
         {
-          to: "rentalPromocodeManagement",
-          name: "Rental Promocode Management",
-        },
-        {
-          to: "rentalPromocodeManagement",
-          name: "Rental Promocode Management",
+          to: "rentalPromotionManagement",
+          name: "Rental Promotion Management",
         },
         { to: "referralManagement", name: "Referral Management" },
       ],

@@ -8,4 +8,9 @@ module.exports = function (app) {
     [],
     promoCodeController.deletePromoCode
   );
+  app.put(
+    "/test/api/v1/promoCode/:id",
+    [],
+    promoCodeController.updatePromoCode
+  );
 };
