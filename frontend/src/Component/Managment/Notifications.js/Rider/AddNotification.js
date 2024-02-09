@@ -1,12 +1,47 @@
+import { useState } from "react";
+import { useEffect } from "react";
 import { Modal } from "react-bootstrap";
+import { Controller, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import ReactSelect from "react-select";
+import {
+  fetchRiders,
+  getRiders,
+} from "../../../../Redux/features/riderReducer";
+import { useMemo } from "react";
 
 export default function AddRiderNotification({ show, setShow }) {
+  const [ready, setReady] = useState(false);
+  const {
+    register,
+    reset,
+    watch,
+    handleSubmit,
+    setValue,
+    setError,
+    control,
+    formState: { errors, dirtyFields, isDirty },
+  } = useForm();
+  const dispatch = useDispatch();
+  const riders = useSelector(getRiders);
+  const ridersOptions = useMemo(
+    () => riders.map((rider) => ({ value: rider._id, label: rider.name })),
+    [riders]
+  );
+  useEffect(() => {
+    if (ready) dispatch(fetchRiders());
+    else setReady(true);
+  }, [ready]);
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
   return (
     <Modal size="md" show={show} onHide={() => setShow(false)}>
       <Modal.Header closeButton>
         <Modal.Title>Add New Rider Notification</Modal.Title>
       </Modal.Header>
-      <form>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <Modal.Body>
           <div className="row mb-3">
             <div className="col-md-3">
@@ -21,12 +56,19 @@ export default function AddRiderNotification({ show, setShow }) {
               <label className="form-label">For Users :</label>
             </div>
             <div className="col-md-9">
-              <select className="form-control">
-                <option value={""}>choose...</option>
-                <option value={"Rider"}>Rider</option>
-                <option value={"Driver"}>Driver</option>
-                <option value={"Admin"}>Admin</option>
-              </select>
+              <Controller
+                name="forUsers"
+                rules={{ required: "this is required field" }}
+                control={control}
+                render={({ field }) => (
+                  <ReactSelect
+                    {...field}
+                    closeMenuOnSelect={false}
+                    options={ridersOptions}
+                    isMulti
+                  />
+                )}
+              />
             </div>
           </div>
 

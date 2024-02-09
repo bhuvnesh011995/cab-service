@@ -8,16 +8,52 @@ import {
 } from "@mui/icons-material/";
 import { Box, IconButton } from "@mui/material";
 import { useMemo } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import AddRiderNotification from "./AddNotification";
+import { useForm } from "react-hook-form";
+import moment from "moment";
+import { useEffect } from "react";
+import {
+  filterRiderNotification,
+  getRiderNotifications,
+} from "../../../../Redux/features/riderNotificationReducer";
 
 export default function RiderNotification() {
   const [isOpen, setIsOpen] = useState(false);
+  const [ready, setReady] = useState(false);
   const dispatch = useDispatch();
+  const notifications = useSelector(getRiderNotifications);
   const columns = useMemo(
-    () => [{ accessorKey: "status", header: "status" }],
+    () => [
+      {
+        accessorKey: "title",
+        header: "Title",
+      },
+      {
+        accessorFn: (row) =>
+          row.forUsers.length
+            ? row.forUsers.map((rider) => rider.name).join(",")
+            : "NA",
+        header: "For Users",
+        id: "forUsers",
+      },
+      {
+        accessorFn: (row) =>
+          row.createdAt ? moment(row.createdAt).format("ll") : "NA",
+        id: "createdAt",
+        header: "CreatedAt",
+      },
+    ],
     [],
   );
+  const { register, handleSubmit, reset } = useForm();
+  useEffect(() => {
+    if (ready) dispatch(filterRiderNotification({}));
+    else setReady(true);
+  }, [ready]);
+  const onSubmit = (data) => {
+    dispatch(filterRiderNotification(data));
+  };
 
   return (
     <Management_container title={"Notification To Rider"}>
@@ -35,33 +71,43 @@ export default function RiderNotification() {
                     Add New
                   </button>
                 </div>
-                <div
+                <form
+                  onSubmit={handleSubmit(onSubmit)}
                   class='justify-content-center row align-items-end mb-5'
                   style={{ alignItems: "end" }}
                 >
                   <div class='col-md-3'>
                     {" "}
-                    <label class='form-label'>Title</label>
-                    <input className='form-control' placeholder='Enter Title' />
+                    <label class='form-label'>From :</label>
+                    <input
+                      className='form-control'
+                      type='date'
+                      {...register("from")}
+                    />
                   </div>
                   <div class='col-md-3'>
-                    <label class='form-label'>Status</label>
-                    <select class='form-control'>
-                      <option>Choose...</option>
-                      <option value='ACTIVE'>Active</option>
-                      <option value='INACTIVE'>Inactive</option>
-                    </select>
+                    <label class='form-label'>To :</label>
+                    <input
+                      className='form-control'
+                      type='date'
+                      {...register("to")}
+                    />
+                  </div>{" "}
+                  <div class='col-md-3'>
+                    <button class='btn btn-primary me-3'>Search</button>
+                    <button onClick={() => reset()} class='btn btn-danger me-3'>
+                      Reset
+                    </button>
                   </div>
-
                   <div class='col-md-3'>
                     <button class='btn btn-outline-primary me-3'>Search</button>
                     <button class='btn btn-outline-danger me-3'>Reset</button>
                   </div>
-                </div>{" "}
+                </form>{" "}
               </div>
               <MaterialReactTable
                 columns={columns}
-                data={[]}
+                data={notifications}
                 enableRowActions
                 enableRowNumbers
                 enableFullScreenToggle={false}

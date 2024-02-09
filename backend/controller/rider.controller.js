@@ -201,3 +201,19 @@ exports.getActiveRider = async function (req, res, next) {
     next(error);
   }
 };
+
+exports.getRiders = async (req, res, next) => {
+  try {
+    let riders = await db.rider.aggregate([
+      { $match: {} },
+      {
+        $project: {
+          name: { $concat: ["$firstName", " ", "$lastName"] },
+        },
+      },
+    ]);
+    res.status(200).json(riders);
+  } catch (error) {
+    next(error);
+  }
+};

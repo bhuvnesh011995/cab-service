@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import BASE_URL from "../../config/config";
 import axios from "axios";
+import { status } from "./deleteModalReducer";
 
 const initialState = {
   selectedRider: null,
@@ -27,7 +28,7 @@ export const addRiderReducer = createAsyncThunk(
         message: err.response.data.message,
       });
     }
-  },
+  }
 );
 
 export const getAllRiders = createAsyncThunk(
@@ -48,7 +49,7 @@ export const getAllRiders = createAsyncThunk(
         message: err.response.data.message,
       });
     }
-  },
+  }
 );
 
 export const deleteRiderReducer = createAsyncThunk(
@@ -69,7 +70,7 @@ export const deleteRiderReducer = createAsyncThunk(
         message: err.response.data.message,
       });
     }
-  },
+  }
 );
 
 export const getSelectedRiderReducer = createAsyncThunk(
@@ -90,9 +91,30 @@ export const getSelectedRiderReducer = createAsyncThunk(
         message: err.response.data.message,
       });
     }
-  },
+  }
 );
 
+export const fetchRiders = createAsyncThunk(
+  "riders/fetch",
+  async (_, { rejectWithValue }) => {
+    try {
+      const url = BASE_URL + "/riders";
+      let response = await axios.get(url);
+      if (response.status === 200) return response.data;
+      else
+        return rejectWithValue({
+          status: "error",
+          message: response?.data?.message || "error while fetching riders",
+        });
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue({
+        status: "error",
+        message: error.response?.data?.message || "error while fetching riders",
+      });
+    }
+  }
+);
 const riderReducerSlice = createSlice({
   name: "rider",
   initialState,
@@ -111,7 +133,7 @@ const riderReducerSlice = createSlice({
         state.status = "succeeded";
         state.error = null;
         const filteredRider = state.riders.filter(
-          (item) => item?._id == action.payload._id,
+          (item) => item?._id == action.payload._id
         );
         if (filteredRider.length) {
           if (filteredRider[0]._id) {
@@ -169,6 +191,20 @@ const riderReducerSlice = createSlice({
         state.status = "error";
         state.error = action.payload;
       });
+    builder.addCase(fetchRiders.fulfilled, (state, action) => {
+      state.riders = action.payload;
+      state.status = "fetched";
+    });
+    builder.addCase(fetchRiders.pending, (state, action) => {
+      state.status = "loading";
+    });
+    builder.addCase(fetchRiders.rejected, (state, action) => {
+      state.status = "error";
+      state.error = action.payload || {
+        status: "error",
+        message: "error while fetching riders",
+      };
+    });
   },
 });
 
