@@ -71,3 +71,14 @@ export const taxTableHeaders = {
   status: "Status",
   createdAt: "Created At",
 };
+
+export const driverTableHeaders = {
+  firstName: "Name",
+  email: "Email",
+  mobile: "Mobile",
+  documentStatus: "Document",
+  wallet: "Wallet",
+  status: "Status",
+  verified: "Verified",
+  createdAt: "Created At",
+};

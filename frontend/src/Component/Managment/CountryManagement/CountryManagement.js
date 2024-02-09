@@ -134,7 +134,7 @@ export default function CountryManagement() {
                 }}
               >
                 <button
-                  className='btn btn-primary'
+                  className='btn btn-outline-primary'
                   onClick={() => setIsOpen(true)}
                 >
                   Add Country
@@ -161,6 +161,11 @@ export default function CountryManagement() {
         enableRowNumbers
         rowNumberMode='static'
         enableRowActions
+        enableFullScreenToggle={false}
+        enableDensityToggle={false}
+        enableHiding={false}
+        enableColumnFilters={false}
+        enableColumnActions={false}
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
           <div className='hstack gap-2 fs-1'>

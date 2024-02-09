@@ -1,7 +1,7 @@
 .inputField {
   display: flex;
   width: 100%;
-  justify-content: space-between;
+  /* justify-content: space-between; */
   align-items: center;
-  /* flex-wrap: wrap; */
+  flex-wrap: wrap;
 }

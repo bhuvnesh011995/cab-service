@@ -369,6 +369,10 @@ export default function VehicleManagement() {
                 columns={columns}
                 data={list || []}
                 enableRowActions
+                enableFullScreenToggle={false}
+                enableDensityToggle={false}
+                enableHiding={false}
+                enableColumnFilters={false}
                 enableRowNumbers
                 displayColumnDefOptions={{
                   "mrt-row-actions": {

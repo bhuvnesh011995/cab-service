@@ -254,9 +254,8 @@ exports.addRental = async (req, res) => {
 };
 exports.getAllRentals = async (req, res) => {
   try {
-    console.log(req.query);
-
     const rentalFareAggregateQuery = [];
+
     rentalFareAggregateQuery.push(
       {
         $lookup: {
@@ -349,6 +348,7 @@ exports.getAllRentals = async (req, res) => {
           cityName: "$cityDetails.name",
           stateName: "$stateDetails.name",
           vehicleTypeName: "$vehicleTypeDetails.name",
+          packageName: "$RentalPackageDetails.name",
         },
       },
     );
@@ -357,6 +357,15 @@ exports.getAllRentals = async (req, res) => {
       rentalFareAggregateQuery.push({
         $match: {
           $or: [
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$packageName" },
+                  regex: { $toLower: req.query.package },
+                  options: "i",
+                },
+              },
+            },
             {
               $expr: {
                 $regexMatch: {
@@ -402,7 +411,72 @@ exports.getAllRentals = async (req, res) => {
                 },
               },
             },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$status" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
           ],
+        },
+      });
+    }
+    console.log(req.query);
+    if (req.query.package.length) {
+      rentalFareAggregateQuery.push({
+        $match: {
+          $expr: {
+            $eq: ["$package", { $toObjectId: req.query.package }],
+          },
+        },
+      });
+    }
+
+    if (req.query.country.length) {
+      rentalFareAggregateQuery.push({
+        $match: {
+          $expr: {
+            $eq: ["$country", { $toObjectId: req.query.country }],
+          },
+        },
+      });
+    }
+    if (req.query.state.length) {
+      rentalFareAggregateQuery.push({
+        $match: {
+          $expr: {
+            $eq: ["$state", { $toObjectId: req.query.state }],
+          },
+        },
+      });
+    }
+    if (req.query.city.length) {
+      rentalFareAggregateQuery.push({
+        $match: {
+          $expr: {
+            $eq: ["$city", { $toObjectId: req.query.city }],
+          },
+        },
+      });
+    }
+    if (req.query.vehicleType.length) {
+      rentalFareAggregateQuery.push({
+        $match: {
+          $expr: {
+            $eq: ["$vehicleType", { $toObjectId: req.query.vehicleType }],
+          },
+        },
+      });
+    }
+    if (req.query.status.length) {
+      rentalFareAggregateQuery.push({
+        $match: {
+          $expr: {
+            $eq: ["$status", req.query.status],
+          },
         },
       });
     }

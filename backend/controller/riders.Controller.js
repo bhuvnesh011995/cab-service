@@ -28,7 +28,17 @@ exports.addRider = async (req, res, next) => {
 
 exports.getAllRiders = async (req, res, next) => {
   try {
-    const riderResponse = await db.rider.aggregate([
+    const riderAggregateQuery = [];
+    if (req.query.status.length)
+      riderAggregateQuery.push({
+        $match: {
+          $expr: {
+            $eq: ["$status", req.query.status],
+          },
+        },
+      });
+
+    riderAggregateQuery.push(
       {
         $addFields: {
           fullName: { $concat: ["$firstName", " ", "$lastName"] },
@@ -76,7 +86,9 @@ exports.getAllRiders = async (req, res, next) => {
           ],
         },
       },
-    ]);
+    );
+
+    const riderResponse = await db.rider.aggregate(riderAggregateQuery);
     return res.status(200).send(riderResponse);
   } catch (err) {
     next(err);

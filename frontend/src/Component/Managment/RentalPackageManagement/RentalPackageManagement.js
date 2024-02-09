@@ -12,10 +12,11 @@ import {
 } from "../../../Redux/features/packageReducer";
 import AddRentalPackage from "./AddRentalPackage";
 import moment from "moment";
-import Text_Input from "../../Common/Inputs/Text_Input";
+import Filter_Option from "../../Common/Filter_option";
 
 const initialFilter = {
   search: "",
+  status: "",
 };
 
 export default function RentalPackageManagement() {
@@ -29,7 +30,6 @@ export default function RentalPackageManagement() {
   const [packageModal, setPackageModal] = useState(false);
 
   useEffect(() => {
-    console.log(filter);
     dispatch(getAllPackages(filter));
   }, [filter]);
 
@@ -79,11 +79,11 @@ export default function RentalPackageManagement() {
                   title={"Add New"}
                 />
               </div>
-              <Text_Input
+              <Filter_Option
                 input={filter}
                 setInput={setFilter}
-                setKey={"search"}
-                lebel_text={"Search :"}
+                initialInput={initialFilter}
+                options={["status", "search"]}
               />
             </div>
           </div>

@@ -113,7 +113,7 @@ export default function PageManagement() {
             <div class='card-body'>
               <div className='text-right'>
                 <button
-                  className='btn btn-primary'
+                  className='btn btn-outline-primary'
                   onClick={() => setIsOpen(true)}
                 >
                   Add New
@@ -140,6 +140,11 @@ export default function PageManagement() {
               columns={columns}
               data={pages}
               enableRowNumbers
+              enableFullScreenToggle={false}
+              enableDensityToggle={false}
+              enableHiding={false}
+              enableColumnFilters={false}
+              enableColumnActions={false}
               rowNumberMode='static'
               enableRowActions
               positionActionsColumn={"last"}

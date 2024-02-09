@@ -1,22 +1,15 @@
-import { useNavigate } from "react-router-dom";
 import Management_container from "../../Common/Management_container";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Text_Input from "../../Common/Inputs/Text_Input";
 import BASE_URL from "../../../config/config";
 import Selection_Input from "../../Common/Inputs/Selection_input";
-import { MaterialReactTable } from "material-react-table";
-import {
-  RemoveRedEye,
-  Lock,
-  ModeEditOutline,
-  DeleteForever,
-  DriveEta,
-} from "@mui/icons-material/";
-import { Box, IconButton } from "@mui/material";
 import * as tiIcons from "react-icons/ti";
 import * as rsIcons from "react-icons/rx";
 import DriverDetails from "./DriverDetails";
+import { CommonDataTable } from "../../../Common/commonDataTable";
+import { driverTableHeaders } from "../../../constants/table.contants";
+import AddDriver from "./AddDriver";
 
 const initialFilter = {
   name: "",
@@ -26,14 +19,19 @@ const initialFilter = {
 };
 
 export default function DriverManagement() {
-  const navigate = useNavigate();
   const [filter, setFilter] = useState(initialFilter);
   const [list, setList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [driver, setDriver] = useState(null);
 
+  const [id, setId] = useState(null);
+  const [viewDriver, setViewDriver] = useState(false);
+  const [deleteDriver, setDeleteDriver] = useState(false);
+  const [driverModal, setDriverModal] = useState(false);
+  const [deleteInfo, setDeleteInfo] = useState(null);
+
   useEffect(() => {
-    fetch(BASE_URL + "/driver/filter", {
+    fetch(BASE_URL + "/drivers/filter", {
       method: "GET",
     })
       .then((res) => res.json())
@@ -81,194 +79,10 @@ export default function DriverManagement() {
       });
   }, []);
 
-  const columns = useMemo(
-    () => [
-      {
-        accessorFn: (row) => `${row.firstName} ${row.lastName}`,
-        id: "name",
-        header: "Name",
-        size: 100,
-        Cell: ({ renderedCellValue }) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "1rem",
-            }}
-          >
-            {renderedCellValue}
-          </Box>
-        ),
-        muiTableHeadCellProps: {
-          align: "center", //change head cell props
-        },
-      },
-      {
-        accessorKey: "email",
-        header: "Email",
-        size: 100,
-        Cell: ({ renderedCellValue }) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "1rem",
-            }}
-          >
-            {renderedCellValue}
-          </Box>
-        ),
-        muiTableHeadCellProps: {
-          align: "center", //change head cell props
-        },
-      },
-      {
-        accessorKey: "mobile",
-        header: "Mobile",
-        size: 100,
-        Cell: ({ renderedCellValue }) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "1rem",
-            }}
-          >
-            {renderedCellValue}
-          </Box>
-        ),
-        muiTableHeadCellProps: {
-          align: "center", //change head cell props
-        },
-      },
-      {
-        accessorKey: "documentStatus",
-        enableColumnFilter: false,
-        header: "Document",
-        enableColumnActions: false,
-        muiTableHeadCellProps: {
-          align: "center", //change head cell props
-        },
-        size: 20,
-        Cell: ({ renderedCellValue }) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "1rem",
-            }}
-          >
-            {renderedCellValue}
-          </Box>
-        ),
-        muiTableHeadCellProps: {
-          align: "center", //change head cell props
-        },
-      },
-      {
-        accessorKey: "wallet",
-        enableColumnFilter: false,
-        header: "Wallet",
-        enableColumnActions: false,
-        muiTableHeadCellProps: {
-          align: "center", //change head cell props
-        },
-        size: 20,
-        Cell: ({ renderedCellValue }) => (
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              gap: "1rem",
-            }}
-          >
-            {renderedCellValue}
-          </Box>
-        ),
-        muiTableHeadCellProps: {
-          align: "center", //change head cell props
-        },
-      },
-      {
-        accessorKey: "status",
-        enableColumnFilter: false,
-        header: "status",
-        enableColumnActions: false,
-        size: 80,
-        muiTableHeadCellProps: {
-          align: "center", //change head cell props
-        },
-        Cell: ({ renderedCellValue }) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "1rem",
-            }}
-          >
-            {renderedCellValue}
-          </Box>
-        ),
-      },
-      {
-        accessorKey: "verified",
-        enableColumnFilter: false,
-        header: "Verified",
-        enableColumnActions: false,
-        muiTableHeadCellProps: {
-          align: "center", //change head cell props
-        },
-        size: 20,
-        Cell: ({ renderedCellValue }) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "1rem",
-            }}
-          >
-            {renderedCellValue}
-          </Box>
-        ),
-      },
-      {
-        accessorFn: (row) => row.createdAt.slice(0, 10),
-        id: "createdAt",
-        enableColumnFilter: false,
-        enableColumnActions: false,
-        header: "Created At",
-        size: 100,
-        Cell: ({ renderedCellValue }) => (
-          <Box
-            sx={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "1rem",
-            }}
-          >
-            {renderedCellValue}
-          </Box>
-        ),
-        muiTableHeadCellProps: {
-          align: "center", //change head cell props
-        },
-      },
-    ],
-    [],
-  );
-
   function handleSubmit() {
     fetch(
       BASE_URL +
-        "/driver/filter?name=" +
+        "/drivers/filter?name=" +
         filter.name +
         "&email=" +
         filter.email +
@@ -319,7 +133,7 @@ export default function DriverManagement() {
   function reset() {}
 
   function handleLicExp() {
-    fetch(BASE_URL + "/driver/filter/?licExp=true", {
+    fetch(BASE_URL + "/drivers/filter/?licExp=true", {
       method: "GET",
     })
       .then((res) => res.json())
@@ -359,7 +173,7 @@ export default function DriverManagement() {
   }
 
   function handleDocPen() {
-    fetch(BASE_URL + "/driver/filter/?docPen=true", {
+    fetch(BASE_URL + "/drivers/filter/?docPen=true", {
       method: "GET",
     })
       .then((res) => res.json())
@@ -399,7 +213,7 @@ export default function DriverManagement() {
   }
 
   function handleApproved() {
-    fetch(BASE_URL + "/driver/filter/?approved=true", {
+    fetch(BASE_URL + "/drivers/filter/?approved=true", {
       method: "GET",
     })
       .then((res) => res.json())
@@ -438,6 +252,22 @@ export default function DriverManagement() {
       });
   }
 
+  const updateDrivers = (data, type, index) => {
+    setId(data?._id);
+    if (type == "view") {
+      setViewDriver(true);
+      setDeleteDriver(false);
+    } else if (type == "delete") {
+      setViewDriver(false);
+      setDeleteDriver(true);
+      setDeleteInfo(data);
+    } else {
+      setViewDriver(false);
+      setDeleteDriver(false);
+    }
+    if (type !== "delete") setDriverModal(true);
+  };
+
   return (
     <Management_container title={"Driver Management"}>
       {isOpen && (
@@ -461,7 +291,7 @@ export default function DriverManagement() {
                 }}
               >
                 <button
-                  onClick={(e) => navigate("/addDriver")}
+                  onClick={() => updateDrivers()}
                   type='button'
                   className='btn m-2 btn-outline-primary waves-effect waves-light'
                 >
@@ -524,87 +354,39 @@ export default function DriverManagement() {
                     <div style={{ margin: "20px", marginTop: "50px" }}>
                       <BtnDark handleClick={handleSubmit} title={"Search"} />
 
-                      <BtnDark handleClick={reset} title={"Reset"} />
+                      <button
+                        className='btn btn-outline-danger'
+                        onClick={reset}
+                      >
+                        Reset
+                      </button>
                     </div>
                   </div>
                 </div>
               </form>
-
-              <MaterialReactTable
-                columns={columns}
+              <CommonDataTable
                 data={list || []}
-                enableRowActions
-                enableRowNumbers
-                displayColumnDefOptions={{
-                  "mrt-row-actions": {
-                    size: 100,
-                    muiTableHeadCellProps: {
-                      align: "center", //change head cell props
-                    },
-                  },
-                  "mrt-row-numbers": {
-                    header: "Sr No",
-                    // enableColumnOrdering: true, //turn on some features that are usually off
-                    muiTableHeadCellProps: {
-                      sx: {
-                        fontSize: "1.2rem",
-                      },
-                    },
-                  },
-                }}
-                muiTableProps={{
-                  sx: {
-                    border: "1px solid rgba(232, 237, 234, 1)",
-                  },
-                }}
-                muiTableHeadCellProps={{
-                  sx: {
-                    border: "1px solid rgba(232, 237, 234, 1)",
-                  },
-                }}
-                muiTableBodyCellProps={{
-                  sx: {
-                    border: "1px solid rgba(232, 237, 234, 1)",
-                  },
-                }}
-                positionActionsColumn={"last"}
-                renderRowActions={({ row, table }) => (
-                  <div className='hstack gap-2 fs-1'>
-                    <button
-                      onClick={() => {
-                        setIsOpen(!isOpen);
-                        setDriver({ ...row.original });
-                      }}
-                      className='btn btn-icon btn-sm btn-warning rounded-pill'
-                    >
-                      <i className='mdi mdi-eye'></i>
-                    </button>
-                    <button
-                      onClick={() => {}}
-                      className='btn btn-icon btn-sm btn-info rounded-pill'
-                    >
-                      <i className='bx bxs-edit-alt' />
-                    </button>
-                    <button
-                      onClick={() => {
-                        navigate("/vehicleManagement", {
-                          state: {
-                            id: row.original.id,
-                            email: row.original.email,
-                          },
-                        });
-                      }}
-                      className='btn btn-icon btn-sm btn-danger rounded-pill'
-                    >
-                      <i className='bx bxs-trash' />
-                    </button>
-                  </div>
-                )}
+                tableHeaders={driverTableHeaders}
+                actionButtons
+                deleteButton
+                editButton
+                viewButton
+                callback={(data, type, index) =>
+                  updateDrivers(data, type, index)
+                }
               />
             </div>
           </div>
         </div>
       </div>
+      {driverModal && (
+        <AddDriver
+          show={driverModal}
+          setShow={setDriverModal}
+          viewModal={viewDriver}
+          id={id}
+        />
+      )}
     </Management_container>
   );
 }

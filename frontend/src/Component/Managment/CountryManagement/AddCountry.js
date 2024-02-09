@@ -47,34 +47,34 @@ export default function Addcountry({ show, setShow }) {
   }
 
   return (
-    <Modal size="lg" show={show} onHide={() => setShow(false)}>
+    <Modal size='lg' show={show} onHide={() => setShow(false)}>
       <Modal.Header closeButton>
         <Modal.Title>Add New Country </Modal.Title>
       </Modal.Header>
 
       <Modal.Body>
         <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="row">
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="form-label">Name</label>
+          <div className='row'>
+            <div className='col-md-6'>
+              <div className='mb-3'>
+                <label className='form-label'>Name</label>
                 <input
                   {...register("name", { required: "this is required Field" })}
-                  className="form-control"
+                  className='form-control'
                 />
                 {errors.name && (
                   <span style={{ color: "red" }}>{errors.name.message}</span>
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="form-label">Country Code</label>
+            <div className='col-md-6'>
+              <div className='mb-3'>
+                <label className='form-label'>Country Code</label>
                 <input
                   {...register("countryCode", {
                     required: "this is required Field",
                   })}
-                  className="form-control"
+                  className='form-control'
                 />
                 {errors.countryCode && (
                   <span style={{ color: "red" }}>
@@ -85,15 +85,15 @@ export default function Addcountry({ show, setShow }) {
             </div>
           </div>
 
-          <div className="row">
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="form-label">Dial Code</label>
+          <div className='row'>
+            <div className='col-md-6'>
+              <div className='mb-3'>
+                <label className='form-label'>Dial Code</label>
                 <input
                   {...register("dialCode", {
                     required: "this is required Field",
                   })}
-                  className="form-control"
+                  className='form-control'
                 />
                 {errors.dialCode && (
                   <span style={{ color: "red" }}>
@@ -102,14 +102,14 @@ export default function Addcountry({ show, setShow }) {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="form-label">Status</label>
+            <div className='col-md-6'>
+              <div className='mb-3'>
+                <label className='form-label'>Status</label>
                 <select
                   {...register("status", {
                     required: "this is required field",
                   })}
-                  className="form-control"
+                  className='form-control'
                 >
                   <option value={""}>Choose...</option>
                   <option value={"ACTIVE"}>Active</option>
@@ -121,11 +121,14 @@ export default function Addcountry({ show, setShow }) {
               </div>
             </div>
           </div>
-          <div className="text-right">
-            <button type="submit" className="btn btn-primary">
+          <Modal.Footer>
+            <button type='submit' className='btn btn-outline-primary'>
               Add
             </button>
-          </div>
+            <button type='button' className='btn btn-outline-danger'>
+              Close
+            </button>
+          </Modal.Footer>
         </form>
       </Modal.Body>
     </Modal>

@@ -115,7 +115,7 @@ export default function RentalPromotionManagement() {
         header: "validFrom",
       },
     ],
-    []
+    [],
   );
 
   useEffect(() => {
@@ -129,34 +129,37 @@ export default function RentalPromotionManagement() {
     <Management_container title={"Rental Promotion Management"}>
       {isOpen && <DeleteModalAdv />}
       {show && <AddRentalPromotion show={show} setShow={setShow} />}
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="card">
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-12 text-right">
-                  <button class="btn btn-primary" onClick={() => setShow(true)}>
+      <div class='row'>
+        <div class='col-lg-12'>
+          <div class='card'>
+            <div class='card-body'>
+              <div class='row'>
+                <div class='col-md-12 text-right'>
+                  <button
+                    class='btn btn-outline-primary'
+                    onClick={() => setShow(true)}
+                  >
                     {" "}
                     Add New{" "}
                   </button>
                 </div>
                 <div
-                  class="justify-content-center row align-items-end mb-5"
+                  class='justify-content-center row align-items-end mb-5'
                   style={{ alignItem: "center" }}
                 >
-                  <div class="col-md-3">
-                    <label class="form-label">Title</label>
-                    <input className="form-control" placeholder="Enter Title" />
+                  <div class='col-md-3'>
+                    <label class='form-label'>Title</label>
+                    <input className='form-control' placeholder='Enter Title' />
                   </div>{" "}
-                  <div class="col-md-3">
-                    <label class="form-label">status</label>
-                    <select class="form-control">
+                  <div class='col-md-3'>
+                    <label class='form-label'>status</label>
+                    <select class='form-control'>
                       <option>choose...</option>
                     </select>
                   </div>
-                  <div class="col-md-3">
-                    <button class="btn btn-primary me-3">Search</button>
-                    <button class="btn btn-danger me-3">Reset</button>
+                  <div class='col-md-3'>
+                    <button class='btn btn-outline-primary me-3'>Search</button>
+                    <button class='btn btn-outline-danger me-3'>Reset</button>
                   </div>
                 </div>
               </div>
@@ -166,6 +169,11 @@ export default function RentalPromotionManagement() {
                 data={rentalPromotion || []}
                 enableRowActions
                 enableRowNumbers
+                enableFullScreenToggle={false}
+                enableDensityToggle={false}
+                enableHiding={false}
+                enableColumnFilters={false}
+                enableColumnActions={false}
                 displayColumnDefOptions={{
                   "mrt-row-actions": {
                     size: 100,
@@ -184,26 +192,26 @@ export default function RentalPromotionManagement() {
                 }}
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
-                  <div className="hstack gap-2 fs-1">
+                  <div className='hstack gap-2 fs-1'>
                     <button
                       onClick={() => {
                         dispatch(getViewPromotion({ id: row.original._id }));
                         setOpenView(true);
                       }}
-                      className="btn btn-icon btn-sm btn-warning rounded-pill"
+                      className='btn btn-icon btn-sm btn-warning rounded-pill'
                     >
-                      <i className="mdi mdi-eye"></i>
+                      <i className='mdi mdi-eye'></i>
                     </button>
                     <button
                       onClick={() => {
                         dispatch(
-                          updateRentalPromotionById({ id: row.original._id })
+                          updateRentalPromotionById({ id: row.original._id }),
                         );
                         setShow(true);
                       }}
-                      className="btn btn-icon btn-sm btn-info rounded-pill"
+                      className='btn btn-icon btn-sm btn-info rounded-pill'
                     >
-                      <i className="bx bxs-edit-alt" />
+                      <i className='bx bxs-edit-alt' />
                     </button>
                     <button
                       onClick={() => {
@@ -211,12 +219,12 @@ export default function RentalPromotionManagement() {
                           openModal({
                             url: `${BASE_URL}/rentalPromotion/${row.original._id}`,
                             id: row.original._id,
-                          })
+                          }),
                         );
                       }}
-                      className="btn btn-icon btn-sm btn-danger rounded-pill"
+                      className='btn btn-icon btn-sm btn-danger rounded-pill'
                     >
-                      <i className="bx bxs-trash" />
+                      <i className='bx bxs-trash' />
                     </button>
                   </div>
                 )}

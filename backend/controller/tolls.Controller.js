@@ -26,41 +26,47 @@ exports.addToll = async (req, res, next) => {
 
 exports.getAllTolls = async (req, res, next) => {
   try {
-    const tollResponse = await db.location.aggregate([
-      {
-        $match: {
-          $or: [
-            {
-              $expr: {
-                $regexMatch: {
-                  input: { $toLower: "$title" },
-                  regex: { $toLower: req.query.search },
-                  options: "i",
-                },
+    const tollAggregateQuery = [];
+    if (req.query.status.length)
+      tollAggregateQuery.push({
+        $match: { $expr: { $eq: ["$status", req.query.status] } },
+      });
+
+    tollAggregateQuery.push({
+      $match: {
+        $or: [
+          {
+            $expr: {
+              $regexMatch: {
+                input: { $toLower: "$title" },
+                regex: { $toLower: req.query.search },
+                options: "i",
               },
             },
-            {
-              $expr: {
-                $regexMatch: {
-                  input: { $toLower: "$amount" },
-                  regex: { $toLower: req.query.search },
-                  options: "i",
-                },
+          },
+          {
+            $expr: {
+              $regexMatch: {
+                input: { $toLower: "$amount" },
+                regex: { $toLower: req.query.search },
+                options: "i",
               },
             },
-            {
-              $expr: {
-                $regexMatch: {
-                  input: { $toLower: "$status" },
-                  regex: { $toLower: req.query.search },
-                  options: "i",
-                },
+          },
+          {
+            $expr: {
+              $regexMatch: {
+                input: { $toLower: "$status" },
+                regex: { $toLower: req.query.search },
+                options: "i",
               },
             },
-          ],
-        },
+          },
+        ],
       },
-    ]);
+    });
+
+    const tollResponse = await db.location.aggregate(tollAggregateQuery);
     return res.status(200).send(tollResponse);
   } catch (err) {
     next(err);

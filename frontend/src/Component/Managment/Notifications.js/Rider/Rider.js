@@ -29,7 +29,7 @@ export default function RiderNotification() {
               <div class='row'>
                 <div class='col-md-12 text-right'>
                   <button
-                    class='btn btn-primary'
+                    class='btn btn-outline-primary'
                     onClick={() => setIsOpen(true)}
                   >
                     Add New
@@ -54,8 +54,8 @@ export default function RiderNotification() {
                   </div>
 
                   <div class='col-md-3'>
-                    <button class='btn btn-primary me-3'>Search</button>
-                    <button class='btn btn-danger me-3'>Reset</button>
+                    <button class='btn btn-outline-primary me-3'>Search</button>
+                    <button class='btn btn-outline-danger me-3'>Reset</button>
                   </div>
                 </div>{" "}
               </div>
@@ -64,6 +64,11 @@ export default function RiderNotification() {
                 data={[]}
                 enableRowActions
                 enableRowNumbers
+                enableFullScreenToggle={false}
+                enableDensityToggle={false}
+                enableHiding={false}
+                enableColumnFilters={false}
+                enableColumnActions={false}
                 displayColumnDefOptions={{
                   "mrt-row-actions": {
                     size: 100,

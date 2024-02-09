@@ -1,12 +1,6 @@
 import { useState, useEffect } from "react";
 import MaterialReactTable from "material-react-table";
 import Management_container from "../../Common/Management_container";
-import {
-  RemoveRedEye,
-  ModeEditOutline,
-  DeleteForever,
-} from "@mui/icons-material/";
-import { Box, IconButton } from "@mui/material";
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import AddReferral from "./AddReferral";
@@ -61,7 +55,7 @@ export default function ReferralManagement() {
 
   const columns = useMemo(
     () => [{ accessorKey: "status", header: "status" }],
-    []
+    [],
   );
 
   useEffect(() => {
@@ -74,40 +68,40 @@ export default function ReferralManagement() {
     <Management_container title={"Referral Management "}>
       {isOpen && <AddReferral show={isOpen} setShow={setIsOpen} />}
       {open && <DeleteModalAdv />}
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="card">
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-12 text-right">
+      <div class='row'>
+        <div class='col-lg-12'>
+          <div class='card'>
+            <div class='card-body'>
+              <div class='row'>
+                <div class='col-md-12 text-right'>
                   <button
-                    class="btn btn-primary"
+                    class='btn btn-outline-primary'
                     onClick={() => setIsOpen(true)}
                   >
                     Add New
                   </button>
                 </div>
                 <div
-                  class="justify-content-center row align-items-end mb-5"
+                  class='justify-content-center row align-items-end mb-5'
                   style={{ alignItems: "end" }}
                 >
-                  <div class="col-md-3">
+                  <div class='col-md-3'>
                     {" "}
-                    <label class="form-label">Title</label>
-                    <input className="form-control" placeholder="Enter Title" />
+                    <label class='form-label'>Title</label>
+                    <input className='form-control' placeholder='Enter Title' />
                   </div>
-                  <div class="col-md-3">
-                    <label class="form-label">Status</label>
-                    <select class="form-control">
+                  <div class='col-md-3'>
+                    <label class='form-label'>Status</label>
+                    <select class='form-control'>
                       <option>Choose...</option>
-                      <option value="ACTIVE">Active</option>
-                      <option value="INACTIVE">Inactive</option>
+                      <option value='ACTIVE'>Active</option>
+                      <option value='INACTIVE'>Inactive</option>
                     </select>
                   </div>
 
-                  <div class="col-md-3">
-                    <button class="btn btn-primary me-3">Search</button>
-                    <button class="btn btn-danger me-3">Reset</button>
+                  <div class='col-md-3'>
+                    <button class='btn btn-outline-primary me-3'>Search</button>
+                    <button class='btn btn-outline-danger me-3'>Reset</button>
                   </div>
                 </div>{" "}
               </div>
@@ -116,6 +110,11 @@ export default function ReferralManagement() {
                 data={referral || []}
                 enableRowActions
                 enableRowNumbers
+                enableFullScreenToggle={false}
+                enableDensityToggle={false}
+                enableHiding={false}
+                enableColumnFilters={false}
+                enableColumnActions={false}
                 displayColumnDefOptions={{
                   "mrt-row-actions": {
                     size: 100,
@@ -134,31 +133,36 @@ export default function ReferralManagement() {
                 }}
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
-                  <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-                    <IconButton>
-                      <RemoveRedEye />
-                    </IconButton>
-                    <IconButton
+                  <div className='hstack gap-2 fs-1'>
+                    <button
+                      onClick={() => {}}
+                      className='btn btn-icon btn-sm btn-warning rounded-pill'
+                    >
+                      <i className='mdi mdi-eye'></i>
+                    </button>
+                    <button
                       onClick={() => {
                         dispatch(updateReferralById({ id: row.original._id }));
                         setIsOpen(true);
                       }}
+                      className='btn btn-icon btn-sm btn-info rounded-pill'
                     >
-                      <ModeEditOutline />
-                    </IconButton>
-                    <IconButton
+                      <i className='bx bxs-edit-alt' />
+                    </button>
+                    <button
                       onClick={() => {
                         dispatch(
                           openModal({
                             url: `${BASE_URL}/referral/${row.original._id}`,
                             id: row.original._id,
-                          })
+                          }),
                         );
                       }}
+                      className='btn btn-icon btn-sm btn-danger rounded-pill'
                     >
-                      <DeleteForever />
-                    </IconButton>
-                  </Box>
+                      <i className='bx bxs-trash' />
+                    </button>
+                  </div>
                 )}
               />
             </div>

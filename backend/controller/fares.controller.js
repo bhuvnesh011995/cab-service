@@ -299,6 +299,52 @@ exports.getAllIndiFare = async (req, res) => {
       },
     );
 
+    if (req.query.country.length) {
+      fareAggregateQuery.push({
+        $match: {
+          $expr: {
+            $eq: ["$country", { $toObjectId: req.query.country }],
+          },
+        },
+      });
+    }
+    if (req.query.state.length) {
+      fareAggregateQuery.push({
+        $match: {
+          $expr: {
+            $eq: ["$state", { $toObjectId: req.query.state }],
+          },
+        },
+      });
+    }
+    if (req.query.city.length) {
+      fareAggregateQuery.push({
+        $match: {
+          $expr: {
+            $eq: ["$city", { $toObjectId: req.query.city }],
+          },
+        },
+      });
+    }
+    if (req.query.vehicleType.length) {
+      fareAggregateQuery.push({
+        $match: {
+          $expr: {
+            $eq: ["$vehicleType", { $toObjectId: req.query.vehicleType }],
+          },
+        },
+      });
+    }
+    if (req.query.status.length) {
+      fareAggregateQuery.push({
+        $match: {
+          $expr: {
+            $eq: ["$status", req.query.status],
+          },
+        },
+      });
+    }
+
     if (req.query.search.length) {
       fareAggregateQuery.push({
         $match: {

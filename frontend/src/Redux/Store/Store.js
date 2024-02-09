@@ -23,6 +23,7 @@ import promoCodeReducer from "../features/promoCodeReducer";
 import taxReducer from "../features/taxReducer";
 import rentalPromotionReducer from "../features/rentalPromotionReducer";
 import referralReducer from "../features/referralReducer";
+import driverReducer from "../features/driverReducer";
 
 export default configureStore({
   reducer: {
@@ -50,5 +51,6 @@ export default configureStore({
     promoCode: promoCodeReducer,
     rentalPromotion: rentalPromotionReducer,
     referral: referralReducer,
+    driver: driverReducer,
   },
 });
