@@ -83,44 +83,9 @@ export default function PromotionManagement() {
         header: "Created At",
       },
     ],
-    [],
+    []
   );
 
-<<<<<<< HEAD
-=======
-  function handleSubmit() {
-    fetch(
-      BASE_URL +
-        "/promotion/self/filter/?title=" +
-        filter.title +
-        "&status=" +
-        filter.status +
-        "&forUsers=" +
-        filter.forUsers,
-      { method: "GET" },
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = data.promotions.map((ele) => {
-            let obj = {};
-            obj.title = ele.title;
-            obj.country = ele.country?.name;
-            obj.state = ele.state?.name;
-            obj.city = ele.city?.name;
-            obj.forUsers = ele.forUsers.join();
-            obj.status = ele.status;
-            obj.description = ele.description;
-            obj.createdAt = ele.createdAt;
-            obj.updatedAt = ele.updatedAt;
-            return obj;
-          });
-          setList(arr);
-        }
-      });
-  }
-
->>>>>>> 7eac9678185526962a904fe6dbf12e91b13ff24a
   useEffect(() => {
     if (deleteStatus === "delete") {
       dispatch(deletePromotion({ url: URL, id }));
@@ -130,7 +95,6 @@ export default function PromotionManagement() {
 
   return (
     <Management_container title={"Promotion Management"}>
-<<<<<<< HEAD
       {isOpen && <DeleteModalAdv />}
       {show && <AddPromotion show={show} setShow={setShow} />}
       {openView && <ViewPromotion show={openView} setShow={setOpenView} />}
@@ -143,61 +107,6 @@ export default function PromotionManagement() {
                   <button class="btn btn-primary" onClick={() => setShow(true)}>
                     Add New
                   </button>
-=======
-      <div class='row'>
-        <div class='col-lg-13'>
-          <div class='card'>
-            {isOpen && <DeleteModalAdv />}
-            {show && <AddPromotion show={show} setShow={setShow} />}
-            {openView && (
-              <ViewPromotion show={openView} setShow={setOpenView} />
-            )}
-
-            <div class='card-body'>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "right",
-                  zIndex: "2",
-                }}
-              >
-                <BtnDark
-                  handleClick={() => {
-                    setShow(true);
-                  }}
-                  title={"Add Promotion"}
-                />
-              </div>
-              <form>
-                <div className='row'>
-                  <div className='col-lg-2 inputField'>
-                    <Text_Input
-                      input={filter}
-                      lebel_text={"Title :"}
-                      setKey={"title"}
-                      setInput={setFilter}
-                    />
-                    <Selection_Input
-                      options={["ACTIVE", "INACTIVE"]}
-                      input={filter}
-                      setInput={setFilter}
-                      lebel_text={"Status : "}
-                      setKey={"status"}
-                    />
-                    <Selection_Input
-                      options={["ADMIN", "DRIVER", "RIDER"]}
-                      input={filter}
-                      setInput={setFilter}
-                      lebel_text={"User Type : "}
-                      setKey={"forUsers"}
-                    />
-
-                    <div>
-                      <BtnDark handleClick={handleSubmit} title={"Search"} />
-                      <BtnDark handleClick={reset} title={"reset"} />
-                    </div>
-                  </div>
->>>>>>> 7eac9678185526962a904fe6dbf12e91b13ff24a
                 </div>
                 <div
                   class="justify-content-center row align-items-end mb-5"
@@ -246,24 +155,24 @@ export default function PromotionManagement() {
                 }}
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
-                  <div className='hstack gap-2 fs-1'>
+                  <div className="hstack gap-2 fs-1">
                     <button
                       onClick={() => {
                         dispatch(getViewPromotion({ id: row.original._id }));
                         setOpenView(true);
                       }}
-                      className='btn btn-icon btn-sm btn-warning rounded-pill'
+                      className="btn btn-icon btn-sm btn-warning rounded-pill"
                     >
-                      <i className='mdi mdi-eye'></i>
+                      <i className="mdi mdi-eye"></i>
                     </button>
                     <button
                       onClick={() => {
                         dispatch(updatePromotionById({ id: row.original._id }));
                         setShow(true);
                       }}
-                      className='btn btn-icon btn-sm btn-info rounded-pill'
+                      className="btn btn-icon btn-sm btn-info rounded-pill"
                     >
-                      <i className='bx bxs-edit-alt' />
+                      <i className="bx bxs-edit-alt" />
                     </button>
                     <button
                       onClick={() => {
@@ -271,12 +180,12 @@ export default function PromotionManagement() {
                           openModal({
                             url: `${BASE_URL}/promotion/${row.original._id}`,
                             id: row.original._id,
-                          }),
+                          })
                         );
                       }}
-                      className='btn btn-icon btn-sm btn-danger rounded-pill'
+                      className="btn btn-icon btn-sm btn-danger rounded-pill"
                     >
-                      <i className='bx bxs-trash' />
+                      <i className="bx bxs-trash" />
                     </button>
                   </div>
                 )}
