@@ -70,7 +70,7 @@ export default function RiderManagement() {
                   title={"Add Rider"}
                 />
               </div>
-              <form style={{ margin: "50px" }}>
+              <form>
                 <div className='row'>
                   <div className='col-lg-6'>
                     <Text_Input

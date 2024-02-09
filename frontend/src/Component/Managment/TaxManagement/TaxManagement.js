@@ -196,7 +196,7 @@ export default function TaxManagement() {
         },
       },
     ],
-    []
+    [],
   );
 
   function handleSubmit(tax) {
@@ -207,10 +207,10 @@ export default function TaxManagement() {
     <Management_container title={"Tax Management"}>
       {show && <DeleteModalAdv />}
       {isOpen && <AddNew show={isOpen} setShow={setIsOpen} />}
-      <div class="row">
-        <div class="col-lg-13">
-          <div class="card">
-            <div class="card-body">
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
+            <div class='card-body'>
               <div
                 style={{
                   display: "flex",
@@ -219,15 +219,15 @@ export default function TaxManagement() {
                 }}
               >
                 <button
-                  className="btn btn-primary"
+                  className='btn btn-primary'
                   onClick={() => setIsOpen(true)}
                 >
                   Add Tax
                 </button>
               </div>
-              <form style={{ margin: "50px" }}>
-                <div className="row">
-                  <div className="col-lg-2 inputField">
+              <form>
+                <div className='row'>
+                  <div className='col-lg-2 inputField'>
                     <Text_Input
                       input={tax}
                       setInput={setTax}
@@ -243,7 +243,7 @@ export default function TaxManagement() {
                     />
                     <div>
                       <button
-                        className="btn btn-primary me-2"
+                        className='btn btn-primary me-2'
                         onClick={(e) => {
                           e.preventDefault();
                           handleSubmit(tax);
@@ -252,9 +252,9 @@ export default function TaxManagement() {
                         Search
                       </button>
                       <button
-                        className="btn btn-danger me-2"
+                        className='btn btn-danger me-2'
                         onClick={() => setTax(initialTax)}
-                        type=""
+                        type=''
                       >
                         Reset
                       </button>
@@ -285,32 +285,52 @@ export default function TaxManagement() {
                 }}
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
-                  <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-                    <IconButton>
-                      <RemoveRedEye />
-                    </IconButton>
-                    <IconButton
+                  <div className='hstack gap-2 fs-1'>
+                    <button
+                      onClick={() => {}}
+                      className='btn btn-icon btn-sm btn-warning rounded-pill'
+                    >
+                      <i className='mdi mdi-eye'></i>
+                    </button>
+                    <button
                       onClick={() => {
                         dispatch(taxToUpdate({ id: row.original._id }));
                         setIsOpen(true);
                       }}
+                      className='btn btn-icon btn-sm btn-info rounded-pill'
                     >
-                      <ModeEditOutline />
-                    </IconButton>
-                    <IconButton
+                      <i className='bx bxs-edit-alt' />
+                    </button>
+                    <button
                       onClick={() => {
                         dispatch(
                           openModal({
                             url: `${BASE_URL}/tax/${row.original._id}`,
                             id: row.original._id,
-                          })
+                          }),
                         );
                       }}
+                      className='btn btn-icon btn-sm btn-danger rounded-pill'
                     >
-                      <DeleteForever />
-                    </IconButton>
-                  </Box>
+                      <i className='bx bxs-trash' />
+                    </button>
+                  </div>
                 )}
+                muiTableProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
+                muiTableHeadCellProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
+                muiTableBodyCellProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
               />
             </div>
           </div>

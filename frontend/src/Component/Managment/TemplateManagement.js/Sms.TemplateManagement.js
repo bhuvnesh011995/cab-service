@@ -17,9 +17,11 @@ import { Box, IconButton } from "@mui/material";
 import SmsTemplate from "./ShowSmsTemplate";
 import moment from "moment/moment";
 import { AddNew } from "./AddSmsTemplate";
-import { toast } from "react-toastify";import { useDispatch, useSelector } from "react-redux";
+import { toast } from "react-toastify";
+import { useDispatch, useSelector } from "react-redux";
 import {
-  clearSmsTemplateStatus,deleteSmsTemplate,
+  clearSmsTemplateStatus,
+  deleteSmsTemplate,
   filterSmsTemplate,
   getSmsTemplateError,
   getSmsTemplateStatus,
@@ -43,58 +45,51 @@ const inittialFilter = {
 };
 
 export default function SmsTemplateManagement() {
-    const [isOpen,setIsOpen] = useState(false)
-    const [smsTemplate,setSmsTemplate] = useState();
-    const [filter,setFilter] = useState(inittialFilter);
-    const [ready, setReady] = useState(false);
-    const [list,setList] = useState([]);
-    const dispatch = useDispatch();
-    const smsTemplates = useSelector(getSmsTemplates);
-    const status = useSelector(getSmsTemplateStatus);
-    const error = useSelector(getSmsTemplateError);
-    const deleteStatus = useSelector(deleteModalStatus);
-    const id = useSelector((state) => state.delete.id);
-    const URL = useSelector(url);
-    const show = useSelector(showDeleteModal);
+  const [isOpen, setIsOpen] = useState(false);
+  const [smsTemplate, setSmsTemplate] = useState();
+  const [filter, setFilter] = useState(inittialFilter);
+  const [ready, setReady] = useState(false);
+  const [list, setList] = useState([]);
+  const dispatch = useDispatch();
+  const smsTemplates = useSelector(getSmsTemplates);
+  const status = useSelector(getSmsTemplateStatus);
+  const error = useSelector(getSmsTemplateError);
+  const deleteStatus = useSelector(deleteModalStatus);
+  const id = useSelector((state) => state.delete.id);
+  const URL = useSelector(url);
+  const show = useSelector(showDeleteModal);
 
+  useEffect(() => {
+    if (ready) {
+      dispatch(filterSmsTemplate({}));
+    } else setReady(true);
+  }, [ready]);
 
-    useEffect(() => {
-      if (ready) {
-        dispatch(filterSmsTemplate({}));
-      } else setReady(true);
-    }, [ready]);
+  useEffect(() => {
+    if (status === "added") {
+      toast.success("sms template added");
+      setIsOpen(false);
+      dispatch(clearSmsTemplateStatus());
+    } else if (status === "error") {
+      toast.error(error.message || "some error occured");
+      dispatch(clearSmsTemplateStatus());
+    } else if (status === "updated") {
+      toast.success("sms template updated");
+      setIsOpen(false);
+      dispatch(clearSmsTemplateStatus());
+    } else if (status === "deleted") {
+      toast.success("sms template deleted successfully");
+      dispatch(clearSmsTemplateStatus());
+      dispatch(closeModal());
+    }
+  }, [status, error]);
 
-
-
-    useEffect(() => {
-      if (status === "added") {
-        toast.success("sms template added");
-        setIsOpen(false);
-        dispatch(clearSmsTemplateStatus());
-      } else if (status === "error") {
-        toast.error(error.message || "some error occured");
-        dispatch(clearSmsTemplateStatus());
-      } else if (status === "updated") {
-
-        toast.success("sms template updated");
-        setIsOpen(false);
-        dispatch(clearSmsTemplateStatus());
-      } else if (status === "deleted") {
-        toast.success("sms template deleted successfully");
-        dispatch(clearSmsTemplateStatus());
-        dispatch(closeModal());
-      }
-    }, [status, error]);
-
-
-    useEffect(() => {
-      if (deleteStatus === "delete") {
-        dispatch(deleteSmsTemplate({ url: URL, id }));
-        dispatch(doneDelete());
-      }
-    }, [deleteStatus, URL, id]);
-
-    
+  useEffect(() => {
+    if (deleteStatus === "delete") {
+      dispatch(deleteSmsTemplate({ url: URL, id }));
+      dispatch(doneDelete());
+    }
+  }, [deleteStatus, URL, id]);
 
   const columns = useMemo(
     () => [
@@ -216,7 +211,7 @@ export default function SmsTemplateManagement() {
         },
       },
     ],
-    []
+    [],
   );
 
   function handleSubmit(e) {
@@ -225,31 +220,28 @@ export default function SmsTemplateManagement() {
     dispatch(filterSmsTemplate(filter));
   }
 
-
   function reset() {}
 
-
-    return (
-      <Management_container title={"SMS Template"}>
+  return (
+    <Management_container title={"SMS Template"}>
       {show && <DeleteModalAdv />}
-          <div class="row">
-            <div class="col-lg-13">
-              <div class="card">
-                <div class="card-body">
-                {isOpen && <AddNew show={isOpen} setShow={setIsOpen} />}                
-                <div className="text-right">
+      <div class='row'>
+        <div class='col-lg-13'>
+          <div class='card'>
+            <div class='card-body'>
+              {isOpen && <AddNew show={isOpen} setShow={setIsOpen} />}
+              <div className='text-right'>
                 <button
-                  className="btn btn-primary"
+                  className='btn btn-primary'
                   onClick={() => setIsOpen(true)}
                 >
                   Add SMS
                 </button>
               </div>
 
-    
-              <form className="m-2">
-                <div className="row">
-                  <div className="col-lg-2 inputField">
+              <form className='m-2'>
+                <div className='row'>
+                  <div className='col-lg-2 inputField'>
                     <Text_Input
                       input={filter}
                       setInput={setFilter}
@@ -274,12 +266,9 @@ export default function SmsTemplateManagement() {
                       <BtnDark handleClick={handleSubmit} title={"Search"} />
 
                       <BtnDark handleClick={reset} title={"Reset"} />
-                        </div>
-
-
+                    </div>
+                  </div>
                 </div>
-                </div>
-
               </form>
               <MaterialReactTable
                 columns={columns}
@@ -305,42 +294,56 @@ export default function SmsTemplateManagement() {
                 }}
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
-                  <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-                    <IconButton
+                  <div className='hstack gap-2 fs-1'>
+                    <button
                       onClick={() => {
                         setIsOpen(true);
                         setSmsTemplate({ ...row.original });
                       }}
+                      className='btn btn-icon btn-sm btn-warning rounded-pill'
                     >
-                      <RemoveRedEye />
-                    </IconButton>
-                    <IconButton>
-                      <Lock />
-                    </IconButton>
-                    <IconButton
+                      <i className='mdi mdi-eye'></i>
+                    </button>
+                    <button
                       onClick={() => {
                         dispatch(smsTemplateById({ id: row.original._id }));
                         setIsOpen(true);
                       }}
+                      className='btn btn-icon btn-sm btn-info rounded-pill'
                     >
-                      <ModeEditOutline />
-                    </IconButton>
-
-                    <IconButton
+                      <i className='bx bxs-edit-alt' />
+                    </button>
+                    <button
                       onClick={() => {
                         dispatch(
                           openModal({
                             url: `${BASE_URL}/template/sms/${row.original._id}`,
                             id: row.original._id,
-                          })
+                          }),
                         );
                       }}
-                    ><DeleteForever />
-                    </IconButton>
-                  </Box>
+                      className='btn btn-icon btn-sm btn-danger rounded-pill'
+                    >
+                      <i className='bx bxs-trash' />
+                    </button>
+                  </div>
                 )}
+                muiTableProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
+                muiTableHeadCellProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
+                muiTableBodyCellProps={{
+                  sx: {
+                    border: "1px solid rgba(232, 237, 234, 1)",
+                  },
+                }}
               />
-
             </div>
           </div>
         </div>
