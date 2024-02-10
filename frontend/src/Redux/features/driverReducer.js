@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import BASE_URL from "../../config/config";
+import moment from "moment";
 
 let initialState = {
   status: "idle",
@@ -50,7 +51,7 @@ export const fetchAllDrivers = createAsyncThunk(
     try {
       const url = BASE_URL + "/drivers/fetchAllDrivers";
       let response = await axios.get(url, { params: filters });
-      if (response.status === 200) return response.data;
+      if (response.status === 200) return response.data.drivers;
       else
         return rejectWithValue({
           status: response.status,
@@ -107,18 +108,18 @@ const driverSlice = createSlice({
       state.status = "added";
       state.error = null;
       const filteredDrivers = state.drivers.filter(
-        (item) => item?._id == action.payload[0]._id,
+        (item) => item?._id == action.payload._id,
       );
       if (filteredDrivers.length) {
         if (filteredDrivers[0]._id) {
           state.drivers.map((driver, index) => {
             if (driver._id == filteredDrivers[0]._id) {
-              state.drivers[index] = action.payload[0];
+              state.drivers[index] = action.payload;
             }
           });
         }
       } else {
-        state.drivers.push(action.payload[0]);
+        state.drivers.push(action.payload);
       }
     });
     builder.addCase(postDriver.rejected, (state, action) => {
@@ -163,6 +164,10 @@ const driverSlice = createSlice({
     builder.addCase(getSelectedDriverData.fulfilled, (state, action) => {
       state.status = "updated";
       state.error = null;
+      action.payload.DOB = moment(action.payload.DOB).format("YYYY-MM-DD");
+      action.payload.license.expiryDate = moment(
+        action.payload.license.expiryDate,
+      ).format("YYYY-MM-DD");
       state.selectedDriver = action.payload;
     });
     builder.addCase(getSelectedDriverData.rejected, (state, action) => {
@@ -172,7 +177,7 @@ const driverSlice = createSlice({
   },
 });
 
-export const allDrivers = (state) => state.driver.drivers;
-export const selectedDriver = (state) => state.driver.selectedDriver;
+export const getAllDrivers = (state) => state.driver.drivers;
+export const getSelectedDriver = (state) => state.driver.selectedDriver;
 export const { emptySelectedDriver } = driverSlice.actions;
 export default driverSlice.reducer;

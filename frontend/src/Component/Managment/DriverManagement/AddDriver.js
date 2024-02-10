@@ -23,23 +23,39 @@ import {
   getCountries,
 } from "../../../Redux/features/countryReducer";
 import { Modal } from "react-bootstrap";
-import { postDriver } from "../../../Redux/features/driverReducer";
+import {
+  emptySelectedDriver,
+  getSelectedDriver,
+  getSelectedDriverData,
+  postDriver,
+} from "../../../Redux/features/driverReducer";
+import { IMAGE_URL } from "../../../config/config";
 
 export default function AddDriver({ show, setShow, viewModal, id }) {
   const {
     handleSubmit,
     register,
+    reset,
+    setValue,
     watch,
     formState: { errors },
   } = useForm();
   const dispatch = useDispatch();
+  const selectedDriver = useSelector(getSelectedDriver);
   const cities = useSelector(getCities);
   const states = useSelector(getStates);
   const countries = useSelector(getCountries);
 
   useEffect(() => {
+    if (id) dispatch(getSelectedDriverData(id));
     dispatch(fetchCountries());
   }, []);
+
+  useEffect(() => {
+    if (selectedDriver) {
+      reset(selectedDriver);
+    }
+  }, [selectedDriver]);
 
   useEffect(() => {
     if (watch("address.country")) {
@@ -61,16 +77,29 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
     for (let file of data.driverFile) formData.append("driverFile", file);
     formData.append("data", JSON.stringify(data));
     dispatch(postDriver(formData));
+    handleClose();
   }
 
   function handleClose() {
+    dispatch(emptySelectedDriver());
     setShow(false);
   }
+
+  const openFile = (value) => {
+    if (watch(value)[0]?.name) {
+      const fileUrl = URL.createObjectURL(watch(value)[0]);
+      window.open(fileUrl);
+    } else {
+      window.open(IMAGE_URL + watch(value));
+    }
+  };
 
   return (
     <Modal show={show} onHide={() => handleClose()} size='xl'>
       <Modal.Header closeButton>
-        <Modal.Title>Add Driver</Modal.Title>
+        <Modal.Title>
+          {id ? (viewModal ? "View" : "Update") : "Add"} Driver
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div
@@ -96,6 +125,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                     })}
                     type={"text"}
                     placeholder='First Name'
+                    disabled={viewModal}
                   />
                   {errors?.firstName && (
                     <span className='text-danger'>
@@ -110,6 +140,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                     {...register("lastName", { pattern: namePattern })}
                     type={"text"}
                     placeholder='Last Name'
+                    disabled={viewModal}
                   />
                   {errors?.lastName && (
                     <span className='text-danger'>
@@ -126,6 +157,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                       pattern: emailPattern,
                     })}
                     type={"email"}
+                    disabled={viewModal}
                     placeholder='Email'
                   />
                   {errors?.email && (
@@ -142,6 +174,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                     })}
                     type={"text"}
                     placeholder='Contact Number'
+                    disabled={viewModal}
                   />
                   {errors?.mobile && (
                     <span className='text-danger'>{errors.mobile.message}</span>
@@ -156,6 +189,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                       pattern: passwordPattern,
                     })}
                     type={"password"}
+                    disabled={viewModal}
                   />
                   {errors?.password && (
                     <span className='text-danger'>
@@ -171,6 +205,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                       required: "Please Enter Date Of Birth",
                     })}
                     type={"date"}
+                    disabled={viewModal}
                   />
                   {errors?.DOB && (
                     <span className='text-danger'>{errors.DOB.message}</span>
@@ -184,10 +219,18 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                     {...register("address.country", {
                       required: "Please Select Country",
                     })}
+                    disabled={viewModal}
                   >
                     <option value=''>select</option>
                     {countries.map((country) => (
-                      <option value={country._id}>{country.name}</option>
+                      <option
+                        value={country._id}
+                        selected={
+                          watch("address.country") == country._id && country._id
+                        }
+                      >
+                        {country.name}
+                      </option>
                     ))}
                   </select>
                   {errors?.address?.country && (
@@ -204,10 +247,18 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                     {...register("address.state", {
                       required: "Please Select State",
                     })}
+                    disabled={viewModal}
                   >
                     <option value=''>select</option>
                     {states.map((state) => (
-                      <option value={state._id}>{state.name}</option>
+                      <option
+                        value={state._id}
+                        selected={
+                          watch("address.state") == state._id && state._id
+                        }
+                      >
+                        {state.name}
+                      </option>
                     ))}
                   </select>
                   {errors?.address?.state && (
@@ -224,10 +275,16 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                     {...register("address.city", {
                       required: "Please Select City",
                     })}
+                    disabled={viewModal}
                   >
                     <option value=''>select</option>
                     {cities.map((city) => (
-                      <option value={city._id}>{city.name}</option>
+                      <option
+                        value={city._id}
+                        selected={watch("address.city") == city._id && city._id}
+                      >
+                        {city.name}
+                      </option>
                     ))}
                   </select>
                   {errors?.address?.city && (
@@ -244,6 +301,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                       required: "Please Enter Address",
                     })}
                     type={"text"}
+                    disabled={viewModal}
                   />
                   {errors?.address?.place && (
                     <span className='text-danger'>
@@ -260,6 +318,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                       pattern: mustBeNumbers,
                     })}
                     type={"text"}
+                    disabled={viewModal}
                   />
                   {errors?.address?.pincode && (
                     <span className='text-danger'>
@@ -273,6 +332,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                     style={{ width: "200px" }}
                     className='form-select'
                     {...register("status")}
+                    disabled={viewModal}
                   >
                     <option value=''>select</option>
                     <option value={"ACTIVE"}>Active</option>
@@ -286,6 +346,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                     className='form-control'
                     {...register("referralCode")}
                     type={"text"}
+                    disabled={viewModal}
                   />
                 </div>
                 <div class='m-3'>
@@ -293,6 +354,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                     {...register("verified")}
                     class='form-check-input'
                     type='checkbox'
+                    disabled={viewModal}
                   />
                   <label class='form-check-label'>Verify</label>
                 </div>
@@ -305,15 +367,18 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                     watch("driverFile")
                       ? watch("driverFile")[0]?.name
                         ? URL.createObjectURL(watch("driverFile")[0])
-                        : ""
+                        : `${IMAGE_URL}${watch("driverFile")}`
                       : ""
                   }
                 />
-                <input
-                  type='file'
-                  className='form-control m-1'
-                  {...register("driverFile")}
-                />
+                {!viewModal && (
+                  <input
+                    type='file'
+                    className='form-control m-1'
+                    {...register("driverFile")}
+                    disabled={viewModal}
+                  />
+                )}
               </div>
               <div className='d-flex justify-content-space-around flex-wrap'>
                 <div class='m-3'>
@@ -325,24 +390,59 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                     })}
                     type='text'
                     placeholder='Enter License Number'
+                    disabled={viewModal}
                   />
                   {errors?.license?.number && (
                     <span className='text-danger'>
                       {errors?.license?.number.message}
                     </span>
                   )}
-                  <input
-                    className=' m-2 form-control'
-                    type='file'
-                    {...register("license.file", {
-                      required: "License File Is Required",
-                    })}
-                  />
-                  {errors?.license?.file && (
-                    <span className='text-danger'>
-                      {errors?.license?.file.message}
-                    </span>
-                  )}
+                  <div>
+                    <div className='d-flex'>
+                      <input
+                        className=' m-2 form-control'
+                        type={
+                          watch("license.file") &&
+                          watch("license.file")[0]?.name
+                            ? "file"
+                            : !watch("license.file")?.length
+                            ? "file"
+                            : "text"
+                        }
+                        {...register("license.file", {
+                          required: "License File Is Required",
+                        })}
+                        disabled={watch("license.file")?.length || viewModal}
+                      />
+                      {watch("license.file")?.length ? (
+                        <div className='d-flex align-items-center justify-content-center'>
+                          <span
+                            className='text-primary mx-2 cursor-pointer'
+                            style={{ fontSize: "20px" }}
+                            onClick={() => openFile("license.file")}
+                          >
+                            <i className='mdi mdi-eye'></i>
+                          </span>
+                          {!viewModal && (
+                            <span
+                              className='text-danger cursor-pointer'
+                              style={{ fontSize: "20px" }}
+                              onClick={() => setValue("license.file", "")}
+                            >
+                              <i className='bx bxs-trash' />
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    {errors?.license?.file && (
+                      <span className='text-danger'>
+                        {errors?.license?.file.message}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div class='m-3'>
                   <label class='form-label'>Expiry Date</label>
@@ -352,6 +452,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                       required: "Please Enter Expiry Date",
                     })}
                     type='date'
+                    disabled={viewModal}
                   />
                   {errors?.license?.expiryDate && (
                     <span className='text-danger'>
@@ -364,6 +465,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                     {...register("license.verified")}
                     class='form-check-input'
                     type='checkbox'
+                    disabled={viewModal}
                   />
                   <label class='form-check-label'>Verify Aadhar</label>
                 </div>
@@ -378,6 +480,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                       required: "Please Enter Aadhar Number",
                     })}
                     type='number'
+                    disabled={viewModal}
                     placeholder='Enter Aadhar Number'
                   />
                   {errors?.aadhar?.number && (
@@ -385,24 +488,58 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                       {errors?.aadhar?.number.message}
                     </span>
                   )}
-                  <input
-                    className=' m-2 form-control'
-                    type='file'
-                    {...register("aadhar.file", {
-                      required: "Aadhar File Is Required",
-                    })}
-                  />
-                  {errors?.aadhar?.file && (
-                    <span className='text-danger'>
-                      {errors?.aadhar?.file.message}
-                    </span>
-                  )}
+                  <div>
+                    <div className='d-flex'>
+                      <input
+                        className=' m-2 form-control'
+                        type={
+                          watch("aadhar.file") && watch("aadhar.file")[0]?.name
+                            ? "file"
+                            : !watch("aadhar.file")?.length
+                            ? "file"
+                            : "text"
+                        }
+                        {...register("aadhar.file", {
+                          required: "Aadhar File Is Required",
+                        })}
+                        disabled={watch("aadhar.file")?.length || viewModal}
+                      />
+                      {watch("aadhar.file")?.length ? (
+                        <div className='d-flex align-items-center justify-content-center'>
+                          <span
+                            className='text-primary mx-2 cursor-pointer'
+                            style={{ fontSize: "20px" }}
+                            onClick={() => openFile("aadhar.file")}
+                          >
+                            <i className='mdi mdi-eye'></i>
+                          </span>
+                          {!viewModal && (
+                            <span
+                              className='text-danger cursor-pointer'
+                              style={{ fontSize: "20px" }}
+                              onClick={() => setValue("aadhar.file", "")}
+                            >
+                              <i className='bx bxs-trash' />
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    {errors?.aadhar?.file && (
+                      <span className='text-danger'>
+                        {errors?.aadhar?.file.message}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div class='m-3'>
                   <input
                     {...register("aadhar.verified")}
                     class='form-check-input'
                     type='checkbox'
+                    disabled={viewModal}
                   />
                   <label class='form-check-label'>Verify Pan</label>
                 </div>
@@ -417,6 +554,7 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                       required: "Please Enter Pan Number",
                     })}
                     type='text'
+                    disabled={viewModal}
                     placeholder='Enter Pan Number'
                   />
                   {errors?.pan?.number && (
@@ -424,38 +562,74 @@ export default function AddDriver({ show, setShow, viewModal, id }) {
                       {errors?.pan?.number.message}
                     </span>
                   )}
-                  <input
-                    className=' m-2 form-control'
-                    type='file'
-                    {...register("pan.file", {
-                      required: "Pan File Is Required",
-                    })}
-                  />
-                  {errors?.pan?.file && (
-                    <span className='text-danger'>
-                      {errors?.pan?.file.message}
-                    </span>
-                  )}
+                  <div>
+                    <div className='d-flex'>
+                      <input
+                        className=' m-2 form-control'
+                        type={
+                          watch("pan.file") && watch("pan.file")[0]?.name
+                            ? "file"
+                            : !watch("pan.file")?.length
+                            ? "file"
+                            : "text"
+                        }
+                        {...register("pan.file", {
+                          required: "Pan File Is Required",
+                        })}
+                        disabled={watch("pan.file")?.length || viewModal}
+                      />
+                      {watch("pan.file")?.length ? (
+                        <div className='d-flex align-items-center justify-content-center'>
+                          <span
+                            className='text-primary mx-2 cursor-pointer'
+                            style={{ fontSize: "20px" }}
+                            onClick={() => openFile("pan.file")}
+                          >
+                            <i className='mdi mdi-eye'></i>
+                          </span>
+                          {!viewModal && (
+                            <span
+                              className='text-danger cursor-pointer'
+                              style={{ fontSize: "20px" }}
+                              onClick={() => setValue("pan.file", "")}
+                            >
+                              <i className='bx bxs-trash' />
+                            </span>
+                          )}
+                        </div>
+                      ) : (
+                        ""
+                      )}
+                    </div>
+                    {errors?.pan?.file && (
+                      <span className='text-danger'>
+                        {errors?.pan?.file.message}
+                      </span>
+                    )}
+                  </div>
                 </div>
                 <div class='m-3'>
                   <input
                     {...register("pan.verified")}
                     class='form-check-input'
                     type='checkbox'
+                    disabled={viewModal}
                   />
                   <label class='form-check-label'>Verify</label>
                 </div>
               </div>
               <Modal.Footer>
-                <button
-                  type='submit'
-                  className='btn m-3 mt-5 btn-outline-primary waves-effect waves-light'
-                >
-                  Add Driver
-                </button>
+                {!viewModal && (
+                  <button
+                    type='submit'
+                    className='btn m-3 mt-5 btn-outline-primary waves-effect waves-light'
+                  >
+                    {!id ? "Add" : "Update"} Driver
+                  </button>
+                )}
                 <button
                   type='button'
-                  className='btn m-3 mt-5 btn-outline-primary waves-effect waves-light'
+                  className='btn m-3 mt-5 btn-outline-danger waves-effect waves-light'
                   onClick={handleClose}
                 >
                   Cancel

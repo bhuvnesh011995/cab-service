@@ -15,6 +15,15 @@ exports.addDriver = async function (req, res, next) {
         driverData.driverFile = file.filename;
       }
     }
+    if (driverData?._id) {
+      const existDriverResponse = await db.driver.findOneAndUpdate(
+        { _id: driverData._id },
+        { $set: driverData },
+        { upsert: true, returnDocument: "after" },
+      );
+      return res.status(200).send(existDriverResponse);
+    }
+
     let admin = await db.admin.findOne({ username: "admin" });
 
     let wallet = await db.wallet.create({});
@@ -35,13 +44,9 @@ exports.addDriver = async function (req, res, next) {
     if (driverData.license.verified) {
       driverData.license.verifiedBy = admin._id;
     }
-    console.log(driverData);
     let driver = await db.driver.create(driverData);
-    res.status(200).json({
-      success: true,
-      message: "driver created successfully",
-      driver: driver,
-    });
+
+    return res.status(200).send(driver);
   } catch (error) {
     next(error);
   }
@@ -49,7 +54,65 @@ exports.addDriver = async function (req, res, next) {
 
 exports.getAllDriver = async function (req, res, next) {
   try {
-    let drivers = await db.driver.find({});
+    const driverAggregateQuery = [];
+    if (req.query.status.length)
+      driverAggregateQuery.push({
+        $match: {
+          $expr: {
+            $eq: ["$status", req.query.status],
+          },
+        },
+      });
+    driverAggregateQuery.push(
+      {
+        $addFields: {
+          fullName: { $concat: ["$firstName", " ", "$lastName"] },
+        },
+      },
+      {
+        $match: {
+          $or: [
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$fullName" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$email" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$mobile" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+            {
+              $expr: {
+                $regexMatch: {
+                  input: { $toLower: "$status" },
+                  regex: { $toLower: req.query.search },
+                  options: "i",
+                },
+              },
+            },
+          ],
+        },
+      },
+    );
+    let drivers = await db.driver.aggregate(driverAggregateQuery);
 
     res.status(200).json({
       success: true,
@@ -57,6 +120,16 @@ exports.getAllDriver = async function (req, res, next) {
     });
   } catch (error) {
     next(error);
+  }
+};
+
+exports.getSelectedDriver = async function (req, res, next) {
+  try {
+    const driverResponse = await db.driver.findOne({ _id: req.params.id });
+    console.log(driverResponse, req.params);
+    return res.status(200).send(driverResponse);
+  } catch (err) {
+    next(err);
   }
 };
 
