@@ -11,6 +11,13 @@ module.exports = function (app) {
     [],
     rentalPromotionController.getAllRentalPromotion
   );
+
+  app.get(
+    "/test/api/v1/rentalPromotion/filter",
+    [],
+    rentalPromotionController.filterRentalPromotion
+  );
+
   app.delete(
     "/test/api/v1/rentalPromotion/:id",
     [],

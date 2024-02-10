@@ -103,3 +103,117 @@ exports.updatePromoCode = async function (req, res) {
     });
   }
 };
+
+exports.filterPromoCode = async (req, res, next) => {
+  try {
+    let { promoCode, country, state, city, vehicleType, selectUser } =
+      req.query;
+
+    let query = [
+      {
+        $lookup: {
+          from: "Country",
+          localField: "country",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "country",
+        },
+      },
+      { $unwind: "$country" },
+
+      {
+        $lookup: {
+          from: "VehicleType",
+          localField: "vehicleType",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "vehicleType",
+        },
+      },
+      { $unwind: "$vehicleType" },
+
+      {
+        $lookup: {
+          from: "State",
+          localField: "state",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "state",
+        },
+      },
+      { $unwind: "$state" },
+
+      {
+        $lookup: {
+          from: " ",
+        },
+      },
+
+      {
+        $lookup: {
+          from: "City",
+          localField: "city",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "city",
+        },
+      },
+      { $unwind: "$city" },
+    ];
+
+    let matchStage = { $match: { $or: [] } };
+    if (promoCode)
+      matchStage.$match.$or = [
+        { promoCode: { $regex: promoCode, $options: "i" } },
+      ];
+    if (country)
+      matchStage.$match.$or.push({
+        "country.name": { $regex: country, $options: "i" },
+      });
+    if (state)
+      matchStage.$match.$or.push({
+        "state.name": { $regex: state, $options: "i" },
+      });
+    if (city)
+      matchStage.$match.$or.push({
+        "city.name": { $regex: city, $options: "i" },
+      });
+
+    if (vehicleType)
+      matchStage.$match.$or.push({
+        "vehicleType.name": { $regex: vehicleType, $options: "i" },
+      });
+
+    if (matchStage.$match.$or && matchStage.$match.$or.length > 0) {
+      query.push(matchStage);
+    }
+
+    query.push({
+      $project: {
+        promoCode: 1,
+        country: 1,
+        state: 1,
+        city: 1,
+        status: 1,
+        description: 1,
+        createdAt: 1,
+        forUser: 1,
+        discountValue: 1,
+        discountType: 1,
+        selectUser: 1,
+        validFrom: 1,
+        validTo: 1,
+        multipleUser: 1,
+        _id: 1,
+        vehicleType: 1,
+      },
+    });
+
+    let promoCodes = await db.promoCode.aggregate(query);
+    console.log(promoCodes);
+    res.status(200).json(promoCodes);
+  } catch (error) {
+    next(error);
+  }
+  a;
+};

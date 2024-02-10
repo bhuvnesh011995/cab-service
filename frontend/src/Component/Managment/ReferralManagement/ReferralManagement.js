@@ -8,6 +8,7 @@ import {
   cleanReferralStatus,
   deleteReferral,
   fetchReferral,
+  filterReferral,
   getAllReferral,
   status,
   updateReferralById,
@@ -23,12 +24,15 @@ import {
 import DeleteModalAdv from "../../../Common/deleteModalRedux";
 import BASE_URL from "../../../config/config";
 import { toast } from "react-toastify";
+import { useForm } from "react-hook-form";
+import moment from "moment";
 export default function ReferralManagement() {
   const deleteStatus = useSelector(deleteModalStatus);
   const id = useSelector((state) => state.delete.id);
   const URL = useSelector(url);
   const [isOpen, setIsOpen] = useState(false);
   const open = useSelector(showDeleteModal);
+  const { register, watch, handleSubmit } = useForm();
 
   const dispatch = useDispatch();
   const referral = useSelector(getAllReferral);
@@ -54,8 +58,19 @@ export default function ReferralManagement() {
   }, [referralStatus]);
 
   const columns = useMemo(
-    () => [{ accessorKey: "status", header: "status" }],
-    [],
+    () => [
+      { accessorKey: "name", header: "Title" },
+      { accessorFn: (row) => row.country?.name, header: "country" },
+      { accessorFn: (row) => row.state?.name, header: "state" },
+      { accessorFn: (row) => row.city?.name, header: "city" },
+      {
+        accessorFn: (row) => moment(row.createdAt)?.format("ll"),
+        id: "createdAt",
+        header: "Created At",
+      },
+      { accessorKey: "status", header: "status" },
+    ],
+    []
   );
 
   useEffect(() => {
@@ -64,46 +79,80 @@ export default function ReferralManagement() {
       dispatch(doneDelete());
     }
   }, [deleteStatus, URL, id]);
+
+  function onSubmit(data) {
+    dispatch(filterReferral(data));
+  }
   return (
     <Management_container title={"Referral Management "}>
       {isOpen && <AddReferral show={isOpen} setShow={setIsOpen} />}
       {open && <DeleteModalAdv />}
-      <div class='row'>
-        <div class='col-lg-12'>
-          <div class='card'>
-            <div class='card-body'>
-              <div class='row'>
-                <div class='col-md-12 text-right'>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-12 text-right">
                   <button
-                    class='btn btn-outline-primary'
+                    class="btn btn-outline-primary"
                     onClick={() => setIsOpen(true)}
                   >
                     Add New
                   </button>
                 </div>
-                <div
-                  class='justify-content-center row align-items-end mb-5'
-                  style={{ alignItems: "end" }}
-                >
-                  <div class='col-md-3'>
-                    {" "}
-                    <label class='form-label'>Title</label>
-                    <input className='form-control' placeholder='Enter Title' />
-                  </div>
-                  <div class='col-md-3'>
-                    <label class='form-label'>Status</label>
-                    <select class='form-control'>
-                      <option>Choose...</option>
-                      <option value='ACTIVE'>Active</option>
-                      <option value='INACTIVE'>Inactive</option>
-                    </select>
-                  </div>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div
+                    class="justify-content-center row align-items-end mb-5"
+                    style={{ alignItems: "end" }}
+                  >
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">Title</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("name")}
+                      />
+                    </div>
 
-                  <div class='col-md-3'>
-                    <button class='btn btn-outline-primary me-3'>Search</button>
-                    <button class='btn btn-outline-danger me-3'>Reset</button>
-                  </div>
-                </div>{" "}
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">country</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("country")}
+                      />
+                    </div>
+
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">state</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("state")}
+                      />
+                    </div>
+
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">City</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("city")}
+                      />
+                    </div>
+
+                    <div class="col-md-3">
+                      <button type="submit" className="btn  btn-primary ">
+                        Search
+                      </button>
+                      <button class="btn btn-danger me-3">Reset</button>
+                    </div>
+                  </div>{" "}
+                </form>
               </div>
               <MaterialReactTable
                 columns={columns}
@@ -119,7 +168,7 @@ export default function ReferralManagement() {
                   "mrt-row-actions": {
                     size: 100,
                     muiTableHeadCellProps: {
-                      align: "center", //change head cell props
+                      align: "center",
                     },
                   },
                   "mrt-row-numbers": {
@@ -133,21 +182,21 @@ export default function ReferralManagement() {
                 }}
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
-                  <div className='hstack gap-2 fs-1'>
+                  <div className="hstack gap-2 fs-1">
                     <button
                       onClick={() => {}}
-                      className='btn btn-icon btn-sm btn-warning rounded-pill'
+                      className="btn btn-icon btn-sm btn-warning rounded-pill"
                     >
-                      <i className='mdi mdi-eye'></i>
+                      <i className="mdi mdi-eye"></i>
                     </button>
                     <button
                       onClick={() => {
                         dispatch(updateReferralById({ id: row.original._id }));
                         setIsOpen(true);
                       }}
-                      className='btn btn-icon btn-sm btn-info rounded-pill'
+                      className="btn btn-icon btn-sm btn-info rounded-pill"
                     >
-                      <i className='bx bxs-edit-alt' />
+                      <i className="bx bxs-edit-alt" />
                     </button>
                     <button
                       onClick={() => {
@@ -155,12 +204,12 @@ export default function ReferralManagement() {
                           openModal({
                             url: `${BASE_URL}/referral/${row.original._id}`,
                             id: row.original._id,
-                          }),
+                          })
                         );
                       }}
-                      className='btn btn-icon btn-sm btn-danger rounded-pill'
+                      className="btn btn-icon btn-sm btn-danger rounded-pill"
                     >
-                      <i className='bx bxs-trash' />
+                      <i className="bx bxs-trash" />
                     </button>
                   </div>
                 )}

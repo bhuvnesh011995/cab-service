@@ -10,6 +10,33 @@ let initialState = {
   viewPromotion: null,
 };
 
+export const filterPromotion = createAsyncThunk(
+  "promotion/filterPromotion",
+  async ({ name, country, state, city }, { rejectWithValue }) => {
+    console.log("text", name);
+    try {
+      let url = new URL("/test/api/v1/promotion/filter", BASE_URL);
+      if (name) url.searchParams.set("name", name);
+      if (country) url.searchParams.set("country", country);
+         if (state) url.searchParams.set("state", state);
+      if (city) url.searchParams.set("city", city);
+      let response = await axios.get(url.href);
+      if (response.status === 200) return response.data;
+      else
+        return rejectWithValue({
+          status: "error",
+          message: response.data?.message || "error while fetching promotion",
+        });
+    } catch (error) {
+      return rejectWithValue({
+        status: "error",
+        message:
+          error.response.data?.message || "error while fetching Promotion",
+      });
+    }
+  }
+);
+
 const addPromotion = createAsyncThunk(
   "promotion/addPromotion",
   async (data, { rejectWithValue }) => {
@@ -154,6 +181,19 @@ const promotionSlice = createSlice({
       state.promotion = action.payload;
     });
     builder.addCase(fetchPromotion.rejected, (state, action) => {
+      state.status = "error";
+      state.promotion = action.payload;
+    });
+    builder.addCase(filterPromotion.pending, (state, action) => {
+      state.status = "loading";
+      state.promotion = action.payload;
+      state.error = null;
+    });
+    builder.addCase(filterPromotion.fulfilled, (state, action) => {
+      state.status = "filtered";
+      state.promotion = action.payload;
+    });
+    builder.addCase(filterPromotion.rejected, (state, action) => {
       state.status = "error";
       state.promotion = action.payload;
     });

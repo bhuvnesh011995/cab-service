@@ -10,6 +10,30 @@ let initialState = {
   viewPromotion: null,
 };
 
+export const filterRentalPromotion = createAsyncThunk(
+  "promoCode/filterPromoCode",
+  async ({ promoCode, state, city, rentalPackage }, { rejectWithValue }) => {
+    try {
+      let url = new URL("/test/api/v1/rentalPromotion/filter", BASE_URL);
+      if (rentalPackage) url.searchParams.set("package", rentalPackage);
+      if (city) url.searchParams.set("city", city);
+      let response = await axios.get(url.href);
+      if (response.status === 200) return response.data;
+      else
+        return rejectWithValue({
+          status: "error",
+          message: response.data?.message || "error while fetching promotion",
+        });
+    } catch (error) {
+      return rejectWithValue({
+        status: "error",
+        message:
+          error.response.data?.message || "error while fetching Promotion",
+      });
+    }
+  }
+);
+
 const addRentalPromotion = createAsyncThunk(
   "rentalPromotion/addRentalPromotion",
   async (data, { rejectWithValue }) => {
@@ -170,6 +194,21 @@ const rentalPromotionSlice = createSlice({
       state.status = "error";
       state.rentalPromotion = action.payload;
     });
+
+    builder.addCase(filterRentalPromotion.pending, (state, action) => {
+      state.status = "loading";
+      state.rentalPromotion = action.payload;
+      state.error = null;
+    });
+    builder.addCase(filterRentalPromotion.fulfilled, (state, action) => {
+      state.status = "filtered";
+      state.rentalPromotion = action.payload;
+    });
+    builder.addCase(filterRentalPromotion.rejected, (state, action) => {
+      state.status = "error";
+      state.rentalPromotion = action.payload;
+    });
+
     builder.addCase(updateRentalPromotion.pending, (state, action) => {
       state.status = "loading";
       state.error = null;

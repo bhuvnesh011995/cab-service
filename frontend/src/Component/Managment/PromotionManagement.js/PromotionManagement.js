@@ -15,6 +15,7 @@ import {
   cleanPromotionStatus,
   deletePromotion,
   fetchPromotion,
+  filterPromotion,
   getAllPromotion,
   getViewPromotion,
   status,
@@ -30,20 +31,26 @@ import {
 } from "../../../Redux/features/deleteModalReducer";
 import DeleteModalAdv from "../../../Common/deleteModalRedux";
 import ViewPromotion from "./ViewPromotion";
+import { useForm } from "react-hook-form";
+import moment from "moment";
 
 export default function PromotionManagement() {
   const isOpen = useSelector(showDeleteModal);
   const [show, setShow] = useState(false);
+  const [ready, setReady] = useState(false);
   const [openView, setOpenView] = useState(false);
   const deleteStatus = useSelector(deleteModalStatus);
   const id = useSelector((state) => state.delete.id);
+  const { register, watch, handleSubmit } = useForm();
   const URL = useSelector(url);
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchPromotion());
   }, []);
+
   const promotion = useSelector(getAllPromotion);
   const promotionStatus = useSelector(status);
+
   useEffect(() => {
     if (promotionStatus === "added") {
       toast.success("promotion added successfully");
@@ -63,13 +70,23 @@ export default function PromotionManagement() {
   const columns = useMemo(
     () => [
       {
-        accessorKey: "name",
-        header: "title",
+        accessorFn: (row) => row.country?.name,
+        header: "country",
+        size: 100,
+      },
+      {
+        accessorFn: (row) => row.state?.name,
+        header: "state",
+        size: 100,
+      },
+      {
+        accessorFn: (row) => row.city?.name,
+        header: "city",
         size: 100,
       },
       {
         accessorKey: "name",
-        header: "Model",
+        header: "Title",
         size: 100,
       },
       {
@@ -78,12 +95,12 @@ export default function PromotionManagement() {
         size: 80,
       },
       {
-        accessorFn: (row) => row.createdAt.slice(0, 10),
+        accessorFn: (row) => moment(row.createdAt)?.format("ll"),
         id: "createdAt",
         header: "Created At",
       },
     ],
-    [],
+    []
   );
 
   useEffect(() => {
@@ -93,48 +110,83 @@ export default function PromotionManagement() {
     }
   }, [deleteStatus, URL, id]);
 
+  function onSubmit(data) {
+    dispatch(filterPromotion(data));
+  }
+
   return (
     <Management_container title={"Promotion Management"}>
       {isOpen && <DeleteModalAdv />}
       {show && <AddPromotion show={show} setShow={setShow} />}
       {openView && <ViewPromotion show={openView} setShow={setOpenView} />}
-      <div class='row'>
-        <div class='col-lg-12'>
-          <div class='card'>
-            <div class='card-body'>
-              <div class='row'>
-                <div class='col-md-12 text-right'>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-12 text-right">
                   <button
-                    class='btn btn-outline-primary'
+                    class="btn btn-outline-primary"
                     onClick={() => setShow(true)}
                   >
                     Add New
                   </button>
                 </div>
-                <div
-                  class='justify-content-center row align-items-end mb-5'
-                  style={{ alignItems: "end" }}
-                >
-                  <div class='col-md-3'>
-                    {" "}
-                    <label class='form-label'>Title</label>
-                    <input className='form-control' placeholder='Enter Title' />
-                  </div>
-                  <div class='col-md-3'>
-                    <label class='form-label'>Status</label>
-                    <select class='form-control'>
-                      <option>Choose...</option>
-                      <option value='ACTIVE'>Active</option>
-                      <option value='INACTIVE'>Inactive</option>
-                    </select>
-                  </div>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div
+                    class="justify-content-center row align-items-end mb-5"
+                    style={{ alignItems: "end" }}
+                  >
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">Title</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("name")}
+                      />
+                    </div>
 
-                  <div class='col-md-3'>
-                    <button class='btn btn-outline-primary me-3'>Search</button>
-                    <button class='btn btn-outline-danger me-3'>Reset</button>
-                  </div>
-                </div>{" "}
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">country</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("country")}
+                      />
+                    </div>
+
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">state</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("state")}
+                      />
+                    </div>
+
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">City</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("city")}
+                      />
+                    </div>
+
+                    <div class="col-md-3">
+                      <button type="submit" className="btn  btn-primary ">
+                        Search
+                      </button>
+                      <button class="btn btn-danger me-3">Reset</button>
+                    </div>
+                  </div>{" "}
+                </form>
               </div>
+
               <MaterialReactTable
                 columns={columns}
                 data={promotion || []}
@@ -163,24 +215,24 @@ export default function PromotionManagement() {
                 }}
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
-                  <div className='hstack gap-2 fs-1'>
+                  <div className="hstack gap-2 fs-1">
                     <button
                       onClick={() => {
                         dispatch(getViewPromotion({ id: row.original._id }));
                         setOpenView(true);
                       }}
-                      className='btn btn-icon btn-sm btn-warning rounded-pill'
+                      className="btn btn-icon btn-sm btn-warning rounded-pill"
                     >
-                      <i className='mdi mdi-eye'></i>
+                      <i className="mdi mdi-eye"></i>
                     </button>
                     <button
                       onClick={() => {
                         dispatch(updatePromotionById({ id: row.original._id }));
                         setShow(true);
                       }}
-                      className='btn btn-icon btn-sm btn-info rounded-pill'
+                      className="btn btn-icon btn-sm btn-info rounded-pill"
                     >
-                      <i className='bx bxs-edit-alt' />
+                      <i className="bx bxs-edit-alt" />
                     </button>
                     <button
                       onClick={() => {
@@ -188,12 +240,12 @@ export default function PromotionManagement() {
                           openModal({
                             url: `${BASE_URL}/promotion/${row.original._id}`,
                             id: row.original._id,
-                          }),
+                          })
                         );
                       }}
-                      className='btn btn-icon btn-sm btn-danger rounded-pill'
+                      className="btn btn-icon btn-sm btn-danger rounded-pill"
                     >
-                      <i className='bx bxs-trash' />
+                      <i className="bx bxs-trash" />
                     </button>
                   </div>
                 )}

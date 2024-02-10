@@ -107,3 +107,95 @@ exports.updateRentalPromotion = async function (req, res) {
     });
   }
 };
+
+exports.filterRentalPromotion = async (req, res, next) => {
+  try {
+    let { promoCode, country, state, city, package } = req.query;
+    let query = [
+      {
+        $lookup: {
+          from: "Country",
+          localField: "country",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "country",
+        },
+      },
+      { $unwind: "$country" },
+      {
+        $lookup: {
+          from: "State",
+          localField: "state",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "state",
+        },
+      },
+      { $unwind: "$state" },
+      {
+        $lookup: {
+          from: "City",
+          localField: "city",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "city",
+        },
+      },
+      { $unwind: "$city" },
+      {
+        $lookup: {
+          from: "RentalPackage",
+          localField: "package",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "package",
+        },
+      },
+      { $unwind: "$package" },
+    ];
+
+    let matchStage = { $match: { $or: [] } };
+    if (promoCode) {
+      matchStage.$match.$or.push({
+        promoCode: { $regex: promoCode, $options: "i" },
+      });
+    }
+    if (country)
+      matchStage.$match.$or.push({
+        "country.name": { $regex: country, $options: "i" },
+      });
+    if (state)
+      matchStage.$match.$or.push({
+        "state.name": { $regex: state, $options: "i" },
+      });
+    if (city)
+      matchStage.$match.$or.push({
+        "city.name": { $regex: city, $options: "i" },
+      });
+
+    if (matchStage.$match.$or && matchStage.$match.$or.length > 0) {
+      query.push(matchStage);
+    }
+
+    query.push({
+      $project: {
+        promoCode: 1,
+        country: 1,
+        state: 1,
+        city: 1,
+        status: 1,
+        description: 1,
+        createdAt: 1,
+        forUsers: 1,
+        validFrom: 1,
+        package: 1,
+      },
+    });
+
+    let rentalPromotion = await db.rentalPromotion.aggregate(query);
+    res.status(200).json(rentalPromotion);
+  } catch (error) {
+    console.log(error);
+    next(error);
+  }
+};

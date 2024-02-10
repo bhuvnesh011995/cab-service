@@ -32,20 +32,25 @@ import {
   cleanPromoCodeStatus,
   deletePromoCode,
   fetchPromoCode,
+  filterPromoCode,
   getAllPromoCode,
   getViewPromoCode,
   statusPromoCode,
   updatePromoCodeById,
 } from "../../../Redux/features/promoCodeReducer";
 import ViewPromoCode from "./ViewPromoCode";
+import { useForm } from "react-hook-form";
 
 export default function PromoCodeManagement() {
   const isOpen = useSelector(showDeleteModal);
   const [show, setShow] = useState(false);
   const [openView, setOpenView] = useState(false);
+  const [ready, setReady] = useState(false);
+
   const deleteStatus = useSelector(deleteModalStatus);
   const id = useSelector((state) => state.delete.id);
   const URL = useSelector(url);
+  const { register, watch, handleSubmit } = useForm();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchPromoCode());
@@ -97,18 +102,18 @@ export default function PromoCodeManagement() {
         header: "status",
         size: 80,
       },
-      {
-        accessorFn: (row) => row.createdAt.slice(0, 10),
-        id: "createdAt",
-        header: "Created At",
-      },
-      {
-        accessorFn: (row) => row.validFrom.slice(0, 10),
-        id: "validFrom",
-        header: "validFrom",
-      },
+      // {
+      //   accessorFn: (row) => row.createdAt.slice(0, 10),
+      //   id: "createdAt",
+      //   header: "Created At",
+      // },
+      // {
+      //   accessorFn: (row) => row.validFrom.slice(0, 10),
+      //   id: "validFrom",
+      //   header: "validFrom",
+      // },
     ],
-    [],
+    []
   );
 
   useEffect(() => {
@@ -118,47 +123,70 @@ export default function PromoCodeManagement() {
     }
   }, [deleteStatus, URL, id]);
 
+  function onSubmit(data) {
+    dispatch(filterPromoCode(data));
+  }
+
   return (
     <Management_container title={"PromoCode Management"}>
-      {isOpen && <DeleteModalAdv />}
+      z {isOpen && <DeleteModalAdv />}
       {show && <AddPromoCode show={show} setShow={setShow} />}
       {openView && <ViewPromoCode show={openView} setShow={setOpenView} />}
-      <div class='row'>
-        <div class='col-lg-12'>
-          <div class='card'>
-            <div class='card-body'>
-              <div class='row'>
-                <div class='col-md-12 text-right'>
+      <div class="row">
+        <div class="col-lg-12">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-12 text-right">
                   <button
-                    class='btn btn-outline-primary'
+                    class="btn btn-outline-primary"
                     onClick={() => setShow(true)}
                   >
                     Add New
                   </button>
                 </div>
-                <div
-                  class='justify-content-center row align-items-end mb-5'
-                  style={{ alignItems: "end" }}
-                >
-                  <div class='col-md-3'>
-                    {" "}
-                    <label class='form-label'>Title</label>
-                    <input className='form-control' placeholder='Enter Title' />
-                  </div>
-                  <div class='col-md-3'>
-                    <label class='form-label'>Status</label>
-                    <select class='form-control'>
-                      <option>Choose...</option>
-                      <option value='ACTIVE'>Active</option>
-                      <option value='INACTIVE'>Inactive</option>
-                    </select>
-                  </div>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div
+                    class="justify-content-center row align-items-end mb-5"
+                    style={{ alignItems: "end" }}
+                  >
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">name</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("promoCode")}
+                      />
+                    </div>
 
-                  <div class='col-md-3'>
-                    <button class='btn btn-outline-primary me-3'>Search</button>
-                    <button class='btn btn-outline-danger me-3'>Reset</button>
-                  </div>
-                </div>{" "}
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">City</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("city")}
+                      />
+                    </div>
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">State</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("state")}
+                      />
+                    </div>
+
+                    <div class="col-md-3">
+                      <button class="btn btn-primary me-3" type="submit">
+                        Search
+                      </button>
+                      <button class="btn btn-danger me-3">Reset</button>
+                    </div>
+                  </div>{" "}
+                </form>
               </div>
 
               <MaterialReactTable
@@ -189,24 +217,24 @@ export default function PromoCodeManagement() {
                 }}
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
-                  <div className='hstack gap-2 fs-1'>
+                  <div className="hstack gap-2 fs-1">
                     <button
                       onClick={() => {
                         dispatch(getViewPromoCode({ id: row.original._id }));
                         setOpenView(true);
                       }}
-                      className='btn btn-icon btn-sm btn-warning rounded-pill'
+                      className="btn btn-icon btn-sm btn-warning rounded-pill"
                     >
-                      <i className='mdi mdi-eye'></i>
+                      <i className="mdi mdi-eye"></i>
                     </button>
                     <button
                       onClick={() => {
                         dispatch(updatePromoCodeById({ id: row.original._id }));
                         setShow(true);
                       }}
-                      className='btn btn-icon btn-sm btn-info rounded-pill'
+                      className="btn btn-icon btn-sm btn-info rounded-pill"
                     >
-                      <i className='bx bxs-edit-alt' />
+                      <i className="bx bxs-edit-alt" />
                     </button>
                     <button
                       onClick={() => {
@@ -214,12 +242,12 @@ export default function PromoCodeManagement() {
                           openModal({
                             url: `${BASE_URL}/promoCode/${row.original._id}`,
                             id: row.original._id,
-                          }),
+                          })
                         );
                       }}
-                      className='btn btn-icon btn-sm btn-danger rounded-pill'
+                      className="btn btn-icon btn-sm btn-danger rounded-pill"
                     >
-                      <i className='bx bxs-trash' />
+                      <i className="bx bxs-trash" />
                     </button>
                   </div>
                 )}

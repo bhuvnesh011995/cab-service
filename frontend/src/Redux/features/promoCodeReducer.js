@@ -11,6 +11,31 @@ let initialState = {
   promoCode: [],
 };
 
+export const filterPromoCode = createAsyncThunk(
+  "promoCode/filterPromoCode",
+  async ({ promoCode, state, city }, { rejectWithValue }) => {
+    try {
+      let url = new URL("/test/api/v1/promoCode/filter", BASE_URL);
+      if (promoCode) url.searchParams.set("promoCode", promoCode);
+      if (state) url.searchParams.set("state", state);
+      if (city) url.searchParams.set("city", city);
+      let response = await axios.get(url.href);
+      if (response.status === 200) return response.data;
+      else
+        return rejectWithValue({
+          status: "error",
+          message: response.data?.message || "error while fetching promotion",
+        });
+    } catch (error) {
+      return rejectWithValue({
+        status: "error",
+        message:
+          error.response.data?.message || "error while fetching Promotion",
+      });
+    }
+  }
+);
+
 const addPromoCode = createAsyncThunk(
   "promoCode/addPromoCode",
   async (data, { rejectWithValue }) => {
@@ -166,6 +191,19 @@ const promoCodeSlice = createSlice({
       state.promoCode = action.payload;
     });
     builder.addCase(fetchPromoCode.rejected, (state, action) => {
+      state.status = "error";
+      state.promoCode = action.payload;
+    });
+    builder.addCase(filterPromoCode.pending, (state, action) => {
+      state.status = "loading";
+      state.promoCode = action.payload;
+      state.error = null;
+    });
+    builder.addCase(filterPromoCode.fulfilled, (state, action) => {
+      state.status = "filtered";
+      state.promoCode = action.payload;
+    });
+    builder.addCase(filterPromoCode.rejected, (state, action) => {
       state.status = "error";
       state.promoCode = action.payload;
     });

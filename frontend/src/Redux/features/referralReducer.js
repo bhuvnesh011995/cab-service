@@ -10,6 +10,33 @@ let initialState = {
   viewReferral: null,
 };
 
+export const filterReferral = createAsyncThunk(
+  "referral/filterReferral",
+  async ({ name, country, state, city }, { rejectWithValue }) => {
+    console.log("text", name);
+    try {
+      let url = new URL("/test/api/v1/referral/filter", BASE_URL);
+      if (name) url.searchParams.set("name", name);
+      if (country) url.searchParams.set("country", country);
+      if (state) url.searchParams.set("state", state);
+      if (city) url.searchParams.set("city", city);
+      let response = await axios.get(url.href);
+      if (response.status === 200) return response.data;
+      else
+        return rejectWithValue({
+          status: "error",
+          message: response.data?.message || "error while fetching promotion",
+        });
+    } catch (error) {
+      return rejectWithValue({
+        status: "error",
+        message:
+          error.response.data?.message || "error while fetching Promotion",
+      });
+    }
+  }
+);
+
 const addReferral = createAsyncThunk(
   "referral/addReferral",
   async (data, { rejectWithValue }) => {
@@ -163,7 +190,8 @@ const referralSlice = createSlice({
     });
     builder.addCase(updateReferral.fulfilled, (state, action) => {
       state.status = "update";
-      state.promotion = state.promotion.map((item) =>
+
+      state.referral = state.referral.map((item) =>
         item._id === action.payload._id ? action.payload : item
       );
       state.error = null;
@@ -172,6 +200,21 @@ const referralSlice = createSlice({
       state.status = "error";
       state.error = action.payload;
     });
+
+    builder.addCase(filterReferral.pending, (state, action) => {
+      state.status = "loading";
+      state.referral = action.payload;
+      state.error = null;
+    });
+    builder.addCase(filterReferral.fulfilled, (state, action) => {
+      state.status = "filtered";
+      state.referral = action.payload;
+    });
+    builder.addCase(filterReferral.rejected, (state, action) => {
+      state.status = "error";
+      state.referral = action.payload;
+    });
+
     builder.addCase(deleteReferral.pending, (state, action) => {
       state.status = "loading";
       state.error = null;

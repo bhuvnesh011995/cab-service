@@ -20,7 +20,9 @@ import ReactSelect from "react-select";
 import {
   addReferral,
   getReferral,
+  updateReferral,
 } from "../../../Redux/features/referralReducer";
+import { toast } from "react-toastify";
 
 export default function AddReferral({ show, setShow }) {
   const {
@@ -79,14 +81,27 @@ export default function AddReferral({ show, setShow }) {
     }
   }, [watch("state"), ready]);
 
-  const onSubmit = useCallback(async (data) => {
-    let forUsers = data.forUsers?.map((option) => option.value);
-    let formData = {
-      ...data,
-      forUsers,
-    };
-    dispatch(addReferral(formData));
-  }, []);
+  const onSubmit = useCallback(
+    async (data) => {
+      let forUsers = data.forUsers?.map((option) => option.value);
+      let formData = {
+        ...data,
+        forUsers,
+      };
+      if (!referral) {
+        dispatch(addReferral(formData));
+      } else {
+        let changedField = Object.keys(dirtyFields);
+        if (!changedField.length) return toast.info("change some field first");
+        else {
+          let obj = {};
+          changedField.forEach((field) => (obj[field] = formData[field]));
+          dispatch(updateReferral({ id: referral._id, newData: obj }));
+        }
+      }
+    },
+    [isDirty, dirtyFields]
+  );
 
   return (
     <Modal size="lg" show={show} onHide={() => setShow(false)}>
@@ -237,7 +252,7 @@ export default function AddReferral({ show, setShow }) {
                     className="form-check-input"
                     type="checkbox"
                     id="freeRideToReferrer"
-                    {...register("frefreeRideToReferrereRide", {
+                    {...register("freeRideToReferrer", {
                       required: "this is Required field",
                     })}
                   />
@@ -268,9 +283,18 @@ export default function AddReferral({ show, setShow }) {
             <div className="col-md-6">
               <div className="mb-3">
                 <label>Amount</label>
-                <input type="amount" name="amount" className="form-control" />
-                {errors.amount && (
-                  <span style={{ color: "red" }}>{errors.amount.message}</span>
+                <input
+                  type="number"
+                  name="amountToReferrer"
+                  className="form-control"
+                  {...register("amountToReferrer", {
+                    required: "this is Required field",
+                  })}
+                />
+                {errors.amountToReferrer && (
+                  <span style={{ color: "red" }}>
+                    {errors.amountToReferrer.message}
+                  </span>
                 )}
               </div>
             </div>
@@ -278,14 +302,16 @@ export default function AddReferral({ show, setShow }) {
               <div className="mb-3">
                 <label>Max Amount</label>
                 <input
-                  type="maxAmount"
-                  name="maxAmount"
+                  type="number"
+                  name="maxAmountToReferrer"
                   className="form-control"
-                  {...register("name", { required: "this is Required field" })}
+                  {...register("maxAmountToReferrer", {
+                    required: "this is Required field",
+                  })}
                 />
-                {errors.maxAmount && (
+                {errors.maxAmountToReferrer && (
                   <span style={{ color: "red" }}>
-                    {errors.maxAmount.message}
+                    {errors.maxAmountToReferrer.message}
                   </span>
                 )}
               </div>

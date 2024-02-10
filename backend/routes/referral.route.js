@@ -5,9 +5,10 @@ module.exports = function (app) {
   app.get(
     "/test/api/v1/referral/filter/",
     [],
-    referralController.filterReferal
+    referralController.filterReferral
   );
   app.get("/test/api/v1/referral/", [], referralController.getAllReferral);
+
   app.delete(
     "/test/api/v1/referral/:id",
     [],

@@ -1,7 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import BASE_URL from "../../config/config";
 import axios from "axios";
-import Addcountry from "../../Component/Managment/CountryManagement/AddCountry";
 let initialState = {
   countries: [],
   status: "idle",

@@ -24,13 +24,13 @@ let schema = new Schema(
 
     maxFreeRideToReferrer: Number,
 
-    amountToReferrer: Schema.Types.Decimal128,
+    amountToReferrer: Number,
 
-    maxAmountToReferrer: Schema.Types.Decimal128,
+    maxAmountToReferrer: Number,
 
     freeRideToApplier: Boolean,
 
-    amountToApplier: Schema.Types.Decimal128,
+    amountToApplier: Number,
 
     image: {
       data: Buffer,

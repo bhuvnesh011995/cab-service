@@ -104,3 +104,80 @@ exports.updatePromotion = async function (req, res) {
     });
   }
 };
+
+exports.filterPromotion = async (req, res, next) => {
+  try {
+    let { name, country, state, city } = req.query;
+    let query = [
+      {
+        $lookup: {
+          from: "Country",
+          localField: "country",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "country",
+        },
+      },
+      { $unwind: "$country" },
+      {
+        $lookup: {
+          from: "State",
+          localField: "state",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "state",
+        },
+      },
+      { $unwind: "$state" },
+      {
+        $lookup: {
+          from: "City",
+          localField: "city",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "city",
+        },
+      },
+      { $unwind: "$city" },
+    ];
+
+    let matchStage = { $match: { $or: [] } };
+    if (name)
+      matchStage.$match.$or = [{ name: { $regex: name, $options: "i" } }];
+    if (country)
+      matchStage.$match.$or.push({
+        "country.name": { $regex: country, $options: "i" },
+      });
+    if (state) {
+      matchStage.$match.$or.push({
+        "state.name": { $regex: state, $options: "i" },
+      });
+      console.log(state);
+    }
+    if (city)
+      matchStage.$match.$or.push({
+        "city.name": { $regex: city, $options: "i" },
+      });
+    if (matchStage.$match.$or && matchStage.$match.$or.length > 0) {
+      query.push(matchStage);
+    }
+
+    query.push({
+      $project: {
+        name: 1,
+        country: 1,
+        state: 1,
+        city: 1,
+        status: 1,
+        description: 1,
+        createAt: 1,
+        forUsers: 1,
+      },
+    });
+
+    let promotion = await db.promotion.aggregate(query);
+    res.status(200).json(promotion);
+  } catch (error) {
+    next(error);
+  }
+};

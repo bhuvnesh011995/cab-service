@@ -47,4 +47,9 @@ module.exports = function (app) {
     ],
     promotionController.updatePromotion
   );
+  app.get(
+    "/test/api/v1/promotion/filter",
+    [],
+    promotionController.filterPromotion
+  );
 };
