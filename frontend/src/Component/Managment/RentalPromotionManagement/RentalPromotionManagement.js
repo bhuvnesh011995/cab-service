@@ -7,18 +7,8 @@ import { toast } from "react-toastify";
 import { MaterialReactTable } from "material-react-table";
 import { useDispatch, useSelector } from "react-redux";
 import AddRentalPromotion from "./AddRentalPromotion";
-import {
-  RemoveRedEye,
-  Lock,
-  ModeEditOutline,
-  DeleteForever,
-} from "@mui/icons-material/";
-import { Box, IconButton } from "@mui/material";
 import BASE_URL from "../../../config/config";
-import {
-  cleanPromotionStatus,
-  getViewPromotion,
-} from "../../../Redux/features/promotionReducer";
+import ViewRentalPromotion from "./viewRentalPromotion";
 import {
   doneDelete,
   openModal,
@@ -35,6 +25,7 @@ import {
   fetchRentalPromotion,
   filterRentalPromotion,
   getAllRentalPromotion,
+  getViewRentalPromotion,
   status,
   updateRentalPromotionById,
 } from "../../../Redux/features/rentalPromotionReducer";
@@ -133,6 +124,10 @@ export default function RentalPromotionManagement() {
     <Management_container title={"Rental Promotion Management"}>
       {isOpen && <DeleteModalAdv />}
       {show && <AddRentalPromotion show={show} setShow={setShow} />}
+      {openView && (
+        <ViewRentalPromotion show={openView} setShow={setOpenView} />
+      )}
+
       <div class="row">
         <div class="col-lg-12">
           <div class="card">
@@ -167,7 +162,7 @@ export default function RentalPromotionManagement() {
                       <input
                         className="form-control"
                         placeholder="Enter Title"
-                        {...register("package")}
+                        {...register("packages")}
                       />
                     </div>
 
@@ -212,7 +207,9 @@ export default function RentalPromotionManagement() {
                   <div className="hstack gap-2 fs-1">
                     <button
                       onClick={() => {
-                        dispatch(getViewPromotion({ id: row.original._id }));
+                        dispatch(
+                          getViewRentalPromotion({ id: row.original._id })
+                        );
                         setOpenView(true);
                       }}
                       className="btn btn-icon btn-sm btn-warning rounded-pill"

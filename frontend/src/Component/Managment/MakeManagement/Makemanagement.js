@@ -88,7 +88,7 @@ export default function MakeManagement() {
         size: 80,
       },
     ],
-    [],
+    []
   );
   useEffect(() => {
     dispatch(filterManufacturer(filter));
@@ -103,9 +103,9 @@ export default function MakeManagement() {
 
   return (
     <Management_container title={"Manufacture"}>
-      <div class='row'>
-        <div class='col-lg-13'>
-          <div class='card'>
+      <div class="row">
+        <div class="col-lg-13">
+          <div class="card">
             <DeleteModal
               info={deleteInfo}
               show={deleteModal}
@@ -118,7 +118,7 @@ export default function MakeManagement() {
               <ViewManufacturer show={viewModel} setShow={setViewModel} />
             )}
 
-            <div class='card-body'>
+            <div class="card-body">
               <div
                 style={{
                   display: "flex",
@@ -160,28 +160,28 @@ export default function MakeManagement() {
           columns={columns || []}
           data={manufacturerData || []}
           enableRowNumbers={true}
-          rowNumberDisplayMode='static'
+          rowNumberDisplayMode="static"
           enableRowActions
           positionActionsColumn={"last"}
           renderRowActions={({ row, table }) => (
-            <div className='hstack gap-2 fs-1'>
+            <div className="hstack gap-2 fs-1">
               <button
                 onClick={() => {
                   dispatch(viewManufacturer({ id: row.original._id }));
                   setViewModel(true);
                 }}
-                className='btn btn-icon btn-sm btn-warning rounded-pill'
+                className="btn btn-icon btn-sm btn-warning rounded-pill"
               >
-                <i className='mdi mdi-eye'></i>
+                <i className="mdi mdi-eye"></i>
               </button>
               <button
                 onClick={() => {
                   dispatch(updatetManufacturerById({ id: row.original._id }));
                   setIsOpen(true);
                 }}
-                className='btn btn-icon btn-sm btn-info rounded-pill'
+                className="btn btn-icon btn-sm btn-info rounded-pill"
               >
-                <i className='bx bxs-edit-alt' />
+                <i className="bx bxs-edit-alt" />
               </button>
               <button
                 onClick={() => {
@@ -192,9 +192,9 @@ export default function MakeManagement() {
                   setDeleteModal(true);
                   setId(row.original._id);
                 }}
-                className='btn btn-icon btn-sm btn-danger rounded-pill'
+                className="btn btn-icon btn-sm btn-danger rounded-pill"
               >
-                <i className='bx bxs-trash' />
+                <i className="bx bxs-trash" />
               </button>
             </div>
           )}

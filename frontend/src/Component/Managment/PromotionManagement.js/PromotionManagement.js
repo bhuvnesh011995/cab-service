@@ -119,14 +119,14 @@ export default function PromotionManagement() {
       {isOpen && <DeleteModalAdv />}
       {show && <AddPromotion show={show} setShow={setShow} />}
       {openView && <ViewPromotion show={openView} setShow={setOpenView} />}
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="card">
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-12 text-right">
+      <div className="row">
+        <div className="col-lg-12">
+          <div className="card">
+            <div className="card-body">
+              <div className="row">
+                <div className="col-md-12 text-right">
                   <button
-                    class="btn btn-outline-primary"
+                    className="btn btn-outline-primary"
                     onClick={() => setShow(true)}
                   >
                     Add New
@@ -134,12 +134,12 @@ export default function PromotionManagement() {
                 </div>
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div
-                    class="justify-content-center row align-items-end mb-5"
+                    className="justify-content-center row align-items-end mb-5"
                     style={{ alignItems: "end" }}
                   >
-                    <div class="col-md-3">
+                    <div className="col-md-3">
                       {" "}
-                      <label class="form-label">Title</label>
+                      <label className="form-label">Title</label>
                       <input
                         className="form-control"
                         placeholder="Enter Title"
@@ -147,9 +147,9 @@ export default function PromotionManagement() {
                       />
                     </div>
 
-                    <div class="col-md-3">
+                    <div className="col-md-3">
                       {" "}
-                      <label class="form-label">country</label>
+                      <label className="form-label">country</label>
                       <input
                         className="form-control"
                         placeholder="Enter Title"
@@ -157,9 +157,9 @@ export default function PromotionManagement() {
                       />
                     </div>
 
-                    <div class="col-md-3">
+                    <div className="col-md-3">
                       {" "}
-                      <label class="form-label">state</label>
+                      <label className="form-label">state</label>
                       <input
                         className="form-control"
                         placeholder="Enter Title"
@@ -167,9 +167,9 @@ export default function PromotionManagement() {
                       />
                     </div>
 
-                    <div class="col-md-3">
+                    <div className="col-md-3">
                       {" "}
-                      <label class="form-label">City</label>
+                      <label className="form-label">City</label>
                       <input
                         className="form-control"
                         placeholder="Enter Title"
@@ -177,11 +177,11 @@ export default function PromotionManagement() {
                       />
                     </div>
 
-                    <div class="col-md-3">
+                    <div className="col-md-3">
                       <button type="submit" className="btn  btn-primary ">
                         Search
                       </button>
-                      <button class="btn btn-danger me-3">Reset</button>
+                      <button className="btn btn-danger me-3">Reset</button>
                     </div>
                   </div>{" "}
                 </form>

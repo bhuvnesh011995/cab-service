@@ -3,7 +3,6 @@ import MaterialReactTable from "material-react-table";
 import Management_container from "../../Common/Management_container";
 import { useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import AddReferral from "./AddReferral";
 import {
   cleanReferralStatus,
   deleteReferral,
@@ -27,8 +26,8 @@ import BASE_URL from "../../../config/config";
 import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import moment from "moment";
-import ViewReferral from "./ViewReferral";
-export default function ReferralManagement() {
+import AddDriverPayout from "./AddDriverPayout";
+export default function DriverPayoutManagement() {
   const deleteStatus = useSelector(deleteModalStatus);
   const id = useSelector((state) => state.delete.id);
   const URL = useSelector(url);
@@ -88,10 +87,8 @@ export default function ReferralManagement() {
   }
   return (
     <Management_container title={"Referral Management "}>
-      {isOpen && <AddReferral show={isOpen} setShow={setIsOpen} />}
-      {openView && <ViewReferral show={openView} setShow={setOpenView} />}
-
       {open && <DeleteModalAdv />}
+      {isOpen && <AddDriverPayout show={isOpen} setShow={setIsOpen} />}
       <div class="row">
         <div class="col-lg-12">
           <div class="card">
@@ -122,31 +119,11 @@ export default function ReferralManagement() {
 
                     <div class="col-md-3">
                       {" "}
-                      <label class="form-label">country</label>
-                      <input
-                        className="form-control"
-                        placeholder="Enter Title"
-                        {...register("country")}
-                      />
-                    </div>
-
-                    <div class="col-md-3">
-                      {" "}
                       <label class="form-label">state</label>
                       <input
                         className="form-control"
                         placeholder="Enter Title"
                         {...register("state")}
-                      />
-                    </div>
-
-                    <div class="col-md-3">
-                      {" "}
-                      <label class="form-label">City</label>
-                      <input
-                        className="form-control"
-                        placeholder="Enter Title"
-                        {...register("city")}
                       />
                     </div>
 

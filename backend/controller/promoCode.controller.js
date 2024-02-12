@@ -145,12 +145,6 @@ exports.filterPromoCode = async (req, res, next) => {
 
       {
         $lookup: {
-          from: " ",
-        },
-      },
-
-      {
-        $lookup: {
           from: "City",
           localField: "city",
           foreignField: "_id",
@@ -159,6 +153,29 @@ exports.filterPromoCode = async (req, res, next) => {
         },
       },
       { $unwind: "$city" },
+
+      {
+        $lookup: {
+          from: "Admin",
+          localField: "selectUser",
+          foreignField: "_id",
+          as: "adminUser",
+        },
+      },
+      {
+        $lookup: {
+          from: "Rider",
+          localField: "selectUser",
+          foreignField: "_id",
+          as: "riderUser",
+        },
+      },
+      {
+        $addFields: {
+          selectUser: { $concatArrays: ["$adminUser", "$riderUser"] },
+        },
+      },
+      { $unwind: "$selectUser" },
     ];
 
     let matchStage = { $match: { $or: [] } };
@@ -215,5 +232,4 @@ exports.filterPromoCode = async (req, res, next) => {
   } catch (error) {
     next(error);
   }
-  a;
 };

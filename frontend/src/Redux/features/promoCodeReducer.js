@@ -129,12 +129,22 @@ const promoCodeSlice = createSlice({
       if (promoCodeToUpdate) {
         state.status = "fetched";
 
-        const updatedSelectUser = promoCodeToUpdate.selectUser.map((item) => ({
-          value: item._id,
-          label: `${item.name ? item.name : ""} ${
-            item.firstName ? item.firstName : ""
-          }`,
-        }));
+        let updatedSelectUser;
+
+        updatedSelectUser = [
+          {
+            value: promoCodeToUpdate.selectUser._id,
+            label: `${
+              promoCodeToUpdate.selectUser.name
+                ? promoCodeToUpdate.selectUser.name
+                : ""
+            } ${
+              promoCodeToUpdate.selectUser.firstName
+                ? promoCodeToUpdate.selectUser.firstName
+                : ""
+            }`,
+          },
+        ];
 
         state.selectPromoCode = {
           ...promoCodeToUpdate,
