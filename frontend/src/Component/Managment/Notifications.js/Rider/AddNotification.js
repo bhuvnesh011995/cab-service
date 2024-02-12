@@ -9,6 +9,13 @@ import {
   getRiders,
 } from "../../../../Redux/features/riderReducer";
 import { useMemo } from "react";
+import {
+  addRiderNotification,
+  clearUpdateData,
+  getRiderNotification,
+  updateRiderNotification,
+} from "../../../../Redux/features/riderNotificationReducer";
+import { toast } from "react-toastify";
 
 export default function AddRiderNotification({ show, setShow }) {
   const [ready, setReady] = useState(false);
@@ -24,17 +31,38 @@ export default function AddRiderNotification({ show, setShow }) {
   } = useForm();
   const dispatch = useDispatch();
   const riders = useSelector(getRiders);
+  const notification = useSelector(getRiderNotification);
   const ridersOptions = useMemo(
     () => riders.map((rider) => ({ value: rider._id, label: rider.name })),
     [riders]
   );
   useEffect(() => {
-    if (ready) dispatch(fetchRiders());
-    else setReady(true);
+    if (ready) {
+      dispatch(fetchRiders());
+    } else setReady(true);
   }, [ready]);
 
+  useEffect(() => {
+    if (ready && notification) reset(notification);
+
+    return () => {
+      if (ready) dispatch(clearUpdateData());
+    };
+  }, [ready, notification]);
+
   const onSubmit = (data) => {
-    console.log(data);
+    data.forUsers = data.forUsers.map((item) => item.value);
+    if (!notification) dispatch(addRiderNotification(data));
+    else {
+      let updatedFields = Object.keys(dirtyFields);
+      if (!updatedFields.length) return toast.info("change at least one field");
+
+      let updatedData = {};
+      updatedFields.forEach((field) => (updatedData[field] = data[field]));
+      dispatch(
+        updateRiderNotification({ id: notification._id, data: updatedData })
+      );
+    }
   };
   return (
     <Modal size="md" show={show} onHide={() => setShow(false)}>
@@ -48,7 +76,11 @@ export default function AddRiderNotification({ show, setShow }) {
               <label className="form-label">Title :</label>
             </div>
             <div className="col-md-9">
-              <input placeholder="Enter Title" className="form-control" />
+              <input
+                {...register("title", { required: "this is required field" })}
+                placeholder="Enter Title"
+                className="form-control"
+              />
             </div>
           </div>
           <div className="row mb-3">
@@ -77,19 +109,13 @@ export default function AddRiderNotification({ show, setShow }) {
               <label className="form-label">Notification :</label>
             </div>
             <div className="col-md-9">
-              <textarea className="form-control" rows={3}></textarea>
-            </div>
-          </div>
-          <div className="row mb-3">
-            <div className="col-md-3">
-              <label className="form-label">Status :</label>
-            </div>
-            <div className="col-md-9">
-              <select className="form-control">
-                <option value={""}>Choose...</option>
-                <option value={"ACTIVE"}>Active</option>
-                <option value={"INACTIVE"}>Inactive</option>
-              </select>{" "}
+              <textarea
+                {...register("notification", {
+                  required: "this is required field",
+                })}
+                className="form-control"
+                rows={3}
+              ></textarea>
             </div>
           </div>
         </Modal.Body>

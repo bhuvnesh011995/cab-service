@@ -16,8 +16,7 @@ exports.filter = async function (req, res, next) {
       query[0].$match.$or.push({
         username: { $regex: username, $options: "i" },
       });
-    if (status)
-      query[0].$match.$or.push({ status: { $regex: status, $options: "i" } });
+    if (status) query[0].$match.$or.push({ status });
     if (from)
       query[0].$match.$or = [
         ...query[0].$match.$or,
