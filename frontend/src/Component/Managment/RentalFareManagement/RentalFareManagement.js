@@ -114,13 +114,14 @@ export default function RentalFareManagement() {
         callback={(data, type, index) => updateRentals(data, type, index)}
         changeSelectedColumnDataDesign={["createdAt"]}
         changedDataCellColumn={(header, accessor) => {
-          return {
-            accessorKey: accessor,
-            header: header,
-            Cell: ({ row }) => (
-              <div>{moment(row.original.createdAt).format("YYYY-DD-MM")}</div>
-            ),
-          };
+          if (accessor == "createdAt")
+            return {
+              accessorKey: accessor,
+              header: header,
+              Cell: ({ row }) => (
+                <div>{moment(row.original.createdAt).format("YYYY-DD-MM")}</div>
+              ),
+            };
         }}
       />
       {rentalModal && (

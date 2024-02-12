@@ -1,24 +1,26 @@
 import Management_container from "../../Common/Management_container";
 import { useEffect, useState } from "react";
-import BtnDark from "../../Common/Buttons/BtnDark";
-import Text_Input from "../../Common/Inputs/Text_Input";
 import BASE_URL from "../../../config/config";
-import Selection_Input from "../../Common/Inputs/Selection_input";
 import * as tiIcons from "react-icons/ti";
 import * as rsIcons from "react-icons/rx";
 import DriverDetails from "./DriverDetails";
 import { CommonDataTable } from "../../../Common/commonDataTable";
 import { driverTableHeaders } from "../../../constants/table.contants";
 import AddDriver from "./AddDriver";
+import Filter_Option from "../../Common/Filter_option";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchAllDrivers,
+  getAllDrivers,
+} from "../../../Redux/features/driverReducer";
 
 const initialFilter = {
-  name: "",
-  email: "",
-  mobile: "",
+  search: "",
   status: "",
 };
 
 export default function DriverManagement() {
+  const dispatch = useDispatch();
   const [filter, setFilter] = useState(initialFilter);
   const [list, setList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
@@ -30,107 +32,15 @@ export default function DriverManagement() {
   const [driverModal, setDriverModal] = useState(false);
   const [deleteInfo, setDeleteInfo] = useState(null);
 
+  const drivers = useSelector(getAllDrivers);
+
   useEffect(() => {
-    fetch(BASE_URL + "/drivers/filter", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = [];
-          data.drivers.map((ele, i) => {
-            let obj = {
-              index: i + 1,
-              firstName: ele.firstName,
-              lastName: ele.lastName,
-              mobile: ele.mobile,
-              email: ele.email,
-              status: ele.status,
-              wallet: ele?.wallet?.balance,
-              verified: ele.verified ? (
-                <tiIcons.TiTick />
-              ) : (
-                <rsIcons.RxCross2 />
-              ),
-              createdAt: ele.createdAt,
-              id: ele._id,
-              country: ele.address?.country?.name,
-              state: ele.address?.state?.name,
-              city: ele.address?.city?.name,
-              pincode: ele.address.pincode,
-              place: ele.address?.place,
-              createdBy: ele.createdBy?.name,
-              updatedBy: ele.updatedBy?.name,
-              updatedAt: ele.updatedAt,
-              DOB: ele.DOB,
-            };
-            if (
-              !ele.aadhar?.verified ||
-              !ele.license?.verified ||
-              !ele.pan?.verified
-            )
-              obj.documentStatus = <rsIcons.RxCross2 />;
-            else obj.documentStatus = <tiIcons.TiTick />;
+    dispatch(fetchAllDrivers(filter));
+  }, [filter]);
 
-            arr.push(obj);
-          });
-          setList(arr);
-        }
-      });
-  }, []);
-
-  function handleSubmit() {
-    fetch(
-      BASE_URL +
-        "/drivers/filter?name=" +
-        filter.name +
-        "&email=" +
-        filter.email +
-        "&mobile=" +
-        filter.mobile +
-        "&status=" +
-        filter.status,
-      {
-        method: "GET",
-      },
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = [];
-          data.drivers.map((ele, i) => {
-            let obj = {
-              index: i + 1,
-              firstName: ele.firstName,
-              lastName: ele.lastName,
-              mobile: ele.mobile,
-              email: ele.email,
-              status: ele.status,
-              wallet: ele?.wallet?.balance,
-              verified: ele.verified ? (
-                <tiIcons.TiTick />
-              ) : (
-                <rsIcons.RxCross2 />
-              ),
-              createdAt: ele.createdAt,
-              id: ele._id,
-            };
-            if (
-              !ele.aadhar?.verified ||
-              !ele.license?.verified ||
-              !ele.pan?.verified
-            )
-              obj.documentStatus = <rsIcons.RxCross2 />;
-            else obj.documentStatus = <tiIcons.TiTick />;
-
-            arr.push(obj);
-          });
-          setList(arr);
-        }
-      });
+  function reset() {
+    setFilter({ ...initialFilter });
   }
-
-  function reset() {}
 
   function handleLicExp() {
     fetch(BASE_URL + "/drivers/filter/?licExp=true", {
@@ -325,7 +235,7 @@ export default function DriverManagement() {
               <form>
                 <div className='row'>
                   <div className='col-lg-2 inputField'>
-                    <Text_Input
+                    {/* <Text_Input
                       input={filter}
                       setInput={setFilter}
                       setKey={"name"}
@@ -349,12 +259,16 @@ export default function DriverManagement() {
                       setInput={setFilter}
                       lebel_text={"Status : "}
                       setKey={"status"}
+                    /> */}
+                    <Filter_Option
+                      input={filter}
+                      setInput={setFilter}
+                      initialInput={initialFilter}
+                      options={["search", "status"]}
                     />
-
                     <div style={{ margin: "20px", marginTop: "50px" }}>
-                      <BtnDark handleClick={handleSubmit} title={"Search"} />
-
                       <button
+                        type='button'
                         className='btn btn-outline-danger'
                         onClick={reset}
                       >
@@ -365,7 +279,7 @@ export default function DriverManagement() {
                 </div>
               </form>
               <CommonDataTable
-                data={list || []}
+                data={drivers}
                 tableHeaders={driverTableHeaders}
                 actionButtons
                 deleteButton
@@ -374,6 +288,60 @@ export default function DriverManagement() {
                 callback={(data, type, index) =>
                   updateDrivers(data, type, index)
                 }
+                changeSelectedColumnDataDesign={["verified", "documentStatus"]}
+                changedDataCellColumn={(header, accessor) => {
+                  if (accessor == "documentStatus")
+                    return {
+                      accessorKey: accessor,
+                      header: header,
+                      Cell: ({ row }) => (
+                        <div>
+                          {row.original.verified ? (
+                            <span>is verified</span>
+                          ) : (
+                            <span>not verified</span>
+                          )}
+                        </div>
+                      ),
+                    };
+                  else if (accessor == "verified")
+                    return {
+                      accessorKey: accessor,
+                      header: header,
+                      Cell: ({ row }) => (
+                        <div className='d-flex align-items-center justify-content-center'>
+                          {row.original.verified ? (
+                            <span
+                              className='d-flex align-items-center justify-content-center'
+                              style={{
+                                width: "30px",
+                                height: "30px",
+                                borderRadius: "50%",
+                                backgroundColor: "#74E291",
+                                fontSize: "19px",
+                              }}
+                            >
+                              <i className=' mdi mdi-checkbox-marked-circle'></i>
+                            </span>
+                          ) : (
+                            <span
+                              className='d-flex align-items-center justify-content-center'
+                              style={{
+                                width: "30px",
+                                height: "30px",
+                                borderRadius: "50%",
+                                backgroundColor: "red",
+                                fontWeight: "bolder",
+                                fontSize: "19px",
+                              }}
+                            >
+                              x
+                            </span>
+                          )}
+                        </div>
+                      ),
+                    };
+                }}
               />
             </div>
           </div>
