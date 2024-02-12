@@ -193,8 +193,6 @@ export default function RiderNotification() {
                         setIsOpen(true);
                       }}
                       className="btn btn-icon btn-sm btn-info rounded-pill"
-                      onClick={() => {}}
-                      className="btn btn-icon btn-sm btn-info rounded-pill"
                     >
                       <i className="bx bxs-edit-alt" />
                     </button>
@@ -207,7 +205,6 @@ export default function RiderNotification() {
                           })
                         );
                       }}
-                      onClick={() => {}}
                       className="btn btn-icon btn-sm btn-danger rounded-pill"
                     >
                       <i className="bx bxs-trash" />
