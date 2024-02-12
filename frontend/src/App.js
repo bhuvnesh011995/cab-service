@@ -4,58 +4,20 @@ import LeftSidebar from "./Common/LeftSidbar/LeftSidebar";
 import Navbar from "./Common/Navbar/Navbar";
 import { useState } from "react";
 function App() {
-
-  const [inactive,setInactive] = useState(false);
-
+  const [inactive, setInactive] = useState(false);
 
   return (
-    <div className="app">
-      <div id="layout-wrapper">
-        <Navbar inactive={inactive} setInactive={setInactive}/>
+    <div className='app'>
+      <div id='layout-wrapper'>
+        <Navbar inactive={inactive} setInactive={setInactive} />
         <LeftSidebar inactive={inactive} setInactive={setInactive} />
-        <Outlet/>
+        <Outlet />
       </div>
     </div>
   );
 }
 
 export default App;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // import { BrowserRouter,Routes,Route, Link } from 'react-router-dom';
 // import SignIn from './Component/Auth/SignIn/SignIn';
@@ -84,7 +46,7 @@ export default App;
 // import RentalPackageManagement from './Component/Managment/RentalPackageManagement/RentalPackageManagement';
 
 // function App() {
-  
+
 //   return (
 //     <BrowserRouter >
 //       <Header>
@@ -113,12 +75,11 @@ export default App;
 //       <Route path='/rentalPackage' element={<RentalPackageManagement/>}/>
 //       <Route path='/addPackage' element={<AddRentalPackage />}/>
 
-
 //     </Routes> */}
 //     </Header>
 //     <Footer/>
 //     </BrowserRouter>
-    
+
 //   );
 // }
 

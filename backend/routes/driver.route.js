@@ -19,11 +19,11 @@ module.exports = function (app) {
     driverController.getSelectedDriver,
   );
 
-  app.get("/test/api/v1/drivers/filter/", [], driverController.filterDriver);
-  app.put(
-    "/test/api/v1/drivers/getSelectedDriver/:driverId",
+  app.delete(
+    "/test/api/v1/drivers/deleteDriver/:id",
     [],
-    driverController.updateDriver,
+    driverController.deleteDriver,
   );
+
   app.get("/test/api/v1/drivers/active/", [], driverController.getActiveDriver);
 };

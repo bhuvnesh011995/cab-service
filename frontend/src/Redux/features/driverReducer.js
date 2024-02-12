@@ -65,7 +65,8 @@ export const fetchAllDrivers = createAsyncThunk(
     }
   },
 );
-export const deleteDriver = createAsyncThunk(
+
+export const deleteDriverReducer = createAsyncThunk(
   "driver/deleteDriver",
   async (id, { rejectWithValue }) => {
     try {
@@ -139,11 +140,11 @@ const driverSlice = createSlice({
       state.status = "error";
       state.error = action.payload;
     });
-    builder.addCase(deleteDriver.pending, (state, action) => {
+    builder.addCase(deleteDriverReducer.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(deleteDriver.fulfilled, (state, action) => {
+    builder.addCase(deleteDriverReducer.fulfilled, (state, action) => {
       state.status = "deleted";
       state.error = null;
       state.drivers = state.drivers.filter(
@@ -152,7 +153,7 @@ const driverSlice = createSlice({
       state.message = action.payload.message;
     });
 
-    builder.addCase(deleteDriver.rejected, (state, action) => {
+    builder.addCase(deleteDriverReducer.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });

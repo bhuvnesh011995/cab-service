@@ -72,6 +72,7 @@ import { Provider } from "react-redux";
 import Store from "./Redux/Store/Store.js";
 import RiderNotification from "./Component/Managment/Notifications.js/Rider/Rider.js";
 import RentalPromotionManagement from "./Component/Managment/RentalPromotionManagement/RentalPromotionManagement.js";
+import TransactionManagement from "./Component/Managment/transactionManagement/transactionManagement.js";
 
 const router = createBrowserRouter([
   {
@@ -187,6 +188,7 @@ const router = createBrowserRouter([
     element: <Permision />,
   },
   { path: "AddAdmin", element: <AddAdmin /> },
+  { path: "adminTransactionManagement", element: <TransactionManagement /> },
 ]);
 let queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -200,7 +202,7 @@ root.render(
         {/* </AuthProvider> */}
       </QueryClientProvider>
     </Provider>
-  </>
+  </>,
 );
 
 // If you want to start measuring performance in your app, pass a function
