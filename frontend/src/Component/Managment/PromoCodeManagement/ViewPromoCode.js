@@ -1,25 +1,15 @@
 import { Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { getAllViewPromotion } from "../../../Redux/features/promotionReducer";
-export default function ViewPromotion({ show, setShow }) {
-  const viewData = useSelector(getAllViewPromotion);
+import { getAllViewPromoCode } from "../../../Redux/features/promoCodeReducer";
+export default function ViewPromoCode({ show, setShow }) {
+  const viewData = useSelector(getAllViewPromoCode);
   console.log("viewData", viewData);
   return (
     <Modal size="lg" show={show} onHide={() => setShow(false)}>
       <Modal.Header closeButton>
-        <Modal.Title>View Model</Modal.Title>
+        <Modal.Title>View PromoCode</Modal.Title>
       </Modal.Header>
       <Modal.Body>
-        <div className="row mb-2">
-          <div className="col-md-4">
-            <p>
-              <strong> Name</strong>
-            </p>
-          </div>
-          <div className="col-md-8">
-            <p>{viewData.name}</p>
-          </div>
-        </div>
         <div className="row mb-2">
           <div className="col-md-4">
             <p>
@@ -66,17 +56,62 @@ export default function ViewPromotion({ show, setShow }) {
               </p>
             </div>
             <div className="col-md-8">
-              <p>{viewData?.forUsers.join(",")}</p>
+              <p>{viewData?.forUser}</p>
             </div>
           </div>
+
           <div className="row mb-2">
             <div className="col-md-4">
               <p>
-                <strong>description</strong>
+                <strong>Discount Type</strong>
               </p>
             </div>
             <div className="col-md-8">
-              <p>{viewData.description}</p>
+              <p>{viewData?.discountType}</p>
+            </div>
+          </div>
+
+          <div className="row mb-2">
+            <div className="col-md-4">
+              <p>
+                <strong>DisCount Value</strong>
+              </p>
+            </div>
+            <div className="col-md-8">
+              <p>{viewData?.discountValue}</p>
+            </div>
+          </div>
+
+          <div className="row mb-2">
+            <div className="col-md-4">
+              <p>
+                <strong>forUsers</strong>
+              </p>
+            </div>
+            <div className="col-md-8">
+              <p>{viewData?.forUser}</p>
+            </div>
+          </div>
+
+          <div className="row mb-2">
+            <div className="col-md-4">
+              <p>
+                <strong>PromoCode</strong>
+              </p>
+            </div>
+            <div className="col-md-8">
+              <p>{viewData?.promoCode}</p>
+            </div>
+          </div>
+
+          <div className="row mb-2">
+            <div className="col-md-4">
+              <p>
+                <strong>vehicleType</strong>
+              </p>
+            </div>
+            <div className="col-md-8">
+              <p>{viewData.vehicleType?.name}</p>
             </div>
           </div>
         </div>

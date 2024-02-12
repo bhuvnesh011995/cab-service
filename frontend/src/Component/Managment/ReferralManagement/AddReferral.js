@@ -1,211 +1,352 @@
-import { useState,useEffect } from "react";
-import Text_Input from "../../Common/Inputs/Text_Input";
-import Management_container from "../../Common/Management_container";
-import BtnDark from "../../Common/Buttons/BtnDark";
-import Select from "react-select";
-import Selection_Input from "../../Common/Inputs/Selection_input";
-import BASE_URL from "../../../config/config";
-import SelectWithValue from "../../Common/Inputs/SelectWithValue";
-import { useNavigate } from "react-router-dom";
-import Number_Input from "../../Common/Inputs/Number_Input";
+import { Modal } from "react-bootstrap";
+import { Controller, useForm } from "react-hook-form";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchCountries,
+  getCountries,
+} from "../../../Redux/features/countryReducer";
+import { useCallback, useEffect, useState } from "react";
+import {
+  emptyStates,
+  fetchStates,
+  getStates,
+} from "../../../Redux/features/stateReducer";
+import {
+  emptyCities,
+  fetchCities,
+  getCities,
+} from "../../../Redux/features/cityReducer";
+import ReactSelect from "react-select";
+import {
+  addReferral,
+  getReferral,
+} from "../../../Redux/features/referralReducer";
 
-const forUsersOption = [
-  { value: "ADMIN", label: "Admin" },
-  { value: "DRIVER", label: "Driver" },
-  { value: "RIDER", label: "Rider" },
-];
-const initialReferral = {
-    forUsers:"",
-    countryId:"",
-    stateId:"",
-    cityId:"",
-    stateId:"",
-    title:"",
-    amountToApplier:0,
-    maxAmountToReferrer:0,
-    amountToReferrer:0,
-    maxFreeRideToReferrer:0,
-    freeRideToApplier:false,
-    freeRideToReferrer:false
-}
-export default function AddReferral() {
-    const [referral,setReferral] = useState(initialReferral)
-    let [countryOption, setCountryOption] = useState([]);
-    let [stateOption, setStateOption] = useState([]);
-    let [cityOption, setCityOption] = useState([]);
-    const navigate = useNavigate();
+export default function AddReferral({ show, setShow }) {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    watch,
+    setValue,
+    formState: { errors, dirtyFields, isDirty },
+  } = useForm();
+  const forUsersOption = [
+    { value: "ADMIN", label: "ADMIN" },
+    { value: "DRIVER", label: "DRIVER" },
+    { value: "RIDER", label: "RIDER" },
+  ];
+  const dispatch = useDispatch();
+  const [ready, setReady] = useState(false);
+  const countries = useSelector(getCountries);
+  const states = useSelector(getStates);
+  const cities = useSelector(getCities);
+
+  const referral = useSelector(getReferral);
+  useEffect(() => {
+    if (referral) {
+      reset(referral);
+      setValue("country", referral.country);
+      setValue("state", referral.state);
+      setValue("city", referral.city);
+    }
+  }, [referral]);
 
   useEffect(() => {
-    fetch(BASE_URL + "/country/", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        let arr = data.map((ele) => {
-          return { value: ele._id, title: ele.name };
-        });
-        setCountryOption(arr);
-      });
+    if (ready) {
+      dispatch(fetchCountries());
+    } else setReady(true);
+  }, [ready]);
+
+  useEffect(() => {
+    if (ready) {
+      if (watch("country")) {
+        dispatch(fetchStates(watch("country")));
+      } else {
+        dispatch(emptyStates());
+      }
+    }
+  }, [watch("country")]);
+
+  useEffect(() => {
+    if (ready) {
+      if (watch("state")) {
+        dispatch(fetchCities(watch("state")));
+      } else {
+        dispatch(emptyCities());
+      }
+    }
+  }, [watch("state"), ready]);
+
+  const onSubmit = useCallback(async (data) => {
+    let forUsers = data.forUsers?.map((option) => option.value);
+    let formData = {
+      ...data,
+      forUsers,
+    };
+    dispatch(addReferral(formData));
   }, []);
 
-  useEffect(() => {
-    referral.countryId &&
-      fetch(BASE_URL + "/state/" + referral?.countryId, {
-        method: "GET",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          let arr = data.states.map((ele) => {
-            return { value: ele._id, title: ele.name };
-          });
-          setStateOption(arr);
-        });
-  }, [referral?.countryId]);
-
-  useEffect(() => {
-    if (referral.countryId && referral.stateId) {
-      fetch(BASE_URL + `/city/${referral.stateId}`, {
-        method: "GET",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          let arr = data.cities.map((ele) => {
-            return { value: ele._id, title: ele.name };
-          });
-          setCityOption(arr);
-        });
-    } else setCityOption([]);
-  }, [referral?.countryId, referral?.stateId]);
-
-  function handleSelect(e) {
-    let arr = e.map((ele) => ele.value);
-    setReferral((preVal) => ({ ...preVal, forUsers: arr }));
-  }
-
-  function handleSubmit() {
-    fetch(BASE_URL+"/referral/",{
-        method:"POST",
-        body:JSON.stringify(referral),
-        headers:{
-            "Content-type": "application/json; charset=UTF-8",
-        }
-    }).then(res=>res.json())
-    .then(data=>console.log(data))
-    navigate(-1)
-  }
-
-
-    return(
-        <Management_container title={"Add Referral"}>
-        <div
-        class="row"
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-        }}
-      >
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-body">
-              <form className="w-100">
-                <Text_Input
-                  input={referral}
-                  setInput={setReferral}
-                  lebel_text={"Title"}
-                  setKey={"title"}
+  return (
+    <Modal size="lg" show={show} onHide={() => setShow(false)}>
+      <Modal.Header closeButton>
+        <Modal.Title>Add New Referral</Modal.Title>
+      </Modal.Header>
+      <form onSubmit={handleSubmit((formData) => onSubmit(formData))}>
+        <Modal.Body>
+          <div className="row">
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label>Title</label>
+                <input
+                  type="text"
+                  name="name"
+                  className="form-control"
+                  {...register("name", { required: "this is Required field" })}
                 />
-                <SelectWithValue
-                  reset={["stateId", "cityId"]}
-                  options={countryOption}
-                  label={"Country"}
-                  input={referral}
-                  setInput={setReferral}
-                  setKey={"countryId"}
+                {errors.name && (
+                  <span style={{ color: "red" }}>{errors.name.message}</span>
+                )}
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="form-label" htmlFor="country">
+                  Country :
+                </label>
+                <Controller
+                  name="country"
+                  control={control}
+                  rules={{ required: "this is required field" }}
+                  render={({ field }) => (
+                    <select {...field} className="form-control">
+                      <option value={""}>Choose...</option>
+                      {countries.map((country) => (
+                        <option key={country._id} value={country._id}>
+                          {country.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 />
-                <SelectWithValue
-                  options={stateOption}
-                  reset={["cityId"]}
-                  label={"State"}
-                  input={referral}
-                  setInput={setReferral}
-                  setKey={"stateId"}
+                {errors.country && (
+                  <span style={{ color: "red" }}>{errors.country.message}</span>
+                )}
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="form-label" htmlFor="state">
+                  State :
+                </label>
+                <Controller
+                  name="state"
+                  control={control}
+                  rules={{ required: "this is required field" }}
+                  render={({ field }) => (
+                    <select {...field} className="form-control">
+                      <option value={""}>Choose...</option>
+                      {states.map((state) => (
+                        <option key={state._id} value={state._id}>
+                          {state.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 />
-                <SelectWithValue
-                  options={cityOption}
-                  label={"City"}
-                  input={referral}
-                  setInput={setReferral}
-                  setKey={"cityId"}
+                {errors.state && (
+                  <span style={{ color: "red" }}>{errors.state.message}</span>
+                )}
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label className="form-label" htmlFor="city">
+                  City :
+                </label>
+                <Controller
+                  name="city"
+                  control={control}
+                  rules={{ required: "this is required field" }}
+                  render={({ field }) => (
+                    <select {...field} className="form-control">
+                      <option value={""}>Choose...</option>
+                      {cities.map((city) => (
+                        <option key={city._id} value={city._id}>
+                          {city.name}
+                        </option>
+                      ))}
+                    </select>
+                  )}
                 />
+                {errors.city && (
+                  <span style={{ color: "red" }}>{errors.city.message}</span>
+                )}
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label>For Users</label>
+                <Controller
+                  name="forUsers"
+                  control={control}
+                  defaultValue={forUsersOption ? [] : undefined}
+                  rules={{
+                    required: "this is required field",
+                    validate: (value) => value.length > 0,
+                  }}
+                  render={({ field }) => (
+                    <ReactSelect options={forUsersOption} isMulti {...field} />
+                  )}
+                />
+                {errors.forUsers && (
+                  <span style={{ color: "red" }}>
+                    {errors.forUsers.message}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label>Status</label>
+                <select
+                  name="status"
+                  {...register("status", {
+                    required: "this is Required field",
+                  })}
+                  className="form-control"
+                >
+                  <option>Choose</option>
+                  <option value="ACTIVE">ACTIVE</option>
+                  <option value="INACTIVE">INACTIVE</option>
+                </select>
 
-                <label className="ms-3 mb-0">For Users</label>
-                <Select
-                  className="basic-multi-select m-3"
-                  classNamePrefix="select"
-                  isMulti
-                  options={forUsersOption}
-                  onChange={handleSelect}
-                />
-                <Selection_Input
-                  options={["ACTIVE", "INACTIVE"]}
-                  input={referral}
-                  setInput={setReferral}
-                  setKey={"status"}
-                  lebel_text={"Status :"}
-                />
-                <h3>For Referrer</h3>
-
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox"
-                    onClick={e=>setReferral(preVal=>({...preVal,freeRideToReferrer:e.target.checked}))}
-                    />
-                    <label class="form-check-label">
-                        Free Ride
-                    </label>
+                {errors.status && (
+                  <span style={{ color: "red" }}>{errors.status.message}</span>
+                )}
+              </div>
+            </div>
+            <div className="col-md-12">
+              <h4> For Referrer</h4>
+            </div>
+            <div className="col-md-12">
+              <div className="mb-3">
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="freeRideToReferrer"
+                    {...register("frefreeRideToReferrereRide", {
+                      required: "this is Required field",
+                    })}
+                  />
+                  <label className="form-check-label" htmlFor="freeRide">
+                    Free Ride
+                  </label>
                 </div>
-                <Number_Input
-                  input={referral}
-                  setInput={setReferral}
-                  lebel_text={"Max Free Ride"}
-                  setKey={"maxFreeRideToReferrer"}
-                  type={"number"}
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label>Max Free Ride</label>
+                <input
+                  type="number"
+                  name="maxFreeRideToReferrer"
+                  className="form-control"
+                  {...register("maxFreeRideToReferrer", {
+                    required: "this is Required field",
+                  })}
                 />
-                <Number_Input
-                  input={referral}
-                  setInput={setReferral}
-                  lebel_text={"Amount"}
-                  setKey={"amountToReferrer"}
+                {errors.maxFreeRideToReferrer && (
+                  <span style={{ color: "red" }}>
+                    {errors.maxFreeRideToReferrer.message}
+                  </span>
+                )}
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label>Amount</label>
+                <input type="amount" name="amount" className="form-control" />
+                {errors.amount && (
+                  <span style={{ color: "red" }}>{errors.amount.message}</span>
+                )}
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-3">
+                <label>Max Amount</label>
+                <input
+                  type="maxAmount"
+                  name="maxAmount"
+                  className="form-control"
+                  {...register("name", { required: "this is Required field" })}
                 />
-                <Number_Input
-                  input={referral}
-                  setInput={setReferral}
-                  lebel_text={"Max Amount"}
-                  setKey={"maxAmountToReferrer"}
-                />
-                <h3>For Applier</h3>
-                <div class="form-check mb-3">
-                    <input class="form-check-input" type="checkbox"
-                    onClick={e=>setReferral(preVal=>({...preVal,freeRideToApplier:e.target.checked}))}
-                    />
-                    <label class="form-check-label">
-                        Free Ride
-                    </label>
+                {errors.maxAmount && (
+                  <span style={{ color: "red" }}>
+                    {errors.maxAmount.message}
+                  </span>
+                )}
+              </div>
+            </div>
+
+            <div className="col-md-12">
+              <h4>For Applier </h4>
+            </div>
+            <div className="col-md-12">
+              <div className="mb-3">
+                <div className="form-check">
+                  <input
+                    className="form-check-input"
+                    type="checkbox"
+                    id="freeRideToApplier"
+                    {...register("freeRideToApplier", {
+                      required: "this is Required field",
+                    })}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor="freeRideToApplier"
+                  >
+                    Free Ride
+                  </label>
                 </div>
-                
-                <Number_Input
-                  input={referral}
-                  setInput={setReferral}
-                  lebel_text={"Amount"}
-                  setKey={"amountToApplier"}
+              </div>
+            </div>
+            <div className="col-md-6">
+              <div className="mb-1">
+                <label>Amount</label>
+                <input
+                  type="number"
+                  name="amountToApplier"
+                  className="form-control"
+                  {...register("amountToApplier", {
+                    required: "this is Required field",
+                  })}
                 />
-                
-                <BtnDark handleClick={handleSubmit} title={"Add Referral"} />
-              </form>
+                {errors.amountToApplier && (
+                  <span style={{ color: "red" }}>
+                    {errors.amountToApplier.message}
+                  </span>
+                )}
+              </div>
             </div>
           </div>
-        </div>
-      </div>
-        </Management_container>
-    )
-};
+        </Modal.Body>
+        <Modal.Footer>
+          <button
+            onClick={() => setShow(false)}
+            type="button"
+            className="btn btn-danger"
+          >
+            Cancel
+          </button>
+          <button type="submit" className="btn btn-primary">
+            Add Referral
+          </button>
+        </Modal.Footer>
+      </form>
+    </Modal>
+  );
+}

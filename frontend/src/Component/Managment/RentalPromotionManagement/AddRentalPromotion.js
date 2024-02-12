@@ -164,8 +164,6 @@ export default function AddRentalPromotion({ setShow, show }) {
     [isDirty, dirtyFields]
   );
 
-  console.log("packages", packages);
-
   return (
     <Modal
       size="lg"
@@ -175,7 +173,9 @@ export default function AddRentalPromotion({ setShow, show }) {
       }}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Add New Rental Promotion</Modal.Title>
+        <Modal.Title>
+          {rentalPromotion ? "update Promotion" : "Add New Rental Promotion"}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit((formData) => onSubmit(formData))}>

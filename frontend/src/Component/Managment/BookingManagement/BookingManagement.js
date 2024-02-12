@@ -385,7 +385,12 @@ export default function BookingManagement() {
                     }}
                   >
                     <BtnDark handleClick={handleSubmit} title={"Search"} />
-                    <BtnDark handleClick={handleClick2} title={"Reset"} />
+                    <button
+                      className='btn btn-outline-danger'
+                      onClick={handleClick2}
+                    >
+                      Reset
+                    </button>
                   </div>
                 </div>
               </form>
@@ -395,6 +400,11 @@ export default function BookingManagement() {
                 data={list || []}
                 enableRowActions
                 enableRowNumbers
+                enableFullScreenToggle={false}
+                enableDensityToggle={false}
+                enableHiding={false}
+                enableColumnFilters={false}
+                enableColumnActions={false}
                 displayColumnDefOptions={{
                   "mrt-row-actions": {
                     size: 100,

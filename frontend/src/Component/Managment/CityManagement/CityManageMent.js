@@ -89,7 +89,7 @@ export default function CityManagement() {
               <div className='text-right'>
                 <button
                   onClick={() => setIsOpen(true)}
-                  className='btn btn-primary'
+                  className='btn btn-outline-primary'
                 >
                   Add City
                 </button>
@@ -119,6 +119,11 @@ export default function CityManagement() {
         enableRowNumbers
         rowNumberMode='static'
         enableRowActions
+        enableFullScreenToggle={false}
+        enableDensityToggle={false}
+        enableHiding={false}
+        enableColumnFilters={false}
+        enableColumnActions={false}
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
           <div className='hstack gap-2 fs-1'>

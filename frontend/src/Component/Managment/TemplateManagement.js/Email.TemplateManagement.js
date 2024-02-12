@@ -91,7 +91,9 @@ export default function EmailTemplateManagement() {
                     lebel_text={"User :"}
                   /> */}
                   <div style={{ margin: "20px", marginTop: "50px" }}>
-                    <BtnDark handleClick={reset} title={"Reset"} />
+                    <button className='btn btn-outline-danger' onClick={reset}>
+                      Reset
+                    </button>
                   </div>
                 </div>
               </div>

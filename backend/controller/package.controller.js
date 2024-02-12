@@ -27,50 +27,69 @@ exports.addPackage = async (req, res) => {
 
 exports.getAllPackages = async (req, res) => {
   try {
-    const packageResponse = await db.rentalPackage.aggregate([
-      {
+    const packageAggregateQuery = [];
+    if (req.query.status?.length)
+      packageAggregateQuery.push({
         $match: {
-          $or: [
-            {
-              $expr: {
-                $regexMatch: {
-                  input: { $toLower: "$name" },
-                  regex: { $toLower: req.query.search },
-                  options: "i",
-                },
-              },
-            },
-            {
-              $expr: {
-                $regexMatch: {
-                  input: { $toLower: "$status" },
-                  regex: { $toLower: req.query.search },
-                  options: "i",
-                },
-              },
-            },
-            {
-              $expr: {
-                $regexMatch: {
-                  input: { $toLower: "$maxDuration" },
-                  regex: { $toLower: req.query.search },
-                  options: "i",
-                },
-              },
-            },
-            {
-              $expr: {
-                $regexMatch: {
-                  input: { $toLower: "$minDuration" },
-                  regex: { $toLower: req.query.search },
-                  options: "i",
-                },
-              },
-            },
-          ],
+          $expr: {
+            $eq: ["$status", req.query.status],
+          },
         },
+      });
+    packageAggregateQuery.push({
+      $match: {
+        $or: [
+          {
+            $expr: {
+              $regexMatch: {
+                input: { $toLower: "$name" },
+                regex: { $toLower: req.query.search },
+                options: "i",
+              },
+            },
+          },
+          {
+            $expr: {
+              $regexMatch: {
+                input: { $toLower: "$status" },
+                regex: { $toLower: req.query.search },
+                options: "i",
+              },
+            },
+          },
+          {
+            $expr: {
+              $regexMatch: {
+                input: { $toLower: "$maxDuration" },
+                regex: { $toLower: req.query.search },
+                options: "i",
+              },
+            },
+          },
+          {
+            $expr: {
+              $regexMatch: {
+                input: { $toLower: "$maxDistance" },
+                regex: { $toLower: req.query.search },
+                options: "i",
+              },
+            },
+          },
+          {
+            $expr: {
+              $regexMatch: {
+                input: { $toLower: "$minDuration" },
+                regex: { $toLower: req.query.search },
+                options: "i",
+              },
+            },
+          },
+        ],
       },
-    ]);
+    });
+    const packageResponse = await db.rentalPackage.aggregate(
+      packageAggregateQuery,
+    );
     return res.status(200).send(packageResponse);
   } catch (err) {
     console.error(err);

@@ -12,10 +12,16 @@ import {
 } from "../../../Redux/features/individualFareReducer";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
+import Filter_Option from "../../Common/Filter_option";
 import Text_Input from "../../Common/Inputs/Text_Input";
 
 const initialFilter = {
   search: "",
+  country: "",
+  state: "",
+  city: "",
+  vehicleType: "",
+  status: "",
 };
 
 export default function IndividualFareManagement() {
@@ -78,11 +84,18 @@ export default function IndividualFareManagement() {
                   title={"Add New"}
                 />
               </div>
-              <Text_Input
+              <Filter_Option
                 input={filter}
                 setInput={setFilter}
-                setKey={"search"}
-                lebel_text={"Search :"}
+                initialInput={initialFilter}
+                options={[
+                  "country",
+                  "state",
+                  "city",
+                  "vehicleType",
+                  "status",
+                  "search",
+                ]}
               />
             </div>
           </div>

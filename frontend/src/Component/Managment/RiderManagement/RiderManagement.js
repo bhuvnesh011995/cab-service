@@ -1,8 +1,6 @@
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Management_container from "../../Common/Management_container";
-import Text_Input from "../../Common/Inputs/Text_Input";
 import { useEffect, useState } from "react";
-import Selection_Input from "../../Common/Inputs/Selection_input";
 import { CommonDataTable } from "../../../Common/commonDataTable";
 import { riderTableHeaders } from "../../../constants/table.contants";
 import AddRider from "./AddRider";
@@ -14,9 +12,11 @@ import {
 } from "../../../Redux/features/riderReducer";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import { IMAGE_URL } from "../../../config/config";
+import Filter_Option from "../../Common/Filter_option";
 
 const initialState = {
   search: "",
+  status: "",
 };
 export default function RiderManagement() {
   const dispatch = useDispatch();
@@ -72,14 +72,12 @@ export default function RiderManagement() {
               </div>
               <form>
                 <div className='row'>
-                  <div className='col-lg-6'>
-                    <Text_Input
-                      input={filter}
-                      setInput={setFilter}
-                      setKey={"search"}
-                      lebel_text={"Search :"}
-                    />
-                  </div>
+                  <Filter_Option
+                    input={filter}
+                    setInput={setFilter}
+                    initialInput={initialState}
+                    options={["search", "status"]}
+                  />
                 </div>
               </form>
 

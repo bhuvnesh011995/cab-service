@@ -29,7 +29,7 @@ export const AddNewCity = function ({ show, setShow }) {
   const [ready, setReady] = useState();
   const dispatch = useDispatch();
   const vehicleTypes = useSelector(
-    (state) => state?.vehicleType?.vehicleType || []
+    (state) => state?.vehicleType?.vehicleType || [],
   );
 
   const countries = useSelector(getCountries);
@@ -66,7 +66,7 @@ export const AddNewCity = function ({ show, setShow }) {
       if (path.length < 3) return toast.error("set city territory");
       dispatch(addCity(newData));
     },
-    [dirtyFields, isDirty, path]
+    [dirtyFields, isDirty, path],
   );
 
   useEffect(() => {
@@ -87,28 +87,28 @@ export const AddNewCity = function ({ show, setShow }) {
   }, [ready]);
 
   return (
-    <Modal size="lg" show={show} onHide={() => setShow(false)}>
+    <Modal size='lg' show={show} onHide={() => setShow(false)}>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Modal.Header closeButton>
           <Modal.Title>Add City</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div className="row">
-            <div className="col-md-6">
-              <Row className="align-items-center mb-3">
-                <div className="col-sm-4">
-                  <label htmlFor="name" className="form-label">
+          <div className='row'>
+            <div className='col-md-6'>
+              <Row className='align-items-center mb-3'>
+                <div className='col-sm-4'>
+                  <label htmlFor='name' className='form-label'>
                     Name :
                   </label>{" "}
                 </div>
-                <div className="col-sm-8">
+                <div className='col-sm-8'>
                   <input
                     {...register("name", {
                       required: "this is required field",
                     })}
-                    type="text"
-                    placeholder="Enter City Name"
-                    className="form-control"
+                    type='text'
+                    placeholder='Enter City Name'
+                    className='form-control'
                   />
                 </div>
                 {errors.name && (
@@ -116,19 +116,19 @@ export const AddNewCity = function ({ show, setShow }) {
                 )}
               </Row>
 
-              <Row className="align-items-center mb-3">
-                <div className="col-sm-4">
-                  <label className="form-label" htmlFor="country">
+              <Row className='align-items-center mb-3'>
+                <div className='col-sm-4'>
+                  <label className='form-label' htmlFor='country'>
                     Country :
                   </label>
                 </div>
-                <div className="col-sm-8">
+                <div className='col-sm-8'>
                   <Controller
-                    name="country"
+                    name='country'
                     control={control}
                     rules={{ required: "this is required field" }}
                     render={({ field }) => (
-                      <select {...field} className="form-control">
+                      <select {...field} className='form-control'>
                         <option value={""}>Choose...</option>
                         {countries.map((country) => (
                           <option key={country._id} value={country._id}>
@@ -143,19 +143,19 @@ export const AddNewCity = function ({ show, setShow }) {
                   <span style={{ color: "red" }}>{errors.country.message}</span>
                 )}
               </Row>
-              <Row className="align-items-center mb-3">
-                <div className="col-sm-4">
-                  <label className="form-label" htmlFor="state">
+              <Row className='align-items-center mb-3'>
+                <div className='col-sm-4'>
+                  <label className='form-label' htmlFor='state'>
                     State :
                   </label>
                 </div>
-                <div className="col-sm-8">
+                <div className='col-sm-8'>
                   <Controller
-                    name="state"
+                    name='state'
                     control={control}
                     rules={{ required: "this is required field" }}
                     render={({ field }) => (
-                      <select {...field} className="form-control">
+                      <select {...field} className='form-control'>
                         <option value={""}>Choose...</option>
                         {states.map((state) => (
                           <option key={state._id} value={state._id}>
@@ -170,32 +170,32 @@ export const AddNewCity = function ({ show, setShow }) {
                   <span style={{ color: "red" }}>{errors.state.message}</span>
                 )}
               </Row>
-              <Row className="align-items-center mb-3">
-                <div className="col-sm-4">
-                  <label htmlFor="name" className="form-label">
+              <Row className='align-items-center mb-3'>
+                <div className='col-sm-4'>
+                  <label htmlFor='name' className='form-label'>
                     UTC Offset :
                   </label>{" "}
                 </div>
-                <div className="col-sm-8">
+                <div className='col-sm-8'>
                   <input
                     {...register("utcOffset", {
                       required: "this is required field",
                     })}
-                    type="number"
-                    className="form-control"
+                    type='number'
+                    className='form-control'
                   />
                 </div>
               </Row>
             </div>
-            <div className="col-md-6">
+            <div className='col-md-6'>
               <Map setPath={setPath} path={path} />
             </div>
             <Row>
-              <div className="text-center col-md-3">
-                <div className="mb-3 fw-bold">Vehicle Type</div>
+              <div className='text-center col-md-3'>
+                <div className='mb-3 fw-bold'>Vehicle Type</div>
               </div>
 
-              <div className="text-center fw-bold col-md-9">Services</div>
+              <div className='text-center fw-bold col-md-9'>Services</div>
             </Row>
             {vehicleTypes.map((vehicleType, i) => (
               <VehicletypeCheckbox
@@ -209,15 +209,18 @@ export const AddNewCity = function ({ show, setShow }) {
               />
             ))}
           </div>
+          <Modal.Footer>
+            <button type='submit' className='btn btn-outline-primary'>
+              Add City
+            </button>
+            <button
+              onClick={() => setShow(false)}
+              className='btn btn-outline-danger'
+            >
+              Cancel
+            </button>
+          </Modal.Footer>
         </Modal.Body>
-        <Modal.Footer>
-          <button onClick={() => setShow(false)} className="btn btn-danger">
-            Cancel
-          </button>
-          <button type="submit" className="btn btn-success">
-            Add City
-          </button>
-        </Modal.Footer>
       </form>
     </Modal>
   );

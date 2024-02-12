@@ -13,9 +13,11 @@ import {
   getAllTollReducer,
   getAllTolls,
 } from "../../../Redux/features/tollReducer";
+import Filter_Option from "../../Common/Filter_option";
 
 const initialFilter = {
   search: "",
+  status: "",
 };
 export default function TollManagement() {
   const dispatch = useDispatch();
@@ -66,7 +68,6 @@ export default function TollManagement() {
               arg={id}
             />
             <div class='card-body'>
-              {/* <MapService data={list} /> */}
               <div
                 style={{
                   display: "flex",
@@ -80,14 +81,12 @@ export default function TollManagement() {
                 />
               </div>
               <div className='row'>
-                <div className='col-lg-6 '>
-                  <Text_Input
-                    input={filter}
-                    setInput={setFilter}
-                    lebel_text={"Search"}
-                    setKey={"search"}
-                  />
-                </div>
+                <Filter_Option
+                  input={filter}
+                  setInput={setFilter}
+                  initialInput={initialFilter}
+                  options={["status", "search"]}
+                />
               </div>
               <CommonDataTable
                 data={allTolls}

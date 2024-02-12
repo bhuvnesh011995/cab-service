@@ -31,12 +31,12 @@ export default function AddModel({ show, setShow }) {
     dispatch(fetchManufacturer());
   }, []);
 
-  const selctModel = useSelector(getModel);
+  const selectModel = useSelector(getModel);
   useEffect(() => {
-    if (selctModel) {
-      reset(selctModel);
+    if (selectModel) {
+      reset(selectModel);
     }
-  }, [selctModel]);
+  }, [selectModel]);
 
   const modelStatus = useSelector(status);
   useEffect(() => {
@@ -47,7 +47,7 @@ export default function AddModel({ show, setShow }) {
 
   const onSubmit = useCallback(
     async (data) => {
-      if (!selctModel) {
+      if (!selectModel) {
         dispatch(addModel(data));
       } else {
         let changedField = Object.keys(dirtyFields);
@@ -56,7 +56,7 @@ export default function AddModel({ show, setShow }) {
           let obj = {};
           changedField.forEach((field) => (obj[field] = data[field]));
 
-          dispatch(updateModels({ id: selctModel._id, newData: obj }));
+          dispatch(updateModels({ id: selectModel._id, newData: obj }));
         }
       }
     },
@@ -72,7 +72,9 @@ export default function AddModel({ show, setShow }) {
       }}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Add New Modal</Modal.Title>
+        <Modal.Title>
+          {selectModel ? "Update Modal" : "Add New Modal"}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit((formData) => onSubmit(formData))}>

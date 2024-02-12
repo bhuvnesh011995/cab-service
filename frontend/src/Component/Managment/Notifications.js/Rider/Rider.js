@@ -108,7 +108,7 @@ export default function RiderNotification() {
               <div class="row">
                 <div class="col-md-12 text-right">
                   <button
-                    class="btn btn-primary"
+                    class="btn btn-outline-primary"
                     onClick={() => setIsOpen(true)}
                   >
                     Add New
@@ -142,6 +142,10 @@ export default function RiderNotification() {
                       Reset
                     </button>
                   </div>
+                  <div class="col-md-3">
+                    <button class="btn btn-outline-primary me-3">Search</button>
+                    <button class="btn btn-outline-danger me-3">Reset</button>
+                  </div>
                 </form>{" "}
               </div>
               <MaterialReactTable
@@ -149,6 +153,11 @@ export default function RiderNotification() {
                 data={notifications}
                 enableRowActions
                 enableRowNumbers
+                enableFullScreenToggle={false}
+                enableDensityToggle={false}
+                enableHiding={false}
+                enableColumnFilters={false}
+                enableColumnActions={false}
                 displayColumnDefOptions={{
                   "mrt-row-actions": {
                     size: 100,
@@ -184,6 +193,8 @@ export default function RiderNotification() {
                         setIsOpen(true);
                       }}
                       className="btn btn-icon btn-sm btn-info rounded-pill"
+                      onClick={() => {}}
+                      className="btn btn-icon btn-sm btn-info rounded-pill"
                     >
                       <i className="bx bxs-edit-alt" />
                     </button>
@@ -196,6 +207,7 @@ export default function RiderNotification() {
                           })
                         );
                       }}
+                      onClick={() => {}}
                       className="btn btn-icon btn-sm btn-danger rounded-pill"
                     >
                       <i className="bx bxs-trash" />

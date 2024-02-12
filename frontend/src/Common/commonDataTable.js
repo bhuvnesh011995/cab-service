@@ -122,12 +122,12 @@ export const CommonDataTable = ({
         enableDensityToggle={false}
         enableHiding={false}
         enableColumnFilters={false}
+        enableColumnActions={false}
         positionGlobalFilter='right'
         initialState={{
           showGlobalFilter: true,
         }}
         rowNumberMode='static'
-        enableColumnActions={false}
         enableTopToolbar={true}
         muiTableProps={{
           sx: {

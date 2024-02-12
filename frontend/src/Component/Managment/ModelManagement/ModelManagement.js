@@ -168,6 +168,11 @@ export default function ModelManagement() {
         columns={columns}
         data={modelData || []}
         enableRowNumbers={true}
+        enableFullScreenToggle={false}
+        enableDensityToggle={false}
+        enableHiding={false}
+        enableColumnFilters={false}
+        enableColumnActions={false}
         rowNumberDisplayMode='static'
         enableRowActions
         muiTableProps={{

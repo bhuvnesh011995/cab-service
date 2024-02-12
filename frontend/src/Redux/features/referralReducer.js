@@ -5,16 +5,16 @@ import BASE_URL from "../../config/config";
 let initialState = {
   status: "idle",
   error: null,
-  promotion: [],
-  selectPromotion: null,
-  viewPromotion: null,
+  referral: [],
+  selectReferral: null,
+  viewReferral: null,
 };
 
-const addPromotion = createAsyncThunk(
-  "promotion/addPromotion",
+const addReferral = createAsyncThunk(
+  "referral/addReferral",
   async (data, { rejectWithValue }) => {
     try {
-      let response = await axios.post(BASE_URL + "/promotion/self", data);
+      let response = await axios.post(BASE_URL + "/referral", data);
       if (response.status === 201) return response.data;
       else
         return rejectWithValue({
@@ -29,11 +29,11 @@ const addPromotion = createAsyncThunk(
     }
   }
 );
-const fetchPromotion = createAsyncThunk(
-  "promotion/fetchPromotion",
+const fetchReferral = createAsyncThunk(
+  "referral/fetchReferral",
   async (_, { rejectWithValue }) => {
     try {
-      let response = await axios.get(BASE_URL + "/promotion/");
+      let response = await axios.get(BASE_URL + "/referral/");
       if (response.status === 200) return response.data;
       else
         return rejectWithValue({
@@ -48,12 +48,12 @@ const fetchPromotion = createAsyncThunk(
     }
   }
 );
-const updatePromotion = createAsyncThunk(
-  "promotion/updatePromotion",
+const updateReferral = createAsyncThunk(
+  "referral/updateReferral",
   async (data, { rejectWithValue }) => {
     try {
       let response = await axios.put(
-        BASE_URL + "/promotion/" + data.id,
+        BASE_URL + "/referral/" + data.id,
         data.newData
       );
       if (response.status === 200) return response.data;
@@ -71,8 +71,8 @@ const updatePromotion = createAsyncThunk(
   }
 );
 
-export const deletePromotion = createAsyncThunk(
-  "delete/deletePromotion",
+export const deleteReferral = createAsyncThunk(
+  "delete/deleteReferral",
   async ({ url, id }, { rejectWithValue }) => {
     try {
       let response = await axios.delete(url);
@@ -91,13 +91,13 @@ export const deletePromotion = createAsyncThunk(
   }
 );
 
-const promotionSlice = createSlice({
-  name: "promotion",
+const referralSlice = createSlice({
+  name: "referral",
   initialState,
   reducers: {
-    updatePromotionById: (state, action) => {
-      let obj = state.promotion.find(
-        (selectPromotion) => selectPromotion._id === action.payload.id
+    updateReferralById: (state, action) => {
+      let obj = state.referral.find(
+        (selectReferral) => selectReferral._id === action.payload.id
       );
       state.status = "fetched";
       const updatedForUsers = obj.forUsers.map((item) => ({
@@ -105,7 +105,7 @@ const promotionSlice = createSlice({
         label: item,
       }));
 
-      state.selectPromotion = {
+      state.selectReferral = {
         ...obj,
         country: obj.country._id,
         state: obj.state._id,
@@ -113,96 +113,96 @@ const promotionSlice = createSlice({
         forUsers: updatedForUsers,
       };
     },
-    getViewPromotion: (state, action) => {
-      state.viewPromotion = state.promotion.find(
-        (viewPromotion) => viewPromotion._id === action.payload.id
+    getViewReferral: (state, action) => {
+      state.viewReferral = state.referral.find(
+        (viewReferral) => viewReferral._id === action.payload.id
       );
       state.status = "view";
     },
 
-    cleanViewPromotion: (state, action) => {
-      state.viewVehicleType = null;
+    cleanViewReferral: (state, action) => {
+      state.viewReferral = null;
     },
-    cleanPromotion: (state, action) => {
-      state.selectPromotion = null;
+    cleanReferral: (state, action) => {
+      state.selectReferral = null;
     },
-    cleanPromotionStatus: (state, action) => {
+    cleanReferralStatus: (state, action) => {
       state.status = "Ok";
     },
   },
 
   extraReducers: (builder) => {
-    builder.addCase(addPromotion.pending, (state, action) => {
+    builder.addCase(addReferral.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(addPromotion.fulfilled, (state, action) => {
+    builder.addCase(addReferral.fulfilled, (state, action) => {
       state.status = "added";
-      state.promotion = (state.promotion || []).concat(action.payload);
+      state.referral = (state.referral || []).concat(action.payload);
     });
-    builder.addCase(addPromotion.rejected, (state, action) => {
+    builder.addCase(addReferral.rejected, (state, action) => {
       state.status = "error";
-      state.promotion = action.payload;
+      state.referral = action.payload;
     });
-    builder.addCase(fetchPromotion.pending, (state, action) => {
+    builder.addCase(fetchReferral.pending, (state, action) => {
       state.status = "loading";
       state.promotion = action.payload;
       state.error = null;
     });
-    builder.addCase(fetchPromotion.fulfilled, (state, action) => {
+    builder.addCase(fetchReferral.fulfilled, (state, action) => {
       state.status = "successed";
-      state.promotion = action.payload;
+      state.referral = action.payload;
     });
-    builder.addCase(fetchPromotion.rejected, (state, action) => {
+    builder.addCase(fetchReferral.rejected, (state, action) => {
       state.status = "error";
-      state.promotion = action.payload;
+      state.referral = action.payload;
     });
-    builder.addCase(updatePromotion.pending, (state, action) => {
+    builder.addCase(updateReferral.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(updatePromotion.fulfilled, (state, action) => {
+    builder.addCase(updateReferral.fulfilled, (state, action) => {
       state.status = "update";
       state.promotion = state.promotion.map((item) =>
         item._id === action.payload._id ? action.payload : item
       );
       state.error = null;
     });
-    builder.addCase(updatePromotion.rejected, (state, action) => {
+    builder.addCase(updateReferral.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });
-    builder.addCase(deletePromotion.pending, (state, action) => {
+    builder.addCase(deleteReferral.pending, (state, action) => {
       state.status = "loading";
       state.error = null;
     });
-    builder.addCase(deletePromotion.fulfilled, (state, action) => {
+    builder.addCase(deleteReferral.fulfilled, (state, action) => {
       state.status = "deleted";
       state.error = null;
-      state.promotion = state.promotion.filter(
+      state.referral = state.referral.filter(
         (item) => item._id !== action.payload.id
       );
       state.message = action.payload.message;
     });
 
-    builder.addCase(deletePromotion.rejected, (state, action) => {
+    builder.addCase(deleteReferral.rejected, (state, action) => {
       state.status = "error";
       state.error = action.payload;
     });
   },
 });
 
-export default promotionSlice.reducer;
+export default referralSlice.reducer;
 
-export { addPromotion, fetchPromotion, updatePromotion };
-export const getAllPromotion = (state) => state.promotion.promotion;
-export const status = (state) => state.promotion.status;
-export const error = (state) => state.promotion.error;
+export { addReferral, fetchReferral, updateReferral };
+export const getAllReferral = (state) => state.referral.referral;
+export const status = (state) => state.referral.status;
+export const error = (state) => state.referral.error;
 export const {
-  cleanPromotionStatus,
-  updatePromotionById,
-  cleanPromotion,
-  getViewPromotion,
-} = promotionSlice.actions;
-export const getPromotion = (state) => state.promotion.selectPromotion;
-export const getAllViewPromotion = (state) => state.promotion.viewPromotion;
+  cleanReferralStatus,
+  updateReferralById,
+  cleanReferral,
+  getViewReferral,
+} = referralSlice.actions;
+export const getReferral = (state) => state.referral.selectReferral;
+export const getAllViewReferral = (state) => state.referral.viewReferral;

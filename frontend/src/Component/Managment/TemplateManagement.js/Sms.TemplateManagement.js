@@ -232,7 +232,7 @@ export default function SmsTemplateManagement() {
               {isOpen && <AddNew show={isOpen} setShow={setIsOpen} />}
               <div className='text-right'>
                 <button
-                  className='btn btn-primary'
+                  className='btn btn-outline-primary'
                   onClick={() => setIsOpen(true)}
                 >
                   Add SMS
@@ -265,7 +265,12 @@ export default function SmsTemplateManagement() {
                     <div style={{ margin: "20px", marginTop: "50px" }}>
                       <BtnDark handleClick={handleSubmit} title={"Search"} />
 
-                      <BtnDark handleClick={reset} title={"Reset"} />
+                      <button
+                        className='btn btn-outline-danger'
+                        onClick={reset}
+                      >
+                        Reset
+                      </button>
                     </div>
                   </div>
                 </div>
@@ -275,6 +280,11 @@ export default function SmsTemplateManagement() {
                 data={smsTemplates}
                 enableRowActions
                 enableRowNumbers
+                enableFullScreenToggle={false}
+                enableDensityToggle={false}
+                enableHiding={false}
+                enableColumnFilters={false}
+                enableColumnActions={false}
                 displayColumnDefOptions={{
                   "mrt-row-actions": {
                     size: 100,

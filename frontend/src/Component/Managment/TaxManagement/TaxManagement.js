@@ -219,7 +219,7 @@ export default function TaxManagement() {
                 }}
               >
                 <button
-                  className='btn btn-primary'
+                  className='btn btn-outline-primary'
                   onClick={() => setIsOpen(true)}
                 >
                   Add Tax
@@ -243,7 +243,7 @@ export default function TaxManagement() {
                     />
                     <div>
                       <button
-                        className='btn btn-primary me-2'
+                        className='btn btn-outline-primary me-2'
                         onClick={(e) => {
                           e.preventDefault();
                           handleSubmit(tax);
@@ -252,7 +252,7 @@ export default function TaxManagement() {
                         Search
                       </button>
                       <button
-                        className='btn btn-danger me-2'
+                        className='btn btn-outline-danger me-2'
                         onClick={() => setTax(initialTax)}
                         type=''
                       >
@@ -267,6 +267,11 @@ export default function TaxManagement() {
                 data={taxes}
                 enableRowActions
                 enableRowNumbers
+                enableFullScreenToggle={false}
+                enableDensityToggle={false}
+                enableHiding={false}
+                enableColumnFilters={false}
+                enableColumnActions={false}
                 displayColumnDefOptions={{
                   "mrt-row-actions": {
                     size: 100,

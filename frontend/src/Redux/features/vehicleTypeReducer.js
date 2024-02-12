@@ -158,10 +158,11 @@ const vehicleTypeSlice = createSlice({
         (selectVehicleType) => selectVehicleType._id === action.payload.id
       );
       state.status = "fetched";
-      obj.runMode.forEach((item, i) => {
-        obj.runMode[i] = { value: item, label: item };
-      });
-      state.selectVehicleType = obj;
+      const runMode = obj.runMode.map((item) => ({
+        value: item,
+        label: item,
+      }));
+      state.selectVehicleType = { ...obj, runMode: runMode };
     },
     getViewVehicleType: (state, action) => {
       state.viewVehicleType = state.vehicleType.find(

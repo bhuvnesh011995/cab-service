@@ -7,7 +7,7 @@ let initialState = {
   error: null,
   promotion: [],
   selectPromoCode: null,
-  viewPromotion: null,
+  viewPromoCode: null,
   promoCode: [],
 };
 
@@ -125,15 +125,15 @@ const promoCodeSlice = createSlice({
         console.error("Promo code with ID", action.payload.id, "not found.");
       }
     },
-    getViewPromotion: (state, action) => {
-      state.viewPromotion = state.promotion.find(
-        (viewPromotion) => viewPromotion._id === action.payload.id
+    getViewPromoCode: (state, action) => {
+      state.viewPromoCode = state.promoCode.find(
+        (viewPromoCode) => viewPromoCode._id === action.payload.id
       );
       state.status = "view";
     },
 
-    cleanViewPromotion: (state, action) => {
-      state.viewVehicleType = null;
+    cleanViewPromoCode: (state, action) => {
+      state.viewPromoCode = null;
     },
     cleanPromoCode: (state, action) => {
       state.selectPromoCode = null;
@@ -214,7 +214,7 @@ export const {
   cleanPromoCodeStatus,
   updatePromoCodeById,
   cleanPromoCode,
-  getViewPromotion,
+  getViewPromoCode,
 } = promoCodeSlice.actions;
 export const getPromoCode = (state) => state.promoCode.selectPromoCode;
-export const getAllViewPromotion = (state) => state.promotion.viewPromotion;
+export const getAllViewPromoCode = (state) => state.promoCode.viewPromoCode;

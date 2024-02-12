@@ -95,8 +95,19 @@ export default function SOSManagement() {
                         { value: "Driver", title: "Driver" },
                       ]}
                     />
-                    <div>
-                      <BtnDark handleClick={reset} title={"reset"} />
+                    <div
+                      style={{
+                        marginTop: "35px",
+                        display: "flex",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <button
+                        className='btn btn-outline-danger'
+                        onClick={reset}
+                      >
+                        Reset
+                      </button>
                     </div>
                   </div>
                 </div>

@@ -56,38 +56,40 @@ export default function AddVehicleType({ show, setShow }) {
         else {
           let obj = {};
           changedField.forEach(
-            (field) => (obj[field] = formDataWithIds[field])
+            (field) => (obj[field] = formDataWithIds[field]),
           );
           dispatch(
-            updateVehicleType({ id: selectVehicleType._id, newData: obj })
+            updateVehicleType({ id: selectVehicleType._id, newData: obj }),
           );
         }
       }
     },
-    [isDirty, dirtyFields]
+    [isDirty, dirtyFields],
   );
 
   return (
     <Modal
-      size="lg"
+      size='lg'
       show={show}
       onHide={() => {
         setShow(false);
       }}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Add New Vehicle Type</Modal.Title>
+        <Modal.Title>
+          {selectVehicleType ? "update Vehicle Type" : "Add New Vehicle Type"}
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit((formData) => onSubmit(formData))}>
-          <div className="row">
-            <div className="col-md-6">
-              <div className="mb-3">
+          <div className='row'>
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>file</label>
                 <input
-                  className="form-control form-control-sm"
-                  type="file"
-                  name="file"
+                  className='form-control form-control-sm'
+                  type='file'
+                  name='file'
                   {...register("file", { required: "this is required field" })}
                 />
                 {errors.file && (
@@ -95,13 +97,13 @@ export default function AddVehicleType({ show, setShow }) {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>Name</label>
                 <input
-                  type="text"
-                  name="name"
-                  className="form-control form-control-sm"
+                  type='text'
+                  name='name'
+                  className='form-control form-control-sm'
                   {...register("name", { required: "this is required field" })}
                 />
                 {errors.name && (
@@ -109,11 +111,11 @@ export default function AddVehicleType({ show, setShow }) {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>Run Modes</label>
                 <Controller
-                  name="runMode"
+                  name='runMode'
                   control={control}
                   defaultValue={options ? [] : undefined}
                   rules={{
@@ -129,13 +131,13 @@ export default function AddVehicleType({ show, setShow }) {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>Seating Name :</label>
                 <input
-                  type="text"
-                  name="seatingName"
-                  className="form-control"
+                  type='text'
+                  name='seatingName'
+                  className='form-control'
                   {...register("seatingCapacityName", {
                     required: "this is required field",
                   })}
@@ -147,13 +149,13 @@ export default function AddVehicleType({ show, setShow }) {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>Seating Capacity :</label>
                 <input
-                  type="text"
-                  name="seatingCapacity"
-                  className="form-control"
+                  type='text'
+                  name='seatingCapacity'
+                  className='form-control'
                   {...register("seatingCapacity", {
                     required: "this is required field",
                   })}
@@ -165,19 +167,19 @@ export default function AddVehicleType({ show, setShow }) {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>Status</label>
                 <select
-                  name="status"
-                  className="form-control"
+                  name='status'
+                  className='form-control'
                   {...register("status", {
                     required: "this is required field",
                   })}
                 >
-                  <option value="">Choose</option>
-                  <option value="ACTIVE">ACTIVE</option>
-                  <option value="INACTIVE">INACTIVE</option>
+                  <option value=''>Choose</option>
+                  <option value='ACTIVE'>ACTIVE</option>
+                  <option value='INACTIVE'>INACTIVE</option>
                 </select>
                 {errors.status && (
                   <span style={{ color: "red" }}>{errors.status.message}</span>
@@ -185,9 +187,18 @@ export default function AddVehicleType({ show, setShow }) {
               </div>
             </div>
           </div>
-          <button type="submit" className="btn btn-success">
-            SAVE
-          </button>
+          <Modal.Footer>
+            <button type='submit' className='btn btn-outline-primary'>
+              Save
+            </button>
+            <button
+              type='button'
+              className='btn btn-outline-danger'
+              onClick={() => setShow(false)}
+            >
+              Cancel
+            </button>
+          </Modal.Footer>
         </form>
       </Modal.Body>
     </Modal>

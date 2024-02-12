@@ -5,13 +5,7 @@ import Text_Input from "../../Common/Inputs/Text_Input";
 import Selection_Input from "../../Common/Inputs/Selection_input";
 import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
-import { Box, IconButton } from "@mui/material";
-import {
-  RemoveRedEye,
-  Lock,
-  ModeEditOutline,
-  DeleteForever,
-} from "@mui/icons-material/";
+import moment from "moment";
 import { toast } from "react-toastify";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import AddVehicleType from "../VehicleTypeManagement/AddVehicleType";
@@ -86,6 +80,11 @@ export default function VehicleTypeManagement() {
         accessorFn: (row) => row.createdAt?.slice(0, 10),
         id: "createdAt",
         header: "Created At",
+        Cell: ({ row }) => (
+          <div className=''>
+            {moment(row.original.createdAt).format("YYYY/DD/MM")}
+          </div>
+        ),
       },
       {
         accessorKey: "status",
@@ -176,6 +175,11 @@ export default function VehicleTypeManagement() {
         columns={columns}
         data={vehicleTypeData || []}
         enableRowNumbers={true}
+        enableFullScreenToggle={false}
+        enableDensityToggle={false}
+        enableHiding={false}
+        enableColumnFilters={false}
+        enableColumnActions={false}
         rowNumberDisplayMode='static'
         enableRowActions
         positionActionsColumn={"last"}
@@ -213,39 +217,6 @@ export default function VehicleTypeManagement() {
               <i className='bx bxs-trash' />
             </button>
           </div>
-          // <Box sx={{ display: "flex", flexWrap: "nowrap", gap: "1px" }}>
-          //   <IconButton
-          //     onClick={() => {
-          //       dispatch(getViewVehicleType({ id: row.original._id }));
-          //       setOpenView(true);
-          //     }}
-          //   >
-          //     <RemoveRedEye />
-          //   </IconButton>
-          //   <IconButton>
-          //     <Lock />
-          //   </IconButton>
-          //   <IconButton
-          //     onClick={() => {
-          //       dispatch(updateVehicleTypeById({ id: row.original._id }));
-          //       setShow(true);
-          //     }}
-          //   >
-          //     <ModeEditOutline />
-          //   </IconButton>
-          //   <IconButton
-          //     onClick={() => {
-          //       setDeleteInfo({
-          //         message: `Do You Really Want To Delete ${row.original?.name}`,
-          //         header: "Delete Model",
-          //       });
-          //       setIsOpen(true);
-          //       setId(row.original._id);
-          //     }}
-          //   >
-          //     <DeleteForever />
-          //   </IconButton>
-          // </Box>
         )}
         muiTableProps={{
           sx: {

@@ -83,6 +83,9 @@ exports.updatePromotion = async function (req, res) {
     if (req.body.country) obj.country = req.body.country;
     if (req.body.state) obj.state = req.body.state;
     if (req.body.city) obj.city = req.body.city;
+    if (req.body.description) obj.description = req.body.description;
+    if (req.body.forUsers) obj.forUsers = req.body.forUsers;
+    if (req.body.status) obj.status = req.body.status;
     let promotion = await db.promotion.findByIdAndUpdate(
       { _id: id },
       { $set: obj },

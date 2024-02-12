@@ -22,6 +22,8 @@ import settingReducer from "../features/settingReducer";
 import promoCodeReducer from "../features/promoCodeReducer";
 import taxReducer from "../features/taxReducer";
 import rentalPromotionReducer from "../features/rentalPromotionReducer";
+import referralReducer from "../features/referralReducer";
+import driverReducer from "../features/driverReducer";
 import riderNotificationReducer from "../features/riderNotificationReducer";
 
 export default configureStore({
@@ -49,6 +51,8 @@ export default configureStore({
     tax: taxReducer,
     promoCode: promoCodeReducer,
     rentalPromotion: rentalPromotionReducer,
+    referral: referralReducer,
+    driver: driverReducer,
     riderNotifications: riderNotificationReducer,
   },
 });

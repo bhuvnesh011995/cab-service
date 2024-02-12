@@ -29,6 +29,10 @@ import {
   fetchManufacturer,
   selectManufacturer,
 } from "../../Redux/features/ManufacturerReducer";
+import {
+  getAllPackages,
+  getPackages,
+} from "../../Redux/features/packageReducer";
 
 export default function Filter_Option({
   input,
@@ -42,7 +46,7 @@ export default function Filter_Option({
   children,
 }) {
   const dispatch = useDispatch();
-  const [packages, setPackages] = useState([]);
+  const packages = useSelector(getPackages);
 
   const countries = useSelector(getCountries);
   const states = useSelector(getStates);
@@ -63,14 +67,7 @@ export default function Filter_Option({
     }
 
     if (options.includes("package")) {
-      fetch(BASE_URL + "/rentalPackage/", {
-        method: "GET",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          let arr = data.packages.map((ele) => ele.name);
-          setPackages(arr);
-        });
+      dispatch(getAllPackages());
     }
   }, []);
 
@@ -169,6 +166,14 @@ export default function Filter_Option({
             />
           )}
 
+          {options.includes("search") && (
+            <Text_Input
+              input={input}
+              setInput={setInput}
+              setKey={"search"}
+              lebel_text={"Search :"}
+            />
+          )}
           {options.includes("from") && (
             <Date_input
               setKey={"from"}
@@ -185,7 +190,6 @@ export default function Filter_Option({
               setInput={setInput}
             />
           )}
-
           {options.includes("to") && (
             <Date_input setKey={"to"} setInput={setInput} lebel_text={"To :"} />
           )}

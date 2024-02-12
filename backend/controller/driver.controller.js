@@ -35,8 +35,8 @@ exports.addDriver = async function (req, res, next) {
     if (driverData.license.verified) {
       driverData.license.verifiedBy = admin._id;
     }
+    console.log(driverData);
     let driver = await db.driver.create(driverData);
-
     res.status(200).json({
       success: true,
       message: "driver created successfully",
@@ -299,7 +299,7 @@ exports.updateDriver = async function (req, res, next) {
         verified: verified,
         status: status,
         updatedBy: admin._id,
-      }
+      },
     );
 
     res.status(200).json({
