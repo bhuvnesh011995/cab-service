@@ -73,7 +73,7 @@ export const taxTableHeaders = {
 };
 
 export const driverTableHeaders = {
-  firstName: "Name",
+  fullName: "Name",
   email: "Email",
   mobile: "Mobile",
   documentStatus: "Document",

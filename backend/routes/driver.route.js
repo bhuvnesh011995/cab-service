@@ -12,6 +12,13 @@ module.exports = function (app) {
     [],
     driverController.getAllDriver,
   );
+
+  app.get(
+    "/test/api/v1/drivers/getSelectedDriver/:id",
+    [],
+    driverController.getSelectedDriver,
+  );
+
   app.get("/test/api/v1/drivers/filter/", [], driverController.filterDriver);
   app.put(
     "/test/api/v1/drivers/getSelectedDriver/:driverId",
