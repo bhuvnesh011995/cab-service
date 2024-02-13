@@ -27,6 +27,16 @@ import { toast } from "react-toastify";
 import { useForm } from "react-hook-form";
 import moment from "moment";
 import AddDriverPayout from "./AddDriverPayout";
+import {
+  Status,
+  cleanDriverPayout,
+  deleteDriverPayout,
+  fetchDriverPayout,
+  getAllDriverPayout,
+  getViewDriverPayout,
+  updateDriverPayoutById,
+} from "../../../Redux/features/driverPayoutReducer";
+import ViewDriverPayout from "./ViewDriverPayout";
 export default function DriverPayoutManagement() {
   const deleteStatus = useSelector(deleteModalStatus);
   const id = useSelector((state) => state.delete.id);
@@ -37,47 +47,47 @@ export default function DriverPayoutManagement() {
   const { register, watch, handleSubmit } = useForm();
 
   const dispatch = useDispatch();
-  const referral = useSelector(getAllReferral);
+  const driverPayout = useSelector(getAllDriverPayout);
   useEffect(() => {
-    dispatch(fetchReferral());
+    dispatch(fetchDriverPayout());
   }, []);
 
-  const referralStatus = useSelector(status);
+  const driverPayoutStatus = useSelector(Status);
+
   useEffect(() => {
-    if (referralStatus === "added") {
-      toast.success("referral added successfully");
+    if (driverPayoutStatus === "added") {
+      toast.success("driverPayout added successfully");
       setIsOpen(false);
-      dispatch(cleanReferralStatus());
-    } else if (referralStatus === "update") {
-      toast.success("referral update successfully");
-      setIsOpen(false);
-      dispatch(cleanReferralStatus());
-    } else if (referralStatus === "deleted") {
-      toast.success("referral delete successfully");
+      dispatch(cleanDriverPayout());
+    } else if (driverPayoutStatus === "deleted") {
       dispatch(closeModal());
-      dispatch(cleanReferralStatus());
+      toast.success("DriverPayout delete successfully ");
+      dispatch(cleanDriverPayout());
+    } else if (driverPayoutStatus === "updated") {
+      setIsOpen(false);
+      toast.success("updated");
+      dispatch(cleanDriverPayout());
     }
-  }, [referralStatus]);
+  }, [driverPayoutStatus]);
 
   const columns = useMemo(
     () => [
-      { accessorKey: "name", header: "Title" },
-      { accessorFn: (row) => row.country?.name, header: "country" },
-      { accessorFn: (row) => row.state?.name, header: "state" },
-      { accessorFn: (row) => row.city?.name, header: "city" },
+      { accessorKey: "totalDistance", header: "Total Distance" },
       {
         accessorFn: (row) => moment(row.createdAt)?.format("ll"),
         id: "createdAt",
         header: "Created At",
       },
-      { accessorKey: "status", header: "status" },
+      { accessorKey: "totalTime", header: "Total Time" },
+      { accessorKey: "totalFreeRide", header: "Total FreeRide" },
+      { accessorKey: "tollFare", header: "Toll Fare" },
     ],
     []
   );
 
   useEffect(() => {
     if (deleteStatus === "delete") {
-      dispatch(deleteReferral({ url: URL, id }));
+      dispatch(deleteDriverPayout({ url: URL, id }));
       dispatch(doneDelete());
     }
   }, [deleteStatus, URL, id]);
@@ -86,9 +96,11 @@ export default function DriverPayoutManagement() {
     dispatch(filterReferral(data));
   }
   return (
-    <Management_container title={"Referral Management "}>
+    <Management_container title={"Driver Payout Management "}>
       {open && <DeleteModalAdv />}
       {isOpen && <AddDriverPayout show={isOpen} setShow={setIsOpen} />}
+      {openView && <ViewDriverPayout show={openView} setShow={setOpenView} />}
+
       <div class="row">
         <div class="col-lg-12">
           <div class="card">
@@ -138,7 +150,7 @@ export default function DriverPayoutManagement() {
               </div>
               <MaterialReactTable
                 columns={columns}
-                data={referral || []}
+                data={driverPayout || []}
                 enableRowActions
                 enableRowNumbers
                 enableFullScreenToggle={false}
@@ -167,7 +179,7 @@ export default function DriverPayoutManagement() {
                   <div className="hstack gap-2 fs-1">
                     <button
                       onClick={() => {
-                        dispatch(getViewReferral({ id: row.original._id }));
+                        dispatch(getViewDriverPayout({ id: row.original._id }));
                         setOpenView(true);
                       }}
                       className="btn btn-icon btn-sm btn-warning rounded-pill"
@@ -176,7 +188,9 @@ export default function DriverPayoutManagement() {
                     </button>
                     <button
                       onClick={() => {
-                        dispatch(updateReferralById({ id: row.original._id }));
+                        dispatch(
+                          updateDriverPayoutById({ id: row.original._id })
+                        );
                         setIsOpen(true);
                       }}
                       className="btn btn-icon btn-sm btn-info rounded-pill"
@@ -187,7 +201,7 @@ export default function DriverPayoutManagement() {
                       onClick={() => {
                         dispatch(
                           openModal({
-                            url: `${BASE_URL}/referral/${row.original._id}`,
+                            url: `${BASE_URL}/driverPayout/${row.original._id}`,
                             id: row.original._id,
                           })
                         );

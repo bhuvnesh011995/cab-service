@@ -25,7 +25,7 @@ import rentalPromotionReducer from "../features/rentalPromotionReducer";
 import referralReducer from "../features/referralReducer";
 import driverReducer from "../features/driverReducer";
 import riderNotificationReducer from "../features/riderNotificationReducer";
-
+import driverPayoutReducer from "../features/driverPayoutReducer";
 export default configureStore({
   reducer: {
     admins: adminReducer,
@@ -54,5 +54,6 @@ export default configureStore({
     referral: referralReducer,
     driver: driverReducer,
     riderNotifications: riderNotificationReducer,
+    driverPayout: driverPayoutReducer,
   },
 });
