@@ -137,6 +137,7 @@ require("./routes/riders.route.js")(app);
 require("./routes/promoCode.route.js")(app);
 require("./routes/rentalPromotion.route.js")(app);
 require("./routes/notification/rider.route.js")(app);
+require("./routes/notification/driver.route")(app);
 
 app.use(ErrorHandler);
 

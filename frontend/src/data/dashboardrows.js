@@ -90,7 +90,7 @@ export default [
       listArray: [
         { to: "notificationToRider", name: "Notification to Rider" },
         {
-          to: "notificationToDriverManagement",
+          to: "notificationToDriver",
           name: "Notification to Driver",
         },
       ],

@@ -72,6 +72,7 @@ import { Provider } from "react-redux";
 import Store from "./Redux/Store/Store.js";
 import RiderNotification from "./Component/Managment/Notifications.js/Rider/Rider.js";
 import RentalPromotionManagement from "./Component/Managment/RentalPromotionManagement/RentalPromotionManagement.js";
+import DriverNotification from "./Component/Managment/Notifications.js/Driver/Driver";
 
 const router = createBrowserRouter([
   {
@@ -170,6 +171,10 @@ const router = createBrowserRouter([
       {
         path: "notificationToRider",
         element: <RiderNotification />,
+      },
+      {
+        path: "notificationToDriver",
+        element: <DriverNotification />,
       },
     ],
   },

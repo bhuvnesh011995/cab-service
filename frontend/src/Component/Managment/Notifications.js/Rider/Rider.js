@@ -142,10 +142,6 @@ export default function RiderNotification() {
                       Reset
                     </button>
                   </div>
-                  <div class="col-md-3">
-                    <button class="btn btn-outline-primary me-3">Search</button>
-                    <button class="btn btn-outline-danger me-3">Reset</button>
-                  </div>
                 </form>{" "}
               </div>
               <MaterialReactTable

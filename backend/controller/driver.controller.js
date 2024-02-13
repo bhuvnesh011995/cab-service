@@ -19,7 +19,7 @@ exports.addDriver = async function (req, res, next) {
       const existDriverResponse = await db.driver.findOneAndUpdate(
         { _id: driverData._id },
         { $set: driverData },
-        { upsert: true, returnDocument: "after" },
+        { upsert: true, returnDocument: "after" }
       );
       return res.status(200).send(existDriverResponse);
     }
@@ -110,7 +110,7 @@ exports.getAllDriver = async function (req, res, next) {
             },
           ],
         },
-      },
+      }
     );
     let drivers = await db.driver.aggregate(driverAggregateQuery);
 
@@ -372,7 +372,7 @@ exports.updateDriver = async function (req, res, next) {
         verified: verified,
         status: status,
         updatedBy: admin._id,
-      },
+      }
     );
 
     res.status(200).json({
@@ -402,6 +402,22 @@ exports.getActiveDriver = async function (req, res, next) {
       success: true,
       drivers,
     });
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getAllDrivers = async (req, res, next) => {
+  try {
+    let drivers = await db.driver.aggregate([
+      {
+        $project: {
+          name: { $concat: ["$firstName", " ", "$lastName"] },
+        },
+      },
+    ]);
+
+    res.status(200).json(drivers);
   } catch (error) {
     next(error);
   }
