@@ -1,6 +1,6 @@
 import Management_container from "../../Common/Management_container";
 import { CommonDataTable } from "../../../Common/commonDataTable";
-import { sosTableHeaders } from "../../../constants/table.contants";
+import { transactionTableHeaders } from "../../../constants/table.contants";
 
 export default function TransactionManagement() {
   return (
@@ -10,12 +10,8 @@ export default function TransactionManagement() {
           <div className='card'>
             <div className='card-body'>
               <CommonDataTable
-                tableHeaders={sosTableHeaders}
+                tableHeaders={transactionTableHeaders}
                 data={[]}
-                deleteButton
-                editButton
-                viewButton
-                actionButtons
               />
             </div>
           </div>

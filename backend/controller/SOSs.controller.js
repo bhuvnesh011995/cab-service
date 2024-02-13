@@ -26,9 +26,50 @@ exports.addSOS = async (req, res, next) => {
 exports.fetchAllSOSs = async (req, res, next) => {
   try {
     const { query } = req;
-    const fetchSOSQuery = {};
-
-    const sosResponse = await db.sos.find(fetchSOSQuery);
+    const fetchSOSQuery = [];
+    fetchSOSQuery.push({
+      $match: {
+        $or: [
+          {
+            $expr: {
+              $regexMatch: {
+                regex: { $toLower: query.search },
+                input: { $toLower: "$bookingId" },
+                options: "i",
+              },
+            },
+          },
+          {
+            $expr: {
+              $regexMatch: {
+                regex: { $toLower: query.search },
+                input: { $toLower: "$userType" },
+                options: "i",
+              },
+            },
+          },
+          {
+            $expr: {
+              $regexMatch: {
+                regex: { $toLower: query.search },
+                input: { $toLower: "$lat" },
+                options: "i",
+              },
+            },
+          },
+          {
+            $expr: {
+              $regexMatch: {
+                regex: { $toLower: query.search },
+                input: { $toLower: "$lng" },
+                options: "i",
+              },
+            },
+          },
+        ],
+      },
+    });
+    const sosResponse = await db.sos.aggregate(fetchSOSQuery);
     return res.status(200).send(sosResponse);
   } catch (err) {
     next(err);

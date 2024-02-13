@@ -82,3 +82,25 @@ export const driverTableHeaders = {
   verified: "Verified",
   createdAt: "Created At",
 };
+
+export const transactionTableHeaders = {
+  user: "User",
+  gender: "Gender",
+  rideType: "Vehicle",
+  from: "From",
+  to: "To",
+  rideStatus: "Ride Status",
+  rideReview: "Ride Review",
+  rideStars: "Ride Rating",
+  amountPaid: "Total",
+};
+
+export const driverPayoutTableHeaders = {
+  driver: "Driver",
+  contact: "Contact",
+  address: "Address",
+  totalRides: "Completed Rides",
+  inCompleteRides: "Incomplete Rides",
+  totalRatings: "Total Ratings",
+  totalPaid: "Paid Amount",
+};

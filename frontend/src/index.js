@@ -73,6 +73,7 @@ import Store from "./Redux/Store/Store.js";
 import RiderNotification from "./Component/Managment/Notifications.js/Rider/Rider.js";
 import RentalPromotionManagement from "./Component/Managment/RentalPromotionManagement/RentalPromotionManagement.js";
 import TransactionManagement from "./Component/Managment/transactionManagement/transactionManagement.js";
+import DriverPayoutManagement from "./Component/Managment/DriverPayoutManagement/DriverPayoutManagement.js";
 
 const router = createBrowserRouter([
   {
@@ -172,6 +173,14 @@ const router = createBrowserRouter([
         path: "notificationToRider",
         element: <RiderNotification />,
       },
+      {
+        path: "adminTransactionManagement",
+        element: <TransactionManagement />,
+      },
+      {
+        path: "driverPayoutManagement",
+        element: <DriverPayoutManagement />,
+      },
     ],
   },
   {
@@ -188,7 +197,6 @@ const router = createBrowserRouter([
     element: <Permision />,
   },
   { path: "AddAdmin", element: <AddAdmin /> },
-  { path: "adminTransactionManagement", element: <TransactionManagement /> },
 ]);
 let queryClient = new QueryClient();
 const root = ReactDOM.createRoot(document.getElementById("root"));

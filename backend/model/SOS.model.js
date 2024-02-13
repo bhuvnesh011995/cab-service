@@ -1,22 +1,24 @@
-const {Schema,model}  = require("mongoose")
+const { Schema, model } = require("mongoose");
 
-const schema = new Schema({
-    booking:{type:Schema.Types.ObjectId,ref:"Booking"},
+const schema = new Schema(
+  {
+    bookingId: { type: "string", ref: "Booking" },
 
-    userType:{
-        type:String,
-        required:true,
-        enum:["Driver","Rider"]
+    userType: {
+      type: String,
+      required: true,
+      enum: ["Driver", "Rider"],
     },
 
-    user:{type:Schema.Types.ObjectId,refPath:"userType"},
+    userId: { type: "string", refPath: "userType" },
+    lat: { type: "string" },
+    lng: { type: "string" },
+    description: String,
+  },
+  {
+    collection: "SOS",
+    timestamps: true,
+  },
+);
 
-    location:{type:Schema.Types.ObjectId,ref:"Location"},
-
-    description:String
-},{
-    collection:"SOS",
-    timestamps:true
-})
-
-module.exports = model("SOS",schema)
+module.exports = model("SOS", schema);

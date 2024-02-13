@@ -123,10 +123,11 @@ export const CommonDataTable = ({
         enableHiding={false}
         enableColumnFilters={false}
         enableColumnActions={false}
-        positionGlobalFilter='right'
-        initialState={{
-          showGlobalFilter: true,
-        }}
+        enableGlobalFilter={false}
+        // positionGlobalFilter='right'
+        // initialState={{
+        //   showGlobalFilter: false,
+        // }}
         rowNumberMode='static'
         enableTopToolbar={true}
         muiTableProps={{

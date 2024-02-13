@@ -40,6 +40,7 @@ export default function DriverManagement() {
   }, [filter]);
 
   function reset() {
+    initialFilter.licExp = false;
     setFilter({ ...initialFilter });
   }
 

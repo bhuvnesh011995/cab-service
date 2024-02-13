@@ -25,6 +25,7 @@ import rentalPromotionReducer from "../features/rentalPromotionReducer";
 import referralReducer from "../features/referralReducer";
 import driverReducer from "../features/driverReducer";
 import riderNotificationReducer from "../features/riderNotificationReducer";
+import sosManagementReducer from "../features/sosManagementReducer";
 
 export default configureStore({
   reducer: {
@@ -54,5 +55,6 @@ export default configureStore({
     referral: referralReducer,
     driver: driverReducer,
     riderNotifications: riderNotificationReducer,
+    sos: sosManagementReducer,
   },
 });
