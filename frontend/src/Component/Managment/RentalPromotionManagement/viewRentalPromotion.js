@@ -1,13 +1,13 @@
 import { Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { getAllViewPromoCode } from "../../../Redux/features/promoCodeReducer";
-export default function ViewPromoCode({ show, setShow }) {
-  const viewData = useSelector(getAllViewPromoCode);
+import { getAllViewRentalPromotion } from "../../../Redux/features/rentalPromotionReducer";
+export default function ViewRentalPromotion({ show, setShow }) {
+  const viewData = useSelector(getAllViewRentalPromotion);
   console.log("viewData", viewData);
   return (
     <Modal size="lg" show={show} onHide={() => setShow(false)}>
       <Modal.Header closeButton>
-        <Modal.Title>View PromoCode</Modal.Title>
+        <Modal.Title>View Rental Promotion</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div className="row mb-2">

@@ -27,6 +27,7 @@ import driverReducer from "../features/driverReducer";
 import riderNotificationReducer from "../features/riderNotificationReducer";
 import sosManagementReducer from "../features/sosManagementReducer";
 
+import driverPayoutReducer from "../features/driverPayoutReducer";
 export default configureStore({
   reducer: {
     admins: adminReducer,
@@ -56,5 +57,6 @@ export default configureStore({
     driver: driverReducer,
     riderNotifications: riderNotificationReducer,
     sos: sosManagementReducer,
+    driverPayout: driverPayoutReducer,
   },
 });

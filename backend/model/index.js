@@ -40,4 +40,5 @@ module.exports = {
   promoCode: require("./promoCode.model"),
   riderNotification: require("./notification/rider.model"),
   rentalPromotion: require("./RentalPromotion/rentalPromotion.model"),
+  driverPayoutManagement: require("./driverPayoutManagement.model"),
 };

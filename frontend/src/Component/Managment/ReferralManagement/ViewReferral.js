@@ -1,13 +1,13 @@
 import { Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
-import { getAllViewPromoCode } from "../../../Redux/features/promoCodeReducer";
-export default function ViewPromoCode({ show, setShow }) {
-  const viewData = useSelector(getAllViewPromoCode);
+import { getAllViewReferral } from "../../../Redux/features/referralReducer";
+export default function ViewReferral({ show, setShow }) {
+  const viewData = useSelector(getAllViewReferral);
   console.log("viewData", viewData);
   return (
     <Modal size="lg" show={show} onHide={() => setShow(false)}>
       <Modal.Header closeButton>
-        <Modal.Title>View PromoCode</Modal.Title>
+        <Modal.Title>View Referral Promotion</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <div className="row mb-2">
@@ -56,62 +56,40 @@ export default function ViewPromoCode({ show, setShow }) {
               </p>
             </div>
             <div className="col-md-8">
-              <p>{viewData?.forUser}</p>
+              <p>{viewData?.forUsers}</p>
             </div>
           </div>
 
           <div className="row mb-2">
             <div className="col-md-4">
               <p>
-                <strong>Discount Type</strong>
+                <strong>maxAmountToReferrer</strong>
               </p>
             </div>
             <div className="col-md-8">
-              <p>{viewData?.discountType}</p>
+              <p>{viewData.maxAmountToReferrer}</p>
             </div>
           </div>
 
           <div className="row mb-2">
             <div className="col-md-4">
               <p>
-                <strong>DisCount Value</strong>
+                <strong>maxFreeRideToReferrer</strong>
               </p>
             </div>
             <div className="col-md-8">
-              <p>{viewData?.discountValue}</p>
+              <p>{viewData?.maxFreeRideToReferrer}</p>
             </div>
           </div>
 
           <div className="row mb-2">
             <div className="col-md-4">
               <p>
-                <strong>selectUser</strong>
+                <strong>amountToApplier</strong>
               </p>
             </div>
             <div className="col-md-8">
-              <p>{viewData.selectUser?.name}</p>
-            </div>
-          </div>
-
-          <div className="row mb-2">
-            <div className="col-md-4">
-              <p>
-                <strong>PromoCode</strong>
-              </p>
-            </div>
-            <div className="col-md-8">
-              <p>{viewData?.promoCode}</p>
-            </div>
-          </div>
-
-          <div className="row mb-2">
-            <div className="col-md-4">
-              <p>
-                <strong>vehicleType</strong>
-              </p>
-            </div>
-            <div className="col-md-8">
-              <p>{viewData.vehicleType?.name}</p>
+              <p>{viewData.amountToApplier}</p>
             </div>
           </div>
         </div>

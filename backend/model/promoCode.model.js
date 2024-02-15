@@ -24,15 +24,13 @@ const schema = new Schema(
       type: String,
       enum: ["Admin", "Rider"],
     },
-    selectUser: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: function () {
-          return this.forUser === "Admin" ? "Admin" : "Rider";
-        },
-        required: true,
+    selectUser: {
+      type: Schema.Types.ObjectId,
+      ref: function () {
+        return this.forUser === "Admin" ? "Admin" : "Rider";
       },
-    ],
+      required: true,
+    },
   },
   {
     timestamps: true,

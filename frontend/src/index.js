@@ -73,8 +73,7 @@ import Store from "./Redux/Store/Store.js";
 import RiderNotification from "./Component/Managment/Notifications.js/Rider/Rider.js";
 import RentalPromotionManagement from "./Component/Managment/RentalPromotionManagement/RentalPromotionManagement.js";
 import TransactionManagement from "./Component/Managment/transactionManagement/transactionManagement.js";
-import DriverPayoutManagement from "./Component/Managment/DriverPayoutManagement/DriverPayoutManagement.js";
-
+import DriverPayoutManagement from "./Component/Managment/DriverPayout/DriverPayoutManagement.js";
 const router = createBrowserRouter([
   {
     element: <App />,

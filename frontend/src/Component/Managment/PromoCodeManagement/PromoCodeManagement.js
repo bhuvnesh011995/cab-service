@@ -1,19 +1,12 @@
 import Management_container from "../../Common/Management_container";
-import BtnDark from "../../Common/Buttons/BtnDark";
 import { useEffect, useMemo, useState } from "react";
-import Selection_Input from "../../Common/Inputs/Selection_input";
-import Text_Input from "../../Common/Inputs/Text_Input";
+
 import { toast } from "react-toastify";
 import { MaterialReactTable } from "material-react-table";
 import { useDispatch, useSelector } from "react-redux";
 import AddPromoCode from "./AddPromoCode";
-import {
-  RemoveRedEye,
-  Lock,
-  ModeEditOutline,
-  DeleteForever,
-} from "@mui/icons-material/";
-import { Box, IconButton } from "@mui/material";
+import moment from "moment";
+
 import BASE_URL from "../../../config/config";
 import {
   cleanPromotionStatus,
@@ -102,16 +95,16 @@ export default function PromoCodeManagement() {
         header: "status",
         size: 80,
       },
-      // {
-      //   accessorFn: (row) => row.createdAt.slice(0, 10),
-      //   id: "createdAt",
-      //   header: "Created At",
-      // },
-      // {
-      //   accessorFn: (row) => row.validFrom.slice(0, 10),
-      //   id: "validFrom",
-      //   header: "validFrom",
-      // },
+      {
+        accessorFn: (row) => moment(row.createdAt)?.format("ll"),
+        id: "createdAt",
+        header: "Created At",
+      },
+      {
+        accessorFn: (row) => moment(row.validFrom)?.format("ll"),
+        id: "validFrom",
+        header: "validFrom",
+      },
     ],
     []
   );
