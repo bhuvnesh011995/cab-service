@@ -19,8 +19,8 @@ export const getSelectedFareData = createAsyncThunk(
       return response.data;
     } else
       return rejectWithValue({
-        status: response.status,
-        message: response.data.message,
+        status: response.status || "error",
+        message: response.data.message || "Something went wrong !",
       });
   },
 );
@@ -33,13 +33,13 @@ export const postFare = createAsyncThunk(
       if (response.status === 200) return response.data;
       else
         return rejectWithValue({
-          status: response.status,
-          message: response.data.message,
+          status: response.status || "error",
+          message: response.data.message || "Something went wrong !",
         });
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        message: error.response.data.message,
+        status: error.response.status || "error",
+        message: error.response.data.message || "Something went wrong !",
       });
     }
   },
@@ -54,13 +54,13 @@ export const fetchAllFares = createAsyncThunk(
       if (response.status === 200) return response.data;
       else
         return rejectWithValue({
-          status: response.status,
-          data: response.data,
+          status: response.status || "error",
+          data: response.data || "Something went wrong !",
         });
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error.response.status || "error",
+        data: error.response.data || "Something went wrong !",
       });
     }
   },
@@ -73,13 +73,13 @@ export const deleteFare = createAsyncThunk(
       if (response.status === 200) return { ...response.data, id };
       else
         return rejectWithValue({
-          status: response.status,
-          message: response.data.message,
+          status: response.status || "error",
+          message: response.data.message || "Something went wrong !",
         });
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        message: error.data.message,
+        status: error.response.status || "error",
+        message: error.data.message || "Something went wrong !",
       });
     }
   },

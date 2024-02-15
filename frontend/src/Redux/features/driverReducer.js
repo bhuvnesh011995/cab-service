@@ -19,10 +19,10 @@ export const getSelectedDriverData = createAsyncThunk(
       return response.data;
     } else
       return rejectWithValue({
-        status: response.status,
-        message: response.data.message,
+        status: response.status || "error",
+        message: response.data.message || "Something went wrong !",
       });
-  }
+  },
 );
 
 export const postDriver = createAsyncThunk(
@@ -33,16 +33,16 @@ export const postDriver = createAsyncThunk(
       if (response.status === 200) return response.data;
       else
         return rejectWithValue({
-          status: response.status,
-          message: response.data.message,
+          status: response.status || "error",
+          message: response.data.message || "Something went wrong !",
         });
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        message: error.response.data.message,
+        status: error.response.status || "error",
+        message: error.response.data.message || "Something went wrong !",
       });
     }
-  }
+  },
 );
 
 export const fetchAllDrivers = createAsyncThunk(
@@ -54,16 +54,16 @@ export const fetchAllDrivers = createAsyncThunk(
       if (response.status === 200) return response.data.drivers;
       else
         return rejectWithValue({
-          status: response.status,
-          data: response.data,
+          status: response.status || "error",
+          data: response.data || "Something went wrong !",
         });
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        data: error.response.data,
+        status: error.response.status || "error",
+        data: error.response.data || "Something went wrong !",
       });
     }
-  }
+  },
 );
 
 export const deleteDriverReducer = createAsyncThunk(
@@ -71,45 +71,45 @@ export const deleteDriverReducer = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       let response = await axios.delete(
-        BASE_URL + "/drivers/deleteDriver/" + id
+        BASE_URL + "/drivers/deleteDriver/" + id,
       );
       if (response.status === 200) return { ...response.data, id };
       else
         return rejectWithValue({
-          status: response.status,
-          message: response.data.message,
+          status: response.status || "error",
+          message: response.data.message || "error while fethcing drivers",
         });
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        message: error.data.message,
+        status: error.response.status || "error",
+        message: error.data.message || "error while fethcing drivers",
       });
     }
-  }
+  },
 );
 
-export const fetchAllDriver = createAsyncThunk(
-  "/drivers/fetchAllDriver",
-  async (_, { rejectWithValue }) => {
-    try {
-      let url = BASE_URL + "/drivers";
-      let response = await axios.get(url);
-      if (response.status === 200) return response.data;
-      else
-        return rejectWithValue({
-          status: "error",
-          message: response?.data?.message || "error while fethcing drivers",
-        });
-    } catch (error) {
-      console.log(error);
-      return rejectWithValue({
-        status: "error",
-        message:
-          error?.response?.data?.message || "error while fethcing drivers",
-      });
-    }
-  }
-);
+// export const fetchAllDriver = createAsyncThunk(
+//   "/drivers/fetchAllDriver",
+//   async (_, { rejectWithValue }) => {
+//     try {
+//       let url = BASE_URL + "/drivers";
+//       let response = await axios.get(url);
+//       if (response.status === 200) return response.data;
+//       else
+//         return rejectWithValue({
+//           status: "error",
+//           message: response?.data?.message || "error while fethcing drivers",
+//         });
+//     } catch (error) {
+//       console.log(error);
+//       return rejectWithValue({
+//         status: "error",
+//         message:
+//           error?.response?.data?.message || "error while fethcing drivers",
+//       });
+//     }
+//   },
+// );
 const driverSlice = createSlice({
   name: "driver",
   initialState,
@@ -131,7 +131,7 @@ const driverSlice = createSlice({
       state.status = "added";
       state.error = null;
       const filteredDrivers = state.drivers.filter(
-        (item) => item?._id == action.payload._id
+        (item) => item?._id == action.payload._id,
       );
       if (filteredDrivers.length) {
         if (filteredDrivers[0]._id) {
@@ -170,7 +170,7 @@ const driverSlice = createSlice({
       state.status = "deleted";
       state.error = null;
       state.drivers = state.drivers.filter(
-        (item) => item._id !== action.payload.id
+        (item) => item._id !== action.payload.id,
       );
       state.message = action.payload.message;
     });
@@ -189,7 +189,7 @@ const driverSlice = createSlice({
       state.error = null;
       action.payload.DOB = moment(action.payload.DOB).format("YYYY-MM-DD");
       action.payload.license.expiryDate = moment(
-        action.payload.license.expiryDate
+        action.payload.license.expiryDate,
       ).format("YYYY-MM-DD");
       state.selectedDriver = action.payload;
     });
@@ -198,20 +198,20 @@ const driverSlice = createSlice({
       state.error = action.payload;
     });
 
-    builder.addCase(fetchAllDriver.fulfilled, (state, action) => {
-      state.drivers = action.payload;
-      state.status = "fetched";
-    });
-    builder.addCase(fetchAllDriver.pending, (state, action) => {
-      state.status = "loading";
-    });
-    builder.addCase(fetchAllDriver.rejected, (state, action) => {
-      state.status = "error";
-      state.error = action.payload || {
-        status: "error",
-        message: "error while fetching drivers",
-      };
-    });
+    // builder.addCase(fetchAllDriver.fulfilled, (state, action) => {
+    //   state.drivers = action.payload;
+    //   state.status = "fetched";
+    // });
+    // builder.addCase(fetchAllDriver.pending, (state, action) => {
+    //   state.status = "loading";
+    // });
+    // builder.addCase(fetchAllDriver.rejected, (state, action) => {
+    //   state.status = "error";
+    //   state.error = action.payload || {
+    //     status: "error",
+    //     message: "error while fetching drivers",
+    //   };
+    // });
   },
 });
 

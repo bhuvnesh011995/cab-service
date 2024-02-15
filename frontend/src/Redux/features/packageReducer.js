@@ -18,13 +18,13 @@ export const addPackageReducer = createAsyncThunk(
       if (response.status == 200) return response.data;
       else
         return rejectWithValue({
-          status: response.status,
-          message: response.data.message,
+          status: response.status || "error",
+          message: response.data.message || "Something went wrong !",
         });
     } catch (err) {
       return rejectWithValue({
-        status: err.response.status,
-        message: err.response.data.message,
+        status: err.response.status || "error",
+        message: err.response.data.message || "Something went wrong !",
       });
     }
   },
@@ -39,13 +39,13 @@ export const getAllPackages = createAsyncThunk(
       if (response.status == 200) return response.data;
       else
         return rejectWithValue({
-          status: response.status,
-          message: response.data.message,
+          status: response.status || "error",
+          message: response.data.message || "Something went wrong !",
         });
     } catch (err) {
       rejectWithValue({
-        status: err.response.status,
-        message: err.response.data.message,
+        status: err.response.status || "error",
+        message: err.response.data.message || "Something went wrong !",
       });
     }
   },
@@ -60,13 +60,13 @@ export const deletePackageReducer = createAsyncThunk(
       if (response.status == 200) return { ...response.data, id };
       else
         rejectWithValue({
-          status: response.status,
-          message: response.data.message,
+          status: response.status || "error",
+          message: response.data.message || "Something went wrong !",
         });
     } catch (err) {
       return rejectWithValue({
-        status: err.response.status,
-        message: err.response.data.message,
+        status: err.response.status || "error",
+        message: err.response.data.message || "Something went wrong !",
       });
     }
   },
@@ -81,13 +81,13 @@ export const getSelectedPackageReducer = createAsyncThunk(
       if (response.status == 200) return response.data;
       else
         rejectWithValue({
-          status: response.status,
-          message: response.data.message,
+          status: response.status || "error",
+          message: response.data.message || "Something went wrong !",
         });
     } catch (err) {
       return rejectWithValue({
-        status: err.response.status,
-        message: err.response.data.message,
+        status: err.response.status || "error",
+        message: err.response.data.message || "Something went wrong !",
       });
     }
   },

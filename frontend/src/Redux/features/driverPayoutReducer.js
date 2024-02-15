@@ -18,16 +18,16 @@ const addDriverPayout = createAsyncThunk(
       if (response.status === 201) return response.data;
       else
         return rejectWithValue({
-          status: response.status,
-          message: response.data.message,
+          status: response.status || "error",
+          message: response.data.message || "Something went wrong !",
         });
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        message: error.response.data.message,
+        status: error.response.status || "error",
+        message: error.response.data.message || "Something went wrong !",
       });
     }
-  }
+  },
 );
 
 const fetchDriverPayout = createAsyncThunk(
@@ -38,16 +38,16 @@ const fetchDriverPayout = createAsyncThunk(
       if (response.status === 200) return response.data;
       else
         return rejectWithValue({
-          status: response.status,
-          message: response.message,
+          status: response.status || "error",
+          message: response.message || "Something went wrong !",
         });
     } catch (error) {
       return rejectWithValue({
-        status: error.response.status,
-        message: error.response.message,
+        status: error.response.status || "error",
+        message: error.response.message || "Something went wrong !",
       });
     }
-  }
+  },
 );
 
 const deleteDriverPayout = createAsyncThunk(
@@ -58,16 +58,16 @@ const deleteDriverPayout = createAsyncThunk(
       if (response.status === 200) return { ...response.data, id };
       else
         return rejectWithValue({
-          status: response.status,
-          message: response.message,
+          status: response.status || "error",
+          message: response.message || "Something went wrong !",
         });
     } catch (error) {
       rejectWithValue({
-        status: error.response.status,
-        message: error.response.message,
+        status: error.response.status || "error",
+        message: error.response.message || "Something went wrong !",
       });
     }
-  }
+  },
 );
 
 export const updateDriverPayout = createAsyncThunk(
@@ -89,7 +89,7 @@ export const updateDriverPayout = createAsyncThunk(
         message: error.response?.data?.message || "error while updating tax",
       });
     }
-  }
+  },
 );
 
 const driverPayoutSlice = createSlice({
@@ -98,13 +98,13 @@ const driverPayoutSlice = createSlice({
   reducers: {
     updateDriverPayoutById: (state, action) => {
       state.selectDriverPayout = state.driverPayout.find(
-        (selectDriverPayout) => selectDriverPayout._id === action.payload.id
+        (selectDriverPayout) => selectDriverPayout._id === action.payload.id,
       );
       state.status = "fetched";
     },
     getViewDriverPayout: (state, action) => {
       state.viewDriverPayout = state.driverPayout.find(
-        (viewDriverPayout) => viewDriverPayout._id === action.payload.id
+        (viewDriverPayout) => viewDriverPayout._id === action.payload.id,
       );
       state.status = "view";
     },
@@ -161,7 +161,7 @@ const driverPayoutSlice = createSlice({
       state.error = null;
 
       state.driverPayout = state.driverPayout.filter(
-        (driverPayout) => driverPayout._id !== action.payload.id
+        (driverPayout) => driverPayout._id !== action.payload.id,
       );
     });
     builder.addCase(deleteDriverPayout.rejected, (state, action) => {
@@ -171,7 +171,7 @@ const driverPayoutSlice = createSlice({
     });
     builder.addCase(updateDriverPayout.fulfilled, (state, action) => {
       state.driverPayout = state.driverPayout.map((driverPayout) =>
-        driverPayout._id === action.payload._id ? action.payload : driverPayout
+        driverPayout._id === action.payload._id ? action.payload : driverPayout,
       );
       state.status = "updated";
     });

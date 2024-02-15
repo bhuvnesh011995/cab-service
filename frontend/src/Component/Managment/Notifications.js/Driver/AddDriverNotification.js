@@ -8,6 +8,7 @@ import { useMemo } from "react";
 import { toast } from "react-toastify";
 import {
   fetchAllDriver,
+  fetchAllDrivers,
   getAllDrivers,
 } from "../../../../Redux/features/driverReducer";
 import {
@@ -30,15 +31,16 @@ export default function AddDriverNotification({ show, setShow }) {
     formState: { errors, dirtyFields, isDirty },
   } = useForm();
   const dispatch = useDispatch();
-  const riders = useSelector(getAllDrivers);
+  const drivers = useSelector(getAllDrivers);
   const notification = useSelector(getDriverNotification);
-  const ridersOptions = useMemo(
-    () => riders.map((rider) => ({ value: rider._id, label: rider.name })),
-    [riders]
+  const driversOptions = useMemo(
+    () =>
+      drivers.map((driver) => ({ value: driver._id, label: driver.fullName })),
+    [drivers],
   );
   useEffect(() => {
     if (ready) {
-      dispatch(fetchAllDriver());
+      dispatch(fetchAllDrivers());
     } else setReady(true);
   }, [ready]);
 
@@ -60,43 +62,43 @@ export default function AddDriverNotification({ show, setShow }) {
       let updatedData = {};
       updatedFields.forEach((field) => (updatedData[field] = data[field]));
       dispatch(
-        updateDriverNotification({ id: notification._id, data: updatedData })
+        updateDriverNotification({ id: notification._id, data: updatedData }),
       );
     }
   };
   return (
-    <Modal size="md" show={show} onHide={() => setShow(false)}>
+    <Modal size='md' show={show} onHide={() => setShow(false)}>
       <Modal.Header closeButton>
-        <Modal.Title>Add New Rider Notification</Modal.Title>
+        <Modal.Title>Add New Driver Notification</Modal.Title>
       </Modal.Header>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Modal.Body>
-          <div className="row mb-3">
-            <div className="col-md-3">
-              <label className="form-label">Title :</label>
+          <div className='row mb-3'>
+            <div className='col-md-3'>
+              <label className='form-label'>Title :</label>
             </div>
-            <div className="col-md-9">
+            <div className='col-md-9'>
               <input
                 {...register("title", { required: "this is required field" })}
-                placeholder="Enter Title"
-                className="form-control"
+                placeholder='Enter Title'
+                className='form-control'
               />
             </div>
           </div>
-          <div className="row mb-3">
-            <div className="col-md-3">
-              <label className="form-label">For Users :</label>
+          <div className='row mb-3'>
+            <div className='col-md-3'>
+              <label className='form-label'>For Users :</label>
             </div>
-            <div className="col-md-9">
+            <div className='col-md-9'>
               <Controller
-                name="forUsers"
+                name='forUsers'
                 rules={{ required: "this is required field" }}
                 control={control}
                 render={({ field }) => (
                   <ReactSelect
                     {...field}
                     closeMenuOnSelect={false}
-                    options={ridersOptions}
+                    options={driversOptions}
                     isMulti
                   />
                 )}
@@ -104,16 +106,16 @@ export default function AddDriverNotification({ show, setShow }) {
             </div>
           </div>
 
-          <div className="row mb-3">
-            <div className="col-md-3">
-              <label className="form-label">Notification :</label>
+          <div className='row mb-3'>
+            <div className='col-md-3'>
+              <label className='form-label'>Notification :</label>
             </div>
-            <div className="col-md-9">
+            <div className='col-md-9'>
               <textarea
                 {...register("notification", {
                   required: "this is required field",
                 })}
-                className="form-control"
+                className='form-control'
                 rows={3}
               ></textarea>
             </div>
@@ -122,12 +124,12 @@ export default function AddDriverNotification({ show, setShow }) {
         <Modal.Footer>
           <button
             onClick={() => setShow(false)}
-            type="button"
-            className="btn btn-danger"
+            type='button'
+            className='btn btn-danger'
           >
             Cancel
           </button>
-          <button type="submit" className="btn btn-primary">
+          <button type='submit' className='btn btn-primary'>
             Add Notification
           </button>
         </Modal.Footer>
