@@ -95,7 +95,7 @@ export const fetchAllSOSs = createAsyncThunk(
 );
 
 const sosManagementReducer = createSlice({
-  name: "SOS",
+  name: "sos",
   initialState,
   reducers: {
     emptySelectedSOS: (state, action) => {
@@ -174,8 +174,8 @@ const sosManagementReducer = createSlice({
 
 export default sosManagementReducer.reducer;
 
-export const getSelectedSOS = (state) => state.SOS.selectedSOS;
+export const getSelectedSOS = (state) => state.sos.selectedSOS;
 
-export const getSOSs = (state) => state.SOS.allSOS;
+export const getSOSs = (state) => state.sos.allSOS;
 
 export const { emptySelectedSOS } = sosManagementReducer.actions;

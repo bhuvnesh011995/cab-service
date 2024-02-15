@@ -31,8 +31,6 @@ exports.getAllManufacturer = async function (req, res, next) {
 exports.updatemanufacturer = async function (req, res, next) {
   try {
     const { id } = req.params;
-    console.log("id", req.body);
-    console.log(id);
 
     let obj = {};
 

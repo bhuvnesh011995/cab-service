@@ -139,6 +139,7 @@ require("./routes/rentalPromotion.route.js")(app);
 require("./routes/notification/rider.route.js")(app);
 require("./routes/notification/driver.route")(app);
 
+require("./routes/driverPayoutManagement.route.js")(app);
 app.use(ErrorHandler);
 
 module.exports = app;

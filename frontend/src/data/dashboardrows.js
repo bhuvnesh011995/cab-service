@@ -131,7 +131,7 @@ export default [
     children: {
       isOpen: false,
       listArray: [
-        { to: "adminTransactionManagement", name: "Transaction " },
+        { to: "adminTransactionManagement", name: "Transaction" },
         { to: "driverPayoutManagement", name: "Driver Payout Management" },
         { to: "taxManagement", name: "Tax Management" },
       ],

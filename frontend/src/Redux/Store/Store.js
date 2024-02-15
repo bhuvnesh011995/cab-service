@@ -26,6 +26,8 @@ import referralReducer from "../features/referralReducer";
 import driverReducer from "../features/driverReducer";
 import riderNotificationReducer from "../features/riderNotificationReducer";
 import driverNotificationReducer from "../features/driverNotificationReducer";
+import sosManagementReducer from "../features/sosManagementReducer";
+import driverPayoutReducer from "../features/driverPayoutReducer";
 
 export default configureStore({
   reducer: {
@@ -55,6 +57,8 @@ export default configureStore({
     referral: referralReducer,
     driver: driverReducer,
     riderNotifications: riderNotificationReducer,
-    driverNotifications:driverNotificationReducer
+    driverNotifications: driverNotificationReducer,
+    sos: sosManagementReducer,
+    driverPayout: driverPayoutReducer,
   },
 });

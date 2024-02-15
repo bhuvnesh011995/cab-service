@@ -18,7 +18,7 @@ export const filterPromotion = createAsyncThunk(
       let url = new URL("/test/api/v1/promotion/filter", BASE_URL);
       if (name) url.searchParams.set("name", name);
       if (country) url.searchParams.set("country", country);
-         if (state) url.searchParams.set("state", state);
+      if (state) url.searchParams.set("state", state);
       if (city) url.searchParams.set("city", city);
       let response = await axios.get(url.href);
       if (response.status === 200) return response.data;
@@ -150,6 +150,7 @@ const promotionSlice = createSlice({
     cleanViewPromotion: (state, action) => {
       state.viewVehicleType = null;
     },
+
     cleanPromotion: (state, action) => {
       state.selectPromotion = null;
     },

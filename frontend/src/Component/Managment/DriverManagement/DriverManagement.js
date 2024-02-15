@@ -1,8 +1,5 @@
 import Management_container from "../../Common/Management_container";
 import { useEffect, useState } from "react";
-import BASE_URL from "../../../config/config";
-import * as tiIcons from "react-icons/ti";
-import * as rsIcons from "react-icons/rx";
 import DriverDetails from "./DriverDetails";
 import { CommonDataTable } from "../../../Common/commonDataTable";
 import { driverTableHeaders } from "../../../constants/table.contants";
@@ -10,19 +7,23 @@ import AddDriver from "./AddDriver";
 import Filter_Option from "../../Common/Filter_option";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  deleteDriverReducer,
   fetchAllDrivers,
   getAllDrivers,
 } from "../../../Redux/features/driverReducer";
+import DeleteModal from "../../DeleteModel/DeleteModel";
 
 const initialFilter = {
   search: "",
   status: "",
+  licExp: false,
+  docPen: false,
+  approved: false,
 };
 
 export default function DriverManagement() {
   const dispatch = useDispatch();
   const [filter, setFilter] = useState(initialFilter);
-  const [list, setList] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [driver, setDriver] = useState(null);
 
@@ -39,127 +40,8 @@ export default function DriverManagement() {
   }, [filter]);
 
   function reset() {
+    initialFilter.licExp = false;
     setFilter({ ...initialFilter });
-  }
-
-  function handleLicExp() {
-    fetch(BASE_URL + "/drivers/filter/?licExp=true", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = [];
-          data.drivers.map((ele, i) => {
-            let obj = {
-              index: i + 1,
-              firstName: ele.firstName,
-              lastName: ele.lastName,
-              mobile: ele.mobile,
-              email: ele.email,
-              status: ele.status,
-              wallet: ele.wallet.balance,
-              verified: ele.verified ? (
-                <tiIcons.TiTick />
-              ) : (
-                <rsIcons.RxCross2 />
-              ),
-              createdAt: ele.createdAt,
-              id: ele._id,
-            };
-            if (
-              !ele.aadhar?.verified ||
-              !ele.license?.verified ||
-              !ele.pan?.verified
-            )
-              obj.documentStatus = <rsIcons.RxCross2 />;
-            else obj.documentStatus = <tiIcons.TiTick />;
-
-            arr.push(obj);
-          });
-          setList(arr);
-        }
-      });
-  }
-
-  function handleDocPen() {
-    fetch(BASE_URL + "/drivers/filter/?docPen=true", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = [];
-          data.drivers.map((ele, i) => {
-            let obj = {
-              index: i + 1,
-              firstName: ele.firstName,
-              lastName: ele.lastName,
-              mobile: ele.mobile,
-              email: ele.email,
-              status: ele.status,
-              wallet: ele.wallet.balance,
-              verified: ele.verified ? (
-                <tiIcons.TiTick />
-              ) : (
-                <rsIcons.RxCross2 />
-              ),
-              createdAt: ele.createdAt,
-              id: ele._id,
-            };
-            if (
-              !ele.aadhar?.verified ||
-              !ele.license?.verified ||
-              !ele.pan?.verified
-            )
-              obj.documentStatus = <rsIcons.RxCross2 />;
-            else obj.documentStatus = <tiIcons.TiTick />;
-
-            arr.push(obj);
-          });
-          setList(arr);
-        }
-      });
-  }
-
-  function handleApproved() {
-    fetch(BASE_URL + "/drivers/filter/?approved=true", {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success) {
-          let arr = [];
-          data.drivers.map((ele, i) => {
-            let obj = {
-              index: i + 1,
-              firstName: ele.firstName,
-              lastName: ele.lastName,
-              mobile: ele.mobile,
-              email: ele.email,
-              status: ele.status,
-              wallet: ele.wallet.balance,
-              verified: ele.verified ? (
-                <tiIcons.TiTick />
-              ) : (
-                <rsIcons.RxCross2 />
-              ),
-              createdAt: ele.createdAt,
-              id: ele._id,
-            };
-            if (
-              !ele.aadhar?.verified ||
-              !ele.license?.verified ||
-              !ele.pan?.verified
-            )
-              obj.documentStatus = <rsIcons.RxCross2 />;
-            else obj.documentStatus = <tiIcons.TiTick />;
-
-            arr.push(obj);
-          });
-          setList(arr);
-        }
-      });
   }
 
   const updateDrivers = (data, type, index) => {
@@ -189,6 +71,14 @@ export default function DriverManagement() {
         />
       )}
 
+      <DeleteModal
+        info={deleteInfo}
+        show={deleteDriver}
+        setShow={setDeleteDriver}
+        handleDelete={() => dispatch(deleteDriverReducer(id))}
+        arg={id}
+      />
+
       <div class='row'>
         <div class='col-lg-13'>
           <div class='card'>
@@ -209,25 +99,40 @@ export default function DriverManagement() {
                 </button>
 
                 <button
-                  onClick={handleLicExp}
+                  onClick={() => {
+                    filter.licExp = !filter.licExp;
+                    setFilter({ ...filter });
+                  }}
                   type='button'
-                  className='btn m-2 btn-outline-primary waves-effect waves-light'
+                  className={`btn m-2 btn${
+                    filter.licExp ? "" : "-outline"
+                  }-primary waves-effect waves-light`}
                 >
                   License expired Driver
                 </button>
 
                 <button
-                  onClick={handleDocPen}
+                  onClick={() => {
+                    filter.docPen = !filter.docPen;
+                    setFilter({ ...filter });
+                  }}
                   type='button'
-                  className='btn m-2 btn-outline-primary waves-effect waves-light'
+                  className={`btn m-2 btn${
+                    filter.docPen ? "" : "-outline"
+                  }-primary waves-effect waves-light`}
                 >
                   Doc Approval Pending Driver
                 </button>
 
                 <button
-                  onClick={handleApproved}
+                  onClick={() => {
+                    filter.approved = !filter.approved;
+                    setFilter({ ...filter });
+                  }}
                   type='button'
-                  className='btn m-2 btn-outline-primary waves-effect waves-light'
+                  className={`btn m-2 btn${
+                    filter.approved ? "" : "-outline"
+                  }-primary waves-effect waves-light`}
                 >
                   Approved Drivers
                 </button>
@@ -235,31 +140,6 @@ export default function DriverManagement() {
               <form>
                 <div className='row'>
                   <div className='col-lg-2 inputField'>
-                    {/* <Text_Input
-                      input={filter}
-                      setInput={setFilter}
-                      setKey={"name"}
-                      lebel_text={"Name :"}
-                    />
-                    <Text_Input
-                      input={filter}
-                      setInput={setFilter}
-                      setKey={"email"}
-                      lebel_text={"Email :"}
-                    />
-                    <Text_Input
-                      input={filter}
-                      setInput={setFilter}
-                      setKey={"mobile"}
-                      lebel_text={"Mobile :"}
-                    />
-                    <Selection_Input
-                      options={["ACTIVE", "INACTIVE"]}
-                      input={filter}
-                      setInput={setFilter}
-                      lebel_text={"Status : "}
-                      setKey={"status"}
-                    /> */}
                     <Filter_Option
                       input={filter}
                       setInput={setFilter}
@@ -295,11 +175,36 @@ export default function DriverManagement() {
                       accessorKey: accessor,
                       header: header,
                       Cell: ({ row }) => (
-                        <div>
-                          {row.original.verified ? (
-                            <span>is verified</span>
+                        <div className='d-flex align-items-center justify-content-center'>
+                          {row.original.aadhar.file.length &&
+                          row.original.pan.file.length &&
+                          row.original.license.file.length ? (
+                            <span
+                              className='d-flex align-items-center justify-content-center'
+                              style={{
+                                width: "30px",
+                                height: "30px",
+                                borderRadius: "50%",
+                                backgroundColor: "#74E291",
+                                fontSize: "19px",
+                              }}
+                            >
+                              <i className=' mdi mdi-checkbox-marked-circle'></i>
+                            </span>
                           ) : (
-                            <span>not verified</span>
+                            <span
+                              className='d-flex align-items-center justify-content-center'
+                              style={{
+                                width: "30px",
+                                height: "30px",
+                                borderRadius: "50%",
+                                backgroundColor: "red",
+                                fontWeight: "bolder",
+                                fontSize: "19px",
+                              }}
+                            >
+                              x
+                            </span>
                           )}
                         </div>
                       ),

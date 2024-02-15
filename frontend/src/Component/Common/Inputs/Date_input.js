@@ -5,7 +5,7 @@ export default function Date_input({
   isDisabled,
 }) {
   return (
-    <div class='mb-3'>
+    <div class='m-3'>
       <label class='form-label'>{lebel_text}</label>
       <input
         type='date'

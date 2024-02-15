@@ -41,4 +41,5 @@ module.exports = {
   riderNotification: require("./notification/rider.model"),
   rentalPromotion: require("./RentalPromotion/rentalPromotion.model"),
   driverNotification: require("./notification/driver.model"),
+  driverPayoutManagement: require("./driverPayoutManagement.model"),
 };

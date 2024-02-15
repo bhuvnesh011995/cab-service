@@ -7,15 +7,15 @@ let initialState = {
   error: null,
   rentalPromotion: [],
   selectRentalPromotion: null,
-  viewPromotion: null,
+  viewRentalPromotion: null,
 };
 
 export const filterRentalPromotion = createAsyncThunk(
   "promoCode/filterPromoCode",
-  async ({ promoCode, state, city, rentalPackage }, { rejectWithValue }) => {
+  async ({ city, packages }, { rejectWithValue }) => {
     try {
       let url = new URL("/test/api/v1/rentalPromotion/filter", BASE_URL);
-      if (rentalPackage) url.searchParams.set("package", rentalPackage);
+      if (packages) url.searchParams.set("package", packages);
       if (city) url.searchParams.set("city", city);
       let response = await axios.get(url.href);
       if (response.status === 200) return response.data;
@@ -128,12 +128,16 @@ const rentalPromotionSlice = createSlice({
       if (obj) {
         state.status = "fetched";
 
-        const updatedSelectUser = obj.selectUser.map((item) => ({
-          value: item._id,
-          label: `${item.name ? item.name : ""} ${
-            item.firstName ? item.firstName : ""
-          }`,
-        }));
+        let updatedSelectUser;
+
+        updatedSelectUser = [
+          {
+            value: obj.selectUser._id,
+            label: `${obj.selectUser.name ? obj.selectUser.name : ""} ${
+              obj.selectUser.firstName ? obj.selectUser.firstName : ""
+            }`,
+          },
+        ];
 
         state.selectRentalPromotion = {
           ...obj,
@@ -150,6 +154,14 @@ const rentalPromotionSlice = createSlice({
         console.error("Promo code with ID", action.payload.id, "not found.");
       }
     },
+
+    getViewRentalPromotion: (state, action) => {
+      state.viewRentalPromotion = state.rentalPromotion.find(
+        (viewRentalPromotion) => viewRentalPromotion._id === action.payload.id
+      );
+      state.status = " view";
+    },
+
     getViewPromotion: (state, action) => {
       state.viewPromotion = state.promotion.find(
         (viewPromotion) => viewPromotion._id === action.payload.id
@@ -255,8 +267,9 @@ export const {
   cleanRentalPromotionStatus,
   updateRentalPromotionById,
   cleanRentalPromotion,
-  getViewPromotion,
+  getViewRentalPromotion
 } = rentalPromotionSlice.actions;
 export const getRentalPromotion = (state) =>
   state.rentalPromotion.selectRentalPromotion;
-// export const getAllViewPromotion = (state) => state.promotion.viewPromotion;
+export const getAllViewRentalPromotion = (state) =>
+  state.rentalPromotion.viewRentalPromotion;

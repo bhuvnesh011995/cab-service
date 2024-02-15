@@ -73,6 +73,8 @@ import Store from "./Redux/Store/Store.js";
 import RiderNotification from "./Component/Managment/Notifications.js/Rider/Rider.js";
 import RentalPromotionManagement from "./Component/Managment/RentalPromotionManagement/RentalPromotionManagement.js";
 import DriverNotification from "./Component/Managment/Notifications.js/Driver/Driver";
+import TransactionManagement from "./Component/Managment/transactionManagement/transactionManagement.js";
+import DriverPayoutManagement from "./Component/Managment/DriverPayout/DriverPayoutManagement.js";
 
 const router = createBrowserRouter([
   {
@@ -176,6 +178,14 @@ const router = createBrowserRouter([
         path: "notificationToDriver",
         element: <DriverNotification />,
       },
+      {
+        path: "adminTransactionManagement",
+        element: <TransactionManagement />,
+      },
+      {
+        path: "driverPayoutManagement",
+        element: <DriverPayoutManagement />,
+      },
     ],
   },
   {
@@ -205,7 +215,7 @@ root.render(
         {/* </AuthProvider> */}
       </QueryClientProvider>
     </Provider>
-  </>
+  </>,
 );
 
 // If you want to start measuring performance in your app, pass a function

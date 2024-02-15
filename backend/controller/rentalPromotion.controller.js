@@ -111,6 +111,7 @@ exports.updateRentalPromotion = async function (req, res) {
 exports.filterRentalPromotion = async (req, res, next) => {
   try {
     let { promoCode, country, state, city, package } = req.query;
+    console.log(package);
     let query = [
       {
         $lookup: {
@@ -152,6 +153,40 @@ exports.filterRentalPromotion = async (req, res, next) => {
         },
       },
       { $unwind: "$package" },
+
+      { $unwind: "$city" },
+      {
+        $lookup: {
+          from: "VehicleType",
+          localField: "vehicleType",
+          foreignField: "_id",
+          pipeline: [{ $project: { name: 1 } }],
+          as: "vehicleType",
+        },
+      },
+      { $unwind: "$vehicleType" },
+      {
+        $lookup: {
+          from: "Admin",
+          localField: "selectUser",
+          foreignField: "_id",
+          as: "adminUser",
+        },
+      },
+      {
+        $lookup: {
+          from: "Rider",
+          localField: "selectUser",
+          foreignField: "_id",
+          as: "riderUser",
+        },
+      },
+      {
+        $addFields: {
+          selectUser: { $concatArrays: ["$adminUser", "$riderUser"] },
+        },
+      },
+      { $unwind: "$selectUser" },
     ];
 
     let matchStage = { $match: { $or: [] } };
@@ -173,6 +208,11 @@ exports.filterRentalPromotion = async (req, res, next) => {
         "city.name": { $regex: city, $options: "i" },
       });
 
+    if (package)
+      matchStage.$match.$or.push({
+        "package.name": { $regex: package, $options: "i" },
+      });
+
     if (matchStage.$match.$or && matchStage.$match.$or.length > 0) {
       query.push(matchStage);
     }
@@ -184,11 +224,17 @@ exports.filterRentalPromotion = async (req, res, next) => {
         state: 1,
         city: 1,
         status: 1,
-        description: 1,
         createdAt: 1,
-        forUsers: 1,
         validFrom: 1,
         package: 1,
+        vehicleType: 1,
+        discountType: 1,
+        discountValue: 1,
+        multipleUser: 1,
+        runMode: 1,
+        selectUser: 1,
+        forUser: 1,
+        validTo: 1,
       },
     });
 

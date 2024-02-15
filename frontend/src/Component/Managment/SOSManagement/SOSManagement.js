@@ -1,16 +1,24 @@
 import { useEffect, useState } from "react";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import Management_container from "../../Common/Management_container";
-import SelectWithValue from "../../Common/Inputs/SelectWithValue";
 import { CommonDataTable } from "../../../Common/commonDataTable";
 import { sosTableHeaders } from "../../../constants/table.contants";
 import AddSos from "./AddSos";
 import DeleteModal from "../../DeleteModel/DeleteModel";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  deleteSOSReducer,
+  fetchAllSOSs,
+  getSOSs,
+} from "../../../Redux/features/sosManagementReducer";
+import Filter_Option from "../../Common/Filter_option";
 
 const initialFilter = {
-  userType: "",
+  search: "",
 };
 export default function SOSManagement() {
+  const allSoss = useSelector(getSOSs);
+  const dispatch = useDispatch();
   const [filter, setFilter] = useState(initialFilter);
   const [id, setId] = useState(null);
   const [deleteInfo, setDeleteInfo] = useState(null);
@@ -19,25 +27,8 @@ export default function SOSManagement() {
   const [sosModal, setSOSModal] = useState(false);
 
   useEffect(() => {
-    // fetch(BASE_URL + "/sos/filter")
-    //   .then((res) => res.json())
-    //   .then((data) => {
-    //     if (data.success) {
-    //       let arr = data.sos.map((ele) => {
-    //         return {
-    //           bookingId: ele.booking._id,
-    //           userType: ele.userType,
-    //           firstName: ele.user.firstName,
-    //           lastName: ele.user.lastName,
-    //           lat: ele.location.lat,
-    //           lng: ele.location.lng,
-    //           createdAt: ele.createdAt,
-    //         };
-    //       });
-    //       setList(arr);
-    //     }
-    //   });
-  }, []);
+    dispatch(fetchAllSOSs(filter));
+  }, [filter]);
 
   function reset() {
     setFilter({ ...initialFilter });
@@ -60,7 +51,7 @@ export default function SOSManagement() {
   };
 
   const handleDelete = () => {
-    console.log("delete sos");
+    dispatch(deleteSOSReducer(id));
   };
 
   return (
@@ -85,15 +76,11 @@ export default function SOSManagement() {
               <form className='m-2'>
                 <div className='row'>
                   <div className='col-lg-2 inputField'>
-                    <SelectWithValue
+                    <Filter_Option
                       input={filter}
                       setInput={setFilter}
-                      setKey={"userType"}
-                      label={"User Type"}
-                      options={[
-                        { value: "Rider", title: "Rider" },
-                        { value: "Driver", title: "Driver" },
-                      ]}
+                      initialInput={initialFilter}
+                      options={["search"]}
                     />
                     <div
                       style={{
@@ -114,7 +101,7 @@ export default function SOSManagement() {
               </form>
               <CommonDataTable
                 tableHeaders={sosTableHeaders}
-                data={[]}
+                data={allSoss}
                 deleteButton
                 editButton
                 viewButton

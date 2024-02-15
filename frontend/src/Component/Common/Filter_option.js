@@ -85,12 +85,19 @@ export default function Filter_Option({
       dispatch(emptyCities());
     }
   }, [input?.country, input?.state]);
-  console.log("man", manufacturer);
 
   return (
     <form>
       <div className='row'>
         <div className='col-lg-2 inputField'>
+          {options.includes("search") && (
+            <Text_Input
+              input={input}
+              setInput={setInput}
+              setKey={"search"}
+              lebel_text={"Search :"}
+            />
+          )}
           {options.includes("package") && (
             <Selection_Input
               options={packages}
@@ -166,14 +173,6 @@ export default function Filter_Option({
             />
           )}
 
-          {options.includes("search") && (
-            <Text_Input
-              input={input}
-              setInput={setInput}
-              setKey={"search"}
-              lebel_text={"Search :"}
-            />
-          )}
           {options.includes("from") && (
             <Date_input
               setKey={"from"}
