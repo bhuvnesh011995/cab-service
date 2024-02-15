@@ -1,21 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import Filter_Option from "../../Common/Filter_option";
 import Management_container from "../../Common/Management_container";
-import Table from "../../Common/Table";
-import BtnDark from "../../Common/Buttons/BtnDark";
-import { useNavigate } from "react-router-dom";
+
 import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
-import {
-  RemoveRedEye,
-  Lock,
-  ModeEditOutline,
-  DeleteForever,
-} from "@mui/icons-material/";
-import { Box, IconButton } from "@mui/material";
-import { authContext } from "../../../Context/AuthContext";
-import { useContext } from "react";
-import axios from "axios";
 import AddVehicleCategory from "../VehicleCategoryMangement/AddVehicleCategory";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import { toast } from "react-toastify";
@@ -31,39 +18,27 @@ import {
 } from "../../../Redux/features/vehicleCategoryReducer";
 import { useDispatch, useSelector } from "react-redux";
 import ViewVehicleCategory from "./ViewVehicleCategory";
-let initialFilter = {
-  vehicleCategory: "",
-  status: "",
-};
-export default function VehicleCategoryManagement() {
-  const [filter, setFilter] = useState(initialFilter);
-  const [list, setList] = useState();
+import { useForm } from "react-hook-form";
 
+export default function VehicleCategoryManagement() {
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
   const [openView, setOpenView] = useState(false);
   const [id, setId] = useState(null);
   const [deleteInfo, setDeleteInfo] = useState(null);
   const dispatch = useDispatch();
-  const url = BASE_URL + "/make/filter/";
   const [updateData, setUpdateData] = useState(null);
   const [ready, setReady] = useState(false);
   const permissions = useSelector(getPermissions);
-
-  const api = BASE_URL + "/vehicleCategory/";
+  const { reset, handleSubmit, register } = useForm();
 
   useEffect(() => {
     dispatch(fetchVehicleCategory());
   }, []);
-  useEffect(() => {
-    if (ready) {
-      dispatch(filterVehicleCategory(filter));
-    } else setReady(true);
-  }, [ready]);
 
   const vehicleCategoryData = useSelector(getAllVehicleCategory);
   const vehicleCategoryStatus = useSelector(
-    (state) => state.vehicleCategory.status,
+    (state) => state.vehicleCategory.status
   );
   const message = useSelector((state) => state.vehicleCategory.message);
 
@@ -101,50 +76,25 @@ export default function VehicleCategoryManagement() {
         size: 80,
       },
     ],
-    [],
+    []
   );
-
-  function handleReset(e) {
-    e.preventDefault();
-    setFilter(initialFilter);
-    fetch(url, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        let arr = [];
-        data?.makeList?.map((ele, i) => {
-          arr.push({
-            index: i + 1,
-            id: ele._id,
-            name: ele.name,
-            status: ele.status,
-            createdAt: ele.createdAt,
-          });
-        });
-        setList(arr);
-      });
-
-    return;
-  }
 
   function handleDelete(rowId) {
     dispatch(deleteVehicleCategory(rowId));
   }
 
-  function handleSubmit() {
-    dispatch(filterVehicleCategory(filter));
+  function onSubmit(data) {
+    dispatch(filterVehicleCategory(data));
   }
 
-  function handleClick2() {
-    setFilter(initialFilter);
+  function handleReset() {
+    reset();
   }
-
   return (
     <Management_container title={"VehicleCategory"}>
-      <div class='row'>
-        <div class='col-lg-13'>
-          <div class='card'>
+      <div class="row">
+        <div class="col-lg-13">
+          <div class="card">
             <DeleteModal
               info={deleteInfo}
               show={isOpen}
@@ -163,34 +113,53 @@ export default function VehicleCategoryManagement() {
             {openView && (
               <ViewVehicleCategory show={openView} setShow={setOpenView} />
             )}
-            <div class='card-body'>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "right",
-                  zIndex: "2",
-                }}
-              >
-                {(permissions.includes("All") ||
-                  permissions.includes("addModel")) && (
-                  <BtnDark
-                    handleClick={() => {
-                      setShow(true);
-                    }}
-                    title={"Add VehicleCategory"}
-                  />
-                )}
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-12 text-right">
+                  <button
+                    class="btn btn-outline-primary"
+                    onClick={() => setShow(true)}
+                  >
+                    Add New
+                  </button>
+                </div>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div
+                    class="justify-content-center row align-items-end mb-5"
+                    style={{ alignItems: "end" }}
+                  >
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">vehicleCategory</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("vehicleCategory")}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label>Status: </label>
+                      <select
+                        name="status"
+                        className="form-control select2-templating "
+                        {...register("status")}
+                      >
+                        <option value="">choose...</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="INACTIVE">Inactive</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary me-3" type="submit">
+                        Search
+                      </button>
+                      <button class="btn btn-danger me-3" onClick={handleReset}>
+                        Reset
+                      </button>
+                    </div>
+                  </div>{" "}
+                </form>
               </div>
-              <Filter_Option
-                input={filter}
-                setInput={setFilter}
-                initialInput={initialFilter}
-                btn1_title={"Search"}
-                handleClick1={handleSubmit}
-                handleClick2={handleClick2}
-                btn2_title={"Reset"}
-                options={["vehicleCategory", "status"]}
-              />
             </div>
           </div>
         </div>
@@ -201,28 +170,28 @@ export default function VehicleCategoryManagement() {
           columns={columns || []}
           data={vehicleCategoryData || []}
           enableRowNumbers={true}
-          rowNumberDisplayMode='static'
+          rowNumberDisplayMode="static"
           enableRowActions
           positionActionsColumn={"last"}
           renderRowActions={({ row, table }) => (
-            <div className='hstack gap-2 fs-1'>
+            <div className="hstack gap-2 fs-1">
               <button
                 onClick={() => {
                   dispatch(getViewVehicleCategory({ id: row.original._id }));
                   setOpenView(true);
                 }}
-                className='btn btn-icon btn-sm btn-warning rounded-pill'
+                className="btn btn-icon btn-sm btn-warning rounded-pill"
               >
-                <i className='mdi mdi-eye'></i>
+                <i className="mdi mdi-eye"></i>
               </button>
               <button
                 onClick={() => {
                   dispatch(updateVehicleCategoryById({ id: row.original._id }));
                   setShow(true);
                 }}
-                className='btn btn-icon btn-sm btn-info rounded-pill'
+                className="btn btn-icon btn-sm btn-info rounded-pill"
               >
-                <i className='bx bxs-edit-alt' />
+                <i className="bx bxs-edit-alt" />
               </button>
               <button
                 onClick={() => {
@@ -233,9 +202,9 @@ export default function VehicleCategoryManagement() {
                   setIsOpen(true);
                   setId(row.original._id);
                 }}
-                className='btn btn-icon btn-sm btn-danger rounded-pill'
+                className="btn btn-icon btn-sm btn-danger rounded-pill"
               >
-                <i className='bx bxs-trash' />
+                <i className="bx bxs-trash" />
               </button>
             </div>
           )}

@@ -39,7 +39,7 @@ export default function RentalPromotionManagement() {
   const id = useSelector((state) => state.delete.id);
   const URL = useSelector(url);
   const dispatch = useDispatch();
-  const { register, watch, handleSubmit } = useForm();
+  const { register, watch, handleSubmit, reset } = useForm();
 
   useEffect(() => {
     dispatch(fetchRentalPromotion());
@@ -120,6 +120,10 @@ export default function RentalPromotionManagement() {
     }
   }, [deleteStatus, URL, id]);
 
+  function handleReset() {
+    reset();
+  }
+
   return (
     <Management_container title={"Rental Promotion Management"}>
       {isOpen && <DeleteModalAdv />}
@@ -170,7 +174,9 @@ export default function RentalPromotionManagement() {
                       <button class="btn btn-primary me-3" type="submit">
                         Search
                       </button>
-                      <button class="btn btn-danger me-3">Reset</button>
+                      <button class="btn btn-danger me-3" onClick={handleReset}>
+                        Reset
+                      </button>
                     </div>
                   </div>{" "}
                 </form>

@@ -80,20 +80,25 @@ exports.updateVehicleCategory = async function (req, res, next) {
   }
 };
 
-exports.filterVehicleCategory = async (req, res, next) => {
-  console.log(req.query);
+exports.filterVehicleCategory = async function (req, res, next) {
   try {
     const { vehicleCategory, status } = req.query;
+
     let query = [{ $match: { $or: [] } }];
+
     if (vehicleCategory)
       query[0].$match.$or.push({
         vehicleCategory: { $regex: vehicleCategory, $options: "i" },
       });
-    if (status)
-      query[0].$match.$or.push({ status: { $regex: status, $options: "i" } });
-    if (!query[0].$match.$or.length) query[0].$match = {};
-    let vehicleCategories = await db.vehicleCategory.aggregate(query);
-    res.status(200).json(vehicleCategories);
+    if (status) query[0].$match.$or.push({ status });
+
+    if (!vehicleCategory && !status) {
+      query[0].$match = {};
+    }
+
+    let result = await db.vehicleCategory.aggregate(query);
+
+    res.status(200).json(result);
   } catch (error) {
     next(error);
   }

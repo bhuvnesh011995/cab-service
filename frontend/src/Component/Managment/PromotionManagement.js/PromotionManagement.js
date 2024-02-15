@@ -41,7 +41,7 @@ export default function PromotionManagement() {
   const [openView, setOpenView] = useState(false);
   const deleteStatus = useSelector(deleteModalStatus);
   const id = useSelector((state) => state.delete.id);
-  const { register, watch, handleSubmit } = useForm();
+  const { register, watch, handleSubmit, reset } = useForm();
   const URL = useSelector(url);
   const dispatch = useDispatch();
   useEffect(() => {
@@ -114,6 +114,10 @@ export default function PromotionManagement() {
     dispatch(filterPromotion(data));
   }
 
+  function handleReset() {
+    reset();
+  }
+
   return (
     <Management_container title={"Promotion Management"}>
       {isOpen && <DeleteModalAdv />}
@@ -181,7 +185,12 @@ export default function PromotionManagement() {
                       <button type="submit" className="btn  btn-primary ">
                         Search
                       </button>
-                      <button className="btn btn-danger me-3">Reset</button>
+                      <button
+                        className="btn btn-danger me-3"
+                        onClick={handleReset}
+                      >
+                        Reset
+                      </button>
                     </div>
                   </div>{" "}
                 </form>

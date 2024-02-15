@@ -104,7 +104,7 @@ export default function AddDriverPayout({ show, setShow }) {
                   name="totalTime"
                   render={({ field }) => (
                     <input
-                      type="number"
+                      type="time"
                       {...field}
                       className="form-control"
                       id="totalTime"
@@ -342,7 +342,7 @@ export default function AddDriverPayout({ show, setShow }) {
                   name="adminHand"
                   render={({ field }) => (
                     <input
-                      type="number"
+                      type="text"
                       {...field}
                       className="form-control"
                       id="adminHand"
@@ -364,7 +364,7 @@ export default function AddDriverPayout({ show, setShow }) {
                   name="driverHand"
                   render={({ field }) => (
                     <input
-                      type="number"
+                      type="text"
                       {...field}
                       className="form-control"
                       id="driverHand"
@@ -408,7 +408,7 @@ export default function AddDriverPayout({ show, setShow }) {
                   name="payoutType"
                   render={({ field }) => (
                     <input
-                      type="number"
+                      type="text"
                       {...field}
                       className="form-control"
                       id="payoutType"

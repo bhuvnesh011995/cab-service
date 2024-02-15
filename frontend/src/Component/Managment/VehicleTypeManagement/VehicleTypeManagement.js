@@ -1,8 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import Management_container from "../../Common/Management_container";
-import BtnDark from "../../Common/Buttons/BtnDark";
-import Text_Input from "../../Common/Inputs/Text_Input";
-import Selection_Input from "../../Common/Inputs/Selection_input";
+
 import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
 import moment from "moment";
@@ -20,27 +18,17 @@ import {
   filterVehicleType,
 } from "../../../Redux/features/vehicleTypeReducer";
 import ViewVehicleType from "./ViewVehicleType";
-import Filter_Option from "../../Common/Filter_option";
+import { useForm } from "react-hook-form";
 let url = BASE_URL + "/vehicletype/filter/";
 
-const initialFilter = {
-  name: "",
-  runMode: "",
-  state: "",
-};
-
 export default function VehicleTypeManagement() {
-  const [filter, setFilter] = useState(initialFilter);
-  const [options, setOptions] = useState([]);
-  const [list, setList] = useState();
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
   const [openView, setOpenView] = useState(false);
   const [id, setId] = useState(null);
   const [deleteInfo, setDeleteInfo] = useState(null);
-  const [updateData, setUpdateData] = useState(null);
   const dispatch = useDispatch();
-
+  const { reset, handleSubmit, register } = useForm();
   useEffect(() => {
     dispatch(fetchVehicleType());
   }, []);
@@ -81,7 +69,7 @@ export default function VehicleTypeManagement() {
         id: "createdAt",
         header: "Created At",
         Cell: ({ row }) => (
-          <div className=''>
+          <div className="">
             {moment(row.original.createdAt).format("YYYY/DD/MM")}
           </div>
         ),
@@ -92,26 +80,26 @@ export default function VehicleTypeManagement() {
         size: 80,
       },
     ],
-    [],
+    []
   );
 
-  function handleSubmit() {
-    dispatch(filterVehicleType(filter));
+  function onSubmit(data) {
+    dispatch(filterVehicleType(data));
   }
 
   function handleDelete(rowId) {
     dispatch(deleteVehicleType(rowId));
   }
 
-  function handleClick2(e) {
-    return;
+  function handleReset() {
+    reset();
   }
 
   return (
     <Management_container title={"Vehicle Management"}>
-      <div class='row'>
-        <div class='col-lg-13'>
-          <div class='card'>
+      <div class="row">
+        <div class="col-lg-13">
+          <div class="card">
             <DeleteModal
               info={deleteInfo}
               show={isOpen}
@@ -124,53 +112,58 @@ export default function VehicleTypeManagement() {
               <ViewVehicleType show={openView} setShow={setOpenView} />
             )}
 
-            <div class='card-body'>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "right",
-                  zIndex: "2",
-                }}
-              >
-                <BtnDark
-                  handleClick={() => {
-                    setShow(true);
-                  }}
-                  title={"Add New"}
-                />
-              </div>
-
-              <form>
-                <div className='row'>
-                  <div className='col-lg-2 inputField'>
-                    <Text_Input
-                      input={filter}
-                      lebel_text={"Name :"}
-                      setKey={"name"}
-                      setInput={setFilter}
-                    />
-                    <Selection_Input
-                      options={options}
-                      input={filter}
-                      setInput={setFilter}
-                      lebel_text={"Run Mode : "}
-                      setKey={"runMode"}
-                    />
-                    <div>
-                      <BtnDark handleClick={handleSubmit} title={"Search"} />
-                      <BtnDark handleClick={handleClick2} title={"Reset"} />
-                    </div>
-                  </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-12 text-right">
+                  <button
+                    class="btn btn-outline-primary"
+                    onClick={() => setShow(true)}
+                  >
+                    Add New
+                  </button>
                 </div>
-              </form>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div
+                    class="justify-content-center row align-items-end mb-5"
+                    style={{ alignItems: "end" }}
+                  >
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">name</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("name")}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label>Status: </label>
+                      <select
+                        name="status"
+                        className="form-control select2-templating "
+                        {...register("status")}
+                      >
+                        <option value="">choose...</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="INACTIVE">Inactive</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary me-3" type="submit">
+                        Search
+                      </button>
+                      <button class="btn btn-danger me-3" onClick={handleReset}>
+                        Reset
+                      </button>
+                    </div>
+                  </div>{" "}
+                </form>
+              </div>
             </div>
           </div>
         </div>
       </div>
-      {/* <Table
-        heading={["Sr no", "Name","Run Mode","Seating Capacity","Image selected", "Status", "Action"]}
-        list={list}
-      /> */}
+
       <MaterialReactTable
         columns={columns}
         data={vehicleTypeData || []}
@@ -180,28 +173,28 @@ export default function VehicleTypeManagement() {
         enableHiding={false}
         enableColumnFilters={false}
         enableColumnActions={false}
-        rowNumberDisplayMode='static'
+        rowNumberDisplayMode="static"
         enableRowActions
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
-          <div className='hstack gap-2 fs-1'>
+          <div className="hstack gap-2 fs-1">
             <button
               onClick={() => {
                 dispatch(getViewVehicleType({ id: row.original._id }));
                 setOpenView(true);
               }}
-              className='btn btn-icon btn-sm btn-warning rounded-pill'
+              className="btn btn-icon btn-sm btn-warning rounded-pill"
             >
-              <i className='mdi mdi-eye'></i>
+              <i className="mdi mdi-eye"></i>
             </button>
             <button
               onClick={() => {
                 dispatch(updateVehicleTypeById({ id: row.original._id }));
                 setShow(true);
               }}
-              className='btn btn-icon btn-sm btn-info rounded-pill'
+              className="btn btn-icon btn-sm btn-info rounded-pill"
             >
-              <i className='bx bxs-edit-alt' />
+              <i className="bx bxs-edit-alt" />
             </button>
             <button
               onClick={() => {
@@ -212,9 +205,9 @@ export default function VehicleTypeManagement() {
                 setIsOpen(true);
                 setId(row.original._id);
               }}
-              className='btn btn-icon btn-sm btn-danger rounded-pill'
+              className="btn btn-icon btn-sm btn-danger rounded-pill"
             >
-              <i className='bx bxs-trash' />
+              <i className="bx bxs-trash" />
             </button>
           </div>
         )}

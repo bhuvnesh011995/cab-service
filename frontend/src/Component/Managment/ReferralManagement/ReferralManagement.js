@@ -35,7 +35,7 @@ export default function ReferralManagement() {
   const [isOpen, setIsOpen] = useState(false);
   const [openView, setOpenView] = useState(false);
   const open = useSelector(showDeleteModal);
-  const { register, watch, handleSubmit } = useForm();
+  const { register, watch, handleSubmit, reset } = useForm();
 
   const dispatch = useDispatch();
   const referral = useSelector(getAllReferral);
@@ -86,6 +86,11 @@ export default function ReferralManagement() {
   function onSubmit(data) {
     dispatch(filterReferral(data));
   }
+
+  function handleReset() {
+    reset();
+  }
+
   return (
     <Management_container title={"Referral Management "}>
       {isOpen && <AddReferral show={isOpen} setShow={setIsOpen} />}
@@ -154,7 +159,9 @@ export default function ReferralManagement() {
                       <button type="submit" className="btn  btn-primary ">
                         Search
                       </button>
-                      <button class="btn btn-danger me-3">Reset</button>
+                      <button class="btn btn-danger me-3" onClick={handleReset}>
+                        Reset
+                      </button>
                     </div>
                   </div>{" "}
                 </form>

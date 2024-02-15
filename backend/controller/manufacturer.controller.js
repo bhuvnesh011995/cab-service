@@ -82,16 +82,22 @@ exports.deleteManufacturer = async function (req, res, next) {
   }
 };
 
-exports.filterManufacturer = async (req, res, next) => {
+exports.filterManufacturer = async function (req, res, next) {
   try {
     const { name, status } = req.query;
+
     let query = [{ $match: { $or: [] } }];
+
     if (name)
       query[0].$match.$or.push({ name: { $regex: name, $options: "i" } });
-    if (status)
-      query[0].$match.$or.push({ status: { $regex: status, $options: "i" } });
-    if (!query[0].$match.$or.length) query[0].$match = {};
+    if (status) query[0].$match.$or.push({ status });
+
+    if (!name && !status) {
+      query[0].$match = {};
+    }
+
     let manufacturer = await db.manufacturer.aggregate(query);
+
     res.status(200).json(manufacturer);
   } catch (error) {
     next(error);
