@@ -15,6 +15,7 @@ import {
   deleteTax,
   filterTax,
   getTaxes,
+  getViewTaxes,
   taxError,
   taxStatus,
   taxToUpdate,
@@ -32,6 +33,8 @@ import {
 } from "../../../Redux/features/deleteModalReducer";
 import BASE_URL from "../../../config/config";
 import DeleteModalAdv from "../../../Common/deleteModalRedux";
+import ViewTaxManagement from "./ViewTaxManagement";
+import { useForm } from "react-hook-form";
 const initialTax = {
   title: "",
   value: 0,
@@ -47,10 +50,12 @@ export default function TaxManagement() {
   const status = useSelector(taxStatus);
   const error = useSelector(taxError);
   const [ready, setReady] = useState(false);
+  const [openView, setOpenView] = useState(false);
   const show = useSelector(showDeleteModal);
   const deleteStatus = useSelector(deleteModalStatus);
   const id = useSelector((state) => state.delete.id);
   const URL = useSelector(url);
+  const { register, handleSubmit, reset } = useForm();
   useEffect(() => {
     if (deleteStatus === "delete") {
       dispatch(deleteTax({ url: URL, id }));
@@ -196,72 +201,75 @@ export default function TaxManagement() {
         },
       },
     ],
-    [],
+    []
   );
 
-  function handleSubmit(tax) {
-    dispatch(filterTax(tax));
+  function onSubmit(data) {
+    dispatch(filterTax(data));
+  }
+
+  function handleReset() {
+    reset();
   }
 
   return (
     <Management_container title={"Tax Management"}>
       {show && <DeleteModalAdv />}
       {isOpen && <AddNew show={isOpen} setShow={setIsOpen} />}
-      <div class='row'>
-        <div class='col-lg-13'>
-          <div class='card'>
-            <div class='card-body'>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "right",
-                  zIndex: "2",
-                }}
-              >
-                <button
-                  className='btn btn-outline-primary'
-                  onClick={() => setIsOpen(true)}
-                >
-                  Add Tax
-                </button>
-              </div>
-              <form>
-                <div className='row'>
-                  <div className='col-lg-2 inputField'>
-                    <Text_Input
-                      input={tax}
-                      setInput={setTax}
-                      lebel_text={"Title"}
-                      setKey={"title"}
-                    />
-                    <Selection_Input
-                      input={tax}
-                      setInput={setTax}
-                      setKey={"status"}
-                      lebel_text={"Status :"}
-                      options={["ACTIVE", "INACTIVE"]}
-                    />
-                    <div>
-                      <button
-                        className='btn btn-outline-primary me-2'
-                        onClick={(e) => {
-                          e.preventDefault();
-                          handleSubmit(tax);
-                        }}
+      {openView && <ViewTaxManagement show={openView} setShow={setOpenView} />}
+
+      <div class="row">
+        <div class="col-lg-13">
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-12 text-right">
+                  <button
+                    class="btn btn-outline-primary"
+                    onClick={() => setIsOpen(true)}
+                  >
+                    Add New
+                  </button>
+                </div>
+
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div
+                    class="justify-content-center row align-items-end mb-5"
+                    style={{ alignItems: "end" }}
+                  >
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">Title</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("title")}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label>Status: </label>
+                      <select
+                        name="status"
+                        className="form-control select2-templating "
+                        {...register("status")}
                       >
+                        <option value="">choose...</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="INACTIVE">Inactive</option>
+                      </select>
+                    </div>
+
+                    <div class="col-md-3">
+                      <button class="btn btn-primary me-3" type="submit">
                         Search
                       </button>
-                      <button
-                        className='btn btn-outline-danger me-2'
-                        onClick={() => setTax(initialTax)}
-                        type=''
-                      >
+                      <button class="btn btn-danger me-3" onClick={handleReset}>
                         Reset
                       </button>
                     </div>
-                  </div>
-                </div>
-              </form>
+                  </div>{" "}
+                </form>
+              </div>
               <MaterialReactTable
                 columns={columns}
                 data={taxes}
@@ -290,21 +298,24 @@ export default function TaxManagement() {
                 }}
                 positionActionsColumn={"last"}
                 renderRowActions={({ row, table }) => (
-                  <div className='hstack gap-2 fs-1'>
+                  <div className="hstack gap-2 fs-1">
                     <button
-                      onClick={() => {}}
-                      className='btn btn-icon btn-sm btn-warning rounded-pill'
+                      onClick={() => {
+                        dispatch(getViewTaxes({ id: row.original._id }));
+                        setOpenView(true);
+                      }}
+                      className="btn btn-icon btn-sm btn-warning rounded-pill"
                     >
-                      <i className='mdi mdi-eye'></i>
+                      <i className="mdi mdi-eye"></i>
                     </button>
                     <button
                       onClick={() => {
                         dispatch(taxToUpdate({ id: row.original._id }));
                         setIsOpen(true);
                       }}
-                      className='btn btn-icon btn-sm btn-info rounded-pill'
+                      className="btn btn-icon btn-sm btn-info rounded-pill"
                     >
-                      <i className='bx bxs-edit-alt' />
+                      <i className="bx bxs-edit-alt" />
                     </button>
                     <button
                       onClick={() => {
@@ -312,12 +323,12 @@ export default function TaxManagement() {
                           openModal({
                             url: `${BASE_URL}/tax/${row.original._id}`,
                             id: row.original._id,
-                          }),
+                          })
                         );
                       }}
-                      className='btn btn-icon btn-sm btn-danger rounded-pill'
+                      className="btn btn-icon btn-sm btn-danger rounded-pill"
                     >
-                      <i className='bx bxs-trash' />
+                      <i className="bx bxs-trash" />
                     </button>
                   </div>
                 )}

@@ -20,7 +20,6 @@ exports.getAllDriverPayout = async function (req, res, next) {
 
 exports.deleteDriverPayout = async function (req, res) {
   const id = req.params.id;
-  console.log(id);
   try {
     const result = await db.driverPayoutManagement.deleteOne({ _id: id });
     if (result.deletedCount === 1) {
@@ -71,5 +70,33 @@ exports.updateDriverPayout = async function (req, res) {
       success: false,
       message: "Internal error occurred",
     });
+  }
+};
+
+exports.filterDriverPayout = async function (req, res, next) {
+  try {
+    const { totalDistance, taxFare } = req.query;
+
+    let query = [{ $match: { $or: [] } }];
+
+    if (totalDistance)
+      query[0].$match.$or.push({
+        totalDistance: { $regex: totalDistance, $options: "i" },
+      });
+
+    if (taxFare)
+      query[0].$match.$or.push({
+        taxFare: { $regex: taxFare, $options: "i" },
+      });
+
+    if (!totalDistance && !taxFare) {
+      query[0].$match = {};
+    }
+
+    let result = await db.driverPayoutManagement.aggregate(query);
+
+    res.status(200).json(result);
+  } catch (error) {
+    next(error);
   }
 };

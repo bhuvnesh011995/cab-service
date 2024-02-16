@@ -32,6 +32,7 @@ import {
   cleanDriverPayout,
   deleteDriverPayout,
   fetchDriverPayout,
+  filterDriverPayout,
   getAllDriverPayout,
   getViewDriverPayout,
   updateDriverPayoutById,
@@ -44,7 +45,7 @@ export default function DriverPayoutManagement() {
   const [isOpen, setIsOpen] = useState(false);
   const [openView, setOpenView] = useState(false);
   const open = useSelector(showDeleteModal);
-  const { register, watch, handleSubmit } = useForm();
+  const { register, watch, handleSubmit, reset } = useForm();
 
   const dispatch = useDispatch();
   const driverPayout = useSelector(getAllDriverPayout);
@@ -93,8 +94,13 @@ export default function DriverPayoutManagement() {
   }, [deleteStatus, URL, id]);
 
   function onSubmit(data) {
-    dispatch(filterReferral(data));
+    dispatch(filterDriverPayout(data));
   }
+
+  function handleReset() {
+    reset();
+  }
+
   return (
     <Management_container title={"Driver Payout Management "}>
       {open && <DeleteModalAdv />}
@@ -125,17 +131,17 @@ export default function DriverPayoutManagement() {
                       <input
                         className="form-control"
                         placeholder="Enter Title"
-                        {...register("name")}
+                        {...register("totalDistance")}
                       />
                     </div>
 
                     <div class="col-md-3">
                       {" "}
-                      <label class="form-label">state</label>
+                      <label class="form-label">taxFare</label>
                       <input
                         className="form-control"
                         placeholder="Enter Title"
-                        {...register("state")}
+                        {...register("taxFare")}
                       />
                     </div>
 
@@ -143,7 +149,9 @@ export default function DriverPayoutManagement() {
                       <button type="submit" className="btn  btn-primary ">
                         Search
                       </button>
-                      <button class="btn btn-danger me-3">Reset</button>
+                      <button class="btn btn-danger me-3" onClick={handleReset}>
+                        Reset
+                      </button>
                     </div>
                   </div>{" "}
                 </form>

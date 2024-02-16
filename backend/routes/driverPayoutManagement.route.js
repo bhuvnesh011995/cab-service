@@ -23,4 +23,10 @@ module.exports = function (app) {
     [],
     driverPayoutController.updateDriverPayout
   );
+
+  app.get(
+    "/test/api/v1/driverPayout/filter",
+    [],
+    driverPayoutController.filterDriverPayout
+  );
 };
