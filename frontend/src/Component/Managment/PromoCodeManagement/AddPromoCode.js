@@ -47,6 +47,7 @@ export default function AddPromoCode({ setShow, show }) {
     handleSubmit,
     reset,
     control,
+    setError,
     watch,
     setValue,
     formState: { errors, dirtyFields, isDirty },
@@ -146,6 +147,20 @@ export default function AddPromoCode({ setShow, show }) {
     },
     [isDirty, dirtyFields],
   );
+
+  const checkDates = () => {
+    if (new Date(watch("validFrom")) > new Date(watch("validTo"))) {
+      setError("validFrom", {
+        message: "Valid From date should be less than Valid To Date ",
+      });
+    } else setError("validFrom", undefined);
+
+    // if (new Date(watch("validFrom")) < new Date(watch("validTo"))) {
+    //   setError("validTo", {
+    //     message: "Valid To date should be greater than Valid From Date ",
+    //   });
+    // } else setError("validTo", undefined);
+  };
 
   return (
     <Modal
@@ -327,6 +342,7 @@ export default function AddPromoCode({ setShow, show }) {
                   name='validFrom'
                   {...register("validFrom", {
                     required: "this is Required field",
+                    onChange: ({ target }) => checkDates(),
                   })}
                   className='form-control'
                 />
@@ -342,9 +358,10 @@ export default function AddPromoCode({ setShow, show }) {
                 <label>Valid To</label>
                 <input
                   type='date'
-                  name='validFrom'
+                  name='validTo'
                   {...register("validTo", {
                     required: "this is Required field",
+                    onChange: ({ target }) => checkDates(),
                   })}
                   className='form-control'
                 />

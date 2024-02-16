@@ -57,29 +57,29 @@ export default function AddSmsTemplate() {
   }
 
   return (
-    <Management_container title={"Create Email Template"}>
+    <Management_container title={"Create Sms Template"}>
       <div
-        class="row"
+        class='row'
         style={{
           display: "flex",
           justifyContent: "center",
           alignItems: "center",
         }}
       >
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-body">
-              <form className="w-100">
+        <div class='col-lg-6'>
+          <div class='card'>
+            <div class='card-body'>
+              <form className='w-100'>
                 <Text_Input
                   input={template}
                   setInput={setTemplate}
                   lebel_text={"Title"}
                   setKey={"title"}
                 />
-                <label className="ms-3 mb-0">For Users</label>
+                <label className='ms-3 mb-0'>For Users</label>
                 <Select
-                  className="basic-multi-select m-3"
-                  classNamePrefix="select"
+                  className='basic-multi-select m-3'
+                  classNamePrefix='select'
                   isMulti
                   options={forUsersOption}
                   onChange={handleSelect}
@@ -92,10 +92,10 @@ export default function AddSmsTemplate() {
                   lebel_text={"Status :"}
                 />
 
-                <div className="m-3">
-                  <label className="form-label">Body</label>
+                <div className='m-3'>
+                  <label className='form-label'>Body</label>
                   <textarea
-                    className="form-control"
+                    className='form-control'
                     rows={3}
                     onChange={(e) =>
                       setTemplate((preVal) => ({
@@ -135,7 +135,7 @@ export const AddNew = function ({ show, setShow }) {
     if (ready && smsTemplate) {
       let data = { ...smsTemplate, forUsers: [] };
       smsTemplate.forUsers.forEach(
-        (ele, i) => (data.forUsers[i] = { value: ele, label: ele })
+        (ele, i) => (data.forUsers[i] = { value: ele, label: ele }),
       );
       reset(data);
     } else setReady(true);
@@ -155,19 +155,19 @@ export const AddNew = function ({ show, setShow }) {
     }
   };
   return (
-    <Modal show={show} size="md" onHide={() => setShow(false)}>
+    <Modal show={show} size='md' onHide={() => setShow(false)}>
       <Modal.Header closeButton>
         <Modal.Title>Add Sms Template</Modal.Title>
       </Modal.Header>
       <form onSubmit={handleSubmit(onSubmit)}>
         <Modal.Body>
           <Row>
-            <div className="col-md-3 mb-3">
-              <label className="form-label" htmlFor="title">
+            <div className='col-md-3 mb-3'>
+              <label className='form-label' htmlFor='title'>
                 Title :
               </label>
             </div>
-            <div className="col-md-9 mb-3">
+            <div className='col-md-9 mb-3'>
               <input
                 {...register("title", {
                   required: "this is required field",
@@ -176,22 +176,22 @@ export const AddNew = function ({ show, setShow }) {
                     message: "char length should be greater then 5",
                   },
                 })}
-                className="form-control"
-                placeholder="Enter Title"
+                className='form-control'
+                placeholder='Enter Title'
               />
               {errors.title && (
                 <span style={{ color: "red" }}>{errors.title.message}</span>
               )}
             </div>
 
-            <div className="col-md-3 mb-3">
-              <label className="form-label" htmlFor="title">
+            <div className='col-md-3 mb-3'>
+              <label className='form-label' htmlFor='title'>
                 For Users :
               </label>
             </div>
-            <div className="col-md-9 mb-3">
+            <div className='col-md-9 mb-3'>
               <Controller
-                name="forUsers"
+                name='forUsers'
                 rules={{ required: "this is required field" }}
                 control={control}
                 render={({ field }) => (
@@ -211,13 +211,13 @@ export const AddNew = function ({ show, setShow }) {
               )}
             </div>
 
-            <div className="col-md-3 mb-3">
-              <label className="form-label" htmlFor="status">
+            <div className='col-md-3 mb-3'>
+              <label className='form-label' htmlFor='status'>
                 Status :
               </label>
             </div>
-            <div className="col-md-9 mb-3">
-              <select className="form-control" {...register("status")}>
+            <div className='col-md-9 mb-3'>
+              <select className='form-control' {...register("status")}>
                 <option value={""}>Choose...</option>
                 <option value={"ACTIVE"}>Active</option>
                 <option value={"INACTIVE"}>Inactive</option>
@@ -227,12 +227,12 @@ export const AddNew = function ({ show, setShow }) {
               )}
             </div>
 
-            <div className="col-md-3 mb-3 d-flex align-items-center">
-              <label className="form-label" htmlFor="title">
+            <div className='col-md-3 mb-3 d-flex align-items-center'>
+              <label className='form-label' htmlFor='title'>
                 SMS Body :
               </label>
             </div>
-            <div className="col-md-9 mb-3">
+            <div className='col-md-9 mb-3'>
               <textarea
                 {...register("body", {
                   required: "this is required field",
@@ -242,7 +242,7 @@ export const AddNew = function ({ show, setShow }) {
                   },
                 })}
                 style={{ width: "100%" }}
-                placeholder="SMS Body..."
+                placeholder='SMS Body...'
                 rows={3}
               ></textarea>
               {errors.body && (
@@ -252,14 +252,14 @@ export const AddNew = function ({ show, setShow }) {
           </Row>
         </Modal.Body>
         <Modal.Footer>
-          <div className="text-right">
+          <div className='text-right'>
             <button
               onClick={() => setShow(false)}
-              className="btn btn-danger me-3"
+              className='btn btn-danger me-3'
             >
               Cancel
             </button>
-            <button className="btn btn-primary" type="submit">
+            <button className='btn btn-primary' type='submit'>
               Add
             </button>
           </div>

@@ -29,7 +29,7 @@ export const deleteAdmin = createAsyncThunk(
         message: error.response.data.message ?? "error while deleting",
       });
     }
-  }
+  },
 );
 
 export const fetchAdmins = createAsyncThunk(
@@ -58,7 +58,7 @@ export const fetchAdmins = createAsyncThunk(
           error?.response?.data?.message || "error while fetching admins",
       });
     }
-  }
+  },
 );
 
 export const fetchAdminById = createAsyncThunk(
@@ -66,9 +66,7 @@ export const fetchAdminById = createAsyncThunk(
   async (id, { rejectWithValue }) => {
     try {
       const url = BASE_URL + "/admin/" + id;
-      console.log(url, "hii");
       let response = await axios.get(url);
-      console.log(response);
       if (response.status === 200) return response.data;
       else
         return rejectWithValue({
@@ -82,7 +80,7 @@ export const fetchAdminById = createAsyncThunk(
         message: error.response.data.message ?? "error while admin",
       });
     }
-  }
+  },
 );
 
 export const addAdmin = createAsyncThunk(
@@ -102,13 +100,14 @@ export const addAdmin = createAsyncThunk(
         data: error.response.data,
       });
     }
-  }
+  },
 );
 
 export const updateAdmin = createAsyncThunk(
   "admins/updateAdmin",
   async (admin, { rejectWithValue }) => {
     try {
+      console.log(admin);
       const url = BASE_URL + "/admin/" + admin.id;
       let response = await axios.put(url, admin.data);
       if (response.status === 200) return response.data;
@@ -123,7 +122,7 @@ export const updateAdmin = createAsyncThunk(
         message: "error while updating admin",
       });
     }
-  }
+  },
 );
 
 const adminsSlice = createSlice({
@@ -201,7 +200,7 @@ const adminsSlice = createSlice({
     });
     builder.addCase(deleteAdmin.fulfilled, (state, action) => {
       state.admins = state.admins.filter(
-        (admin) => admin._id !== action.payload.id
+        (admin) => admin._id !== action.payload.id,
       );
       state.status = "deleted";
     });

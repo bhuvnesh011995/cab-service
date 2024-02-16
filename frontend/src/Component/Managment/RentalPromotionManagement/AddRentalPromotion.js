@@ -57,6 +57,7 @@ export default function AddRentalPromotion({ setShow, show }) {
     register,
     handleSubmit,
     reset,
+    setError,
     control,
     watch,
     setValue,
@@ -156,17 +157,31 @@ export default function AddRentalPromotion({ setShow, show }) {
           let obj = {};
           changedField.forEach((field) => (obj[field] = newData[field]));
           dispatch(
-            updateRentalPromotion({ id: rentalPromotion._id, newData: obj })
+            updateRentalPromotion({ id: rentalPromotion._id, newData: obj }),
           );
         }
       }
     },
-    [isDirty, dirtyFields]
+    [isDirty, dirtyFields],
   );
+
+  const checkDates = () => {
+    if (new Date(watch("validFrom")) > new Date(watch("validTo"))) {
+      setError("validFrom", {
+        message: "Valid From date should be less than Valid To Date ",
+      });
+    } else setError("validFrom", undefined);
+
+    // if (new Date(watch("validFrom")) < new Date(watch("validTo"))) {
+    //   setError("validTo", {
+    //     message: "Valid To date should be greater than Valid From Date ",
+    //   });
+    // } else setError("validTo", undefined);
+  };
 
   return (
     <Modal
-      size="lg"
+      size='lg'
       show={show}
       onHide={() => {
         setShow(false);
@@ -179,18 +194,18 @@ export default function AddRentalPromotion({ setShow, show }) {
       </Modal.Header>
       <Modal.Body>
         <form onSubmit={handleSubmit((formData) => onSubmit(formData))}>
-          <div className="row">
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="form-label" htmlFor="country">
+          <div className='row'>
+            <div className='col-md-6'>
+              <div className='mb-3'>
+                <label className='form-label' htmlFor='country'>
                   Country :
                 </label>
                 <Controller
-                  name="country"
+                  name='country'
                   control={control}
                   rules={{ required: "this is required field" }}
                   render={({ field }) => (
-                    <select {...field} className="form-control">
+                    <select {...field} className='form-control'>
                       <option value={""}>Choose...</option>
                       {countries.map((country) => (
                         <option key={country._id} value={country._id}>
@@ -205,17 +220,17 @@ export default function AddRentalPromotion({ setShow, show }) {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="form-label" htmlFor="state">
+            <div className='col-md-6'>
+              <div className='mb-3'>
+                <label className='form-label' htmlFor='state'>
                   State :
                 </label>
                 <Controller
-                  name="state"
+                  name='state'
                   control={control}
                   rules={{ required: "this is required field" }}
                   render={({ field }) => (
-                    <select {...field} className="form-control">
+                    <select {...field} className='form-control'>
                       <option value={""}>Choose...</option>
                       {states.map((state) => (
                         <option key={state._id} value={state._id}>
@@ -230,17 +245,17 @@ export default function AddRentalPromotion({ setShow, show }) {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="form-label" htmlFor="city">
+            <div className='col-md-6'>
+              <div className='mb-3'>
+                <label className='form-label' htmlFor='city'>
                   City :
                 </label>
                 <Controller
-                  name="city"
+                  name='city'
                   control={control}
                   rules={{ required: "this is required field" }}
                   render={({ field }) => (
-                    <select {...field} className="form-control">
+                    <select {...field} className='form-control'>
                       <option value={""}>Choose...</option>
                       {cities.map((city) => (
                         <option key={city._id} value={city._id}>
@@ -255,15 +270,15 @@ export default function AddRentalPromotion({ setShow, show }) {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>vehicleType</label>
                 <Controller
-                  name="vehicleType"
+                  name='vehicleType'
                   control={control}
                   rules={{ required: "this is required field" }}
                   render={({ field }) => (
-                    <select {...field} className="form-control">
+                    <select {...field} className='form-control'>
                       <option value={""}>Choose...</option>
                       {vehicleTypes.map((vehicleType) => (
                         <option key={vehicleType._id} value={vehicleType._id}>
@@ -282,15 +297,15 @@ export default function AddRentalPromotion({ setShow, show }) {
               </div>
             </div>
 
-            <div className="col-md-6">
-              <div className="mb-3">
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>packages</label>
                 <Controller
-                  name="package"
+                  name='package'
                   control={control}
                   rules={{ required: "this is required field" }}
                   render={({ field }) => (
-                    <select {...field} className="form-control">
+                    <select {...field} className='form-control'>
                       <option value={""}>Choose...</option>
                       {packages.map((packages) => (
                         <option key={packages._id} value={packages._id}>
@@ -307,13 +322,13 @@ export default function AddRentalPromotion({ setShow, show }) {
               </div>
             </div>
 
-            <div className="col-md-6">
-              <div className="mb-3">
-                <label className="form-label" htmlFor="forUser">
+            <div className='col-md-6'>
+              <div className='mb-3'>
+                <label className='form-label' htmlFor='forUser'>
                   forUser :
                 </label>
                 <Controller
-                  name="forUser"
+                  name='forUser'
                   control={control}
                   render={({ field }) => (
                     <select
@@ -322,7 +337,7 @@ export default function AddRentalPromotion({ setShow, show }) {
                         setValue("selectUser", null);
                         field.onChange(e);
                       }}
-                      className="form-control"
+                      className='form-control'
                     >
                       <option value={""}>Choose...</option>
                       <option value={"Admin"}>ADMIN</option>
@@ -337,12 +352,12 @@ export default function AddRentalPromotion({ setShow, show }) {
               </div>
             </div>
 
-            <div className="col-md-6">
-              <div className="mb-3">
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>Select Users</label>
                 <Controller
                   key={watch("forUser")}
-                  name="selectUser"
+                  name='selectUser'
                   control={control}
                   rules={{
                     required: "This is a required field",
@@ -360,16 +375,17 @@ export default function AddRentalPromotion({ setShow, show }) {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>Valid From</label>
                 <input
-                  type="date"
-                  name="validFrom"
+                  type='date'
+                  name='validFrom'
                   {...register("validFrom", {
                     required: "this is Required field",
+                    onChange: ({ target }) => checkDates(),
                   })}
-                  className="form-control"
+                  className='form-control'
                 />
                 {errors.validFrom && (
                   <span style={{ color: "red" }}>
@@ -378,32 +394,33 @@ export default function AddRentalPromotion({ setShow, show }) {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>Valid To</label>
                 <input
-                  type="date"
-                  name="validFrom"
+                  type='date'
+                  name='validTo'
                   {...register("validTo", {
                     required: "this is Required field",
+                    onChange: ({ target }) => checkDates(),
                   })}
-                  className="form-control"
+                  className='form-control'
                 />
                 {errors.validTo && (
                   <span style={{ color: "red" }}>{errors.validTo.message}</span>
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>Promo Code</label>
                 <input
-                  type="Number"
-                  name="promoCode"
+                  type='Number'
+                  name='promoCode'
                   {...register("promoCode", {
                     required: "this is Required field",
                   })}
-                  className="form-control"
+                  className='form-control'
                 />
                 {errors.promoCode && (
                   <span style={{ color: "red" }}>
@@ -412,19 +429,19 @@ export default function AddRentalPromotion({ setShow, show }) {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>Discount Type</label>
                 <select
-                  name="discountType"
+                  name='discountType'
                   {...register("discountType", {
                     required: "this is Required field",
                   })}
-                  className="form-control"
+                  className='form-control'
                 >
                   <option>Choose</option>
-                  <option value="Percentage">Percentage</option>
-                  <option value="Discount">Discount</option>
+                  <option value='Percentage'>Percentage</option>
+                  <option value='Discount'>Discount</option>
                 </select>
 
                 {errors.discountType && (
@@ -434,16 +451,16 @@ export default function AddRentalPromotion({ setShow, show }) {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>Discount Value</label>
                 <input
-                  type="Number"
-                  name="discountValue"
+                  type='Number'
+                  name='discountValue'
                   {...register("discountValue", {
                     required: "this is Required field",
                   })}
-                  className="form-control"
+                  className='form-control'
                 />
                 {errors.discountValue && (
                   <span style={{ color: "red" }}>
@@ -452,19 +469,19 @@ export default function AddRentalPromotion({ setShow, show }) {
                 )}
               </div>
             </div>
-            <div className="col-md-6">
-              <div className="mb-3">
+            <div className='col-md-6'>
+              <div className='mb-3'>
                 <label>Status</label>
                 <select
-                  name="status"
+                  name='status'
                   {...register("status", {
                     required: "this is Required field",
                   })}
-                  className="form-control"
+                  className='form-control'
                 >
                   <option>Choose</option>
-                  <option value="ACTIVE">ACTIVE</option>
-                  <option value="INACTIVE">INACTIVE</option>
+                  <option value='ACTIVE'>ACTIVE</option>
+                  <option value='INACTIVE'>INACTIVE</option>
                 </select>
 
                 {errors.status && (
@@ -473,18 +490,18 @@ export default function AddRentalPromotion({ setShow, show }) {
               </div>
             </div>
           </div>
-          <div className="col-md-6">
-            <div className="mb-3">
-              <div className="form-check">
+          <div className='col-md-6'>
+            <div className='mb-3'>
+              <div className='form-check'>
                 <input
-                  className="form-check-input"
-                  type="checkbox"
-                  id="multipleUserCheckbox"
+                  className='form-check-input'
+                  type='checkbox'
+                  id='multipleUserCheckbox'
                   {...register("multipleUser")}
                 />
                 <label
-                  className="form-check-label"
-                  htmlFor="multipleUserCheckbox"
+                  className='form-check-label'
+                  htmlFor='multipleUserCheckbox'
                 >
                   Multiple User
                 </label>
@@ -492,7 +509,7 @@ export default function AddRentalPromotion({ setShow, show }) {
             </div>
           </div>
 
-          <button type="submit" class="btn btn-success">
+          <button type='submit' class='btn btn-success'>
             {" "}
             submit{" "}
           </button>

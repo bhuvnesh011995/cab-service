@@ -1,17 +1,10 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./AdminManagement.css";
 import Management_container from "../../Common/Management_container";
 import Filter_Option from "../../Common/Filter_option";
 import BtnDark from "../../Common/Buttons/BtnDark";
 import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
-import { Box, IconButton } from "@mui/material";
-import {
-  RemoveRedEye,
-  Lock,
-  ModeEditOutline,
-  DeleteForever,
-} from "@mui/icons-material/";
 import { toast } from "react-toastify";
 import moment from "moment/moment";
 import AddNew from "./AddNew";
@@ -42,6 +35,7 @@ const initialFilter = {
 // let url = BASE_URL + "/admin/filter/";
 export default function AdminManagement() {
   const show = useSelector(showDeleteModal);
+  const [viewModal, setViewModal] = useState(false);
   const [adminModalOpen, setAdminModalOpen] = useState(false);
   const [filter, setFilter] = useState(initialFilter);
   const dispatch = useDispatch();
@@ -108,7 +102,11 @@ export default function AdminManagement() {
   return (
     <Management_container title={"Admin Users"}>
       {adminModalOpen && (
-        <AddNew show={adminModalOpen} setShow={setAdminModalOpen} />
+        <AddNew
+          show={adminModalOpen}
+          setShow={setAdminModalOpen}
+          viewModal={viewModal}
+        />
       )}
       {show && <DeleteModalAdv />}
       <div class='row'>
@@ -153,7 +151,11 @@ export default function AdminManagement() {
         renderRowActions={({ row, table }) => (
           <div className='hstack gap-2 fs-1'>
             <button
-              onClick={() => {}}
+              onClick={() => {
+                setViewModal(true);
+                dispatch(fetchAdminById(row.original._id));
+                setAdminModalOpen(true);
+              }}
               className='btn btn-icon btn-sm btn-warning rounded-pill'
             >
               <i className='mdi mdi-eye'></i>
@@ -162,6 +164,7 @@ export default function AdminManagement() {
               onClick={() => {
                 dispatch(fetchAdminById(row.original._id));
                 setAdminModalOpen(true);
+                setViewModal(false);
               }}
               className='btn btn-icon btn-sm btn-info rounded-pill'
             >
@@ -169,6 +172,7 @@ export default function AdminManagement() {
             </button>
             <button
               onClick={() => {
+                setViewModal(false);
                 dispatch(
                   openModal({
                     url: `${BASE_URL}/admin/${row.original._id}`,

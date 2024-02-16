@@ -3,6 +3,7 @@ const startofday = require("date-fns/startOfDay");
 const endofday = require("date-fns/endOfDay");
 const db = require("../model");
 const { default: mongoose } = require("mongoose");
+const bcrypt = require("bcrypt");
 
 // filter admins using name,username,status,and date
 
@@ -122,10 +123,12 @@ exports.getAdminById = async (req, res, next) => {
 
 exports.updateAdmin = async (req, res, next) => {
   try {
+    if (req.body?.password)
+      req.body.password = bcrypt.hashSync(req.body.password, 10);
     let admin = await db.admin.findOneAndUpdate(
       { _id: req.params.id },
       { $set: req.body },
-      { new: true }
+      { new: true },
     );
     res.status(200).json(admin);
   } catch (error) {

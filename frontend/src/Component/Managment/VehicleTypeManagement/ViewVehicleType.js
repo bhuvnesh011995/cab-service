@@ -1,6 +1,7 @@
 import { Modal } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import { getAllViewVehicleType } from "../../../Redux/features/vehicleTypeReducer";
+import { IMAGE_URL } from "../../../config/config";
 export default function ViewVehicleType({ show, setShow }) {
   const viewData = useSelector(getAllViewVehicleType);
   console.log("viewDatata", viewData);
@@ -58,6 +59,19 @@ export default function ViewVehicleType({ show, setShow }) {
           </div>
           <div className='col-md-8'>
             <p>{viewData?.seatingCapacity}</p>
+          </div>
+        </div>
+        <div className='row mb-2'>
+          <div className='col-md-4'>
+            <p>
+              <strong>File </strong>
+            </p>
+          </div>
+          <div
+            className='col-md-8 text-primary'
+            onClick={() => window.open(`${IMAGE_URL}${viewData?.file}`)}
+          >
+            <p>{viewData?.file}</p>
           </div>
         </div>
         <Modal.Footer>
