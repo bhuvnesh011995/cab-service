@@ -34,6 +34,7 @@ import {
 } from "../../../Redux/features/deleteModalReducer";
 import BASE_URL from "../../../config/config";
 import DeleteModalAdv from "../../../Common/deleteModalRedux";
+import { useForm } from "react-hook-form";
 const initialFilter = {
   name: "",
   country: "",
@@ -41,6 +42,7 @@ const initialFilter = {
 };
 
 export default function StateManagement() {
+  const { handleSubmit, reset, register } = useForm();
   const [filter, setFilter] = useState(initialFilter);
   const [open, setOpen] = useState(false);
   const status = useSelector(stateStatus);
@@ -53,6 +55,7 @@ export default function StateManagement() {
   const id = useSelector((state) => state.delete.id);
   const URL = useSelector(url);
 
+  
   useEffect(() => {
     if (ready) {
       dispatch(filterStates(filter));
@@ -113,10 +116,10 @@ export default function StateManagement() {
         header: "Created At",
       },
     ],
-    [],
+    []
   );
 
-  function handleSubmit() {
+  function onSubmit(filter) {
     dispatch(filterStates(filter));
   }
 
@@ -126,47 +129,64 @@ export default function StateManagement() {
 
   return (
     <Management_container title={"STATE MANAGEMENT"}>
-      <div class='row'>
-        <div class='col-lg-13'>
-          <div class='card'>
-            {show && <DeleteModalAdv />}
+      {show && <DeleteModalAdv />}
 
-            {open && <AddState show={open} setShow={setOpen} />}
-            <div class='card-body'>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "right",
-                  zIndex: "2",
-                }}
-              >
-                <BtnDark
-                  handleClick={() => {
-                    setOpen(true);
-                  }}
-                  title={"Add State"}
-                />
-              </div>
-              <Filter_Option
-                input={filter}
-                setInput={setFilter}
-                initialInput={initialFilter}
-                btn1_title={"Search"}
-                handleClick1={handleSubmit}
-                handleClick2={handleClick2}
-                btn2_title={"reset"}
-                options={["name", "status", "country"]}
-              />
-            </div>
-          </div>
+      {open && <AddState show={open} setShow={setOpen} />}
+
+      <div class="row">
+        <div class="col-md-12 text-right">
+          <button class="btn btn-outline-primary" onClick={() => setOpen(true)}>
+            Add New
+          </button>
         </div>
-      </div>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          class="justify-content-center row align-items-end mb-5"
+          style={{ alignItems: "end" }}
+        >
+          <div class="col-md-3">
+            {" "}
+            <label class="form-label">Country :</label>
+            <input
+              placeholder="Enter Country"
+              className="form-control"
+              type="text"
+              {...register("country")}
+            />
+          </div>
+          <div class="col-md-3">
+            {" "}
+            <label class="form-label">Name :</label>
+            <input
+              className="form-control"
+              placeholder="Enter Name"
+              type="text"
+              {...register("name")}
+            />
+          </div>
+          <div class="col-md-3">
+            {" "}
+            <label class="form-label">Status :</label>
+            <select {...register("status")} className="form-control">
+              <option value="">Choose...</option>
+              <option value={"ACTIVE"}>Active</option>
+              <option value={"INACTIVE"}>Inactive</option>
+            </select>
+          </div>
 
+          <div class="col-md-3">
+            <button class="btn btn-primary me-3">Search</button>
+            <button onClick={() => reset()} class="btn btn-danger me-3">
+              Reset
+            </button>
+          </div>
+        </form>{" "}
+      </div>
       <MaterialReactTable
         columns={columns}
         data={states}
         enableRowNumbers
-        rowNumberMode='static'
+        rowNumberMode="static"
         enableRowActions
         enableFullScreenToggle={false}
         enableDensityToggle={false}
@@ -175,21 +195,21 @@ export default function StateManagement() {
         enableColumnActions={false}
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
-          <div className='hstack gap-2 fs-1'>
+          <div className="hstack gap-2 fs-1">
+            <button
+              onClick={() => {}}
+              className="btn btn-icon btn-sm btn-warning rounded-pill"
+            >
+              <i className="mdi mdi-eye"></i>
+            </button>
             <button
               onClick={() => {
                 dispatch(stateForUpdate({ id: row.original._id }));
                 setOpen(true);
               }}
-              className='btn btn-icon btn-sm btn-warning rounded-pill'
+              className="btn btn-icon btn-sm btn-info rounded-pill"
             >
-              <i className='mdi mdi-eye'></i>
-            </button>
-            <button
-              onClick={() => {}}
-              className='btn btn-icon btn-sm btn-info rounded-pill'
-            >
-              <i className='bx bxs-edit-alt' />
+              <i className="bx bxs-edit-alt" />
             </button>
             <button
               onClick={() => {
@@ -197,12 +217,12 @@ export default function StateManagement() {
                   openModal({
                     url: `${BASE_URL}/state/${row.original._id}`,
                     id: row.original._id,
-                  }),
+                  })
                 );
               }}
-              className='btn btn-icon btn-sm btn-danger rounded-pill'
+              className="btn btn-icon btn-sm btn-danger rounded-pill"
             >
-              <i className='bx bxs-trash' />
+              <i className="bx bxs-trash" />
             </button>
           </div>
         )}
