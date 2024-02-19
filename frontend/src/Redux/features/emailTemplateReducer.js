@@ -78,16 +78,7 @@ export const fetchEmailTemplates = createAsyncThunk(
     try {
       const url = BASE_URL + "/emailTemplates/fetchEmailTemplates";
       const response = await axios.get(url, { params: data });
-      const filteredData = response.data.filter((template) => {
-        const templateForUsers = template.forUsers.map(
-          (forUser) => forUser.value,
-        );
-        if (data.forUsers.length) {
-          if (templateForUsers.includes(data.forUsers)) return template;
-        }
-      });
-      if (response.status == 200)
-        return data.forUsers.length ? filteredData : response.data;
+      if (response.status == 200) return response.data;
       else
         return rejectWithValue({
           status: response.status,
