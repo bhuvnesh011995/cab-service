@@ -63,6 +63,10 @@ export default function AdminManagement() {
     }
   }, [deleteStatus, URL, id]);
 
+  function onSubmit(filter) {
+    dispatch(fetchAdmins(filter));
+  }
+
   const columns = useMemo(
     () => [
       {
@@ -86,12 +90,8 @@ export default function AdminManagement() {
         size: 100,
       },
     ],
-    [],
+    []
   );
-
-  function onSubmit(filter) {
-    dispatch(fetchAdmins(filter));
-  }
 
   return (
     <Management_container title={"Admin Users"}>
@@ -103,10 +103,10 @@ export default function AdminManagement() {
         />
       )}
       {show && <DeleteModalAdv />}
-      <div class='row'>
-        <div class='col-md-12 text-right'>
+      <div class="row">
+        <div class="col-md-12 text-right">
           <button
-            class='btn btn-outline-primary'
+            class="btn btn-outline-primary"
             onClick={() => setAdminModalOpen(true)}
           >
             Add New
@@ -114,50 +114,50 @@ export default function AdminManagement() {
         </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          class='justify-content-center row align-items-end mb-5'
+          class="justify-content-center row align-items-end mb-5"
           style={{ alignItems: "end" }}
         >
-          <div class='col-md-3'>
+          <div class="col-md-3">
             {" "}
-            <label class='form-label'>Name :</label>
+            <label class="form-label">Name :</label>
             <input
-              placeholder='Enter Name'
-              className='form-control'
-              type='text'
+              placeholder="Enter Name"
+              className="form-control"
+              type="text"
               {...register("name")}
             />
           </div>
-          <div class='col-md-3'>
+          <div class="col-md-3">
             {" "}
-            <label class='form-label'>Username :</label>
+            <label class="form-label">Username :</label>
             <input
-              className='form-control'
-              placeholder='Enter Username'
-              type='text'
+              className="form-control"
+              placeholder="Enter Username"
+              type="text"
               {...register("username")}
             />
           </div>
-          <div class='col-md-3'>
+          <div class="col-md-3">
             {" "}
-            <label class='form-label'>Status :</label>
-            <select {...register("status")} className='form-control'>
-              <option value=''>Choose...</option>
+            <label class="form-label">Status :</label>
+            <select {...register("status")} className="form-control">
+              <option value="">Choose...</option>
               <option value={"ACTIVE"}>Active</option>
               <option value={"INACTIVE"}>Inactive</option>
             </select>
           </div>
-          <div class='col-md-3'>
+          <div class="col-md-3">
             {" "}
-            <label class='form-label'>From :</label>
-            <input className='form-control' type='date' {...register("from")} />
+            <label class="form-label">From :</label>
+            <input className="form-control" type="date" {...register("from")} />
           </div>
-          <div class='col-md-3'>
-            <label class='form-label'>To :</label>
-            <input className='form-control' type='date' {...register("to")} />
+          <div class="col-md-3">
+            <label class="form-label">To :</label>
+            <input className="form-control" type="date" {...register("to")} />
           </div>{" "}
-          <div class='col-md-3'>
-            <button class='btn btn-primary me-3'>Search</button>
-            <button onClick={() => reset()} class='btn btn-danger me-3'>
+          <div class="col-md-3">
+            <button class="btn btn-primary me-3">Search</button>
+            <button onClick={() => reset()} class="btn btn-danger me-3">
               Reset
             </button>
           </div>
@@ -168,7 +168,7 @@ export default function AdminManagement() {
         columns={columns}
         data={AllAdmins}
         enableRowNumbers
-        rowNumberMode='static'
+        rowNumberMode="static"
         enableRowActions
         enableFullScreenToggle={false}
         enableDensityToggle={false}
@@ -177,16 +177,16 @@ export default function AdminManagement() {
         enableColumnActions={false}
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
-          <div className='hstack gap-2 fs-1'>
+          <div className="hstack gap-2 fs-1">
             <button
               onClick={() => {
                 setViewModal(true);
                 dispatch(fetchAdminById(row.original._id));
                 setAdminModalOpen(true);
               }}
-              className='btn btn-icon btn-sm btn-warning rounded-pill'
+              className="btn btn-icon btn-sm btn-warning rounded-pill"
             >
-              <i className='mdi mdi-eye'></i>
+              <i className="mdi mdi-eye"></i>
             </button>
             <button
               onClick={() => {
@@ -194,9 +194,9 @@ export default function AdminManagement() {
                 setAdminModalOpen(true);
                 setViewModal(false);
               }}
-              className='btn btn-icon btn-sm btn-info rounded-pill'
+              className="btn btn-icon btn-sm btn-info rounded-pill"
             >
-              <i className='bx bxs-edit-alt' />
+              <i className="bx bxs-edit-alt" />
             </button>
             <button
               onClick={() => {
@@ -205,12 +205,12 @@ export default function AdminManagement() {
                   openModal({
                     url: `${BASE_URL}/admin/${row.original._id}`,
                     id: row.original._id,
-                  }),
+                  })
                 );
               }}
-              className='btn btn-icon btn-sm btn-danger rounded-pill'
+              className="btn btn-icon btn-sm btn-danger rounded-pill"
             >
-              <i className='bx bxs-trash' />
+              <i className="bx bxs-trash" />
             </button>
           </div>
         )}

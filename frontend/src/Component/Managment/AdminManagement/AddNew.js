@@ -38,6 +38,12 @@ export default function AddNew({ viewModal, show, setShow }) {
     formState: { errors, dirtyFields, isDirty },
   } = useForm();
 
+  const states = useSelector(getStates);
+  const countries = useSelector(getCountries);
+  const cities = useSelector(getCities);
+  const dispatch = useDispatch();
+  const adminStatus = useSelector(status);
+
   const onSubmit = useCallback(
     async (data) => {
       if (!watch("_id")) {
@@ -53,19 +59,8 @@ export default function AddNew({ viewModal, show, setShow }) {
         }
       }
     },
-    [isDirty, dirtyFields],
+    [isDirty, dirtyFields]
   );
-
-  const countries = useSelector(getCountries);
-  const states = useSelector(getStates);
-  const cities = useSelector(getCities);
-  const dispatch = useDispatch();
-  const adminStatus = useSelector(status);
-  useEffect(() => {
-    if (ready) {
-      dispatch(fetchCountries());
-    } else setReady(true);
-  }, [ready, adminStatus]);
 
   const admin = useSelector(getAdmin);
 
@@ -77,6 +72,17 @@ export default function AddNew({ viewModal, show, setShow }) {
       setValue("city", admin.city);
     }
   }, [admin, ready]);
+
+  useEffect(() => {
+    if (ready) {
+      dispatch(fetchCountries());
+    } else setReady(true);
+  }, [ready, adminStatus]);
+
+  const handleClose = () => {
+    setShow(false);
+    dispatch(clearAdmin());
+  };
 
   useEffect(() => {
     if (ready) {
@@ -98,14 +104,9 @@ export default function AddNew({ viewModal, show, setShow }) {
     }
   }, [watch("country"), ready, admin]);
 
-  const handleClose = () => {
-    setShow(false);
-    dispatch(clearAdmin());
-  };
-
   return (
     <>
-      <Modal size='md' show={show} onHide={handleClose}>
+      <Modal size="md" show={show} onHide={handleClose}>
         <Modal.Header closeButton>
           <Modal.Title>
             {watch("_id") ? (viewModal ? "View" : "Update") : "Add"} Admin
@@ -113,10 +114,10 @@ export default function AddNew({ viewModal, show, setShow }) {
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className='row'>
-              <div className='col-md-6'>
-                <div className='mb-3'>
-                  <label className='form-label' htmlFor='name'>
+            <div className="row">
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label" htmlFor="name">
                     Name :
                   </label>
 
@@ -124,9 +125,9 @@ export default function AddNew({ viewModal, show, setShow }) {
                     {...register("name", {
                       required: "this is required field",
                     })}
-                    type='text'
-                    className='form-control'
-                    placeholder='Enter Name'
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter Name"
                     disabled={viewModal}
                   />
                   {errors.name && (
@@ -134,9 +135,9 @@ export default function AddNew({ viewModal, show, setShow }) {
                   )}
                 </div>
               </div>
-              <div className='col-md-6'>
-                <div className='mb-3'>
-                  <label className='form-label' htmlFor='username'>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label" htmlFor="username">
                     Username :
                   </label>
 
@@ -144,9 +145,9 @@ export default function AddNew({ viewModal, show, setShow }) {
                     {...register("username", {
                       required: "this is required field",
                     })}
-                    type='text'
-                    className='form-control'
-                    placeholder='Enter Username'
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter Username"
                     disabled={viewModal}
                   />
                   {errors.username && (
@@ -157,9 +158,9 @@ export default function AddNew({ viewModal, show, setShow }) {
                 </div>
               </div>
 
-              <div className='col-md-6'>
-                <div className='mb-3'>
-                  <label className='form-label' htmlFor='username'>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label" htmlFor="username">
                     Email :
                   </label>
 
@@ -167,9 +168,9 @@ export default function AddNew({ viewModal, show, setShow }) {
                     {...register("email", {
                       required: "this is required field",
                     })}
-                    type='text'
-                    className='form-control'
-                    placeholder='Enter Email'
+                    type="text"
+                    className="form-control"
+                    placeholder="Enter Email"
                     disabled={viewModal}
                   />
                   {errors.email && (
@@ -178,18 +179,18 @@ export default function AddNew({ viewModal, show, setShow }) {
                 </div>
               </div>
 
-              <div className='col-md-6'>
-                <div className='mb-3'>
-                  <label className='form-label' htmlFor='country'>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label" htmlFor="country">
                     Country :
                   </label>
                   <Controller
-                    name='country'
+                    name="country"
                     control={control}
                     rules={{ required: "this is required field" }}
                     disabled={viewModal}
                     render={({ field }) => (
-                      <select {...field} className='form-control'>
+                      <select {...field} className="form-control">
                         <option value={""}>Choose...</option>
                         {countries.map((country) => (
                           <option key={country._id} value={country._id}>
@@ -206,18 +207,18 @@ export default function AddNew({ viewModal, show, setShow }) {
                   )}
                 </div>
               </div>
-              <div className='col-md-6'>
-                <div className='mb-3'>
-                  <label className='form-label' htmlFor='state'>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label" htmlFor="state">
                     State :
                   </label>
                   <Controller
-                    name='state'
+                    name="state"
                     control={control}
                     rules={{ required: "this is required field" }}
                     disabled={viewModal}
                     render={({ field }) => (
-                      <select {...field} className='form-control'>
+                      <select {...field} className="form-control">
                         <option value={""}>Choose...</option>
                         {states.map((state) => (
                           <option key={state._id} value={state._id}>
@@ -232,18 +233,18 @@ export default function AddNew({ viewModal, show, setShow }) {
                   )}
                 </div>
               </div>
-              <div className='col-md-6'>
-                <div className='mb-3'>
-                  <label className='form-label' htmlFor='city'>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label" htmlFor="city">
                     City :
                   </label>
                   <Controller
-                    name='city'
+                    name="city"
                     control={control}
                     disabled={viewModal}
                     rules={{ required: "this is required field" }}
                     render={({ field }) => (
-                      <select {...field} className='form-control'>
+                      <select {...field} className="form-control">
                         <option value={""}>Choose...</option>
                         {cities.map((city) => (
                           <option key={city._id} value={city._id}>
@@ -260,7 +261,7 @@ export default function AddNew({ viewModal, show, setShow }) {
               </div>
               {!viewModal && watch("_id") && (
                 <div>
-                  <label className='form-label'>
+                  <label className="form-label">
                     Want to change Password :
                   </label>
                   <input
@@ -268,15 +269,15 @@ export default function AddNew({ viewModal, show, setShow }) {
                     {...register("changePassword", {
                       onChange: () => setValue("password", null),
                     })}
-                    type='checkbox'
-                    className='m-4'
+                    type="checkbox"
+                    className="m-4"
                   />
                 </div>
               )}
               {(!watch("_id") || watch("changePassword")) && (
-                <div className='col-md-6'>
-                  <div className='mb-3'>
-                    <label className='form-label' htmlFor='password'>
+                <div className="col-md-6">
+                  <div className="mb-3">
+                    <label className="form-label" htmlFor="password">
                       Password :
                     </label>
 
@@ -285,9 +286,9 @@ export default function AddNew({ viewModal, show, setShow }) {
                       {...register("password", {
                         required: "this is required field",
                       })}
-                      type='password'
-                      className='form-control'
-                      placeholder='Enter Password'
+                      type="password"
+                      className="form-control"
+                      placeholder="Enter Password"
                     />
                     {errors.password && (
                       <span style={{ color: "red" }}>
@@ -297,9 +298,9 @@ export default function AddNew({ viewModal, show, setShow }) {
                   </div>
                 </div>
               )}
-              <div className='col-md-6'>
-                <div className='mb-3'>
-                  <label className='form-label' htmlFor='password'>
+              <div className="col-md-6">
+                <div className="mb-3">
+                  <label className="form-label" htmlFor="password">
                     Status :
                   </label>
 
@@ -307,7 +308,7 @@ export default function AddNew({ viewModal, show, setShow }) {
                     {...register("status", {
                       required: "this is required field",
                     })}
-                    className='form-control'
+                    className="form-control"
                     disabled={viewModal}
                   >
                     <option value={""}>Choose...</option>
@@ -323,8 +324,8 @@ export default function AddNew({ viewModal, show, setShow }) {
               </div>
             </div>
             {!viewModal && (
-              <div className='text-right'>
-                <button type='submit' className='btn btn-success'>
+              <div className="text-right">
+                <button type="submit" className="btn btn-success">
                   {watch("_id") ? "Update" : "Add"}
                 </button>
               </div>
