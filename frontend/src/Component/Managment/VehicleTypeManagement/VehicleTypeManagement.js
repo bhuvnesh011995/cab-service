@@ -1,7 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import Management_container from "../../Common/Management_container";
 
-import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
 import moment from "moment";
 import { toast } from "react-toastify";
@@ -18,17 +17,10 @@ import {
   filterVehicleType,
 } from "../../../Redux/features/vehicleTypeReducer";
 import ViewVehicleType from "./ViewVehicleType";
-import Filter_Option from "../../Common/Filter_option";
 import { useForm } from "react-hook-form";
-let url = BASE_URL + "/vehicletype/filter/";
 
 export default function VehicleTypeManagement() {
-  const {
-    register,
-    reset,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  const { register, reset, handleSubmit } = useForm();
 
   const [isOpen, setIsOpen] = useState(false);
   const [show, setShow] = useState(false);
@@ -37,7 +29,6 @@ export default function VehicleTypeManagement() {
   const [deleteInfo, setDeleteInfo] = useState(null);
 
   const dispatch = useDispatch();
-  const { reset, handleSubmit, register } = useForm();
   useEffect(() => {
     dispatch(fetchVehicleType());
   }, []);
@@ -98,10 +89,6 @@ export default function VehicleTypeManagement() {
 
   function handleDelete(rowId) {
     dispatch(deleteVehicleType(rowId));
-  }
-
-  function handleReset() {
-    reset();
   }
 
   return (
