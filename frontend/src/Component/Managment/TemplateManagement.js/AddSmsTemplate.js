@@ -12,7 +12,9 @@ import ReactSelect from "react-select";
 import { useDispatch, useSelector } from "react-redux";
 import {
   addSms,
+  clearSmsTemplate,
   getSmsTemplate,
+  getSmsTemplateStatus,
   updateSmsTemplate,
 } from "../../../Redux/features/smsTemplateReducer";
 import { toast } from "react-toastify";
@@ -131,6 +133,7 @@ export const AddNew = function ({ show, setShow }) {
     formState: { errors, dirtyFields, isDirty },
   } = useForm();
   const smsTemplate = useSelector(getSmsTemplate);
+
   useEffect(() => {
     if (ready && smsTemplate) {
       let data = { ...smsTemplate, forUsers: [] };
@@ -140,6 +143,14 @@ export const AddNew = function ({ show, setShow }) {
       reset(data);
     } else setReady(true);
   }, [ready, smsTemplate]);
+
+  const smsTemplateStatus = useSelector(getSmsTemplateStatus);
+
+  useEffect(() => {
+    return () => {
+      if (smsTemplateStatus === "fetched") dispatch(clearSmsTemplate());
+    };
+  }, [smsTemplateStatus]);
 
   const onSubmit = function (data) {
     data.forUsers = data.forUsers?.map((ele) => ele.value) ?? [];

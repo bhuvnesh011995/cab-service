@@ -1,16 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
-import Filter_Option from "../../Common/Filter_option";
 import Management_container from "../../Common/Management_container";
-import BtnDark from "../../Common/Buttons/BtnDark";
 import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
-import {
-  RemoveRedEye,
-  Lock,
-  ModeEditOutline,
-  DeleteForever,
-} from "@mui/icons-material/";
-import { Box, IconButton } from "@mui/material";
 import ViewManufacturer from "./viewManufacturer";
 import AddManufacturer from "./AddManufacturer";
 import {
@@ -27,20 +18,17 @@ import { useSelector, useDispatch } from "react-redux";
 import DeleteModal from "../../DeleteModel/DeleteModel";
 import { getPermissions } from "../../../Redux/features/authReducer";
 import { toast } from "react-toastify";
-let initialFilter = {
-  name: "",
-  status: "",
-};
+import { useForm } from "react-hook-form";
 
 export default function MakeManagement() {
-  const [filter, setFilter] = useState(initialFilter);
   const [isOpen, setIsOpen] = useState(false);
   const [deleteModal, setDeleteModal] = useState(false);
   const [id, setId] = useState(null);
   const [deleteInfo, setDeleteInfo] = useState(null);
-  const url = BASE_URL + "/make/filter/";
   const permissions = useSelector(getPermissions);
   const [viewModel, setViewModel] = useState(false);
+
+  const { register, watch, handleSubmit, reset } = useForm();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -90,15 +78,13 @@ export default function MakeManagement() {
     ],
     []
   );
-  useEffect(() => {
-    dispatch(filterManufacturer(filter));
-  }, []);
 
-  function handleSubmit() {
-    dispatch(filterManufacturer(filter));
+  function onSubmit(data) {
+    dispatch(filterManufacturer(data));
   }
-  function handleClick2() {
-    setFilter(initialFilter);
+
+  function handleReset() {
+    reset();
   }
 
   return (
@@ -119,102 +105,123 @@ export default function MakeManagement() {
             )}
 
             <div class="card-body">
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "right",
-                  zIndex: "2",
-                }}
-              >
-                {(permissions.includes("All") ||
-                  permissions.includes("addMake")) && (
-                  <BtnDark
-                    handleClick={() => {
-                      setIsOpen(true);
-                    }}
-                    title={"Add Manufacture"}
-                  />
-                )}
+              <div class="row">
+                <div class="col-md-12 text-right">
+                  <button
+                    class="btn btn-outline-primary"
+                    onClick={() => setIsOpen(true)}
+                  >
+                    Add New
+                  </button>
+                </div>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                  <div
+                    class="justify-content-center row align-items-end mb-5"
+                    style={{ alignItems: "end" }}
+                  >
+                    <div class="col-md-3">
+                      {" "}
+                      <label class="form-label">name</label>
+                      <input
+                        className="form-control"
+                        placeholder="Enter Title"
+                        {...register("name")}
+                      />
+                    </div>
+                    <div className="col-md-3">
+                      <label>Status: </label>
+                      <select
+                        name="status"
+                        className="form-control select2-templating "
+                        {...register("status")}
+                      >
+                        <option value="">choose...</option>
+                        <option value="ACTIVE">Active</option>
+                        <option value="INACTIVE">Inactive</option>
+                      </select>
+                    </div>
+                    <div class="col-md-3">
+                      <button class="btn btn-primary me-3" type="submit">
+                        Search
+                      </button>
+                      <button class="btn btn-danger me-3" onClick={handleReset}>
+                        Reset
+                      </button>
+                    </div>
+                  </div>{" "}
+                </form>
               </div>
-              <Filter_Option
-                input={filter}
-                setInput={setFilter}
-                initialInput={initialFilter}
-                btn1_title={"Search"}
-                handleClick1={handleSubmit}
-                handleClick2={handleClick2}
-                btn2_title={"Reset"}
-                options={["name", "status"]}
-              />
+              {/* <Table
+        heading={["Sr no", "Name", "Status", "Created At", "Action"]}
+        list={list}
+      /> */}
+              {(permissions.includes("All") ||
+                permissions.includes("viewTable")) && (
+                <MaterialReactTable
+                  columns={columns || []}
+                  data={manufacturerData || []}
+                  enableRowNumbers={true}
+                  rowNumberDisplayMode="static"
+                  enableRowActions
+                  positionActionsColumn={"last"}
+                  renderRowActions={({ row, table }) => (
+                    <div className="hstack gap-2 fs-1">
+                      <button
+                        onClick={() => {
+                          dispatch(viewManufacturer({ id: row.original._id }));
+                          setViewModel(true);
+                        }}
+                        className="btn btn-icon btn-sm btn-warning rounded-pill"
+                      >
+                        <i className="mdi mdi-eye"></i>
+                      </button>
+                      <button
+                        onClick={() => {
+                          dispatch(
+                            updatetManufacturerById({ id: row.original._id })
+                          );
+                          setIsOpen(true);
+                        }}
+                        className="btn btn-icon btn-sm btn-info rounded-pill"
+                      >
+                        <i className="bx bxs-edit-alt" />
+                      </button>
+                      <button
+                        onClick={() => {
+                          setDeleteInfo({
+                            message: `Do You Really Want To Delete ${row.original?.name}`,
+                            header: "Delete Model",
+                          });
+                          setDeleteModal(true);
+                          setId(row.original._id);
+                        }}
+                        className="btn btn-icon btn-sm btn-danger rounded-pill"
+                      >
+                        <i className="bx bxs-trash" />
+                      </button>
+                    </div>
+                  )}
+                  muiTableProps={{
+                    sx: {
+                      border: "1px solid rgba(232, 237, 234, 1)",
+                    },
+                  }}
+                  muiTableHeadCellProps={{
+                    sx: {
+                      border: "1px solid rgba(232, 237, 234, 1)",
+                    },
+                  }}
+                  muiTableBodyCellProps={{
+                    sx: {
+                      border: "1px solid rgba(232, 237, 234, 1)",
+                    },
+                  }}
+                />
+              )}
             </div>
           </div>
         </div>
       </div>
-
-      {/* <Table
-        heading={["Sr no", "Name", "Status", "Created At", "Action"]}
-        list={list}
-      /> */}
-      {(permissions.includes("All") || permissions.includes("viewTable")) && (
-        <MaterialReactTable
-          columns={columns || []}
-          data={manufacturerData || []}
-          enableRowNumbers={true}
-          rowNumberDisplayMode="static"
-          enableRowActions
-          positionActionsColumn={"last"}
-          renderRowActions={({ row, table }) => (
-            <div className="hstack gap-2 fs-1">
-              <button
-                onClick={() => {
-                  dispatch(viewManufacturer({ id: row.original._id }));
-                  setViewModel(true);
-                }}
-                className="btn btn-icon btn-sm btn-warning rounded-pill"
-              >
-                <i className="mdi mdi-eye"></i>
-              </button>
-              <button
-                onClick={() => {
-                  dispatch(updatetManufacturerById({ id: row.original._id }));
-                  setIsOpen(true);
-                }}
-                className="btn btn-icon btn-sm btn-info rounded-pill"
-              >
-                <i className="bx bxs-edit-alt" />
-              </button>
-              <button
-                onClick={() => {
-                  setDeleteInfo({
-                    message: `Do You Really Want To Delete ${row.original?.name}`,
-                    header: "Delete Model",
-                  });
-                  setDeleteModal(true);
-                  setId(row.original._id);
-                }}
-                className="btn btn-icon btn-sm btn-danger rounded-pill"
-              >
-                <i className="bx bxs-trash" />
-              </button>
-            </div>
-          )}
-          muiTableProps={{
-            sx: {
-              border: "1px solid rgba(232, 237, 234, 1)",
-            },
-          }}
-          muiTableHeadCellProps={{
-            sx: {
-              border: "1px solid rgba(232, 237, 234, 1)",
-            },
-          }}
-          muiTableBodyCellProps={{
-            sx: {
-              border: "1px solid rgba(232, 237, 234, 1)",
-            },
-          }}
-        />
-      )}
     </Management_container>
   );
 }

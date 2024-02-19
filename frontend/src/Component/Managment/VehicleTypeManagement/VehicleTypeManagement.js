@@ -1,8 +1,6 @@
 import { useEffect, useState, useMemo } from "react";
 import Management_container from "../../Common/Management_container";
-import BtnDark from "../../Common/Buttons/BtnDark";
-import Text_Input from "../../Common/Inputs/Text_Input";
-import Selection_Input from "../../Common/Inputs/Selection_input";
+
 import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
 import moment from "moment";
@@ -24,12 +22,6 @@ import Filter_Option from "../../Common/Filter_option";
 import { useForm } from "react-hook-form";
 let url = BASE_URL + "/vehicletype/filter/";
 
-const initialFilter = {
-  name: "",
-  runMode: "",
-  state: "",
-};
-
 export default function VehicleTypeManagement() {
   const {
     register,
@@ -45,7 +37,7 @@ export default function VehicleTypeManagement() {
   const [deleteInfo, setDeleteInfo] = useState(null);
 
   const dispatch = useDispatch();
-
+  const { reset, handleSubmit, register } = useForm();
   useEffect(() => {
     dispatch(fetchVehicleType());
   }, []);
@@ -86,7 +78,7 @@ export default function VehicleTypeManagement() {
         id: "createdAt",
         header: "Created At",
         Cell: ({ row }) => (
-          <div className="">
+          <div className=''>
             {moment(row.original.createdAt).format("YYYY/DD/MM")}
           </div>
         ),
@@ -97,7 +89,7 @@ export default function VehicleTypeManagement() {
         size: 80,
       },
     ],
-    []
+    [],
   );
 
   function onSubmit(filter) {
@@ -106,6 +98,10 @@ export default function VehicleTypeManagement() {
 
   function handleDelete(rowId) {
     dispatch(deleteVehicleType(rowId));
+  }
+
+  function handleReset() {
+    reset();
   }
 
   return (
@@ -119,46 +115,46 @@ export default function VehicleTypeManagement() {
       />
       {show && <AddVehicleType show={show} setShow={setShow} />}
       {openView && <ViewVehicleType show={openView} setShow={setOpenView} />}
-      <div class="row">
-        <div class="col-lg-12">
-          <div class="card">
-            <div class="card-body">
-              <div class="row">
-                <div class="col-md-12 text-right">
+      <div class='row'>
+        <div class='col-lg-12'>
+          <div class='card'>
+            <div class='card-body'>
+              <div class='row'>
+                <div class='col-md-12 text-right'>
                   <button
-                    class="btn btn-outline-primary"
-                    onClick={() => setIsOpen(true)}
+                    class='btn btn-outline-primary'
+                    onClick={() => setShow(true)}
                   >
                     Add New
                   </button>
                 </div>
                 <form
                   onSubmit={handleSubmit(onSubmit)}
-                  class="justify-content-center row align-items-end mb-5"
+                  class='justify-content-center row align-items-end mb-5'
                   style={{ alignItems: "end" }}
                 >
-                  <div class="col-md-3">
+                  <div class='col-md-3'>
                     {" "}
-                    <label class="form-label">Name :</label>
+                    <label class='form-label'>Name :</label>
                     <input
-                      className="form-control"
-                      placeholder="Enter Name"
-                      type="text"
+                      className='form-control'
+                      placeholder='Enter Name'
+                      type='text'
                       {...register("name")}
                     />
                   </div>
-                  <div class="col-md-3">
-                    <label class="form-label">To :</label>
-                    <select {...register("runMode")} className="form-control">
+                  <div class='col-md-3'>
+                    <label class='form-label'>To :</label>
+                    <select {...register("runMode")} className='form-control'>
                       <option value={""}>Choose...</option>
                       <option value={"INDIVIDUAL"}>Individual</option>
                       <option value={"RENTAL"}>Rental</option>
                       <option value={"OUTSTATION"}>Outstation</option>
                     </select>
                   </div>{" "}
-                  <div class="col-md-3">
-                    <button class="btn btn-primary me-3">Search</button>
-                    <button onClick={() => reset()} class="btn btn-danger me-3">
+                  <div class='col-md-3'>
+                    <button class='btn btn-primary me-3'>Search</button>
+                    <button onClick={() => reset()} class='btn btn-danger me-3'>
                       Reset
                     </button>
                   </div>
@@ -178,28 +174,28 @@ export default function VehicleTypeManagement() {
         enableHiding={false}
         enableColumnFilters={false}
         enableColumnActions={false}
-        rowNumberDisplayMode="static"
+        rowNumberDisplayMode='static'
         enableRowActions
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
-          <div className="hstack gap-2 fs-1">
+          <div className='hstack gap-2 fs-1'>
             <button
               onClick={() => {
                 dispatch(getViewVehicleType({ id: row.original._id }));
                 setOpenView(true);
               }}
-              className="btn btn-icon btn-sm btn-warning rounded-pill"
+              className='btn btn-icon btn-sm btn-warning rounded-pill'
             >
-              <i className="mdi mdi-eye"></i>
+              <i className='mdi mdi-eye'></i>
             </button>
             <button
               onClick={() => {
                 dispatch(updateVehicleTypeById({ id: row.original._id }));
                 setShow(true);
               }}
-              className="btn btn-icon btn-sm btn-info rounded-pill"
+              className='btn btn-icon btn-sm btn-info rounded-pill'
             >
-              <i className="bx bxs-edit-alt" />
+              <i className='bx bxs-edit-alt' />
             </button>
             <button
               onClick={() => {
@@ -210,9 +206,9 @@ export default function VehicleTypeManagement() {
                 setIsOpen(true);
                 setId(row.original._id);
               }}
-              className="btn btn-icon btn-sm btn-danger rounded-pill"
+              className='btn btn-icon btn-sm btn-danger rounded-pill'
             >
-              <i className="bx bxs-trash" />
+              <i className='bx bxs-trash' />
             </button>
           </div>
         )}

@@ -1,11 +1,9 @@
 import { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import BASE_URL from "../../../config/config";
+
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import { Modal } from "react-bootstrap";
-import axios from "axios";
-import { useLocation } from "react-router-dom";
+
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
@@ -14,8 +12,6 @@ import {
   getVehicleCategory,
   cleanVehicleCategory,
 } from "../../../Redux/features/vehicleCategoryReducer";
-const url = BASE_URL + "/vehicleCategory/";
-const api = BASE_URL + "/vehicleCategory/:id";
 
 export default function AddVehicleCategory({ show, setShow }) {
   const dispatch = useDispatch();

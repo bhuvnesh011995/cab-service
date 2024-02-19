@@ -43,7 +43,7 @@ export default function PromoCodeManagement() {
   const deleteStatus = useSelector(deleteModalStatus);
   const id = useSelector((state) => state.delete.id);
   const URL = useSelector(url);
-  const { register, watch, handleSubmit } = useForm();
+  const { register, watch, handleSubmit, reset } = useForm();
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(fetchPromoCode());
@@ -120,9 +120,13 @@ export default function PromoCodeManagement() {
     dispatch(filterPromoCode(data));
   }
 
+  function handleReset() {
+    reset();
+  }
+
   return (
     <Management_container title={"PromoCode Management"}>
-      z {isOpen && <DeleteModalAdv />}
+      {isOpen && <DeleteModalAdv />}
       {show && <AddPromoCode show={show} setShow={setShow} />}
       {openView && <ViewPromoCode show={openView} setShow={setOpenView} />}
       <div class="row">
@@ -176,7 +180,9 @@ export default function PromoCodeManagement() {
                       <button class="btn btn-primary me-3" type="submit">
                         Search
                       </button>
-                      <button class="btn btn-danger me-3">Reset</button>
+                      <button class="btn btn-danger me-3" onClick={handleReset}>
+                        Reset
+                      </button>
                     </div>
                   </div>{" "}
                 </form>

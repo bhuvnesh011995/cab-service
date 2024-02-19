@@ -7,6 +7,7 @@ const initialState = {
   status: "idle",
   error: null,
   tax: null,
+  viewTaxes: null,
 };
 export const filterTax = createAsyncThunk(
   "tax/filter",
@@ -114,6 +115,17 @@ const taxSlice = createSlice({
     clearTax: (state, action) => {
       state.tax = null;
     },
+
+    getViewTaxes: (state, action) => {
+      state.viewTaxes = state.taxes.find(
+        (tax) => tax._id === action.payload.id
+      );
+      state.status = "view";
+    },
+
+    cleanViewTaxes: (state, action) => {
+      state.viewTaxes = null;
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(filterTax.fulfilled, (state, action) => {
@@ -180,7 +192,8 @@ const taxSlice = createSlice({
 
 export default taxSlice.reducer;
 
-export const { clearTaxStatus, taxToUpdate, clearTax } = taxSlice.actions;
+export const { clearTaxStatus, taxToUpdate, clearTax, getViewTaxes } =
+  taxSlice.actions;
 
 export const taxStatus = (state) => state.tax.status;
 
@@ -189,3 +202,5 @@ export const getTaxes = (state) => state.tax.taxes;
 export const getTax = (state) => state.tax.tax;
 
 export const taxError = (state) => state.tax.error;
+
+export const viewTaxes = (state) => state.tax.viewTaxes;

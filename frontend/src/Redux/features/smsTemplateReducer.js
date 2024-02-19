@@ -117,8 +117,14 @@ const smsTemplateSlice = createSlice({
       state.smsTemplate = state.smsTemplates.find(
         (item) => item._id === action.payload.id
       );
+      state.status = "fetched";
+    },
+
+    clearSmsTemplate: (state, action) => {
+      state.smsTemplate = null;
     },
   },
+
   extraReducers: (builder) => {
     builder.addCase(filterSmsTemplate.fulfilled, (state, action) => {
       state.smsTemplates = action.payload;
@@ -197,7 +203,7 @@ const smsTemplateSlice = createSlice({
 
 export default smsTemplateSlice.reducer;
 
-export const { clearSmsTemplateStatus, smsTemplateById } =
+export const { clearSmsTemplateStatus, smsTemplateById, clearSmsTemplate } =
   smsTemplateSlice.actions;
 
 export const getSmsTemplateStatus = (state) => state.smsTemplate.status;
