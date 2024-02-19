@@ -1,8 +1,7 @@
 import { useEffect, useMemo, useState } from "react";
 import "./AdminManagement.css";
 import Management_container from "../../Common/Management_container";
-import Filter_Option from "../../Common/Filter_option";
-import BtnDark from "../../Common/Buttons/BtnDark";
+
 import BASE_URL from "../../../config/config";
 import { MaterialReactTable } from "material-react-table";
 import { toast } from "react-toastify";
@@ -25,19 +24,14 @@ import {
   closeModal,
   doneDelete,
 } from "../../../Redux/features/deleteModalReducer";
-const initialFilter = {
-  name: "",
-  username: "",
-  status: "",
-  from: "",
-  to: "",
-};
-// let url = BASE_URL + "/admin/filter/";
+import { useForm } from "react-hook-form";
+
 export default function AdminManagement() {
+  const { handleSubmit, reset, register } = useForm();
   const show = useSelector(showDeleteModal);
   const [viewModal, setViewModal] = useState(false);
   const [adminModalOpen, setAdminModalOpen] = useState(false);
-  const [filter, setFilter] = useState(initialFilter);
+
   const dispatch = useDispatch();
   const AllAdmins = useSelector(getAllAdmins);
   const status = useSelector((state) => state.admins.status);
@@ -95,7 +89,7 @@ export default function AdminManagement() {
     [],
   );
 
-  function handleSubmit(e) {
+  function onSubmit(filter) {
     dispatch(fetchAdmins(filter));
   }
 
@@ -110,37 +104,71 @@ export default function AdminManagement() {
       )}
       {show && <DeleteModalAdv />}
       <div class='row'>
-        <div class='col-lg-13'>
-          <div class='card'>
-            <div class='card-body'>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "right",
-                  zIndex: "2",
-                }}
-              >
-                <BtnDark
-                  handleClick={() => setAdminModalOpen(true)}
-                  title={"Add Admin"}
-                />
-              </div>
-              <Filter_Option
-                input={filter}
-                setInput={setFilter}
-                initialInput={initialFilter}
-                btn1_title={"Search"}
-                handleClick1={handleSubmit}
-                options={["name", "username", "status", "from", "to"]}
-              />
-            </div>
-          </div>
+        <div class='col-md-12 text-right'>
+          <button
+            class='btn btn-outline-primary'
+            onClick={() => setAdminModalOpen(true)}
+          >
+            Add New
+          </button>
         </div>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          class='justify-content-center row align-items-end mb-5'
+          style={{ alignItems: "end" }}
+        >
+          <div class='col-md-3'>
+            {" "}
+            <label class='form-label'>Name :</label>
+            <input
+              placeholder='Enter Name'
+              className='form-control'
+              type='text'
+              {...register("name")}
+            />
+          </div>
+          <div class='col-md-3'>
+            {" "}
+            <label class='form-label'>Username :</label>
+            <input
+              className='form-control'
+              placeholder='Enter Username'
+              type='text'
+              {...register("username")}
+            />
+          </div>
+          <div class='col-md-3'>
+            {" "}
+            <label class='form-label'>Status :</label>
+            <select {...register("status")} className='form-control'>
+              <option value=''>Choose...</option>
+              <option value={"ACTIVE"}>Active</option>
+              <option value={"INACTIVE"}>Inactive</option>
+            </select>
+          </div>
+          <div class='col-md-3'>
+            {" "}
+            <label class='form-label'>From :</label>
+            <input className='form-control' type='date' {...register("from")} />
+          </div>
+          <div class='col-md-3'>
+            <label class='form-label'>To :</label>
+            <input className='form-control' type='date' {...register("to")} />
+          </div>{" "}
+          <div class='col-md-3'>
+            <button class='btn btn-primary me-3'>Search</button>
+            <button onClick={() => reset()} class='btn btn-danger me-3'>
+              Reset
+            </button>
+          </div>
+        </form>{" "}
       </div>
 
       <MaterialReactTable
         columns={columns}
         data={AllAdmins}
+        enableRowNumbers
+        rowNumberMode='static'
         enableRowActions
         enableFullScreenToggle={false}
         enableDensityToggle={false}

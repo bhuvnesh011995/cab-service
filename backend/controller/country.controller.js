@@ -64,8 +64,7 @@ exports.filterContries = async (req, res, next) => {
     let query = [{ $match: { $or: [] } }];
     if (name)
       query[0].$match.$or.push({ name: { $regex: name, $options: "i" } });
-    if (status)
-      query[0].$match.$or.push({ status: { $regex: status, $options: "i" } });
+    if (status) query[0].$match.$or.push({ status });
 
     if (!query[0].$match.$or.length) query[0].$match = {};
     let countries = await db.country.aggregate(query);
