@@ -37,6 +37,7 @@ import {
   closeModal,
 } from "../../../Redux/features/deleteModalReducer";
 import DeleteModalAdv from "../../../Common/deleteModalRedux";
+import { useForm } from "react-hook-form";
 
 const inittialFilter = {
   title: "",
@@ -45,6 +46,7 @@ const inittialFilter = {
 };
 
 export default function SmsTemplateManagement() {
+  const { handleSubmit, reset, register } = useForm();
   const [isOpen, setIsOpen] = useState(false);
   const [smsTemplate, setSmsTemplate] = useState();
   const [filter, setFilter] = useState(inittialFilter);
@@ -211,153 +213,146 @@ export default function SmsTemplateManagement() {
         },
       },
     ],
-    [],
+    []
   );
 
-  function handleSubmit(e) {
-    e.preventDefault();
-
+  function onSubmit(filter) {
     dispatch(filterSmsTemplate(filter));
   }
-
-  function reset() {}
 
   return (
     <Management_container title={"SMS Template"}>
       {show && <DeleteModalAdv />}
-      <div class='row'>
-        <div class='col-lg-13'>
-          <div class='card'>
-            <div class='card-body'>
-              {isOpen && <AddNew show={isOpen} setShow={setIsOpen} />}
-              <div className='text-right'>
-                <button
-                  className='btn btn-outline-primary'
-                  onClick={() => setIsOpen(true)}
-                >
-                  Add SMS
-                </button>
-              </div>
+      {isOpen && <AddNew show={isOpen} setShow={setIsOpen} />}
 
-              <form className='m-2'>
-                <div className='row'>
-                  <div className='col-lg-2 inputField'>
-                    <Text_Input
-                      input={filter}
-                      setInput={setFilter}
-                      lebel_text={"Title"}
-                      setKey={"title"}
-                    />
-                    <Selection_Input
-                      options={["ADMIN", "DRIVER", "RIDER"]}
-                      input={filter}
-                      setInput={setFilter}
-                      lebel_text={"For Users"}
-                      setKey={"forUsers"}
-                    />
-                    <Selection_Input
-                      options={["ACTIVE", "INACTIVE"]}
-                      input={filter}
-                      setInput={setFilter}
-                      lebel_text={"Status :"}
-                      setKey={"status"}
-                    />
-                    <div style={{ margin: "20px", marginTop: "50px" }}>
-                      <BtnDark handleClick={handleSubmit} title={"Search"} />
-
-                      <button
-                        className='btn btn-outline-danger'
-                        onClick={reset}
-                      >
-                        Reset
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </form>
-              <MaterialReactTable
-                columns={columns}
-                data={smsTemplates}
-                enableRowActions
-                enableRowNumbers
-                enableFullScreenToggle={false}
-                enableDensityToggle={false}
-                enableHiding={false}
-                enableColumnFilters={false}
-                enableColumnActions={false}
-                displayColumnDefOptions={{
-                  "mrt-row-actions": {
-                    size: 100,
-                    muiTableHeadCellProps: {
-                      align: "center", //change head cell props
-                    },
-                  },
-                  "mrt-row-numbers": {
-                    header: "Sr No",
-                    // enableColumnOrdering: true, //turn on some features that are usually off
-                    muiTableHeadCellProps: {
-                      sx: {
-                        fontSize: "1.2rem",
-                      },
-                    },
-                  },
-                }}
-                positionActionsColumn={"last"}
-                renderRowActions={({ row, table }) => (
-                  <div className='hstack gap-2 fs-1'>
-                    <button
-                      onClick={() => {
-                        setIsOpen(true);
-                        setSmsTemplate({ ...row.original });
-                      }}
-                      className='btn btn-icon btn-sm btn-warning rounded-pill'
-                    >
-                      <i className='mdi mdi-eye'></i>
-                    </button>
-                    <button
-                      onClick={() => {
-                        dispatch(smsTemplateById({ id: row.original._id }));
-                        setIsOpen(true);
-                      }}
-                      className='btn btn-icon btn-sm btn-info rounded-pill'
-                    >
-                      <i className='bx bxs-edit-alt' />
-                    </button>
-                    <button
-                      onClick={() => {
-                        dispatch(
-                          openModal({
-                            url: `${BASE_URL}/template/sms/${row.original._id}`,
-                            id: row.original._id,
-                          }),
-                        );
-                      }}
-                      className='btn btn-icon btn-sm btn-danger rounded-pill'
-                    >
-                      <i className='bx bxs-trash' />
-                    </button>
-                  </div>
-                )}
-                muiTableProps={{
-                  sx: {
-                    border: "1px solid rgba(232, 237, 234, 1)",
-                  },
-                }}
-                muiTableHeadCellProps={{
-                  sx: {
-                    border: "1px solid rgba(232, 237, 234, 1)",
-                  },
-                }}
-                muiTableBodyCellProps={{
-                  sx: {
-                    border: "1px solid rgba(232, 237, 234, 1)",
-                  },
-                }}
-              />
-            </div>
-          </div>
+      <div class="row">
+        <div class="col-md-12 text-right">
+          <button
+            class="btn btn-outline-primary"
+            onClick={() => setIsOpen(true)}
+          >
+            Add New
+          </button>
         </div>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          class="justify-content-center row align-items-end mb-5"
+          style={{ alignItems: "end" }}
+        >
+          <div class="col-md-3">
+            {" "}
+            <label class="form-label">Title :</label>
+            <input
+              placeholder="Enter Title"
+              className="form-control"
+              type="text"
+              {...register("title")}
+            />
+          </div>
+          <div class="col-md-3">
+            <label class="form-label">For Users :</label>
+            <select {...register("forUsers")} className="form-control">
+              <option value={""}>Choose...</option>
+              <option value={"RIDER"}>Rider</option>
+              <option value={"DRIVER"}>Driver</option>
+              <option value={"ADMIN"}>Admin</option>
+            </select>
+          </div>{" "}
+          <div class="col-md-3">
+            <label class="form-label">Status :</label>
+            <select {...register("status")} className="form-control">
+              <option value={""}>Choose...</option>
+              <option value={"ACTIVE"}>Active</option>
+              <option value={"INACTIVE"}>Inacive</option>
+            </select>
+          </div>{" "}
+          <div class="col-md-3">
+            <button class="btn btn-primary me-3">Search</button>
+            <button onClick={() => reset()} class="btn btn-danger me-3">
+              Reset
+            </button>
+          </div>
+        </form>{" "}
       </div>
+      <MaterialReactTable
+        columns={columns}
+        data={smsTemplates}
+        enableRowActions
+        enableRowNumbers
+        enableFullScreenToggle={false}
+        enableDensityToggle={false}
+        enableHiding={false}
+        enableColumnFilters={false}
+        enableColumnActions={false}
+        displayColumnDefOptions={{
+          "mrt-row-actions": {
+            size: 100,
+            muiTableHeadCellProps: {
+              align: "center", //change head cell props
+            },
+          },
+          "mrt-row-numbers": {
+            header: "Sr No",
+            // enableColumnOrdering: true, //turn on some features that are usually off
+            muiTableHeadCellProps: {
+              sx: {
+                fontSize: "1.2rem",
+              },
+            },
+          },
+        }}
+        positionActionsColumn={"last"}
+        renderRowActions={({ row, table }) => (
+          <div className="hstack gap-2 fs-1">
+            <button
+              onClick={() => {
+                setIsOpen(true);
+                setSmsTemplate({ ...row.original });
+              }}
+              className="btn btn-icon btn-sm btn-warning rounded-pill"
+            >
+              <i className="mdi mdi-eye"></i>
+            </button>
+            <button
+              onClick={() => {
+                dispatch(smsTemplateById({ id: row.original._id }));
+                setIsOpen(true);
+              }}
+              className="btn btn-icon btn-sm btn-info rounded-pill"
+            >
+              <i className="bx bxs-edit-alt" />
+            </button>
+            <button
+              onClick={() => {
+                dispatch(
+                  openModal({
+                    url: `${BASE_URL}/template/sms/${row.original._id}`,
+                    id: row.original._id,
+                  })
+                );
+              }}
+              className="btn btn-icon btn-sm btn-danger rounded-pill"
+            >
+              <i className="bx bxs-trash" />
+            </button>
+          </div>
+        )}
+        muiTableProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableHeadCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+        muiTableBodyCellProps={{
+          sx: {
+            border: "1px solid rgba(232, 237, 234, 1)",
+          },
+        }}
+      />
     </Management_container>
   );
 }
