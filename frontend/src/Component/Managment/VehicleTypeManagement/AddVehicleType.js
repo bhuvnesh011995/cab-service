@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
-import BASE_URL from "../../../config/config";
+import { useCallback, useEffect } from "react";
 import ReactSelect from "react-select";
 import { Modal } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
@@ -11,14 +10,16 @@ import {
 } from "../../../Redux/features/vehicleTypeReducer";
 import { useForm, Controller } from "react-hook-form";
 import { toast } from "react-toastify";
+import { IMAGE_URL } from "../../../config/config";
 export default function AddVehicleType({ show, setShow }) {
   const dispatch = useDispatch();
   const {
     register,
     handleSubmit,
     reset,
-    control,
     setValue,
+    control,
+    watch,
     formState: { errors, dirtyFields, isDirty },
   } = useForm();
   const options = [
@@ -67,6 +68,15 @@ export default function AddVehicleType({ show, setShow }) {
     [isDirty, dirtyFields],
   );
 
+  const openFile = (value) => {
+    if (watch(value)[0]?.name) {
+      const fileUrl = URL.createObjectURL(watch(value)[0]);
+      window.open(fileUrl);
+    } else {
+      window.open(IMAGE_URL + watch(value));
+    }
+  };
+
   return (
     <Modal
       size='lg'
@@ -86,12 +96,39 @@ export default function AddVehicleType({ show, setShow }) {
             <div className='col-md-6'>
               <div className='mb-3'>
                 <label>file</label>
-                <input
-                  className='form-control form-control-sm'
-                  type='file'
-                  name='file'
-                  {...register("file", { required: "this is required field" })}
-                />
+                <div className='d-flex'>
+                  <input
+                    className='form-control form-control-sm'
+                    type={
+                      watch("file") && watch("file")[0]?.name
+                        ? "file"
+                        : !watch("file")
+                        ? "file"
+                        : "text"
+                    }
+                    name='file'
+                    disabled={watch("file")}
+                    {...register("file", {
+                      required: "this is required field",
+                    })}
+                  />
+                  {watch("file") && (
+                    <div className='d-flex'>
+                      <span
+                        className='text-primary cursor-pointer'
+                        onClick={() => openFile("file")}
+                      >
+                        <i className='mdi mdi-eye'></i>
+                      </span>
+                      <span
+                        onClick={() => setValue("file", "")}
+                        className='text-danger cursor-pointer mx-2'
+                      >
+                        <i className='bx bxs-trash' />
+                      </span>
+                    </div>
+                  )}
+                </div>
                 {errors.file && (
                   <span style={{ color: "red" }}>{errors.file.message}</span>
                 )}

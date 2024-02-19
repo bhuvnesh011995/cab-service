@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./AdminManagement.css";
 import Management_container from "../../Common/Management_container";
 
@@ -29,6 +29,7 @@ import { useForm } from "react-hook-form";
 export default function AdminManagement() {
   const { handleSubmit, reset, register } = useForm();
   const show = useSelector(showDeleteModal);
+  const [viewModal, setViewModal] = useState(false);
   const [adminModalOpen, setAdminModalOpen] = useState(false);
 
   const dispatch = useDispatch();
@@ -85,7 +86,7 @@ export default function AdminManagement() {
         size: 100,
       },
     ],
-    []
+    [],
   );
 
   function onSubmit(filter) {
@@ -95,13 +96,17 @@ export default function AdminManagement() {
   return (
     <Management_container title={"Admin Users"}>
       {adminModalOpen && (
-        <AddNew show={adminModalOpen} setShow={setAdminModalOpen} />
+        <AddNew
+          show={adminModalOpen}
+          setShow={setAdminModalOpen}
+          viewModal={viewModal}
+        />
       )}
       {show && <DeleteModalAdv />}
-      <div class="row">
-        <div class="col-md-12 text-right">
+      <div class='row'>
+        <div class='col-md-12 text-right'>
           <button
-            class="btn btn-outline-primary"
+            class='btn btn-outline-primary'
             onClick={() => setAdminModalOpen(true)}
           >
             Add New
@@ -109,50 +114,50 @@ export default function AdminManagement() {
         </div>
         <form
           onSubmit={handleSubmit(onSubmit)}
-          class="justify-content-center row align-items-end mb-5"
+          class='justify-content-center row align-items-end mb-5'
           style={{ alignItems: "end" }}
         >
-          <div class="col-md-3">
+          <div class='col-md-3'>
             {" "}
-            <label class="form-label">Name :</label>
+            <label class='form-label'>Name :</label>
             <input
-              placeholder="Enter Name"
-              className="form-control"
-              type="text"
+              placeholder='Enter Name'
+              className='form-control'
+              type='text'
               {...register("name")}
             />
           </div>
-          <div class="col-md-3">
+          <div class='col-md-3'>
             {" "}
-            <label class="form-label">Username :</label>
+            <label class='form-label'>Username :</label>
             <input
-              className="form-control"
-              placeholder="Enter Username"
-              type="text"
+              className='form-control'
+              placeholder='Enter Username'
+              type='text'
               {...register("username")}
             />
           </div>
-          <div class="col-md-3">
+          <div class='col-md-3'>
             {" "}
-            <label class="form-label">Status :</label>
-            <select {...register("status")} className="form-control">
-              <option value="">Choose...</option>
+            <label class='form-label'>Status :</label>
+            <select {...register("status")} className='form-control'>
+              <option value=''>Choose...</option>
               <option value={"ACTIVE"}>Active</option>
               <option value={"INACTIVE"}>Inactive</option>
             </select>
           </div>
-          <div class="col-md-3">
+          <div class='col-md-3'>
             {" "}
-            <label class="form-label">From :</label>
-            <input className="form-control" type="date" {...register("from")} />
+            <label class='form-label'>From :</label>
+            <input className='form-control' type='date' {...register("from")} />
           </div>
-          <div class="col-md-3">
-            <label class="form-label">To :</label>
-            <input className="form-control" type="date" {...register("to")} />
+          <div class='col-md-3'>
+            <label class='form-label'>To :</label>
+            <input className='form-control' type='date' {...register("to")} />
           </div>{" "}
-          <div class="col-md-3">
-            <button class="btn btn-primary me-3">Search</button>
-            <button onClick={() => reset()} class="btn btn-danger me-3">
+          <div class='col-md-3'>
+            <button class='btn btn-primary me-3'>Search</button>
+            <button onClick={() => reset()} class='btn btn-danger me-3'>
               Reset
             </button>
           </div>
@@ -163,7 +168,7 @@ export default function AdminManagement() {
         columns={columns}
         data={AllAdmins}
         enableRowNumbers
-        rowNumberMode="static"
+        rowNumberMode='static'
         enableRowActions
         enableFullScreenToggle={false}
         enableDensityToggle={false}
@@ -172,34 +177,40 @@ export default function AdminManagement() {
         enableColumnActions={false}
         positionActionsColumn={"last"}
         renderRowActions={({ row, table }) => (
-          <div className="hstack gap-2 fs-1">
+          <div className='hstack gap-2 fs-1'>
             <button
-              onClick={() => {}}
-              className="btn btn-icon btn-sm btn-warning rounded-pill"
+              onClick={() => {
+                setViewModal(true);
+                dispatch(fetchAdminById(row.original._id));
+                setAdminModalOpen(true);
+              }}
+              className='btn btn-icon btn-sm btn-warning rounded-pill'
             >
-              <i className="mdi mdi-eye"></i>
+              <i className='mdi mdi-eye'></i>
             </button>
             <button
               onClick={() => {
                 dispatch(fetchAdminById(row.original._id));
                 setAdminModalOpen(true);
+                setViewModal(false);
               }}
-              className="btn btn-icon btn-sm btn-info rounded-pill"
+              className='btn btn-icon btn-sm btn-info rounded-pill'
             >
-              <i className="bx bxs-edit-alt" />
+              <i className='bx bxs-edit-alt' />
             </button>
             <button
               onClick={() => {
+                setViewModal(false);
                 dispatch(
                   openModal({
                     url: `${BASE_URL}/admin/${row.original._id}`,
                     id: row.original._id,
-                  })
+                  }),
                 );
               }}
-              className="btn btn-icon btn-sm btn-danger rounded-pill"
+              className='btn btn-icon btn-sm btn-danger rounded-pill'
             >
-              <i className="bx bxs-trash" />
+              <i className='bx bxs-trash' />
             </button>
           </div>
         )}
